@@ -21,4 +21,8 @@ public class Shared {
         frame.setLocation(x, y);
     }
 
+    protected static boolean login(String user, String password){
+        return true;
+    }
+
 }

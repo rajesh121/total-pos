@@ -10,7 +10,7 @@ package totalpos;
  *
  * @author Saul Hidalgo
  */
-public class StartSplash extends javax.swing.JFrame {
+class StartSplash extends javax.swing.JFrame {
 
     /** Creates new form StartSplash */
     public StartSplash() {

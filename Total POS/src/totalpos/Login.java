@@ -6,8 +6,6 @@
 
 package totalpos;
 
-import java.awt.event.KeyEvent;
-
 /**
  *
  * @author Saul Hidalgo
@@ -20,11 +18,11 @@ public class Login extends javax.swing.JFrame {
     }
 
     private void login(){
-        if ( Shared.login(userTextField.getText(), passwordTextField.getText()) ){
+        if ( Shared.login(userTextField.getText(), passwordTextField.getPassword().toString().trim() ) ){
             MainWindows mainWindows = new MainWindows();
             Shared.centerFrame(mainWindows);
             mainWindows.setVisible(true);
-            
+
             this.setVisible(false);
 
         }
@@ -43,8 +41,8 @@ public class Login extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         userLabel = new javax.swing.JLabel();
         userTextField = new javax.swing.JTextField();
-        passwordTextField = new javax.swing.JTextField();
         passwordLabel = new javax.swing.JLabel();
+        passwordTextField = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
@@ -64,7 +62,7 @@ public class Login extends javax.swing.JFrame {
 
         jPanel2.setName("jPanel2"); // NOI18N
 
-        userLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        userLabel.setFont(new java.awt.Font("Tahoma", 1, 14));
         userLabel.setText("Usuario");
         userLabel.setName("userLabel"); // NOI18N
 
@@ -75,16 +73,16 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        passwordTextField.setName("passwordTextField"); // NOI18N
-        passwordTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                passwordTextFieldKeyPressed(evt);
-            }
-        });
-
-        passwordLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        passwordLabel.setFont(new java.awt.Font("Tahoma", 1, 14));
         passwordLabel.setText("Clave");
         passwordLabel.setName("passwordLabel"); // NOI18N
+
+        passwordTextField.setText("                                                                                                                                                                                             ");
+        passwordTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordTextFieldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -108,9 +106,9 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(userTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(passwordLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -137,21 +135,22 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void passwordTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordTextFieldKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            login();
-        }
-    }//GEN-LAST:event_passwordTextFieldKeyPressed
-
     private void userTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_userTextFieldKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_userTextFieldKeyPressed
+
+    private void passwordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextFieldActionPerformed
+        if ( evt.getSource() == passwordTextField ){
+            System.out.println( Shared.hashPassword( passwordTextField.getPassword().toString() ));
+            login();
+        }
+    }//GEN-LAST:event_passwordTextFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel passwordLabel;
-    private javax.swing.JTextField passwordTextField;
+    private javax.swing.JPasswordField passwordTextField;
     private javax.swing.JLabel userLabel;
     private javax.swing.JTextField userTextField;
     // End of variables declaration//GEN-END:variables

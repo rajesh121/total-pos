@@ -12,6 +12,6 @@ public class Constants {
     public static final String dbHost = "127.0.0.1";
     public static final String dbName = "gt99";
     public static final String dbUser = "root";
-    public static final String dbPassword = "123456789";
+    public static final String dbPassword = "1234567a89";
 
 }

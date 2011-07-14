@@ -6,6 +6,11 @@
 
 package totalpos;
 
+import java.awt.Component;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  *
  * @author Saul Hidalgo
@@ -18,13 +23,37 @@ public class Login extends javax.swing.JFrame {
     }
 
     private void login(){
-        if ( Shared.login(userTextField.getText(), passwordTextField.getText().trim() ) ){
+        if ( login(userTextField.getText(), passwordTextField.getText().trim(), this) ){
             MainWindows mainWindows = new MainWindows();
             Shared.centerFrame(mainWindows);
             mainWindows.setVisible(true);
 
             this.setVisible(false);
 
+        }
+    }
+
+
+    protected static boolean login(String user, String password, Component parent){
+        Connection c = null;
+        PreparedStatement pstmt = null;
+        try {
+            c = ConnectionDrivers.cpds.getConnection();
+            pstmt = c.prepareStatement("select * from usuario where login = ? and password = ? ");
+            pstmt.setString(1, user);
+            pstmt.setString(2, Shared.hashPassword(password));
+
+            if ( ! pstmt.executeQuery().next() ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Contraseña errónea.");
+                msb.show(parent);
+                return false;
+            }
+
+            return true;
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se pudo conectar a la base de datos.",ex);
+            msb.show(parent);
+            return false;
         }
     }
 

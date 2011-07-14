@@ -18,7 +18,7 @@ public class Login extends javax.swing.JFrame {
     }
 
     private void login(){
-        if ( Shared.login(userTextField.getText(), passwordTextField.getPassword().toString().trim() ) ){
+        if ( Shared.login(userTextField.getText(), passwordTextField.getText().trim() ) ){
             MainWindows mainWindows = new MainWindows();
             Shared.centerFrame(mainWindows);
             mainWindows.setVisible(true);
@@ -77,7 +77,6 @@ public class Login extends javax.swing.JFrame {
         passwordLabel.setText("Clave");
         passwordLabel.setName("passwordLabel"); // NOI18N
 
-        passwordTextField.setText("                                                                                                                                                                                             ");
         passwordTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 passwordTextFieldActionPerformed(evt);
@@ -141,7 +140,8 @@ public class Login extends javax.swing.JFrame {
 
     private void passwordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextFieldActionPerformed
         if ( evt.getSource() == passwordTextField ){
-            System.out.println( Shared.hashPassword( passwordTextField.getPassword().toString() ));
+            //System.out.println("<<" + passwordTextField.getText() + ">>");
+            //System.out.println( Shared.hashPassword( passwordTextField.getText().trim() ));
             login();
         }
     }//GEN-LAST:event_passwordTextFieldActionPerformed

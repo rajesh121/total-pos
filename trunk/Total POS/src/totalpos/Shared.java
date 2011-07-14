@@ -4,6 +4,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,20 +30,28 @@ public class Shared {
     }
 
     protected static String hashPassword(String x){
-        try {
-            MessageDigest d = MessageDigest.getInstance("SHA-1");
-            d.reset();
-            d.update(x.getBytes());
-            return d.digest().toString();
-
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(Shared.class.getName()).log(Level.SEVERE, null, ex);
-            return x;
-        }
+        return x.hashCode() + "";
     }
 
     protected static boolean login(String user, String password){
-        return true;
+        Connection c = null;
+        PreparedStatement pstmt = null;
+        try {
+            c = ConnectionDrivers.cpds.getConnection();
+            pstmt = c.prepareStatement("select * from usuario where login = ? and password = ? ");
+            pstmt.setString(1, user);
+            pstmt.setString(2, hashPassword(password));
+            
+            if ( ! pstmt.executeQuery().next() ){
+                System.out.println("Mala contrasena");
+                return false;
+            }
+
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(Shared.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 
 }

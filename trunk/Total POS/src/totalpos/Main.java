@@ -7,18 +7,20 @@ package totalpos;
 public class Main {
 
     protected static StartSplash splash;
-    protected static Login login;
 
     public static void main(String[] args) {
         splash = new StartSplash();
         Shared.centerFrame(splash);
         splash.setVisible(true);
         
-        splash.changeStatus("Conectado a base de datos...", 50);
+        splash.changeStatus("Conectado a base de datos...", 30);
         assert (ConnectionDrivers.initialize());
 
-        login = new Login();
+        splash.changeStatus("Creando ventana de login...", 60);
+        Login login = new Login();
         Shared.centerFrame(login);
+        assert(login.listUser());
+
         login.setVisible(true);
 
         splash.setVisible(false);

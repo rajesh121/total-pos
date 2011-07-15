@@ -89,6 +89,14 @@ public class ConnectionDrivers {
                     rs.getString("funcion"));
     }
 
+    protected static void createProfile(String id, String description) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario( id, descripcion ) values ( ? , ? )");
+        stmt.setString(1, id);
+        stmt.setString(2, description);
+        stmt.executeUpdate();
+    }
+
     protected static List<Edge> listEdges(String parent, String profile) throws SQLException{
         List<Edge> ans = new LinkedList<Edge>();
 

@@ -116,11 +116,16 @@ public class MainWindows extends javax.swing.JFrame {
         }
 
         public void actionPerformed(ActionEvent evt) {
-            if ( false ){
-
-            }else{
+            if ( ed.getFuncion().equals("addProfile") ){
+                CreateProfile cp = new CreateProfile(mainWindows, enabled);
+                Shared.centerFrame(cp);
+                cp.setVisible(true);
+            }else if ( ed.getFuncion().isEmpty() ){
                 mainWindows.navegatorStack.add(createMenu(ed));
                 mainWindows.showLast();
+            }else{
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Funcion desconocida " + ed.getFuncion());
+                msb.show(mainWindows);
             }
         }
     }
@@ -138,11 +143,21 @@ public class MainWindows extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         scrollPanel.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPanel.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPanel.setName("scrollPanel"); // NOI18N
         scrollPanel.setPreferredSize(new java.awt.Dimension(510, 118));
+        scrollPanel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                scrollPanelKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -163,6 +178,17 @@ public class MainWindows extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void scrollPanelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_scrollPanelKeyPressed
+
+    }//GEN-LAST:event_scrollPanelKeyPressed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        if ( navegatorStack.size() > 1 ){
+            navegatorStack.remove(navegatorStack.size()-1);
+            showLast();
+        }
+    }//GEN-LAST:event_formKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane scrollPanel;

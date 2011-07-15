@@ -11,6 +11,11 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author shidalgo
@@ -39,6 +44,7 @@ public class CreateProfile extends javax.swing.JDialog {
         descriptionLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(Constants.appName);
 
         titleLabel.setText("Crear Perfil");
         titleLabel.setName("titleLabel"); // NOI18N
@@ -52,8 +58,26 @@ public class CreateProfile extends javax.swing.JDialog {
                 idTextFieldActionPerformed(evt);
             }
         });
+        idTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                idTextFieldKeyPressed(evt);
+            }
+        });
 
         descriptionTextField.setName("descriptionTextField"); // NOI18N
+        descriptionTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                descriptionTextFieldActionPerformed(evt);
+            }
+        });
+        descriptionTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                descriptionTextFieldKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                descriptionTextFieldKeyTyped(evt);
+            }
+        });
 
         descriptionLabel.setText("Descripción");
         descriptionLabel.setName("descriptionLabel"); // NOI18N
@@ -98,6 +122,41 @@ public class CreateProfile extends javax.swing.JDialog {
     private void idTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_idTextFieldActionPerformed
+
+    private void descriptionTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descriptionTextFieldActionPerformed
+        
+    }//GEN-LAST:event_descriptionTextFieldActionPerformed
+
+    private void descriptionTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyTyped
+        
+    }//GEN-LAST:event_descriptionTextFieldKeyTyped
+
+    private void descriptionTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            try {
+                if ( idTextField.getText().isEmpty() )
+                    throw new Exception("No puede ser vacio el id del perfil.");
+
+                ConnectionDrivers.createProfile(idTextField.getText(), descriptionTextField.getText());
+                this.setVisible(false);
+                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente.");
+                msb.show(this);
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear perfil.",ex);
+                msb.show(this);
+            } catch (Exception ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear perfil.",ex);
+                msb.show(this);
+            }
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.setVisible(false);
+        }
+    }//GEN-LAST:event_descriptionTextFieldKeyPressed
+
+    private void idTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idTextFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE )
+            this.setVisible(false);
+    }//GEN-LAST:event_idTextFieldKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;

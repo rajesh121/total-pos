@@ -2,6 +2,7 @@ package totalpos;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JDialog;
 
 /**
  *
@@ -23,6 +24,17 @@ public class Shared {
 
     protected static String hashPassword(String x){
         return x.hashCode() + "";
+    }
+
+    static void centerFrame(JDialog dialog) {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // Determine the new location of the window
+        int w = dialog.getSize().width;
+        int h = dialog.getSize().height;
+        int x = (dim.width-w)/2;
+        int y = (dim.height-h)/2;
+        dialog.setLocation(x, y);
     }
 
 }

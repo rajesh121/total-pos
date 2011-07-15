@@ -8,12 +8,13 @@ package totalpos;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
@@ -28,17 +29,6 @@ public class Login extends javax.swing.JFrame {
         initComponents();
     }
 
-    private void login(){
-        if ( login(userTextField.getText(), passwordTextField.getText().trim(), this) ){
-            MainWindows mainWindows = new MainWindows();
-            Shared.centerFrame(mainWindows);
-            mainWindows.setVisible(true);
-
-            this.setVisible(false);
-
-        }
-    }
-
     protected boolean listUser(){
         try {
 
@@ -47,21 +37,18 @@ public class Login extends javax.swing.JFrame {
             JFlowPanel jPeople = new JFlowPanel();
             jPeople.applyComponentOrientation(getComponentOrientation());
 
-            Connection c = ConnectionDrivers.cpds.getConnection();
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("select login from usuario");
+            List<User> people = ConnectionDrivers.listUsers();
             
-
             for (int i = 0; i < people.size(); i++) {
 
-                AppUser user = (AppUser) people.get(i);
+                User user = people.get(i);
 
-                JButton btn = new JButton(/*new AppUserAction(user)*/);
+                JButton btn = new JButton(new AppUserAction(user,this));
                 btn.applyComponentOrientation(getComponentOrientation());
                 btn.setFocusPainted(false);
                 btn.setFocusable(false);
                 btn.setRequestFocusEnabled(false);
-                btn.setHorizontalAlignment(SwingConstants.LEADING);
+                btn.setHorizontalAlignment(SwingConstants.CENTER);
                 btn.setMaximumSize(new Dimension(150, 50));
                 btn.setPreferredSize(new Dimension(150, 50));
                 btn.setMinimumSize(new Dimension(150, 50));
@@ -70,69 +57,38 @@ public class Login extends javax.swing.JFrame {
             }
             jScrollPane1.getViewport().setView(jPeople);
 
-        } catch (BasicException ee) {
-            ee.printStackTrace();
+        } catch (SQLException ex) {
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No se pudo establecer conexión con la base de datos.", ex);
+            msg.show(this);
+            return false;
         }
         return true;
     }
 
-    /*private class AppUserAction extends AbstractAction {
+    private class AppUserAction extends AbstractAction {
 
-        private AppUser m_actionuser;
+        private User user;
+        private Login login;
 
-        public AppUserAction(AppUser user) {
-            m_actionuser = user;
-            putValue(Action.SMALL_ICON, m_actionuser.getIcon());
-            putValue(Action.NAME, m_actionuser.getName());
-        }
+        private AppUserAction(User user, Login aThis) {
+            this.user = user;
+            this.login = aThis;
 
-        public AppUser getUser() {
-            return m_actionuser;
+            putValue(Action.NAME, user.getNombre());
         }
 
         public void actionPerformed(ActionEvent evt) {
-            // String sPassword = m_actionuser.getPassword();
-            if (m_actionuser.authenticate()) {
-                // p'adentro directo, no tiene password
-                openAppView(m_actionuser);
-            } else {
-                // comprobemos la clave antes de entrar...
-                String sPassword = JPasswordDialog.showEditPassword(JRootApp.this,
-                        AppLocal.getIntString("Label.Password"),
-                        m_actionuser.getName(),
-                        m_actionuser.getIcon());
-                if (sPassword != null) {
-                    if (m_actionuser.authenticate(sPassword)) {
-                        openAppView(m_actionuser);
-                    } else {
-                        MessageInf msg = new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.BadPassword"));
-                        msg.show(JRootApp.this);
-                    }
-                }
-            }
-        }
-    }*/
-    
-    protected static boolean login(String user, String password, Component parent){
-        Connection c = null;
-        PreparedStatement pstmt = null;
-        try {
-            c = ConnectionDrivers.cpds.getConnection();
-            pstmt = c.prepareStatement("select * from usuario where login = ? and password = ? ");
-            pstmt.setString(1, user);
-            pstmt.setString(2, Shared.hashPassword(password));
+            if ( user.getPassword().equals("0") ){
+                MainWindows mainWindows = new MainWindows();
+                Shared.centerFrame(mainWindows);
+                mainWindows.setVisible(true);
 
-            if ( ! pstmt.executeQuery().next() ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Contraseña errónea.");
-                msb.show(parent);
-                return false;
+                login.setVisible(false);
+            }else{
+                PasswordNeeded pwn = new PasswordNeeded(this.login, true, user);
+                Shared.centerFrame(pwn);
+                pwn.setVisible(true);
             }
-
-            return true;
-        } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se pudo conectar a la base de datos.",ex);
-            msb.show(parent);
-            return false;
         }
     }
 
@@ -145,75 +101,11 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        userLabel = new javax.swing.JLabel();
-        userTextField = new javax.swing.JTextField();
-        passwordLabel = new javax.swing.JLabel();
-        passwordTextField = new javax.swing.JPasswordField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
-
-        jPanel1.setName("jPanel1"); // NOI18N
-
-        userLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        userLabel.setText("Usuario");
-        userLabel.setName("userLabel"); // NOI18N
-
-        userTextField.setName("userTextField"); // NOI18N
-        userTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                userTextFieldKeyPressed(evt);
-            }
-        });
-
-        passwordLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        passwordLabel.setText("Clave");
-        passwordLabel.setName("passwordLabel"); // NOI18N
-
-        passwordTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passwordTextFieldActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(userLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(865, 865, 865))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(userTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
-                        .addGap(615, 615, 615))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(116, Short.MAX_VALUE)
-                .addComponent(userLabel)
-                .addGap(18, 18, 18)
-                .addComponent(userTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(passwordLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(passwordTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
 
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -245,17 +137,13 @@ public class Login extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, 0, 576, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(76, 76, 76)
+                .addContainerGap(323, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -263,26 +151,9 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void userTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_userTextFieldKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_userTextFieldKeyPressed
-
-    private void passwordTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextFieldActionPerformed
-        if ( evt.getSource() == passwordTextField ){
-            //System.out.println("<<" + passwordTextField.getText() + ">>");
-            //System.out.println( Shared.hashPassword( passwordTextField.getText().trim() ));
-            login();
-        }
-    }//GEN-LAST:event_passwordTextFieldActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel passwordLabel;
-    private javax.swing.JPasswordField passwordTextField;
-    private javax.swing.JLabel userLabel;
-    private javax.swing.JTextField userTextField;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -167,7 +167,7 @@ public class JMessageDialog extends javax.swing.JDialog {
         getContentPane().add(jPanel3, java.awt.BorderLayout.SOUTH);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-465)/2, (screenSize.height-171)/2, 465, 171);
+        setBounds((screenSize.width-442)/2, (screenSize.height-167)/2, 442, 167);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jcmdMoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcmdMoreActionPerformed

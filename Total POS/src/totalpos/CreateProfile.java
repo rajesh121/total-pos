@@ -46,6 +46,7 @@ public class CreateProfile extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
+        titleLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         titleLabel.setText("Crear Perfil");
         titleLabel.setName("titleLabel"); // NOI18N
 

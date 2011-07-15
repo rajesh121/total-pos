@@ -97,6 +97,21 @@ public class ConnectionDrivers {
         stmt.executeUpdate();
     }
 
+    protected static List<Profile> listProfile(String id) throws SQLException{
+        List<Profile> ans = new LinkedList<Profile>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select id , descripcion from tipo_de_usuario where id like ? ");
+        stmt.setString(1, "%" + id + "%");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(new Profile(rs.getString("id"), rs.getString("descripcion")));
+        }
+
+        return ans;
+    }
+
     protected static List<Edge> listEdges(String parent, String profile) throws SQLException{
         List<Edge> ans = new LinkedList<Edge>();
 

@@ -69,6 +69,26 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static Edge getPredecesor(String e) throws SQLException, Exception{
+
+        if ( e == null ) return null;
+        
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select id, nombre, predecesor, icono, funcion from nodo where id = ? ");
+        stmt.setString(1, e);
+        
+        ResultSet rs = stmt.executeQuery();
+
+        if ( ! rs.next() ){
+            return null;
+        }
+        return new Edge(rs.getString("id"),
+                    rs.getString("nombre"),
+                    rs.getString("predecesor"),
+                    rs.getString("icono"),
+                    rs.getString("funcion"));
+    }
+
     protected static List<Edge> listEdges(String parent, String profile) throws SQLException{
         List<Edge> ans = new LinkedList<Edge>();
 

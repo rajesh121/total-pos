@@ -9,6 +9,7 @@ package totalpos;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -23,7 +24,7 @@ import javax.swing.SwingConstants;
 public class MainWindows extends javax.swing.JFrame {
 
     private User user;
-    private String idWindows;
+    protected List<JFlowPanel> navegatorStack;
 
     /** Creates new form MainWindows
      * @param user 
@@ -31,14 +32,17 @@ public class MainWindows extends javax.swing.JFrame {
     public MainWindows(User user) {
         initComponents();
         this.user = user;
-        this.idWindows = "root";
+        navegatorStack = new LinkedList<JFlowPanel>();
+
+        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         
-        createMenu(this.idWindows);
+        navegatorStack.add(createMenu(new Edge("root", "root", null, "")));
+        showLast();
     }
 
-    private void createMenu(String root){
+    private JFlowPanel createMenu(Edge root){
         try {
-            List<Edge> edges = ConnectionDrivers.listEdges(root, user.perfil);
+            List<Edge> edges = ConnectionDrivers.listEdges(root.getId(), user.perfil);
 
             scrollPanel.getViewport().setView(null);
             JFlowPanel jPeople = new JFlowPanel();
@@ -60,31 +64,63 @@ public class MainWindows extends javax.swing.JFrame {
 
                 jPeople.add(btn);
             }
-            scrollPanel.getViewport().setView(jPeople);
+            JButton btn = new JButton(new AbstractAction() {
+
+                public void actionPerformed(ActionEvent e) {
+                    navegatorStack.remove(navegatorStack.size()-1);
+                    showLast();
+                }
+            });
+            btn.setText("Atras");
+            btn.applyComponentOrientation(getComponentOrientation());
+            btn.setFocusPainted(false);
+            btn.setFocusable(false);
+            btn.setRequestFocusEnabled(false);
+            btn.setHorizontalAlignment(SwingConstants.CENTER);
+            btn.setMaximumSize(new Dimension(150, 50));
+            btn.setPreferredSize(new Dimension(150, 50));
+            btn.setMinimumSize(new Dimension(150, 50));
+
+            if ( ! root.getId().equals("root")){
+                jPeople.add(btn);
+            }
+
+            return jPeople;
 
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
             msg.show(this);
+            return null;
+        } catch (Exception ex) {
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
+            msg.show(this);
+            return null;
         }
+    }
+
+    private void showLast(){
+        scrollPanel.getViewport().setView(navegatorStack.get(navegatorStack.size()-1));
     }
 
     private class AppUserAction extends AbstractAction {
 
         private Edge ed;
-        private JFrame login;
+        private MainWindows mainWindows;
 
-        private AppUserAction(Edge ed, JFrame aThis) {
+        private AppUserAction(Edge ed, MainWindows aThis) {
             this.ed = ed;
-            this.login = aThis;
+            this.mainWindows = aThis;
 
             putValue(Action.NAME, ed.getNombre());
+            //putValue(Action.MNEMONIC_KEY,  new Integer(java.awt.event.KeyEvent.VK_A));
         }
 
         public void actionPerformed(ActionEvent evt) {
             if ( false ){
 
             }else{
-                createMenu(ed.getId());
+                mainWindows.navegatorStack.add(createMenu(ed));
+                mainWindows.showLast();
             }
         }
     }

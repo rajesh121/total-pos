@@ -1,5 +1,7 @@
 package totalpos;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author Saul Hidalgo.
@@ -19,7 +21,7 @@ public class Main {
         splash.changeStatus("Creando ventana de login...", 60);
         Login login = new Login();
         Shared.centerFrame(login);
-
+        login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         login.setVisible(true);
 
         splash.setVisible(false);

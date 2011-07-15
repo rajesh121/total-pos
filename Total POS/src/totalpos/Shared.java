@@ -3,6 +3,7 @@ package totalpos;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 /**
  *
@@ -20,6 +21,10 @@ public class Shared {
         int x = (dim.width-w)/2;
         int y = (dim.height-h)/2;
         frame.setLocation(x, y);
+    }
+
+    protected static void maximize(JFrame frame){
+        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
     protected static String hashPassword(String x){

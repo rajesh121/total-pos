@@ -38,7 +38,7 @@ public class MainWindows extends javax.swing.JFrame {
 
     private void createMenu(String root){
         try {
-            List<Edge> edges = ConnectionDrivers.listEdges(this.idWindows, user.perfil);
+            List<Edge> edges = ConnectionDrivers.listEdges(root, user.perfil);
 
             scrollPanel.getViewport().setView(null);
             JFlowPanel jPeople = new JFlowPanel();
@@ -81,7 +81,11 @@ public class MainWindows extends javax.swing.JFrame {
         }
 
         public void actionPerformed(ActionEvent evt) {
-            
+            if ( false ){
+
+            }else{
+                createMenu(ed.getId());
+            }
         }
     }
 

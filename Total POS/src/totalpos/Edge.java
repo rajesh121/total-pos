@@ -5,7 +5,7 @@ package totalpos;
  * @author Saul Hidalgo
  */
 public class Edge {
-    String id , nombre, predecesor, icono, funcion;
+    private String id , nombre, predecesor, icono, funcion;
 
     public Edge(String id, String nombre, String predecesor, String funcion) {
         this.id = id;

@@ -19,7 +19,6 @@ public class Main {
         splash.changeStatus("Creando ventana de login...", 60);
         Login login = new Login();
         Shared.centerFrame(login);
-        assert(login.listUser());
 
         login.setVisible(true);
 

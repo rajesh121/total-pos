@@ -86,7 +86,7 @@ public class PasswordNeeded extends javax.swing.JDialog {
     private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
         try {
             ConnectionDrivers.login(this.user.getLogin(), passwordField.getText().trim());
-            MainWindows mainWindows = new MainWindows();
+            MainWindows mainWindows = new MainWindows(this.user);
             Shared.centerFrame(mainWindows);
             mainWindows.setVisible(true);
 

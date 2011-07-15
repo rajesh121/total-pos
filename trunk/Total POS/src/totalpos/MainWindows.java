@@ -6,15 +6,83 @@
 
 package totalpos;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.SwingConstants;
+
 /**
  *
  * @author shidalgo
  */
 public class MainWindows extends javax.swing.JFrame {
 
-    /** Creates new form MainWindows */
-    public MainWindows() {
+    private User user;
+    private String idWindows;
+
+    /** Creates new form MainWindows
+     * @param user 
+     */
+    public MainWindows(User user) {
         initComponents();
+        this.user = user;
+        this.idWindows = "root";
+        
+        createMenu(this.idWindows);
+    }
+
+    private void createMenu(String root){
+        try {
+            List<Edge> edges = ConnectionDrivers.listEdges(this.idWindows, user.perfil);
+
+            scrollPanel.getViewport().setView(null);
+            JFlowPanel jPeople = new JFlowPanel();
+            jPeople.applyComponentOrientation(getComponentOrientation());
+
+            for (int i = 0; i < edges.size(); i++) {
+
+                Edge ed = edges.get(i);
+
+                JButton btn = new JButton(new AppUserAction(ed,this));
+                btn.applyComponentOrientation(getComponentOrientation());
+                btn.setFocusPainted(false);
+                btn.setFocusable(false);
+                btn.setRequestFocusEnabled(false);
+                btn.setHorizontalAlignment(SwingConstants.CENTER);
+                btn.setMaximumSize(new Dimension(150, 50));
+                btn.setPreferredSize(new Dimension(150, 50));
+                btn.setMinimumSize(new Dimension(150, 50));
+
+                jPeople.add(btn);
+            }
+            scrollPanel.getViewport().setView(jPeople);
+
+        } catch (SQLException ex) {
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+            msg.show(this);
+        }
+    }
+
+    private class AppUserAction extends AbstractAction {
+
+        private Edge ed;
+        private JFrame login;
+
+        private AppUserAction(Edge ed, JFrame aThis) {
+            this.ed = ed;
+            this.login = aThis;
+
+            putValue(Action.NAME, ed.getNombre());
+        }
+
+        public void actionPerformed(ActionEvent evt) {
+            
+        }
     }
 
     /** This method is called from within the constructor to
@@ -26,24 +94,38 @@ public class MainWindows extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        scrollPanel = new javax.swing.JScrollPane();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
+
+        scrollPanel.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPanel.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPanel.setName("scrollPanel"); // NOI18N
+        scrollPanel.setPreferredSize(new java.awt.Dimension(510, 118));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 752, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 625, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane scrollPanel;
     // End of variables declaration//GEN-END:variables
 
 }

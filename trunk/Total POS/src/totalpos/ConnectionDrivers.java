@@ -69,4 +69,26 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static List<Edge> listEdges(String parent, String profile) throws SQLException{
+        List<Edge> ans = new LinkedList<Edge>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select n.id,n.nombre,n.predecesor,n.icono,n.funcion "
+                + "from nodo n,tipo_de_usuario_puede t "
+                + "where n.predecesor= ? and t.id_tipo_usuario= ? and t.id_nodo=n.id");
+        stmt.setString(1, parent);
+        stmt.setString(2, profile);
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(new Edge(rs.getString("id"),
+                    rs.getString("nombre"),
+                    rs.getString("predecesor"),
+                    rs.getString("icono"),
+                    rs.getString("funcion")));
+        }
+
+        return ans;
+    }
+
 }

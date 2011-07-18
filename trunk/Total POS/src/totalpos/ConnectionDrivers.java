@@ -121,7 +121,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static List<Edge> listEdges(String parent, String profile) throws SQLException{
+    protected static List<Edge> listEdgesAllowed(String parent, String profile) throws SQLException{
         List<Edge> ans = new LinkedList<Edge>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -142,6 +142,65 @@ public class ConnectionDrivers {
 
         c.close();
         return ans;
+    }
+
+    protected static List<Edge> listEdges(String parent) throws SQLException{
+        List<Edge> ans = new LinkedList<Edge>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select n.id,n.nombre,n.predecesor,n.icono,n.funcion "
+                + "from nodo n "
+                + "where n.predecesor = ? ");
+        stmt.setString(1, parent);
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(new Edge(rs.getString("id"),
+                    rs.getString("nombre"),
+                    rs.getString("predecesor"),
+                    rs.getString("icono"),
+                    rs.getString("funcion")));
+        }
+
+        c.close();
+
+        return ans;
+    }
+
+    protected static boolean isAllowed(String profile, String id) throws SQLException{
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select n.id "
+                + "from nodo n, tipo_de_usuario_puede t "
+                + "where n.id = ? and t.id_tipo_usuario = ? and t.id_nodo = n.id ");
+        stmt.setString(1, id);
+        stmt.setString(2, profile);
+
+        boolean ans = stmt.executeQuery().next();
+        
+        c.close();
+        
+        return ans;
+    }
+
+    protected static void disableMenuProfile(String profile, String id) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario_puede where id_tipo_usuario = ? and id_nodo = ?");
+        stmt.setString(1, profile);
+        stmt.setString(2, id);
+        stmt.executeUpdate();
+        
+        c.close();
+    }
+
+    protected static void enableMenuProfile(String profile, String id) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario_puede(id_tipo_usuario , id_nodo) values ( ? , ? )");
+        stmt.setString(1, profile);
+        stmt.setString(2, id);
+        stmt.executeUpdate();
+
+        c.close();
     }
 
 }

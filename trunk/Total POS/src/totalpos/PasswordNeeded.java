@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * PasswordNeeded.java
  *
  * Created on 15-jul-2011, 9:18:46

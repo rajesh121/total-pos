@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * CreateProfile.java
  *
  * Created on 15-jul-2011, 12:24:23
@@ -136,8 +131,8 @@ public class CreateProfile extends javax.swing.JDialog {
     private void descriptionTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             try {
-                if ( !idTextField.getText().matches("\\A[a-zA-Z0-9]+$") ){
-                    throw new Exception("El ID es inválido. No se pueden utilizar caracteres especiales, ni espacios.");
+                if ( !idTextField.getText().matches("\\A[a-zA-Z0-9 ]+$") ){
+                    throw new Exception("El ID es inválido. No se pueden utilizar caracteres especiales.");
                 }
 
                 ConnectionDrivers.createProfile(idTextField.getText(), descriptionTextField.getText());

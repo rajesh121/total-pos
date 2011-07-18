@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Label;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,27 +49,38 @@ public class ShowProfile extends javax.swing.JDialog {
 
         this.profileId = profileId;
         
-        updateT();
-    }
-
-    protected void updateT(){
-        
         DefaultMutableTreeNode root;
         root = exploreTree("/","root");
 
         setLayout(new BorderLayout());
         tree = new MyJTree2ChangeProfile(root,profileId,this);
 
-        
+
         jsp = new JScrollPane((JTree)tree);
         add(jsp,BorderLayout.CENTER);
+
+
+        tree.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tableKeyReleased(evt);
+            }
+
+            private void tableKeyReleased(KeyEvent evt) {
+                if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+                    setVisible(false);
+                    dispose();
+                }
+            }
+        });
     }
+
+
 
     private DefaultMutableTreeNode exploreTree(String realName , String id){
         try {
             DefaultMutableTreeNode ans = new DefaultMutableTreeNode(
-                    realName + " (" + id + ") " +
-                    Shared.booleanToAllowed(ConnectionDrivers.isAllowed(profileId, id)), true);
+                    (!id.equals("root"))?(realName + " (" + id + ") " +
+                    Shared.booleanToAllowed(ConnectionDrivers.isAllowed(profileId, id))):"/", true);
 
             for (Edge edge : ConnectionDrivers.listEdges(id)) {
                 ans.add(exploreTree(edge.getNombre(),edge.getId()));
@@ -93,6 +105,11 @@ public class ShowProfile extends javax.swing.JDialog {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                formKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -107,6 +124,13 @@ public class ShowProfile extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.setVisible(false);
+            dispose();
+        }
+    }//GEN-LAST:event_formKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

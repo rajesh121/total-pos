@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 
 /**
  *
@@ -30,6 +31,8 @@ public class ShowProfile extends javax.swing.JDialog {
     protected JTree  m_tree;
 
     private String profileId;
+    protected MyJTree2ChangeProfile tree;
+    protected JScrollPane jsp;
 
 
     /** Creates new form ShowProfile
@@ -45,21 +48,27 @@ public class ShowProfile extends javax.swing.JDialog {
 
         this.profileId = profileId;
         
-        MyJTree2ChangeProfile tree;
-        DefaultMutableTreeNode root, node;
+        updateT();
+    }
+
+    protected void updateT(){
+        
+        DefaultMutableTreeNode root;
         root = exploreTree("/","root");
 
         setLayout(new BorderLayout());
-        tree = new MyJTree2ChangeProfile(root,profileId);
+        tree = new MyJTree2ChangeProfile(root,profileId,this);
 
-        JScrollPane jsp = new JScrollPane((JTree)tree);
+        
+        jsp = new JScrollPane((JTree)tree);
         add(jsp,BorderLayout.CENTER);
     }
 
     private DefaultMutableTreeNode exploreTree(String realName , String id){
         try {
             DefaultMutableTreeNode ans = new DefaultMutableTreeNode(
-                    realName + " (" + id + ") " + Shared.booleanToAllowed(ConnectionDrivers.isAllowed(profileId, id)), true);
+                    realName + " (" + id + ") " +
+                    Shared.booleanToAllowed(ConnectionDrivers.isAllowed(profileId, id)), true);
 
             for (Edge edge : ConnectionDrivers.listEdges(id)) {
                 ans.add(exploreTree(edge.getNombre(),edge.getId()));

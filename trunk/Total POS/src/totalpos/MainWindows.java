@@ -133,6 +133,10 @@ public class MainWindows extends javax.swing.JFrame {
                 SearchProfile sp = new SearchProfile(mainWindows, enabled);
                 Shared.centerFrame(sp);
                 sp.setVisible(true);
+            }else if ( ed.getFuncion().equals("manageUser") ){
+                ManageUser mu = new ManageUser(mainWindows, true);
+                Shared.centerFrame(mu);
+                mu.setVisible(true);
             } else if (ed.getFuncion().isEmpty()) {
                 mainWindows.navegatorStack.add(createMenu(ed));
                 mainWindows.showLast();

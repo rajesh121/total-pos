@@ -15,6 +15,7 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
+
 /**
  *
  * @author Saul Hidalgo
@@ -79,9 +80,9 @@ public class Login extends javax.swing.JFrame {
             if ( user.getPassword().equals("0") ){
                 MainWindows mainWindows = new MainWindows(this.user);
                 Shared.centerFrame(mainWindows);
-                mainWindows.setVisible(true);
 
                 login.setVisible(false);
+                mainWindows.setVisible(true);
             }else{
                 PasswordNeeded pwn = new PasswordNeeded(this.login, true, user);
                 Shared.centerFrame(pwn);

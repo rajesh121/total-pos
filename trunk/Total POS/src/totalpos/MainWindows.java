@@ -15,6 +15,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 /**
@@ -64,14 +65,7 @@ public class MainWindows extends javax.swing.JFrame {
 
                 jPeople.add(btn);
             }
-            JButton btn = new JButton(new AbstractAction() {
-
-                public void actionPerformed(ActionEvent e) {
-                    navegatorStack.remove(navegatorStack.size()-1);
-                    showLast();
-                }
-            });
-            btn.setText("Atras");
+            JButton btn = new JButton();
             btn.applyComponentOrientation(getComponentOrientation());
             btn.setFocusPainted(false);
             btn.setFocusable(false);
@@ -82,6 +76,21 @@ public class MainWindows extends javax.swing.JFrame {
             btn.setMinimumSize(new Dimension(150, 50));
 
             if ( ! root.getId().equals("root")){
+                btn.setText("Atras");
+                btn.addActionListener(new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                        navegatorStack.remove(navegatorStack.size()-1);
+                        showLast();
+                    }
+                });
+                jPeople.add(btn);
+            }else{
+                btn.setText("Salir");
+                btn.addActionListener(new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                        logout();
+                    }
+                });
                 jPeople.add(btn);
             }
 
@@ -193,8 +202,22 @@ public class MainWindows extends javax.swing.JFrame {
         if ( navegatorStack.size() > 1 ){
             navegatorStack.remove(navegatorStack.size()-1);
             showLast();
+        }else{
+            logout();
         }
     }//GEN-LAST:event_formKeyPressed
+
+    private void logout(){
+        if ( JOptionPane.showConfirmDialog(null, "¿Está seguro que desea cerrar sesión?") == 0 ){
+            Login l = new Login();
+            Shared.centerFrame(l);
+            Shared.maximize(l);
+            l.setVisible(true);
+
+            setVisible(false);
+            dispose();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane scrollPanel;

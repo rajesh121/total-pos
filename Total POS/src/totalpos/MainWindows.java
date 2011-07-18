@@ -42,7 +42,7 @@ public class MainWindows extends javax.swing.JFrame {
 
     private JFlowPanel createMenu(Edge root){
         try {
-            List<Edge> edges = ConnectionDrivers.listEdges(root.getId(), user.perfil);
+            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root.getId(), user.perfil);
 
             scrollPanel.getViewport().setView(null);
             JFlowPanel jPeople = new JFlowPanel();
@@ -147,6 +147,8 @@ public class MainWindows extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setResizable(false);
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);

@@ -67,7 +67,7 @@ public class SearchProfile extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        searchTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        searchTitle.setFont(new java.awt.Font("Tahoma", 1, 18));
         searchTitle.setText("Buscar Perfil");
         searchTitle.setName("searchTitle"); // NOI18N
 
@@ -116,6 +116,11 @@ public class SearchProfile extends javax.swing.JDialog {
         });
         table.setName("table"); // NOI18N
         table.getTableHeader().setReorderingAllowed(false);
+        table.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tableKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(table);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -150,18 +155,33 @@ public class SearchProfile extends javax.swing.JDialog {
     }//GEN-LAST:event_searchTextFieldActionPerformed
 
     private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
-        
-    }//GEN-LAST:event_searchTextFieldKeyPressed
-
-    private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.setVisible(false);
+            dispose();
             return;
         }
 
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER )
             update();
+    }//GEN-LAST:event_searchTextFieldKeyPressed
+
+    private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
+        
     }//GEN-LAST:event_searchTextFieldKeyReleased
+
+    private void tableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyReleased
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.setVisible(false);
+            dispose();
+            return;
+        }
+
+        if ( evt.getKeyCode() == KeyEvent.VK_SPACE ){
+            ShowProfile sp = new ShowProfile(null, true, (String)table.getValueAt(table.getSelectedRow(),0));
+            Shared.centerFrame(sp);
+            sp.setVisible(true);
+        }
+    }//GEN-LAST:event_tableKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;

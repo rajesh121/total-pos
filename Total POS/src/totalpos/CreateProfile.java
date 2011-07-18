@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sun.misc.Regexp;
 
 /**
  *
@@ -135,8 +136,9 @@ public class CreateProfile extends javax.swing.JDialog {
     private void descriptionTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             try {
-                if ( idTextField.getText().isEmpty() )
-                    throw new Exception("No puede ser vacio el id del perfil.");
+                if ( !idTextField.getText().matches("\\A[a-zA-Z0-9]+$") ){
+                    throw new Exception("El ID es inválido. No se pueden utilizar caracteres especiales, ni espacios.");
+                }
 
                 ConnectionDrivers.createProfile(idTextField.getText(), descriptionTextField.getText());
                 this.setVisible(false);
@@ -151,12 +153,15 @@ public class CreateProfile extends javax.swing.JDialog {
             }
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.setVisible(false);
+            dispose();
         }
     }//GEN-LAST:event_descriptionTextFieldKeyPressed
 
     private void idTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idTextFieldKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE )
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.setVisible(false);
+            dispose();
+        }
     }//GEN-LAST:event_idTextFieldKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

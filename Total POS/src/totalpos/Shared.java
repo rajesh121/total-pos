@@ -42,4 +42,8 @@ public class Shared {
         dialog.setLocation(x, y);
     }
 
+    public static String booleanToAllowed(boolean b){
+        return b?"Habilitado":"Deshabilitado";
+    }
+
 }

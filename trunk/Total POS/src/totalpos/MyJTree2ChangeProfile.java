@@ -77,6 +77,12 @@ public class MyJTree2ChangeProfile extends JTree implements ActionListener{
                     ConnectionDrivers.enableMenuProfile(profileId, m.group(1));
                     MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Menu habilitado satisfactoriamente");
                     msg.show(this);
+                    ptn = "([^(]+\\([^)]+\\)).+";
+                    p = Pattern.compile(ptn);
+                    m = p.matcher(nodeStr);
+                    m.find();
+
+                    dmtn.setUserObject(m.group(1) + " Habilitado");
                 } catch (SQLException ex) {
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
                     msg.show(this);
@@ -86,6 +92,12 @@ public class MyJTree2ChangeProfile extends JTree implements ActionListener{
                     ConnectionDrivers.disableMenuProfile(profileId, m.group(1));
                     MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Menu deshabilitado satisfactoriamente");
                     msg.show(this);
+                    ptn = "([^(]+\\([^)]+\\)).+";
+                    p = Pattern.compile(ptn);
+                    m = p.matcher(nodeStr);
+                    m.find();
+
+                    dmtn.setUserObject(m.group(1) + " Deshabilitado");
                 } catch (SQLException ex) {
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
                     msg.show(this);

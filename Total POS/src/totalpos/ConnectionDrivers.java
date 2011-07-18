@@ -47,6 +47,8 @@ public class ConnectionDrivers {
         if ( ! pstmt.executeQuery().next() ){
             throw new Exception("Contraseña errónea.");
         }
+
+        c.close();
     }
 
     protected static List<User> listUsers() throws SQLException{
@@ -66,6 +68,7 @@ public class ConnectionDrivers {
                     rs.getString("direccion")));
         }
 
+        c.close();
         return ans;
     }
 
@@ -80,8 +83,11 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         if ( ! rs.next() ){
+            c.close();
             return null;
         }
+        c.close();
+
         return new Edge(rs.getString("id"),
                     rs.getString("nombre"),
                     rs.getString("predecesor"),
@@ -95,6 +101,7 @@ public class ConnectionDrivers {
         stmt.setString(1, id);
         stmt.setString(2, description);
         stmt.executeUpdate();
+        c.close();
     }
 
     protected static List<Profile> listProfile(String id) throws SQLException{
@@ -108,6 +115,8 @@ public class ConnectionDrivers {
         while ( rs.next() ){
             ans.add(new Profile(rs.getString("id"), rs.getString("descripcion")));
         }
+
+        c.close();
 
         return ans;
     }
@@ -131,6 +140,7 @@ public class ConnectionDrivers {
                     rs.getString("funcion")));
         }
 
+        c.close();
         return ans;
     }
 

@@ -11,6 +11,7 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -153,7 +154,13 @@ public class SearchProfile extends javax.swing.JDialog {
     }//GEN-LAST:event_searchTextFieldKeyPressed
 
     private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
-        update();
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.setVisible(false);
+            return;
+        }
+
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER )
+            update();
     }//GEN-LAST:event_searchTextFieldKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

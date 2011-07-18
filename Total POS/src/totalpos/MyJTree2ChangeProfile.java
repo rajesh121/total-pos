@@ -14,6 +14,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 /**
@@ -24,8 +26,9 @@ public class MyJTree2ChangeProfile extends JTree implements ActionListener{
     private JPopupMenu popup;
     private JMenuItem menu;
     private String profileId;
+    private ShowProfile parent;
 
-    public MyJTree2ChangeProfile(DefaultMutableTreeNode dmtn, String profile) {
+    public MyJTree2ChangeProfile(DefaultMutableTreeNode dmtn, String profile, ShowProfile parent) {
         super(dmtn);
 
         popup = new JPopupMenu();
@@ -43,6 +46,8 @@ public class MyJTree2ChangeProfile extends JTree implements ActionListener{
         popup.setLightWeightPopupEnabled(true);
 
         profileId = profile;
+
+        this.parent = parent;
 
         addMouseListener(
             new MouseAdapter() {

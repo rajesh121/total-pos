@@ -76,6 +76,7 @@ public class Login extends javax.swing.JFrame {
             putValue(Action.NAME, user.getNombre());
         }
 
+        @Override
         public void actionPerformed(ActionEvent evt) {
             if ( user.getBloqueado() ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER,

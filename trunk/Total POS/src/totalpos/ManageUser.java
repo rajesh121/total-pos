@@ -347,7 +347,14 @@ public class ManageUser extends javax.swing.JDialog {
     }//GEN-LAST:event_bloqueadoCheckActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        
+        try {
+            ConnectionDrivers.changeProperties(loginText.getText(), nombreText.getText(), apellidoText.getText(), cedulaText.getText(), direccionText.getText(), roleCombo.getSelectedItem().toString(), bloqueadoCheck.isSelected());
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
+            msg.show(this);
+        } catch (SQLException ex) {
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+            msg.show(this);
+        }
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void newUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserButtonActionPerformed
@@ -406,7 +413,7 @@ public class ManageUser extends javax.swing.JDialog {
             updateList();
             userList.setSelectedIndex(0);
         } catch (SQLException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No se pudo establecer conexión con la base de datos.", ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
         }
     }

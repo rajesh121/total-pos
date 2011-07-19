@@ -25,7 +25,7 @@ public class Login extends javax.swing.JFrame {
     /** Creates new form Login */
     public Login() {
         initComponents();
-        assert(listUser());
+        listUser();
     }
 
     protected boolean listUser(){
@@ -77,6 +77,12 @@ public class Login extends javax.swing.JFrame {
         }
 
         public void actionPerformed(ActionEvent evt) {
+            if ( user.getBloqueado() ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER,
+                        "El usuario ha sido bloqueado por un administrador.");
+                msg.show(login);
+                return;
+            }
             if ( user.getPassword().equals("0") ){
                 MainWindows mainWindows = new MainWindows(this.user);
                 Shared.centerFrame(mainWindows);

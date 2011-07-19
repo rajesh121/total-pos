@@ -228,4 +228,24 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static void changeProperties(String loginT, String nombreT,
+            String apellidoT, String cedulaT, String direccionT, String roleT,
+            boolean bloqueado) throws SQLException {
+        
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update usuario set nombre = ? ,"
+                + " apellido = ? , cedula = ? , direccion = ? , tipo_de_usuario_id = ? , bloqueado = ? "
+                + "where login = ? ");
+        stmt.setString(1, nombreT);
+        stmt.setString(2, apellidoT);
+        stmt.setString(3, cedulaT);
+        stmt.setString(4, direccionT);
+        stmt.setString(5, roleT);
+        stmt.setInt(6, bloqueado?1:0);
+        stmt.setString(7, loginT);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
 }

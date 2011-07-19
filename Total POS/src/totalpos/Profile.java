@@ -21,4 +21,19 @@ public class Profile {
         return id;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || this.id == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Profile other = (Profile) obj;
+        if (!this.id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
+
 }

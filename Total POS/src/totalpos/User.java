@@ -12,6 +12,7 @@ public class User {
     String apellido;
     String cedula;
     String direccion;
+    int bloqueado;
 
     public User(String login, String password, String perfil) {
         this.login = login;
@@ -19,7 +20,7 @@ public class User {
         this.perfil = perfil;
     }
 
-    public User(String login, String password, String perfil, String nombre, String apellido, String cedula, String direccion) {
+    public User(String login, String password, String perfil, String nombre, String apellido, String cedula, String direccion, int bloqueado) {
         this.login = login;
         this.password = password;
         this.perfil = perfil;
@@ -27,6 +28,7 @@ public class User {
         this.apellido = apellido;
         this.cedula = cedula;
         this.direccion = direccion;
+        this.bloqueado = bloqueado;
     }
 
     public String getApellido() {
@@ -55,6 +57,42 @@ public class User {
 
     public String getPerfil() {
         return perfil;
+    }
+
+    public boolean getBloqueado(){
+        return bloqueado != 0;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public void setBloqueado(int bloqueado) {
+        this.bloqueado = bloqueado;
+    }
+
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setPerfil(String perfil) {
+        this.perfil = perfil;
     }
 
 }

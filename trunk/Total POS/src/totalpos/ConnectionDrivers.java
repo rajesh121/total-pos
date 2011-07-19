@@ -56,7 +56,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery("select login, password, nombre, apellido, cedula, direccion, edad, tipo_de_usuario_id from usuario");
+        ResultSet rs = stmt.executeQuery("select login, password, nombre, apellido, cedula, direccion, edad, tipo_de_usuario_id, bloqueado from usuario");
 
         while ( rs.next() ){
             ans.add(new User(rs.getString("login"),
@@ -65,7 +65,8 @@ public class ConnectionDrivers {
                     rs.getString("nombre"),
                     rs.getString("apellido"),
                     rs.getString("cedula"),
-                    rs.getString("direccion")));
+                    rs.getString("direccion"),
+                    rs.getInt("bloqueado")));
         }
 
         c.close();
@@ -198,6 +199,30 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario_puede(id_tipo_usuario , id_nodo) values ( ? , ? )");
         stmt.setString(1, profile);
         stmt.setString(2, id);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    protected static void setPassword(String user, String password) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update usuario set password = ? where login = ? ");
+        stmt.setString(1, password);
+        stmt.setString(2, user);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    protected static void createUser(String username) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into usuario"
+                + " ( login , password , tipo_de_usuario_id , bloqueado , nombre ) values ( ? , ? , ? , ? , ?)");
+        stmt.setString(1, username);
+        stmt.setString(2, "0");
+        stmt.setString(3, Constants.defaultUser);
+        stmt.setInt(4, 1);
+        stmt.setString(5, username);
         stmt.executeUpdate();
 
         c.close();

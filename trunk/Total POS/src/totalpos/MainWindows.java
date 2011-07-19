@@ -8,6 +8,7 @@ package totalpos;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -203,11 +204,13 @@ public class MainWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_scrollPanelKeyPressed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        if ( navegatorStack.size() > 1 ){
-            navegatorStack.remove(navegatorStack.size()-1);
-            showLast();
-        }else{
-            logout();
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            if ( navegatorStack.size() > 1 ){
+                navegatorStack.remove(navegatorStack.size()-1);
+                showLast();
+            }else{
+                logout();
+            }
         }
     }//GEN-LAST:event_formKeyPressed
 

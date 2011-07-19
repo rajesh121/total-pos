@@ -351,6 +351,7 @@ public class ManageUser extends javax.swing.JDialog {
             ConnectionDrivers.changeProperties(loginText.getText(), nombreText.getText(), apellidoText.getText(), cedulaText.getText(), direccionText.getText(), roleCombo.getSelectedItem().toString(), bloqueadoCheck.isSelected());
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
             msg.show(this);
+            updateAll();
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);

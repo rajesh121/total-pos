@@ -115,6 +115,7 @@ public class SearchProfile extends javax.swing.JDialog {
             }
         });
         table.setName("table"); // NOI18N
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         table.getTableHeader().setReorderingAllowed(false);
         table.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {

@@ -32,7 +32,7 @@ public class Main {
         splash.setVisible(true);
         
         splash.changeStatus("Conectado a base de datos...", 30);
-        assert (ConnectionDrivers.initialize());
+        ConnectionDrivers.initialize();
 
         splash.changeStatus("Creando ventana de login...", 60);
         Login login = new Login();

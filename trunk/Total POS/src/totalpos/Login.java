@@ -88,8 +88,8 @@ public class Login extends javax.swing.JFrame {
                 MainWindows mainWindows = new MainWindows(this.user);
                 Shared.centerFrame(mainWindows);
 
-                login.setVisible(false);
                 mainWindows.setVisible(true);
+                login.setVisible(false);
             }else{
                 PasswordNeeded pwn = new PasswordNeeded(this.login, true, user);
                 Shared.centerFrame(pwn);

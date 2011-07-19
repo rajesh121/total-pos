@@ -41,8 +41,9 @@ public class NewUser extends javax.swing.JDialog {
         loginText = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(Constants.appName);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18));
         jLabel1.setText("Introduzca el nuevo login");
         jLabel1.setName("jLabel1"); // NOI18N
 

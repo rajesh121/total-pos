@@ -349,6 +349,12 @@ public class ManageUser extends javax.swing.JDialog {
                 return;
             }
 
+            if ( newPassword.getText().isEmpty() ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "La contraseña no puede ser vacía.");
+                msg.show(this);
+                return;
+            }
+
             ConnectionDrivers.changeProperties(loginText.getText(), nombreText.getText(), apellidoText.getText(), roleCombo.getSelectedItem().toString(), bloqueadoCheck.isSelected(), canChangePasswordCheck.isSelected() , mustChangePasswordCheck.isSelected());
             ConnectionDrivers.setPassword(loginText.getText(), Shared.hashPassword(newPassword.getText()));
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");

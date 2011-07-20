@@ -9,23 +9,31 @@ package totalpos;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
  * @author shidalgo
  */
-public class ShowProfile extends javax.swing.JDialog {
+public class ShowProfile extends JDialog {
 
-    protected DefaultTreeModel m_model;
+    /*protected DefaultTreeModel m_model;
     protected JTree  m_tree;
 
     private String profileId;
     protected MyJTree2ChangeProfile tree;
-    protected JScrollPane jsp;
+    protected JScrollPane jsp;*/
+
+    private String profileId;
+
+    
 
 
     /** Creates new form ShowProfile
@@ -34,14 +42,14 @@ public class ShowProfile extends javax.swing.JDialog {
      * @param profileId 
      */
     public ShowProfile(java.awt.Frame parent, boolean modal, String profileId) {
-        super(parent, modal);
+        super(parent);
         initComponents();
 
         this.setTitle("Ver / Modificar Perfil de " + profileId);
 
         this.profileId = profileId;
         
-        DefaultMutableTreeNode root;
+        /*DefaultMutableTreeNode root;
         root = exploreTree("/","root");
 
         setLayout(new BorderLayout());
@@ -63,27 +71,40 @@ public class ShowProfile extends javax.swing.JDialog {
                     dispose();
                 }
             }
-        });
-    }
+        });*/
 
+        
 
+        CheckNode cn = exploreTree("/", "root");
 
-    private DefaultMutableTreeNode exploreTree(String realName , String id){
-        try {
-            DefaultMutableTreeNode ans = new DefaultMutableTreeNode(
-                    (!id.equals("root"))?(realName + " (" + id + ") " +
-                    Shared.booleanToAllowed(ConnectionDrivers.isAllowed(profileId, id))):"/", true);
+        String[] strs = {"swing",     // 0
+		     "platf",     // 1
+		     "basic",     // 2
+		     "metal",     // 3
+		     "JTree"};    // 4
 
-            for (Edge edge : ConnectionDrivers.listEdges(id)) {
-                ans.add(exploreTree(edge.getNombre(),edge.getId()));
-            }
-
-            return ans;
-        } catch (SQLException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
-            msg.show(this);
-            return null;
+        CheckNode[] nodes = new CheckNode[strs.length];
+        for (int i=0;i<strs.length;i++) {
+          nodes[i] = new CheckNode(strs[i]);
         }
+        nodes[0].add(nodes[1]);
+        nodes[1].add(nodes[2]);
+        nodes[1].add(nodes[3]);
+        nodes[0].add(nodes[4]);
+        //nodes[3].setSelected(true);
+        CheckNodeTreeExample cnte = new CheckNodeTreeExample(cn);
+        cnte.setVisible(true);
+        JTree tree = new JTree( nodes[0] );
+        tree.setCellRenderer(new CheckRenderer());
+        tree.getSelectionModel().setSelectionMode(
+          TreeSelectionModel.SINGLE_TREE_SELECTION
+        );
+        tree.putClientProperty("JTree.lineStyle", "Angled");
+        tree.addMouseListener(new NodeSelectionListener(tree));
+        JScrollPane sp = new JScrollPane(tree);
+
+        this.getContentPane().add(sp,    BorderLayout.CENTER);
+
     }
 
 

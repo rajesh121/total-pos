@@ -22,10 +22,13 @@ import java.util.logging.Logger;
  */
 public class NewUser extends javax.swing.JDialog {
 
+    private ManageUser parent;
+
     /** Creates new form NewUser */
-    public NewUser(java.awt.Frame parent, boolean modal) {
+    public NewUser(ManageUser parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.parent = parent;
     }
 
     /** This method is called from within the constructor to
@@ -89,6 +92,7 @@ public class NewUser extends javax.swing.JDialog {
                 ConnectionDrivers.createUser(loginText.getText());
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Usuario creado satisfactoriamente.");
                 msg.show(this);
+                parent.newUserId = loginText.getText();
                 closeWindows();
             } catch (SQLException ex) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);

@@ -5,12 +5,14 @@ package totalpos;
  * @author Saul Hidalgo.
  */
 public class User {
-    String login;
-    String password;
-    String perfil;
-    String nombre;
-    String apellido;
-    int bloqueado;
+    private String login;
+    private String password;
+    private String perfil;
+    private String nombre;
+    private String apellido;
+    private int bloqueado;
+    private int puedeCambiarPassword;
+    private int debeCambiarPassword;
 
     public User(String login, String password, String perfil) {
         this.login = login;
@@ -18,13 +20,15 @@ public class User {
         this.perfil = perfil;
     }
 
-    public User(String login, String password, String perfil, String nombre, String apellido, String cedula, String direccion, int bloqueado) {
+    public User(String login, String password, String perfil, String nombre, String apellido, int bloqueado, int debeCambiarPassword, int puedeCambiarPassword) {
         this.login = login;
         this.password = password;
         this.perfil = perfil;
         this.nombre = nombre;
         this.apellido = apellido;
         this.bloqueado = bloqueado;
+        this.puedeCambiarPassword = puedeCambiarPassword;
+        this.debeCambiarPassword = debeCambiarPassword;
     }
 
     public String getApellido() {
@@ -51,28 +55,12 @@ public class User {
         return bloqueado != 0;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public boolean getDebeCambiarPassword() {
+        return debeCambiarPassword != 0;
     }
 
-    public void setBloqueado(int bloqueado) {
-        this.bloqueado = bloqueado;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setPerfil(String perfil) {
-        this.perfil = perfil;
+    public boolean getPuedeCambiarPassword() {
+        return puedeCambiarPassword != 0;
     }
 
     @Override

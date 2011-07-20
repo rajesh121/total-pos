@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class Login extends javax.swing.JFrame {
 
     private TreeMap<String,Integer> tries = new TreeMap<String, Integer>();
+    public boolean userChangedHerPass = false; // Nice name xDD
 
     /** Creates new form Login */
     public Login() {
@@ -113,10 +114,22 @@ public class Login extends javax.swing.JFrame {
             }
             ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
 
-            MainWindows mw = new MainWindows(Shared.giveUser(ConnectionDrivers.listUsers(), loginText.getText()));
+            User u = Shared.giveUser(ConnectionDrivers.listUsers(), loginText.getText());
+            if ( u.getDebeCambiarPassword() ){
+                ChangePassword cp = new ChangePassword(this, true, u);
+                Shared.centerFrame(cp);
+                cp.setVisible(true);
+                if ( !userChangedHerPass ){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Debes cambiar el password. Intenta de nuevo.");
+                    msg.show(this);
+                    return;
+                }
+            }
+            MainWindows mw = new MainWindows(u);
             Shared.centerFrame(mw);
             mw.setVisible(true);
-
+            this.setVisible(false);
+            dispose();
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
             msg.show(this);

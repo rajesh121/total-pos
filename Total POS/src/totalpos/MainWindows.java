@@ -44,7 +44,7 @@ public class MainWindows extends javax.swing.JFrame {
 
     private JFlowPanel createMenu(Edge root){
         try {
-            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root.getId(), user.perfil);
+            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root.getId(), user.getPerfil());
 
             scrollPanel.getViewport().setView(null);
             JFlowPanel jPeople = new JFlowPanel();

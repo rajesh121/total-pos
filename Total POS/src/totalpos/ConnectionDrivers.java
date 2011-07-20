@@ -74,7 +74,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery("select login, password, nombre, apellido, cedula, direccion, edad, tipo_de_usuario_id, bloqueado from usuario");
+        ResultSet rs = stmt.executeQuery("select login, password, nombre, apellido, tipo_de_usuario_id, bloqueado,debeCambiarPassword,puedeCambiarPassword from usuario");
 
         while ( rs.next() ){
             ans.add(new User(rs.getString("login"),
@@ -82,9 +82,9 @@ public class ConnectionDrivers {
                     rs.getString("tipo_de_usuario_id"),
                     rs.getString("nombre"),
                     rs.getString("apellido"),
-                    rs.getString("cedula"),
-                    rs.getString("direccion"),
-                    rs.getInt("bloqueado")));
+                    rs.getInt("bloqueado"),
+                    rs.getInt("debeCambiarPassword"),
+                    rs.getInt("puedeCambiarPassword")));
         }
 
         c.close();
@@ -280,17 +280,20 @@ public class ConnectionDrivers {
 
     public static void changeProperties(String loginT, String nombreT,
             String apellidoT, String roleT,
-            boolean bloqueado) throws SQLException {
+            boolean bloqueado, boolean puede , boolean debe) throws SQLException {
         
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set nombre = ? ,"
-                + " apellido = ? , tipo_de_usuario_id = ? , bloqueado = ? "
+                + " apellido = ? , tipo_de_usuario_id = ? , bloqueado = ? , debeCambiarPassword = ? ,"
+                + " puedeCambiarPassword = ? "
                 + "where login = ? ");
         stmt.setString(1, nombreT);
         stmt.setString(2, apellidoT);
         stmt.setString(3, roleT);
         stmt.setInt(4, bloqueado?1:0);
-        stmt.setString(5, loginT);
+        stmt.setInt(5, debe?1:0);
+        stmt.setInt(6, puede?1:0);
+        stmt.setString(7, loginT);
         stmt.executeUpdate();
 
         c.close();
@@ -360,6 +363,15 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario where id = ? ");
         stmt.setString(1, id);
         stmt.executeUpdate();
+        c.close();
+    }
+
+    public static void mustntChangePassword(String username) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update usuario set debeCambiarPassword = 0 where login = ? ");
+        stmt.setString(1, username);
+        stmt.executeUpdate();
+        
         c.close();
     }
 

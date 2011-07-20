@@ -2,7 +2,10 @@ package totalpos;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.sql.SQLException;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
@@ -54,6 +57,24 @@ public class Shared {
 
         return null;
         
+    }
+
+    public static List<Profile> updateProfiles(JComboBox rCombo, boolean withEmpty) throws SQLException {
+
+        List<Profile> profiles = ConnectionDrivers.listProfile("");
+
+        DefaultComboBoxModel dfcbm = (DefaultComboBoxModel) rCombo.getModel();
+        dfcbm.removeAllElements();
+
+        if (withEmpty){
+            profiles.add(0, new Profile("", ""));
+        }
+
+        for (Profile profile : profiles) {
+            rCombo.addItem(profile.getId());
+        }
+
+        return profiles;
     }
 
 }

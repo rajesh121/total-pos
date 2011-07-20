@@ -264,13 +264,13 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void createUser(String username) throws SQLException{
+    protected static void createUser(String username, String role) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into usuario"
                 + " ( login , password , tipo_de_usuario_id , bloqueado , nombre ) values ( ? , ? , ? , ? , ?)");
         stmt.setString(1, username);
         stmt.setString(2, "0");
-        stmt.setString(3, Constants.defaultUser);
+        stmt.setString(3, role);
         stmt.setInt(4, 1);
         stmt.setString(5, username);
         stmt.executeUpdate();
@@ -279,20 +279,18 @@ public class ConnectionDrivers {
     }
 
     public static void changeProperties(String loginT, String nombreT,
-            String apellidoT, String cedulaT, String direccionT, String roleT,
+            String apellidoT, String roleT,
             boolean bloqueado) throws SQLException {
         
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set nombre = ? ,"
-                + " apellido = ? , cedula = ? , direccion = ? , tipo_de_usuario_id = ? , bloqueado = ? "
+                + " apellido = ? , tipo_de_usuario_id = ? , bloqueado = ? "
                 + "where login = ? ");
         stmt.setString(1, nombreT);
         stmt.setString(2, apellidoT);
-        stmt.setString(3, cedulaT);
-        stmt.setString(4, direccionT);
-        stmt.setString(5, roleT);
-        stmt.setInt(6, bloqueado?1:0);
-        stmt.setString(7, loginT);
+        stmt.setString(3, roleT);
+        stmt.setInt(4, bloqueado?1:0);
+        stmt.setString(5, loginT);
         stmt.executeUpdate();
 
         c.close();

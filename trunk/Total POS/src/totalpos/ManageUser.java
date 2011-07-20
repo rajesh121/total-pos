@@ -49,22 +49,20 @@ public class ManageUser extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         loginText = new javax.swing.JTextField();
-        passwordButton = new javax.swing.JButton();
         nombreText = new javax.swing.JTextField();
         apellidoText = new javax.swing.JTextField();
-        cedulaText = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        direccionText = new javax.swing.JTextArea();
         roleCombo = new javax.swing.JComboBox();
         bloqueadoCheck = new javax.swing.JCheckBox();
         saveButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         newUserButton = new javax.swing.JButton();
+        newPassword = new javax.swing.JPasswordField();
+        newPassword2 = new javax.swing.JPasswordField();
         jScrollPane2 = new javax.swing.JScrollPane();
         userList = new javax.swing.JList();
 
@@ -79,7 +77,7 @@ public class ManageUser extends javax.swing.JDialog {
 
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel4.setText("login");
+        jLabel4.setText("Usuario");
         jLabel4.setName("jLabel4"); // NOI18N
 
         jLabel5.setText("Nombre");
@@ -88,14 +86,14 @@ public class ManageUser extends javax.swing.JDialog {
         jLabel6.setText("Apellido");
         jLabel6.setName("jLabel6"); // NOI18N
 
-        jLabel7.setText("Cedula");
-        jLabel7.setName("jLabel7"); // NOI18N
-
-        jLabel8.setText("Dirección");
-        jLabel8.setName("jLabel8"); // NOI18N
-
         jLabel9.setText("Perfil");
         jLabel9.setName("jLabel9"); // NOI18N
+
+        jLabel2.setText("Contraseña");
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jLabel3.setText("Contraseña de nuevo");
+        jLabel3.setName("jLabel3"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -104,12 +102,12 @@ public class ManageUser extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -118,14 +116,14 @@ public class ManageUser extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel8)
-                .addGap(77, 77, 77)
+                .addGap(82, 82, 82)
                 .addComponent(jLabel9)
                 .addContainerGap(200, Short.MAX_VALUE))
         );
@@ -135,26 +133,9 @@ public class ManageUser extends javax.swing.JDialog {
         loginText.setEditable(false);
         loginText.setName("loginText"); // NOI18N
 
-        passwordButton.setText("Contraseña");
-        passwordButton.setName("passwordButton"); // NOI18N
-        passwordButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passwordButtonActionPerformed(evt);
-            }
-        });
-
         nombreText.setName("nombreText"); // NOI18N
 
         apellidoText.setName("apellidoText"); // NOI18N
-
-        cedulaText.setName("cedulaText"); // NOI18N
-
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        direccionText.setColumns(20);
-        direccionText.setRows(5);
-        direccionText.setName("direccionText"); // NOI18N
-        jScrollPane1.setViewportView(direccionText);
 
         roleCombo.setName("roleCombo"); // NOI18N
 
@@ -190,6 +171,10 @@ public class ManageUser extends javax.swing.JDialog {
             }
         });
 
+        newPassword.setName("newPassword"); // NOI18N
+
+        newPassword2.setName("newPassword2"); // NOI18N
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -197,46 +182,50 @@ public class ManageUser extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(newUserButton, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(2, 2, 2)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                            .addComponent(cedulaText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                            .addComponent(apellidoText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                            .addComponent(nombreText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(loginText, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                            .addComponent(newUserButton, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                            .addComponent(bloqueadoCheck, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                            .addComponent(roleCombo, 0, 264, Short.MAX_VALUE)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(passwordButton))))
-                    .addComponent(bloqueadoCheck, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
-                    .addComponent(roleCombo, 0, 264, Short.MAX_VALUE)
+                                .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
+                        .addContainerGap())
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(newPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(newPassword2, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(nombreText, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                        .addGap(12, 12, 12))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(apellidoText, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(loginText, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(loginText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(passwordButton))
+                .addComponent(loginText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(newPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(newPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nombreText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(apellidoText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cedulaText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(87, 87, 87)
                 .addComponent(roleCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bloqueadoCheck)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
                 .addComponent(newUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -322,18 +311,10 @@ public class ManageUser extends javax.swing.JDialog {
         loginText.setText(u.getLogin());
         nombreText.setText(u.getNombre());
         apellidoText.setText(u.getApellido());
-        cedulaText.setText(u.getCedula());
-        direccionText.setText(u.getDireccion());
         roleCombo.setSelectedIndex(profiles.indexOf(new Profile(u.getPerfil(),null)));
         bloqueadoCheck.setSelected(u.getBloqueado());
         
     }//GEN-LAST:event_userListValueChanged
-
-    private void passwordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordButtonActionPerformed
-        ChangePassword cp = new ChangePassword(null, true, users.get(selectedUser));
-        Shared.centerFrame(cp);
-        cp.setVisible(true);
-    }//GEN-LAST:event_passwordButtonActionPerformed
 
     private void bloqueadoCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bloqueadoCheckActionPerformed
         
@@ -341,9 +322,19 @@ public class ManageUser extends javax.swing.JDialog {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
-            ConnectionDrivers.changeProperties(loginText.getText(), nombreText.getText(), apellidoText.getText(), cedulaText.getText(), direccionText.getText(), roleCombo.getSelectedItem().toString(), bloqueadoCheck.isSelected());
+
+            if ( !newPassword.getText().equals(newPassword2.getText()) ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Las contraseñas deben ser iguales.");
+                msg.show(this);
+                return;
+            }
+
+            ConnectionDrivers.changeProperties(loginText.getText(), nombreText.getText(), apellidoText.getText(), roleCombo.getSelectedItem().toString(), bloqueadoCheck.isSelected());
+            ConnectionDrivers.setPassword(loginText.getText(), newPassword.getText());
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
             msg.show(this);
+
+            newUserId = loginText.getText();
             updateAll();
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
@@ -363,24 +354,22 @@ public class ManageUser extends javax.swing.JDialog {
     private javax.swing.JTextField apellidoText;
     private javax.swing.JCheckBox bloqueadoCheck;
     private javax.swing.JButton cancelButton;
-    private javax.swing.JTextField cedulaText;
-    private javax.swing.JTextArea direccionText;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField loginText;
+    private javax.swing.JPasswordField newPassword;
+    private javax.swing.JPasswordField newPassword2;
     private javax.swing.JButton newUserButton;
     private javax.swing.JTextField nombreText;
-    private javax.swing.JButton passwordButton;
     private javax.swing.JComboBox roleCombo;
     private javax.swing.JButton saveButton;
     private javax.swing.JList userList;
@@ -423,15 +412,7 @@ public class ManageUser extends javax.swing.JDialog {
     }
 
     private void updateProfiles() throws SQLException {
-        
-        profiles = ConnectionDrivers.listProfile("");
-
-        DefaultComboBoxModel dfcbm = (DefaultComboBoxModel) roleCombo.getModel();
-        dfcbm.removeAllElements();
-
-        for (Profile profile : profiles) {
-            roleCombo.addItem(profile.getId());
-        }
+        profiles = Shared.updateProfiles(roleCombo,false);
     }
 
 }

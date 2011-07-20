@@ -7,16 +7,17 @@
 package totalpos;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  *
  * @author Saul Hidalgo
  */
 public class Login extends javax.swing.JFrame {
+
+    private TreeMap<String,Integer> tries = new TreeMap<String, Integer>();
 
     /** Creates new form Login */
     public Login() {
@@ -99,12 +100,18 @@ public class Login extends javax.swing.JFrame {
 
     private void passwordTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextActionPerformed
         try {
-            ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
+            if ( !ConnectionDrivers.existsUser(loginText.getText().trim()) ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario no existe");
+                msg.show(this);
+                return;
+            }
+
             if ( ConnectionDrivers.isLocked(loginText.getText().trim()) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario bloqueado");
                 msg.show(this);
                 return;
             }
+            ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
 
             MainWindows mw = new MainWindows(Shared.giveUser(ConnectionDrivers.listUsers(), loginText.getText()));
             Shared.centerFrame(mw);
@@ -116,6 +123,27 @@ public class Login extends javax.swing.JFrame {
         } catch (Exception ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error.", ex);
             msg.show(this);
+
+            if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
+                String l = loginText.getText();
+
+                if ( !tries.containsKey(l) ){
+                    tries.put(l, new Integer(1));
+                }else if ( tries.get(l).compareTo(new Integer(2)) > 0 ){
+                    msg = new MessageBox(MessageBox.SGN_DANGER, "El usuario ha sido bloqueado.");
+                    msg.show(this);
+                }else{
+                    try {
+                        tries.put(l, new Integer(tries.get(l) + 1));
+                        ConnectionDrivers.lockUser(l);
+                    } catch (SQLException ex1) {
+                        msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex1);
+                        msg.show(this);
+                    }
+                }
+                
+            }
+
         }
         
     }//GEN-LAST:event_passwordTextActionPerformed

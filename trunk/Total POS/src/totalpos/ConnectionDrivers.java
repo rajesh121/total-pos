@@ -58,7 +58,7 @@ public class ConnectionDrivers {
 
         if ( ! pstmt.executeQuery().next() ){
             c.close();
-            throw new Exception("Contraseña errónea.");
+            throw new Exception(Constants.wrongPasswordMsg);
         }
 
         c.close();
@@ -298,6 +298,20 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static boolean existsUser(String username) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? ");
+        pstmt.setString(1, username);
+
+        if ( ! pstmt.executeQuery().next() ){
+            c.close();
+            return false;
+        }
+
+        c.close();
+        return true;
+    }
+
     public static boolean isLocked(String username) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and bloqueado = 1 ");
@@ -310,6 +324,14 @@ public class ConnectionDrivers {
 
         c.close();
         return true;
+    }
+
+    public static void lockUser(String username) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update usuario set bloqueado = 1 where login = ? ");
+        stmt.setString(1, username);
+        stmt.executeUpdate();
+        c.close();
     }
 
 }

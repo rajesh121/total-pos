@@ -47,16 +47,6 @@
         <Property name="axis" type="int" value="1"/>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jlblErrorCode">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-              <FontInfo relative="true">
-                <Font bold="false" component="jlblErrorCode" property="font" relativeSize="true" size="-2"/>
-              </FontInfo>
-            </Property>
-            <Property name="text" type="java.lang.String" value="jlblErrorCode"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="jlblMessage">
           <Properties>
             <Property name="text" type="java.lang.String" value="jlblMessage"/>

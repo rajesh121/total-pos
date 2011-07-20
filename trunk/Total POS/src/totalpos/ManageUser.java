@@ -8,9 +8,6 @@ package totalpos;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -23,7 +20,10 @@ public class ManageUser extends javax.swing.JDialog {
     private List<Profile> profiles;
     private int selectedUser = -1;
 
-    /** Creates new form ManageUser */
+    /** Creates new form ManageUser
+     * @param parent Padre de la nueva ventana.
+     * @param modal Indica el estilo del Frame.
+     */
     public ManageUser(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();

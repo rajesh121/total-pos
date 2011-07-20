@@ -6,14 +6,10 @@
 
 package totalpos;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.List;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -25,77 +21,6 @@ public class Login extends javax.swing.JFrame {
     /** Creates new form Login */
     public Login() {
         initComponents();
-        listUser();
-    }
-
-    protected boolean listUser(){
-        try {
-
-            jScrollPane1.getViewport().setView(null);
-
-            JFlowPanel jPeople = new JFlowPanel();
-            jPeople.applyComponentOrientation(getComponentOrientation());
-
-            List<User> people = ConnectionDrivers.listUsers();
-            
-            for (int i = 0; i < people.size(); i++) {
-
-                User user = people.get(i);
-
-                JButton btn = new JButton(new AppUserAction(user,this));
-                btn.applyComponentOrientation(getComponentOrientation());
-                btn.setFocusPainted(false);
-                btn.setFocusable(false);
-                btn.setRequestFocusEnabled(false);
-                btn.setHorizontalAlignment(SwingConstants.CENTER);
-                btn.setMaximumSize(new Dimension(150, 50));
-                btn.setPreferredSize(new Dimension(150, 50));
-                btn.setMinimumSize(new Dimension(150, 50));
-
-                jPeople.add(btn);
-            }
-            jScrollPane1.getViewport().setView(jPeople);
-
-        } catch (SQLException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No se pudo establecer conexión con la base de datos.", ex);
-            msg.show(this);
-            return false;
-        }
-        return true;
-    }
-
-    private class AppUserAction extends AbstractAction {
-
-        private User user;
-        private Login login;
-
-        private AppUserAction(User user, Login aThis) {
-            this.user = user;
-            this.login = aThis;
-
-            putValue(Action.NAME, user.getNombre());
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent evt) {
-            if ( user.getBloqueado() ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER,
-                        "El usuario ha sido bloqueado por un administrador.");
-                msg.show(login);
-                return;
-            }
-            if ( user.getPassword().equals("0") ){
-                MainWindows mainWindows = new MainWindows(this.user);
-                Shared.centerFrame(mainWindows);
-
-                mainWindows.setVisible(true);
-                login.setVisible(false);
-            }else{
-                PasswordNeeded pwn = new PasswordNeeded(this.login, true, user);
-                Shared.centerFrame(pwn);
-                pwn.setVisible(true);
-            }
-        }
     }
 
     /** This method is called from within the constructor to
@@ -107,16 +32,34 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        loginText = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        passwordText = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
         setResizable(false);
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(510, 118));
+        loginText.setName("loginText"); // NOI18N
+        loginText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                loginTextKeyPressed(evt);
+            }
+        });
+
+        jLabel1.setText("Usuario");
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jLabel2.setText("Contraseña");
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        passwordText.setName("passwordText"); // NOI18N
+        passwordText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordTextActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -124,22 +67,64 @@ public class Login extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(passwordText)
+                    .addComponent(loginText, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(331, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(345, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(346, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loginText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(passwordText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(130, 130, 130))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void loginTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginTextKeyPressed
+        
+    }//GEN-LAST:event_loginTextKeyPressed
+
+    private void passwordTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextActionPerformed
+        try {
+            ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
+            if ( ConnectionDrivers.isLocked(loginText.getText().trim()) ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario bloqueado");
+                msg.show(this);
+                return;
+            }
+
+            MainWindows mw = new MainWindows(Shared.giveUser(ConnectionDrivers.listUsers(), loginText.getText()));
+            Shared.centerFrame(mw);
+            mw.setVisible(true);
+
+        } catch (SQLException ex) {
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+            msg.show(this);
+        } catch (Exception ex) {
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error.", ex);
+            msg.show(this);
+        }
+        
+    }//GEN-LAST:event_passwordTextActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField loginText;
+    private javax.swing.JPasswordField passwordText;
     // End of variables declaration//GEN-END:variables
 
 }

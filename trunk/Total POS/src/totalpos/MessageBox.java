@@ -6,11 +6,11 @@ import javax.swing.*;
 public class MessageBox {
 
     // SIGNAL_WORD'S
-    public final static int SGN_DANGER = 0xFF000000; // Death or serious injury will occur
-    public final static int SGN_WARNING = 0xFE000000; // Death or serious injury may occur
-    public final static int SGN_CAUTION = 0xFD000000; // Minor or moderate injury may occur
-    public final static int SGN_NOTICE = 0xFC000000; // Damage to property may occur
-    public final static int SGN_IMPORTANT = 0xFA000000; // Operating or maintenance instructions or additional information
+    public final static int SGN_DANGER = 0xFF000000;
+    public final static int SGN_WARNING = 0xFE000000;
+    public final static int SGN_CAUTION = 0xFD000000;
+    public final static int SGN_NOTICE = 0xFC000000;
+    public final static int SGN_IMPORTANT = 0xFA000000;
     public final static int SGN_SUCCESS = 0xFB000000;
 
     // ERROR_CLASS'ES

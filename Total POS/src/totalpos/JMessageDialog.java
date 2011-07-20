@@ -44,7 +44,6 @@ public class JMessageDialog extends javax.swing.JDialog {
         myMsg.getRootPane().setDefaultButton(myMsg.jcmdOK);
         
         myMsg.jlblIcon.setIcon(inf.getSignalWordIcon());
-        myMsg.jlblErrorCode.setText(inf.getErrorCodeMsg());
         myMsg.jlblMessage.setText("<html>" + inf.getMessageMsg());
         
         // Capturamos el texto de la excepcion...
@@ -100,7 +99,6 @@ public class JMessageDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel4 = new javax.swing.JPanel();
-        jlblErrorCode = new javax.swing.JLabel();
         jlblMessage = new javax.swing.JLabel();
         jscrException = new javax.swing.JScrollPane();
         jtxtException = new javax.swing.JTextArea();
@@ -120,10 +118,6 @@ public class JMessageDialog extends javax.swing.JDialog {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
-
-        jlblErrorCode.setFont(jlblErrorCode.getFont().deriveFont(jlblErrorCode.getFont().getStyle() & ~java.awt.Font.BOLD, jlblErrorCode.getFont().getSize()-2));
-        jlblErrorCode.setText("jlblErrorCode");
-        jPanel4.add(jlblErrorCode);
 
         jlblMessage.setText("jlblMessage");
         jlblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -199,7 +193,6 @@ public class JMessageDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JButton jcmdMore;
     private javax.swing.JButton jcmdOK;
-    private javax.swing.JLabel jlblErrorCode;
     private javax.swing.JLabel jlblIcon;
     private javax.swing.JLabel jlblMessage;
     private javax.swing.JScrollPane jscrException;

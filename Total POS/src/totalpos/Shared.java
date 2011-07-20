@@ -2,6 +2,7 @@ package totalpos;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
@@ -31,7 +32,7 @@ public class Shared {
         return x.hashCode() + "";
     }
 
-    static void centerFrame(JDialog dialog) {
+    public static void centerFrame(JDialog dialog) {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
         // Determine the new location of the window
@@ -44,6 +45,15 @@ public class Shared {
 
     public static String booleanToAllowed(boolean b){
         return b?"Habilitado":"Deshabilitado";
+    }
+
+    public static User giveUser(List<User> l, String u){
+        for (User user : l)
+            if ( user.getLogin().equals(u) )
+                return user;
+
+        return null;
+        
     }
 
 }

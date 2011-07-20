@@ -17,7 +17,12 @@ import java.util.List;
 public class ConnectionDrivers {
 
     protected static ComboPooledDataSource cpds ;
-    
+
+    /** Crea la piscina de conexiones.
+     * 
+     * @return Retorna un valor verdadero en caso de que
+     * se inicialice correctamente la piscina de conexiones.
+     */
     protected static boolean initialize(){
         try {
             cpds = new ComboPooledDataSource();
@@ -38,19 +43,32 @@ public class ConnectionDrivers {
         
     }
 
-    protected static void login(String user, String password) throws SQLException, Exception{
+    /** Indica si una contraseña y usuario con correctos.
+     *
+     * @param user Usuario
+     * @param password Contraseña
+     * @throws SQLException Para problemas con la base de datos.
+     * @throws Exception Para contraseña incorrecta.
+     */
+    protected static void login(String user, char[] password) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and password = ? ");
         pstmt.setString(1, user);
-        pstmt.setString(2, Shared.hashPassword(password));
+        pstmt.setString(2, Shared.hashPassword(new String(password)));
 
         if ( ! pstmt.executeQuery().next() ){
+            c.close();
             throw new Exception("Contraseña errónea.");
         }
 
         c.close();
     }
 
+    /** Genera la lista de usuarios.
+     *
+     * @return Lista de usuarios
+     * @throws SQLException Para problemas de conexión con la base de datos.
+     */
     protected static List<User> listUsers() throws SQLException{
         List<User> ans = new LinkedList<User>();
 
@@ -73,7 +91,13 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static Edge getPredecesor(String e) throws SQLException, Exception{
+    /** Dado un nodo, devuelve su predecesor.
+     * 
+     * @param e Identificador del nodo.
+     * @return Predecesor.
+     * @throws SQLException Para problemas de conexión con la base de datos.
+     */
+    protected static Edge getPredecesor(String e) throws SQLException{
 
         if ( e == null ) return null;
         
@@ -96,6 +120,12 @@ public class ConnectionDrivers {
                     rs.getString("funcion"));
     }
 
+    /**
+     * Crea un perfil.
+     * @param id Identificador del perfil.
+     * @param description Descripción del perfil
+     * @throws SQLException Para problemas de conexión con la base de datos.
+     */
     protected static void createProfile(String id, String description) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario( id, descripcion ) values ( ? , ? )");
@@ -105,6 +135,12 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    /**
+     * Devuelve una lista con todos los perfiles que coincidan con ID.
+     * @param id Identificador del perfil
+     * @return Lista de perfiles.
+     * @throws SQLException Para problemas de conexión con la base de datos.
+     */
     protected static List<Profile> listProfile(String id) throws SQLException{
         List<Profile> ans = new LinkedList<Profile>();
 
@@ -122,6 +158,14 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    /**
+     * Dado un predecesor y un perfil, indica la lista de los sucesores en
+     * los ese perfil tiene permisos para usarlo.
+     * @param parent Predecesor.
+     * @param profile Perfil.
+     * @return Lista de sucesores.
+     * @throws SQLException Para problemas de conexión con la base de datos.
+     */
     protected static List<Edge> listEdgesAllowed(String parent, String profile) throws SQLException{
         List<Edge> ans = new LinkedList<Edge>();
 
@@ -145,6 +189,12 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    /**
+     * Dado un predecesor, devuelve a todos los sucesores.
+     * @param parent Predecesor.
+     * @return Lista de Sucesores.
+     * @throws SQLException Para problemas de conexión con la base de datos.
+     */
     protected static List<Edge> listEdges(String parent) throws SQLException{
         List<Edge> ans = new LinkedList<Edge>();
 
@@ -246,6 +296,20 @@ public class ConnectionDrivers {
         stmt.executeUpdate();
 
         c.close();
+    }
+
+    public static boolean isLocked(String username) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and bloqueado = 1 ");
+        pstmt.setString(1, username);
+
+        if ( ! pstmt.executeQuery().next() ){
+            c.close();
+            return false;
+        }
+
+        c.close();
+        return true;
     }
 
 }

@@ -63,6 +63,8 @@ public class SearchProfile extends javax.swing.JDialog {
         searchTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
+        changePermits = new javax.swing.JButton();
+        changeDetails = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
@@ -124,6 +126,22 @@ public class SearchProfile extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(table);
 
+        changePermits.setText("Permisos");
+        changePermits.setName("changePermits"); // NOI18N
+        changePermits.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changePermitsActionPerformed(evt);
+            }
+        });
+
+        changeDetails.setText("Detalles");
+        changeDetails.setName("changeDetails"); // NOI18N
+        changeDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeDetailsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -133,7 +151,11 @@ public class SearchProfile extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                     .addComponent(searchTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
-                    .addComponent(searchTitle, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(searchTitle, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(changeDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(changePermits, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -144,7 +166,11 @@ public class SearchProfile extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(changePermits)
+                    .addComponent(changeDetails))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -167,7 +193,9 @@ public class SearchProfile extends javax.swing.JDialog {
     }//GEN-LAST:event_searchTextFieldKeyPressed
 
     private void searchTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyReleased
-        
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            closeWindows();
+        }
     }//GEN-LAST:event_searchTextFieldKeyReleased
 
     private void tableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyReleased
@@ -178,17 +206,49 @@ public class SearchProfile extends javax.swing.JDialog {
         }
 
         if ( evt.getKeyCode() == KeyEvent.VK_SPACE ){
-            ShowProfile sp = new ShowProfile(null, true, (String)table.getValueAt(table.getSelectedRow(),0));
-            Shared.centerFrame(sp);
-            sp.setVisible(true);
+            showThisProfile((String)table.getValueAt(table.getSelectedRow(),0));
         }
     }//GEN-LAST:event_tableKeyReleased
 
+    private void changePermitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePermitsActionPerformed
+        if ( table.getSelectedRow() != -1 ){
+            showThisProfile((String)table.getValueAt(table.getSelectedRow(),0));
+        }else{
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un perfil.");
+            msb.show(this);
+        }
+    }//GEN-LAST:event_changePermitsActionPerformed
+
+    private void changeDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeDetailsActionPerformed
+        if ( table.getSelectedRow() != -1 ){
+            ChangeProfileDetails cpd = new ChangeProfileDetails(null, true, (String)table.getValueAt(table.getSelectedRow(),0), (String)table.getValueAt(table.getSelectedRow(),1));
+            Shared.centerFrame(cpd);
+            cpd.setVisible(true);
+        }else{
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un perfil.");
+            msb.show(this);
+        }
+        
+    }//GEN-LAST:event_changeDetailsActionPerformed
+
+    private void showThisProfile(String p){
+        ShowProfile sp = new ShowProfile(null, true, p);
+        Shared.centerFrame(sp);
+        sp.setVisible(true);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton changeDetails;
+    private javax.swing.JButton changePermits;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField searchTextField;
     private javax.swing.JLabel searchTitle;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
+
+    private void closeWindows() {
+        this.setVisible(false);
+        dispose();
+    }
 
 }

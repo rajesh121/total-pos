@@ -31,6 +31,11 @@
                   <Component id="jScrollPane1" alignment="0" pref="475" max="32767" attributes="0"/>
                   <Component id="searchTextField" alignment="0" pref="475" max="32767" attributes="0"/>
                   <Component id="searchTitle" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="changeDetails" min="-2" pref="231" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="changePermits" pref="234" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -44,7 +49,12 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="searchTextField" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="243" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="changePermits" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="changeDetails" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="228" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -116,5 +126,23 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="changePermits">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Permisos"/>
+        <Property name="name" type="java.lang.String" value="changePermits" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changePermitsActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="changeDetails">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Detalles"/>
+        <Property name="name" type="java.lang.String" value="changeDetails" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeDetailsActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

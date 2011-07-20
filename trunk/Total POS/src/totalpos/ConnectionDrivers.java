@@ -334,4 +334,35 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    static void changeProfileDetails(String prevId, String id, String description) throws SQLException {
+        if ( prevId.equals(id) ){
+            return; //Caso trivial xD;
+        }
+
+        createProfile(id, description);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update tipo_de_usuario_puede set id_tipo_usuario = ? where id_tipo_usuario = ? ");
+        stmt.setString(1, id);
+        stmt.setString(2, prevId);
+        stmt.executeUpdate();
+
+        stmt = c.prepareStatement("update usuario set tipo_de_usuario_id = ? where tipo_de_usuario_id = ? ");
+        stmt.setString(1, id);
+        stmt.setString(2, prevId);
+        stmt.executeUpdate();
+
+        deleteProfile(prevId);
+
+        c.close();
+    }
+
+    private static void deleteProfile(String id) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario where id = ? ");
+        stmt.setString(1, id);
+        stmt.executeUpdate();
+        c.close();
+    }
+
 }

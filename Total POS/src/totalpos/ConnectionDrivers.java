@@ -7,8 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JPanel;
 
 /**
  *
@@ -17,6 +20,8 @@ import java.util.List;
 public class ConnectionDrivers {
 
     protected static ComboPooledDataSource cpds ;
+    private static long lastOperationTime = Calendar.getInstance().getTimeInMillis();
+    private static String username = "";
 
     /** Crea la piscina de conexiones.
      * 
@@ -61,6 +66,8 @@ public class ConnectionDrivers {
             throw new Exception(Constants.wrongPasswordMsg);
         }
 
+        username = user.toString();
+
         c.close();
     }
 
@@ -99,7 +106,9 @@ public class ConnectionDrivers {
      */
     protected static Edge getPredecesor(String e) throws SQLException{
 
-        if ( e == null ) return null;
+        if ( e == null ) {
+            return null;
+        }
         
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select id, nombre, predecesor, icono, funcion from nodo where id = ? ");
@@ -126,7 +135,19 @@ public class ConnectionDrivers {
      * @param description Descripción del perfil
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
-    protected static void createProfile(String id, String description) throws SQLException{
+    protected static void createProfile(String id, String description) throws SQLException, Exception{
+        if ( Calendar.getInstance().getTimeInMillis() - lastOperationTime > Constants.millisecondToBlock ){
+             MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "El usuario ha permanecido mucho tiempo sin uso. Requiere contraseña.");
+             msg.show(null);
+             PasswordNeeded pn = new PasswordNeeded(null, true, Shared.giveUser(listUsers(), username));
+             Shared.centerFrame(pn);
+             pn.setVisible(true);
+             if ( pn.isPasswordOk() ){
+                 lastOperationTime = Calendar.getInstance().getTimeInMillis();
+             }else{
+                 throw new Exception("No se realizó la operación. Contraseña Incorrecta.");
+             }
+        }
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario( id, descripcion ) values ( ? , ? )");
         stmt.setString(1, id);
@@ -335,7 +356,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void changeProfileDetails(String prevId, String id, String description) throws SQLException {
+    static void changeProfileDetails(String prevId, String id, String description) throws SQLException, Exception {
         if ( prevId.equals(id) ){
             return; //Caso trivial xD;
         }

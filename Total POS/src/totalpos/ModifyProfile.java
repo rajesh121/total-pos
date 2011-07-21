@@ -24,6 +24,7 @@ public class ModifyProfile extends JDialog {
     JTree tree = new JTree( exploreTree("/" , "root") );
 
     tree.addKeyListener(new KeyAdapter() {
+            @Override
         public void keyReleased(java.awt.event.KeyEvent evt) {
             setVisible(false);
             dispose();

@@ -22,6 +22,14 @@ public class ModifyProfile extends JDialog {
     this.profile = profileId;
     
     JTree tree = new JTree( exploreTree("/" , "root") );
+
+    tree.addKeyListener(new KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            setVisible(false);
+            dispose();
+        }
+    });
+
     tree.setCellRenderer(new CheckRenderer());
     tree.getSelectionModel().setSelectionMode(
       TreeSelectionModel.SINGLE_TREE_SELECTION

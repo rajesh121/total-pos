@@ -144,6 +144,12 @@ public class MainWindows extends javax.swing.JFrame {
                     Shared.centerFrame(mu);
                     mu.setVisible(true);
                 }
+            } else if ( ed.getFuncion().equals("changeIdleTime") ){
+                ChangeIdleTime cit = new ChangeIdleTime(mainWindows, true);
+                if ( cit.isOk ){
+                    Shared.centerFrame(cit);
+                    cit.setVisible(true);
+                }
             } else if (ed.getFuncion().isEmpty()) {
                 JFlowPanel t = createMenu(ed);
                 if ( t != null ){

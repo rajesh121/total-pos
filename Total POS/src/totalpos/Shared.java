@@ -110,4 +110,8 @@ public class Shared {
         ConnectionDrivers.username = null;
     }
 
+    public static String getConfig(String k){
+        return config.get(k);
+    }
+
 }

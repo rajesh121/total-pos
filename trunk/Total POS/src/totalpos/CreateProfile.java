@@ -140,7 +140,7 @@ public class CreateProfile extends javax.swing.JDialog {
                 MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente.");
                 msb.show(this);
             } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear perfil.",ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error con la base de datos.",ex);
                 msb.show(this);
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear perfil.",ex);

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.TreeMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -75,6 +76,28 @@ public class Shared {
         }
 
         return profiles;
+    }
+
+    public static void userTrying(String l) throws Exception{
+        TreeMap<String,Integer> tries = Login.tries;
+        if ( !tries.containsKey(l) ){
+            tries.put(l, new Integer(1));
+        }else if ( tries.get(l).compareTo(new Integer(1)) > 0 ){
+            try {
+                ConnectionDrivers.lockUser(l);
+            } catch (SQLException ex1) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex1);
+                msg.show(null);
+            }
+            throw new Exception(Constants.userLocked);
+        }else{
+            tries.put(l, new Integer(tries.get(l) + 1));
+        }
+    }
+
+    public static void userInsertedPasswordOk(String username){
+        TreeMap<String,Integer> tries = Login.tries;
+        tries.put(username, 0);
     }
 
 }

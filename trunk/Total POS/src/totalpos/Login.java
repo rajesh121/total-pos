@@ -17,8 +17,9 @@ import java.util.logging.Logger;
  */
 public class Login extends javax.swing.JFrame {
 
-    private TreeMap<String,Integer> tries = new TreeMap<String, Integer>();
+    protected static TreeMap<String,Integer> tries = new TreeMap<String, Integer>();
     public boolean userChangedHerPass = false; // Nice name xDD
+    protected static MainWindows myMainWindows = null;
 
     /** Creates new form Login */
     public Login() {
@@ -125,7 +126,8 @@ public class Login extends javax.swing.JFrame {
                     return;
                 }
             }
-            MainWindows mw = new MainWindows(u);
+            Shared.userInsertedPasswordOk(loginText.getText());
+            MainWindows mw = myMainWindows = new MainWindows(u);
             Shared.centerFrame(mw);
             mw.setVisible(true);
             this.setVisible(false);
@@ -138,23 +140,14 @@ public class Login extends javax.swing.JFrame {
             msg.show(this);
 
             if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
-                String l = loginText.getText();
-
-                if ( !tries.containsKey(l) ){
-                    tries.put(l, new Integer(1));
-                }else if ( tries.get(l).compareTo(new Integer(2)) > 0 ){
-                    msg = new MessageBox(MessageBox.SGN_DANGER, "El usuario ha sido bloqueado.");
-                    msg.show(this);
-                }else{
-                    try {
-                        tries.put(l, new Integer(tries.get(l) + 1));
-                        ConnectionDrivers.lockUser(l);
-                    } catch (SQLException ex1) {
-                        msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex1);
-                        msg.show(this);
-                    }
+                try {
+                    Shared.userTrying(loginText.getText());
+                } catch (Exception ex1) {
+                    msg = new MessageBox(MessageBox.SGN_DANGER,
+                                (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
+                                ex1);
+                    msg.show(null);
                 }
-                
             }
 
         }

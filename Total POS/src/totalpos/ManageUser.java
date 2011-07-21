@@ -371,6 +371,7 @@ public class ManageUser extends javax.swing.JDialog {
         }catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al cambiar perfil.",ex);
             msb.show(this);
+            this.dispose();
             Shared.reload();
         }
     }//GEN-LAST:event_saveButtonActionPerformed
@@ -416,6 +417,7 @@ public class ManageUser extends javax.swing.JDialog {
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar los usuarios.",ex);
             msb.show(this);
+            this.dispose();
             Shared.reload();
         }
     }
@@ -453,6 +455,7 @@ public class ManageUser extends javax.swing.JDialog {
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar usuarios.",ex);
             msb.show(this);
+            this.dispose();
             Shared.reload();
         }
     }

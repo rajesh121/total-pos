@@ -104,6 +104,7 @@ public class MainWindows extends javax.swing.JFrame {
         } catch (Exception ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
             msg.show(this);
+            this.dispose();
             Shared.reload();
             return null;
         }

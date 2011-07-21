@@ -47,6 +47,7 @@ public class SearchProfile extends javax.swing.JDialog {
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar perfiles.",ex);
             msb.show(this);
+            this.dispose();
             Shared.reload();
         }
 
@@ -236,8 +237,10 @@ public class SearchProfile extends javax.swing.JDialog {
 
     private void showThisProfile(String p){
         ModifyProfile cnte = new ModifyProfile(p);
-        Shared.centerFrame(cnte);
-        cnte.setVisible(true);
+        if ( cnte.isOk ){
+            Shared.centerFrame(cnte);
+            cnte.setVisible(true);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

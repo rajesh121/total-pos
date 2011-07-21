@@ -15,19 +15,27 @@ import javax.swing.tree.*;
 public class ModifyProfile extends JDialog {
 
     String profile;
+    public boolean isOk = false;
   
   public ModifyProfile(String profileId) {
-    super(new JDialog(),true);
+    super(Login.myMainWindows,true);
 
     this.profile = profileId;
+
+    CheckNode cn = exploreTree("/" , "root");
+    if ( cn == null) {
+        return;
+    }
     
-    JTree tree = new JTree( exploreTree("/" , "root") );
+    JTree tree = new JTree( cn );
 
     tree.addKeyListener(new KeyAdapter() {
             @Override
         public void keyReleased(java.awt.event.KeyEvent evt) {
-            setVisible(false);
-            dispose();
+            if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE){
+                setVisible(false);
+                dispose();
+            }
         }
     });
 
@@ -43,6 +51,7 @@ public class ModifyProfile extends JDialog {
     this.setSize(500, 300);
     
     getContentPane().add(sp,    BorderLayout.CENTER);
+    isOk = true;
   }
 
   class NodeSelectionListener extends MouseAdapter {
@@ -79,6 +88,7 @@ public class ModifyProfile extends JDialog {
         try {
             CheckNode ans = new CheckNode(realName + " (" + id + ") " , profile);
 
+            if ( !ans.isOk ) return null;
             for (Edge edge : ConnectionDrivers.listEdges(id)) {
                 ans.add(exploreTree(edge.getNombre(),edge.getId()));
             }
@@ -91,6 +101,7 @@ public class ModifyProfile extends JDialog {
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar menu.",ex);
             msb.show(this);
+            this.dispose();
             Shared.reload();
             return null;
         }

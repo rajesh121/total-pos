@@ -138,6 +138,7 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error.",ex);
                 msb.show(this);
+                this.dispose();
                 Shared.reload();
             }
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){

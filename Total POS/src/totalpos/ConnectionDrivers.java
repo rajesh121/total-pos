@@ -359,7 +359,6 @@ public class ConnectionDrivers {
     }
 
     public static void lockUser(String username) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set bloqueado = 1 where login = ? ");
         stmt.setString(1, username);

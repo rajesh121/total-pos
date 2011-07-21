@@ -2,7 +2,10 @@ package totalpos;
 
 /*  (swing1.1) */
 
-import java.util.*;
+import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JDialog;
 import javax.swing.tree.*;
 
 
@@ -15,20 +18,34 @@ public class CheckNode extends DefaultMutableTreeNode {
   public final static int DIG_IN_SELECTION = 4;
   protected int selectionMode;
   protected boolean isSelected;
+  private String profile;
 
-  public CheckNode() {
-    this(null);
+  public CheckNode(String profile) {
+    this(null,profile);
   }
 
-  public CheckNode(Object userObject) {
-    this(userObject, true, false);
+  public CheckNode(Object userObject, String profile) {
+    this(userObject, true, profile);
   }
 
   public CheckNode(Object userObject, boolean allowsChildren
-                                    , boolean isSelected) {
+                                    , String profile) {
     super(userObject, allowsChildren);
-    this.isSelected = isSelected;
+    try {
+        Pattern pattern = Pattern.compile("[^(]+\\(([^)]+)\\)");
+        Matcher matcher = pattern.matcher(this.toString());
+        boolean found = matcher.find();
+        assert( found );
+
+        String name = matcher.group(1);
+        this.isSelected = ConnectionDrivers.isAllowed(profile, name);
+    } catch (SQLException ex) {
+        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+        msg.show(null);
+    }
     setSelectionMode(DIG_IN_SELECTION);
+    this.profile = profile;
+
   }
 
 
@@ -42,6 +59,24 @@ public class CheckNode extends DefaultMutableTreeNode {
 
   public void setSelected(boolean isSelected) {
     this.isSelected = isSelected;
+    Pattern pattern = Pattern.compile("[^(]+\\(([^)]+)\\)");
+    Matcher matcher = pattern.matcher(this.toString());
+    boolean found = matcher.find();
+    assert( found );
+
+    String name = matcher.group(1);
+    try {
+        if ( isSelected ){
+            ConnectionDrivers.disableMenuProfile(profile, name);
+            ConnectionDrivers.enableMenuProfile(profile, name);
+        }else{
+            ConnectionDrivers.disableMenuProfile(profile, name);
+        }
+    } catch (SQLException ex) {
+        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+        msg.show(new JDialog());
+    }
+    
 
     if ((selectionMode == DIG_IN_SELECTION)
         && (children != null)) {
@@ -56,18 +91,6 @@ public class CheckNode extends DefaultMutableTreeNode {
   public boolean isSelected() {
     return isSelected;
   }
-
-
-  // If you want to change "isSelected" by CellEditor,
-  /*
-  public void setUserObject(Object obj) {
-    if (obj instanceof Boolean) {
-      setSelected(((Boolean)obj).booleanValue());
-    } else {
-      super.setUserObject(obj);
-    }
-  }
-  */
 
 }
 

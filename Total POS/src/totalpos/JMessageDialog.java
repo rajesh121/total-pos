@@ -39,7 +39,7 @@ public class JMessageDialog extends javax.swing.JDialog {
         }
         
         myMsg.initComponents();
-        myMsg.applyComponentOrientation(parent.getComponentOrientation());
+//        myMsg.applyComponentOrientation(parent.getComponentOrientation());
         myMsg.jscrException.setVisible(false);        
         myMsg.getRootPane().setDefaultButton(myMsg.jcmdOK);
         

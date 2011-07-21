@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * SearchProfile.java
  *
  * Created on 15-jul-2011, 16:27:12
@@ -232,9 +227,9 @@ public class SearchProfile extends javax.swing.JDialog {
     }//GEN-LAST:event_changeDetailsActionPerformed
 
     private void showThisProfile(String p){
-        ShowProfile sp = new ShowProfile(null, true, p);
-        Shared.centerFrame(sp);
-        sp.setVisible(true);
+        ModifyProfile cnte = new ModifyProfile(p);
+        Shared.centerFrame(cnte);
+        cnte.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

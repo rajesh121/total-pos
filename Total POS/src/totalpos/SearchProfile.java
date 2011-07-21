@@ -41,6 +41,9 @@ public class SearchProfile extends javax.swing.JDialog {
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error con la base de datos.",ex);
             msb.show(this);
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar perfiles.",ex);
+            msb.show(this);
         }
 
     }

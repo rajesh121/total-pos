@@ -88,6 +88,10 @@ public class ModifyProfile extends JDialog {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
             msg.show(this);
             return null;
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar menu.",ex);
+            msb.show(this);
+            return null;
         }
     }
 }

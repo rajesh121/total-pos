@@ -42,6 +42,9 @@ public class CheckNode extends DefaultMutableTreeNode {
     } catch (SQLException ex) {
         MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
         msg.show(null);
+    } catch (Exception ex) {
+        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar permisos de perfil.",ex);
+        msb.show(null);
     }
     setSelectionMode(DIG_IN_SELECTION);
     this.profile = profile;
@@ -75,6 +78,9 @@ public class CheckNode extends DefaultMutableTreeNode {
     } catch (SQLException ex) {
         MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
         msg.show(new JDialog());
+    } catch (Exception ex) {
+        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al cambiar permisos de perfil.",ex);
+        msb.show(null);
     }
     
 

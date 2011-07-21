@@ -60,7 +60,7 @@ public class Shared {
         
     }
 
-    public static List<Profile> updateProfiles(JComboBox rCombo, boolean withEmpty) throws SQLException {
+    public static List<Profile> updateProfiles(JComboBox rCombo, boolean withEmpty) throws SQLException, Exception {
 
         List<Profile> profiles = ConnectionDrivers.listProfile("");
 

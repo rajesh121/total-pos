@@ -21,7 +21,7 @@ public class ConnectionDrivers {
 
     protected static ComboPooledDataSource cpds ;
     private static long lastOperationTime = Calendar.getInstance().getTimeInMillis();
-    private static String username = "";
+    public static String username = null;
 
     /** Crea la piscina de conexiones.
      * 
@@ -75,8 +75,9 @@ public class ConnectionDrivers {
      *
      * @return Lista de usuarios
      * @throws SQLException Para problemas de conexión con la base de datos.
+     * @throws Exception
      */
-    protected static List<User> listUsers() throws SQLException{
+    protected static List<User> listUsers() throws SQLException, Exception{
         List<User> ans = new LinkedList<User>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -104,8 +105,9 @@ public class ConnectionDrivers {
      * @return Predecesor.
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
-    protected static Edge getPredecesor(String e) throws SQLException{
+    protected static Edge getPredecesor(String e) throws SQLException, Exception{
 
+        verifyIdle();
         if ( e == null ) {
             return null;
         }
@@ -134,20 +136,10 @@ public class ConnectionDrivers {
      * @param id Identificador del perfil.
      * @param description Descripción del perfil
      * @throws SQLException Para problemas de conexión con la base de datos.
+     * @throws Exception 
      */
     protected static void createProfile(String id, String description) throws SQLException, Exception{
-        if ( Calendar.getInstance().getTimeInMillis() - lastOperationTime > Constants.millisecondToBlock ){
-             MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "El usuario ha permanecido mucho tiempo sin uso. Requiere contraseña.");
-             msg.show(null);
-             PasswordNeeded pn = new PasswordNeeded(null, true, Shared.giveUser(listUsers(), username));
-             Shared.centerFrame(pn);
-             pn.setVisible(true);
-             if ( pn.isPasswordOk() ){
-                 lastOperationTime = Calendar.getInstance().getTimeInMillis();
-             }else{
-                 throw new Exception("No se realizó la operación. Contraseña Incorrecta.");
-             }
-        }
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario( id, descripcion ) values ( ? , ? )");
         stmt.setString(1, id);
@@ -162,7 +154,8 @@ public class ConnectionDrivers {
      * @return Lista de perfiles.
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
-    protected static List<Profile> listProfile(String id) throws SQLException{
+    protected static List<Profile> listProfile(String id) throws SQLException, Exception{
+        verifyIdle();
         List<Profile> ans = new LinkedList<Profile>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -187,7 +180,8 @@ public class ConnectionDrivers {
      * @return Lista de sucesores.
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
-    protected static List<Edge> listEdgesAllowed(String parent, String profile) throws SQLException{
+    protected static List<Edge> listEdgesAllowed(String parent, String profile) throws SQLException, Exception{
+        verifyIdle();
         List<Edge> ans = new LinkedList<Edge>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -216,7 +210,8 @@ public class ConnectionDrivers {
      * @return Lista de Sucesores.
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
-    protected static List<Edge> listEdges(String parent) throws SQLException{
+    protected static List<Edge> listEdges(String parent) throws SQLException, Exception{
+        verifyIdle();
         List<Edge> ans = new LinkedList<Edge>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -239,7 +234,8 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static boolean isAllowed(String profile, String id) throws SQLException{
+    protected static boolean isAllowed(String profile, String id) throws SQLException, Exception{
+        verifyIdle();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select n.id "
@@ -255,7 +251,8 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static void disableMenuProfile(String profile, String id) throws SQLException{
+    protected static void disableMenuProfile(String profile, String id) throws SQLException, Exception{
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario_puede where id_tipo_usuario = ? and id_nodo = ?");
         stmt.setString(1, profile);
@@ -265,7 +262,8 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void enableMenuProfile(String profile, String id) throws SQLException{
+    protected static void enableMenuProfile(String profile, String id) throws SQLException, Exception{
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario_puede(id_tipo_usuario , id_nodo) values ( ? , ? )");
         stmt.setString(1, profile);
@@ -275,7 +273,8 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void setPassword(String user, String password) throws SQLException{
+    protected static void setPassword(String user, String password) throws SQLException, Exception{
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set password = ? where login = ? ");
         stmt.setString(1, password);
@@ -285,7 +284,8 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void createUser(String username, String role) throws SQLException{
+    protected static void createUser(String username, String role) throws SQLException, Exception{
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into usuario"
                 + " ( login , password , tipo_de_usuario_id , bloqueado , nombre ) values ( ? , ? , ? , ? , ?)");
@@ -301,7 +301,8 @@ public class ConnectionDrivers {
 
     public static void changeProperties(String loginT, String nombreT,
             String apellidoT, String roleT,
-            boolean bloqueado, boolean puede , boolean debe) throws SQLException {
+            boolean bloqueado, boolean puede , boolean debe) throws SQLException, Exception {
+        verifyIdle();
         
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set nombre = ? ,"
@@ -320,7 +321,8 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static boolean existsUser(String username) throws SQLException{
+    public static boolean existsUser(String username) throws SQLException, Exception{
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? ");
         pstmt.setString(1, username);
@@ -334,7 +336,8 @@ public class ConnectionDrivers {
         return true;
     }
 
-    public static boolean isLocked(String username) throws SQLException{
+    public static boolean isLocked(String username) throws SQLException, Exception{
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and bloqueado = 1 ");
         pstmt.setString(1, username);
@@ -348,7 +351,8 @@ public class ConnectionDrivers {
         return true;
     }
 
-    public static void lockUser(String username) throws SQLException{
+    public static void lockUser(String username) throws SQLException, Exception{
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set bloqueado = 1 where login = ? ");
         stmt.setString(1, username);
@@ -357,8 +361,14 @@ public class ConnectionDrivers {
     }
 
     static void changeProfileDetails(String prevId, String id, String description) throws SQLException, Exception {
-        if ( prevId.equals(id) ){
-            return; //Caso trivial xD;
+        verifyIdle();
+        if ( prevId.equals(id) ){ //Caso trivial xD;
+            Connection c = ConnectionDrivers.cpds.getConnection();
+            PreparedStatement stmt = c.prepareStatement("update tipo_de_usuario set descripcion = ? where id = ? ");
+            stmt.setString(1, description);
+            stmt.setString(2, id);
+            stmt.executeUpdate();
+            return; 
         }
 
         createProfile(id, description);
@@ -387,13 +397,29 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void mustntChangePassword(String username) throws SQLException{
+    public static void mustntChangePassword(String username) throws SQLException, Exception{
+        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set debeCambiarPassword = 0 where login = ? ");
         stmt.setString(1, username);
         stmt.executeUpdate();
         
         c.close();
+    }
+
+    private static void verifyIdle() throws SQLException, Exception{
+        if ( username != null && Calendar.getInstance().getTimeInMillis() - lastOperationTime > Constants.millisecondToBlock ){
+             MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "El usuario ha permanecido mucho tiempo sin uso. Requiere contraseña.");
+             msg.show(null);
+             PasswordNeeded pn = new PasswordNeeded(null, true, Shared.giveUser(listUsers(), username));
+             Shared.centerFrame(pn);
+             pn.setVisible(true);
+             if ( pn.isPasswordOk() ){
+                 lastOperationTime = Calendar.getInstance().getTimeInMillis();
+             }else{
+                 throw new Exception("No se realizó la operación. Contraseña Incorrecta.");
+             }
+        }
     }
 
 }

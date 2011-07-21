@@ -120,6 +120,9 @@ public class ChangePassword extends javax.swing.JDialog {
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
             msg.show(this);
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear cambiar el password.",ex);
+            msb.show(this);
         }
     }
 

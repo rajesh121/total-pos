@@ -365,6 +365,9 @@ public class ManageUser extends javax.swing.JDialog {
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
+        }catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al cambiar perfil.",ex);
+            msb.show(this);
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
@@ -404,7 +407,12 @@ public class ManageUser extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void updateUsers() throws SQLException {
-        users = ConnectionDrivers.listUsers();
+        try{
+            users = ConnectionDrivers.listUsers();
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar los usuarios.",ex);
+            msb.show(this);
+        }
     }
 
     private void updateList() {
@@ -436,10 +444,13 @@ public class ManageUser extends javax.swing.JDialog {
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar usuarios.",ex);
+            msb.show(this);
         }
     }
 
-    private void updateProfiles() throws SQLException {
+    private void updateProfiles() throws SQLException, Exception {
         profiles = Shared.updateProfiles(roleCombo,false);
     }
 

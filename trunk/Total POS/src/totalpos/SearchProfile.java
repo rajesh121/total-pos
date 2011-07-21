@@ -222,6 +222,7 @@ public class SearchProfile extends javax.swing.JDialog {
             ChangeProfileDetails cpd = new ChangeProfileDetails(null, true, (String)table.getValueAt(table.getSelectedRow(),0), (String)table.getValueAt(table.getSelectedRow(),1));
             Shared.centerFrame(cpd);
             cpd.setVisible(true);
+            update();
         }else{
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un perfil.");
             msb.show(this);

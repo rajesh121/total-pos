@@ -220,6 +220,7 @@ public class MainWindows extends javax.swing.JFrame {
             Shared.centerFrame(l);
             Shared.maximize(l);
             l.setVisible(true);
+            ConnectionDrivers.username = null;
 
             setVisible(false);
             dispose();

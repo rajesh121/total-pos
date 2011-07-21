@@ -329,7 +329,6 @@ public class ConnectionDrivers {
     }
 
     public static boolean existsUser(String username) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? ");
         pstmt.setString(1, username);
@@ -344,7 +343,6 @@ public class ConnectionDrivers {
     }
 
     public static boolean isLocked(String username) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and bloqueado = 1 ");
         pstmt.setString(1, username);
@@ -414,7 +412,7 @@ public class ConnectionDrivers {
     }
 
     private static void verifyIdle() throws SQLException, Exception{
-        if ( username != null && Calendar.getInstance().getTimeInMillis() - lastOperationTime > Constants.millisecondToBlock ){
+        if ( username != null && Calendar.getInstance().getTimeInMillis() - lastOperationTime > Long.valueOf(Shared.getConfig("idleTime")) ){
              MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "El usuario ha permanecido mucho tiempo sin uso. Requiere contraseña.");
              msg.show(null);
              PasswordNeeded pn = new PasswordNeeded(null, true, Shared.giveUser(listUsers(), username));
@@ -430,13 +428,14 @@ public class ConnectionDrivers {
         }
     }
 
-    protected static void initializeConfig(  ){
+    protected static void initializeConfig(){
         try {
+            Shared.config.clear();
             Connection c = ConnectionDrivers.cpds.getConnection();
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("select `Key` , `Value` from configuracion");
             while (rs.next()) {
-                Shared.config.put(rs.getString("`Key`"), rs.getString("`Value`"));
+                Shared.config.put(rs.getString("Key"), rs.getString("Value"));
             }
             c.close();
         } catch (SQLException ex) {
@@ -445,4 +444,13 @@ public class ConnectionDrivers {
         }
     }
 
+    protected static void saveConfig(String k, String v) throws SQLException, Exception{
+        verifyIdle();
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update configuracion set `value` = ? where `key` = ? ");
+        stmt.setString(1, v);
+        stmt.setString(2, k);
+        stmt.executeUpdate();
+        c.close();
+    }
 }

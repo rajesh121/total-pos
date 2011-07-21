@@ -19,5 +19,4 @@ public class Constants {
     public static final String wrongPasswordMsg = "Contraseña errónea.";
     public static final String userLocked = "El usuario ha sido bloqueado.";
 
-    public static final long millisecondToBlock = 15000;
 }

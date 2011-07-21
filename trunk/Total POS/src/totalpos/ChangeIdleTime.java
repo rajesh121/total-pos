@@ -7,6 +7,10 @@
 package totalpos;
 
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *
@@ -14,10 +18,23 @@ import java.awt.event.KeyEvent;
  */
 public class ChangeIdleTime extends javax.swing.JDialog {
 
-    /** Creates new form ChangeIdleTime */
+    public boolean isOk = false;
+    /** Creates new form ChangeIdleTime
+     * @param parent
+     * @param modal
+     */
     public ChangeIdleTime(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        String c = Shared.getConfig("idleTime");
+        if ( c == null ) {
+            return;
+        }
+
+        this.idleTimeTextField.setText( c );
+
+        isOk = true;
     }
 
     /** This method is called from within the constructor to
@@ -34,8 +51,9 @@ public class ChangeIdleTime extends javax.swing.JDialog {
         secondsLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(Constants.appName);
 
-        titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14));
         titleLabel.setText("Cambiar tiempo de autobloqueo");
         titleLabel.setName("titleLabel"); // NOI18N
 
@@ -80,7 +98,36 @@ public class ChangeIdleTime extends javax.swing.JDialog {
 
     private void idleTimeTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idleTimeTextFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            
+            try{
+                long t = Long.valueOf(idleTimeTextField.getText());
+                if ( t <= 10000 ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo no puede ser menor a 10 segundos.");
+                    msb.show(null);
+                    this.idleTimeTextField.setText( Shared.getConfig("idleTime") );
+                }else{
+                    try {
+                        ConnectionDrivers.saveConfig("idleTime", t + "");
+                        MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
+                        msg.show(this);
+                        ConnectionDrivers.initializeConfig();
+                        this.dispose();
+                    } catch (SQLException ex) {
+                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+                        msg.show(this);
+                    } catch (Exception ex) {
+                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
+                        msg.show(this);
+                        Shared.reload();
+                    }
+                }
+            } catch ( NumberFormatException ex ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe tener un formato válido.");
+                msb.show(null);
+                this.idleTimeTextField.setText( Shared.getConfig("idleTime") );
+            }
+        }
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
         }
     }//GEN-LAST:event_idleTimeTextFieldKeyPressed
 

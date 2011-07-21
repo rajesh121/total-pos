@@ -147,6 +147,7 @@ public class Login extends javax.swing.JFrame {
                                 (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
                                 ex1);
                     msg.show(null);
+                    Shared.reload();
                 }
             }
 

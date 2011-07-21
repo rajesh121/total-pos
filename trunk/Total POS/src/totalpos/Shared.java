@@ -16,6 +16,7 @@ import javax.swing.JFrame;
  */
 public class Shared {
 
+    public static TreeMap<String,String> config = new TreeMap<String, String>();
 
     protected static void centerFrame(javax.swing.JFrame frame){
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -98,6 +99,15 @@ public class Shared {
     public static void userInsertedPasswordOk(String username){
         TreeMap<String,Integer> tries = Login.tries;
         tries.put(username, 0);
+    }
+
+    protected static void reload(){
+        Login.myMainWindows.dispose();
+        Login login = new Login();
+        Shared.centerFrame(login);
+        login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        login.setVisible(true);
+        ConnectionDrivers.username = null;
     }
 
 }

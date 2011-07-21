@@ -142,6 +142,7 @@ public class CreateProfile extends javax.swing.JDialog {
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear perfil.",ex);
                 msb.show(this);
+                Shared.reload();
             }
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.setVisible(false);

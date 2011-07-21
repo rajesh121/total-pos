@@ -104,6 +104,7 @@ public class MainWindows extends javax.swing.JFrame {
         } catch (Exception ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
             msg.show(this);
+            Shared.reload();
             return null;
         }
     }
@@ -132,15 +133,22 @@ public class MainWindows extends javax.swing.JFrame {
                 cp.setVisible(true);
             }else if ( ed.getFuncion().equals("searchProfile") ) {
                 SearchProfile sp = new SearchProfile(mainWindows, enabled);
-                Shared.centerFrame(sp);
-                sp.setVisible(true);
+                if ( sp.isOk ){
+                    Shared.centerFrame(sp);
+                    sp.setVisible(true);
+                }
             }else if ( ed.getFuncion().equals("manageUser") ){
                 ManageUser mu = new ManageUser(mainWindows, true);
-                Shared.centerFrame(mu);
-                mu.setVisible(true);
+                if ( mu.isOk ){
+                    Shared.centerFrame(mu);
+                    mu.setVisible(true);
+                }
             } else if (ed.getFuncion().isEmpty()) {
-                mainWindows.navegatorStack.add(createMenu(ed));
-                mainWindows.showLast();
+                JFlowPanel t = createMenu(ed);
+                if ( t != null ){
+                    mainWindows.navegatorStack.add(t);
+                    mainWindows.showLast();
+                }
             }else{
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Funcion desconocida " + ed.getFuncion());
                 msb.show(mainWindows);

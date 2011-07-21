@@ -45,6 +45,7 @@ public class CheckNode extends DefaultMutableTreeNode {
     } catch (Exception ex) {
         MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar permisos de perfil.",ex);
         msb.show(null);
+        Shared.reload();
     }
     setSelectionMode(DIG_IN_SELECTION);
     this.profile = profile;
@@ -81,6 +82,7 @@ public class CheckNode extends DefaultMutableTreeNode {
     } catch (Exception ex) {
         MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al cambiar permisos de perfil.",ex);
         msb.show(null);
+        Shared.reload();
     }
     
 

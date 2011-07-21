@@ -19,6 +19,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class SearchProfile extends javax.swing.JDialog {
 
+    public boolean isOk = false;
+
     /** Creates new form SearchProfile */
     public SearchProfile(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -38,12 +40,14 @@ public class SearchProfile extends javax.swing.JDialog {
                 model.addRow(s);
             }
 
+            isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error con la base de datos.",ex);
             msb.show(this);
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar perfiles.",ex);
             msb.show(this);
+            Shared.reload();
         }
 
     }

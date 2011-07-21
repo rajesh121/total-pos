@@ -19,6 +19,7 @@ public class ManageUser extends javax.swing.JDialog {
     private List<Profile> profiles;
     private int selectedUser = -1;
     public String newUserId = null;
+    public boolean isOk = false;
 
     /** Creates new form ManageUser
      * @param parent Padre de la nueva ventana.
@@ -333,6 +334,8 @@ public class ManageUser extends javax.swing.JDialog {
         bloqueadoCheck.setSelected(u.getBloqueado());
         mustChangePasswordCheck.setSelected(u.getDebeCambiarPassword());
         canChangePasswordCheck.setSelected(u.getPuedeCambiarPassword());
+        newPassword.setText("");
+        newPassword2.setText("");
         
     }//GEN-LAST:event_userListValueChanged
 
@@ -368,6 +371,7 @@ public class ManageUser extends javax.swing.JDialog {
         }catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al cambiar perfil.",ex);
             msb.show(this);
+            Shared.reload();
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
@@ -412,6 +416,7 @@ public class ManageUser extends javax.swing.JDialog {
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar los usuarios.",ex);
             msb.show(this);
+            Shared.reload();
         }
     }
 
@@ -441,12 +446,14 @@ public class ManageUser extends javax.swing.JDialog {
                         break;
                     }
             }
+            isOk = true;
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar usuarios.",ex);
             msb.show(this);
+            Shared.reload();
         }
     }
 

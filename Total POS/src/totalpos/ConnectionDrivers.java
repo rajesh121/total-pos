@@ -425,6 +425,8 @@ public class ConnectionDrivers {
              }else{
                  throw new Exception("No se realizó la operación. Contraseña Incorrecta.");
              }
+        }else{
+            lastOperationTime = Calendar.getInstance().getTimeInMillis();
         }
     }
 

@@ -42,6 +42,7 @@ public class NewUser extends javax.swing.JDialog {
         }  catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear usuario.",ex);
             msb.show(this);
+            this.dispose();
             Shared.reload();
         }
 

@@ -19,6 +19,7 @@ public class CheckNode extends DefaultMutableTreeNode {
   protected int selectionMode;
   protected boolean isSelected;
   private String profile;
+  public boolean isOk = false;
 
   public CheckNode(String profile) {
     this(null,profile);
@@ -39,6 +40,7 @@ public class CheckNode extends DefaultMutableTreeNode {
 
         String name = matcher.group(1);
         this.isSelected = ConnectionDrivers.isAllowed(profile, name);
+        isOk = true;
     } catch (SQLException ex) {
         MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
         msg.show(null);

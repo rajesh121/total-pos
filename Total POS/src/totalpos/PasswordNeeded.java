@@ -104,13 +104,8 @@ public class PasswordNeeded extends javax.swing.JDialog {
                                 (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
                                 ex1);
                     msg.show(null);
-                    Login.myMainWindows.dispose();
                     this.dispose();
-                    Login login = new Login();
-                    Shared.centerFrame(login);
-                    login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-                    login.setVisible(true);
-                    ConnectionDrivers.username = null;
+                    Shared.reload();
                 }
             }else{
                 msg = new MessageBox(MessageBox.SGN_DANGER, "Error." , ex);

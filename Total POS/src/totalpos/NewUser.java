@@ -42,6 +42,7 @@ public class NewUser extends javax.swing.JDialog {
         }  catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear usuario.",ex);
             msb.show(this);
+            Shared.reload();
         }
 
 
@@ -184,6 +185,7 @@ public class NewUser extends javax.swing.JDialog {
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear el nuevo usuario.",ex);
             msb.show(this);
+            Shared.reload();
         }
     }
 

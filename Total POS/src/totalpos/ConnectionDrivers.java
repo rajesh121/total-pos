@@ -11,7 +11,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
+import sun.security.krb5.Config;
 
 /**
  *
@@ -67,6 +70,7 @@ public class ConnectionDrivers {
         }
 
         username = user.toString();
+        lastOperationTime = Calendar.getInstance().getTimeInMillis();
 
         c.close();
     }
@@ -122,13 +126,16 @@ public class ConnectionDrivers {
             c.close();
             return null;
         }
-        c.close();
 
-        return new Edge(rs.getString("id"),
+        Edge ee = new Edge(rs.getString("id"),
                     rs.getString("nombre"),
                     rs.getString("predecesor"),
                     rs.getString("icono"),
                     rs.getString("funcion"));
+
+        c.close();
+
+        return ee;
     }
 
     /**
@@ -419,6 +426,21 @@ public class ConnectionDrivers {
              }else{
                  throw new Exception("No se realizó la operación. Contraseña Incorrecta.");
              }
+        }
+    }
+
+    protected static void initializeConfig(  ){
+        try {
+            Connection c = ConnectionDrivers.cpds.getConnection();
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("select `Key` , `Value` from configuracion");
+            while (rs.next()) {
+                Shared.config.put(rs.getString("`Key`"), rs.getString("`Value`"));
+            }
+            c.close();
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Error con la base de datos.", ex);
+            msb.show(null);
         }
     }
 

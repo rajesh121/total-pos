@@ -91,6 +91,7 @@ public class ModifyProfile extends JDialog {
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar menu.",ex);
             msb.show(this);
+            Shared.reload();
             return null;
         }
     }

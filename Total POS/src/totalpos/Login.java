@@ -42,7 +42,6 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
-        setResizable(false);
 
         loginText.setName("loginText"); // NOI18N
         loginText.addKeyListener(new java.awt.event.KeyAdapter() {

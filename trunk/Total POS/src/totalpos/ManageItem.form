@@ -57,9 +57,9 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="filterPanel" min="-2" pref="132" max="-2" attributes="0"/>
+                      <Component id="filterPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="279" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="302" max="32767" attributes="0"/>
                   </Group>
                   <Component id="imageLabel" pref="417" max="32767" attributes="0"/>
               </Group>
@@ -156,7 +156,6 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jLabel2" alignment="1" pref="80" max="32767" attributes="1"/>
                       <Component id="jLabel3" alignment="0" pref="80" max="32767" attributes="1"/>
-                      <Component id="jLabel4" alignment="0" pref="80" max="32767" attributes="1"/>
                       <Component id="codigoLabel" alignment="0" min="-2" pref="80" max="-2" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -164,7 +163,6 @@
                       <Component id="codigoField" alignment="0" pref="393" max="32767" attributes="0"/>
                       <Component id="modeloField" alignment="0" pref="393" max="32767" attributes="0"/>
                       <Component id="descriptionField" alignment="1" pref="393" max="32767" attributes="0"/>
-                      <Component id="priceField" pref="393" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -187,12 +185,7 @@
                       <Component id="descriptionField" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                      <Component id="priceField" alignment="0" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="8" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -202,6 +195,9 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="codigoField" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="codigoFieldKeyPressed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="codigoLabel">
           <Properties>
@@ -221,12 +217,6 @@
             <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel4">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Precio"/>
-            <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JTextField" name="modeloField">
           <Properties>
             <Property name="name" type="java.lang.String" value="modeloField" noResource="true"/>
@@ -235,11 +225,6 @@
         <Component class="javax.swing.JTextField" name="descriptionField">
           <Properties>
             <Property name="name" type="java.lang.String" value="descriptionField" noResource="true"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="priceField">
-          <Properties>
-            <Property name="name" type="java.lang.String" value="priceField" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

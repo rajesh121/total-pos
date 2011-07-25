@@ -453,4 +453,30 @@ public class ConnectionDrivers {
         stmt.executeUpdate();
         c.close();
     }
+
+    protected static List<Item> listItems(String code, String description, String model) throws SQLException, Exception{
+        verifyIdle();
+        List<Item> ans = new LinkedList<Item>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo, descripcion, modelo, precio, imagen from articulo "
+                + "where codigo like ? and descripcion like ? and modelo like ? ");
+        stmt.setString(1, "%" + code + "%");
+        stmt.setString(2, "%" + description + "%");
+        stmt.setString(3, "%" + model + "%");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(new Item(
+                    rs.getString("codigo"),
+                    rs.getString("descripcion"),
+                    rs.getString("modelo"),
+                    rs.getDouble("precio"),
+                    rs.getString("imagen")));
+        }
+        c.close();
+
+        return ans;
+    }
+
 }

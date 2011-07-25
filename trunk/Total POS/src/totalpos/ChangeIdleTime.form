@@ -74,7 +74,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="secondsLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Segundos."/>
+        <Property name="text" type="java.lang.String" value="Milisegundos."/>
         <Property name="name" type="java.lang.String" value="secondsLabel" noResource="true"/>
       </Properties>
     </Component>

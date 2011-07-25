@@ -454,12 +454,35 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static List<Item> listItems(String code, String description, String model) throws SQLException, Exception{
+    private static List<Cost> listCosts(String code) throws SQLException{
+        List<Cost> ans = new LinkedList<Cost>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement( "select monto , fecha from costo where codigo_de_articulo = ? " );
+        stmt.setString(1, code);
+        stmt.executeUpdate();
+
+        return ans;
+    }
+
+    private static List<Price> listPrices(String code) throws SQLException{
+        List<Price> ans = new LinkedList<Price>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement( "select monto , fecha from precio where codigo_de_articulo = ? " );
+        stmt.setString(1, code);
+        stmt.executeUpdate();
+
+        return ans;
+    }
+
+    /*protected static List<Item> listItems(String barCode, String code, String description, String model) throws SQLException, Exception{
         verifyIdle();
         List<Item> ans = new LinkedList<Item>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select codigo, descripcion, modelo, precio, imagen from articulo "
+        PreparedStatement stmt = c.prepareStatement("select codigo, descripcion, fecha_registro, marca, sector,"
+                + " precio, imagen from articulo "
                 + "where codigo like ? and descripcion like ? and modelo like ? ");
         stmt.setString(1, "%" + code + "%");
         stmt.setString(2, "%" + description + "%");
@@ -477,6 +500,6 @@ public class ConnectionDrivers {
         c.close();
 
         return ans;
-    }
+    }*/
 
 }

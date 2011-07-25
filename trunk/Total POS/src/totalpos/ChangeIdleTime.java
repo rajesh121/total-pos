@@ -64,7 +64,7 @@ public class ChangeIdleTime extends javax.swing.JDialog {
             }
         });
 
-        secondsLabel.setText("Segundos.");
+        secondsLabel.setText("Milisegundos.");
         secondsLabel.setName("secondsLabel"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

@@ -29,7 +29,7 @@ public class ManageItem extends javax.swing.JDialog {
         updateAll();
     }
 
-    private void updateItems(){
+    /*private void updateItems(){
         try {
             items = ConnectionDrivers.listItems(
                     codigoField.getText() , descriptionField.getText() , modeloField.getText() );
@@ -45,7 +45,7 @@ public class ManageItem extends javax.swing.JDialog {
             Shared.reload();
         }
         
-    }
+    }*/
 
     private void updateTable(){
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
@@ -245,7 +245,7 @@ public class ManageItem extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {
-        updateItems();
+        //updateItems();
         updateTable();
         
         isOk = true;

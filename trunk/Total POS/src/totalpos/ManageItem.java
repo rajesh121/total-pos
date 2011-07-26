@@ -53,7 +53,7 @@ public class ManageItem extends javax.swing.JDialog {
         model.setRowCount(0);
 
         for (Item item : items) {
-            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),item.getLastPrice().toString()};
+            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),item.getLastPrice().toString(),item.getDescuento()};
             model.addRow(s);
         }
         
@@ -94,17 +94,17 @@ public class ManageItem extends javax.swing.JDialog {
 
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Actual"
+                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Actual", "Descuento"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

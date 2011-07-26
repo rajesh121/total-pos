@@ -12,10 +12,16 @@ import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
@@ -26,7 +32,7 @@ import javax.swing.SwingConstants;
 public class MainWindows extends javax.swing.JFrame {
 
     private User user;
-    protected List<JFlowPanel> navegatorStack;
+    private TreeMap< String , Set<Character> > mnemonics = new TreeMap<String, Set<Character> >();
 
     /** Creates new form MainWindows
      * @param user 
@@ -34,84 +40,62 @@ public class MainWindows extends javax.swing.JFrame {
     public MainWindows(User user) {
         initComponents();
         this.user = user;
-        navegatorStack = new LinkedList<JFlowPanel>();
 
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         
-        navegatorStack.add(createMenu(new Edge("root", "root", null, "")));
-        showLast();
+        createMenu(menuBar,"root");
+        //showLast();
     }
 
-    private JFlowPanel createMenu(Edge root){
+    private void createMenu(JComponent menu, String root){
         try {
-            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root.getId(), user.getPerfil());
-
-            scrollPanel.getViewport().setView(null);
-            JFlowPanel jPeople = new JFlowPanel();
-            jPeople.applyComponentOrientation(getComponentOrientation());
+            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root, user.getPerfil());
 
             for (int i = 0; i < edges.size(); i++) {
 
                 Edge ed = edges.get(i);
-
-                JButton btn = new JButton(new AppUserAction(ed,this));
-                btn.applyComponentOrientation(getComponentOrientation());
-                btn.setFocusPainted(false);
-                btn.setFocusable(false);
-                btn.setRequestFocusEnabled(false);
-                btn.setHorizontalAlignment(SwingConstants.CENTER);
-                btn.setMaximumSize(new Dimension(150, 50));
-                btn.setPreferredSize(new Dimension(150, 50));
-                btn.setMinimumSize(new Dimension(150, 50));
-
-                jPeople.add(btn);
-            }
-            JButton btn = new JButton();
-            btn.applyComponentOrientation(getComponentOrientation());
-            btn.setFocusPainted(false);
-            btn.setFocusable(false);
-            btn.setRequestFocusEnabled(false);
-            btn.setHorizontalAlignment(SwingConstants.CENTER);
-            btn.setMaximumSize(new Dimension(150, 50));
-            btn.setPreferredSize(new Dimension(150, 50));
-            btn.setMinimumSize(new Dimension(150, 50));
-
-            if ( ! root.getId().equals("root")){
-                btn.setText("Atras");
-                btn.addActionListener(new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
-                        navegatorStack.remove(navegatorStack.size()-1);
-                        showLast();
-                    }
-                });
-                jPeople.add(btn);
-            }else{
-                btn.setText("Salir");
-                btn.addActionListener(new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
-                        logout();
-                    }
-                });
-                jPeople.add(btn);
+                JComponent child = null;
+                if ( ed.getFuncion().equals("menu") ){
+                    child = new JMenu(new AppUserAction(ed,this));
+                }else{
+                    child = new JMenuItem(new AppUserAction(ed,this));
+                }
+                menu.add(child);
+                createMenu(child, ed.getId());
             }
 
-            return jPeople;
+            
+            /*btn.setText("Salir");
+            btn.addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    logout();
+                }
+            });
+            jPeople.add(btn);*/
 
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
             msg.show(this);
-            return null;
         } catch (Exception ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
             msg.show(this);
             this.dispose();
             Shared.reload();
-            return null;
         }
     }
 
-    private void showLast(){
-        scrollPanel.getViewport().setView(navegatorStack.get(navegatorStack.size()-1));
+    private int giveMeMnemonic(String nameMenu, String name){
+        for ( char c : name.toCharArray() ) {
+            if (!( mnemonics.containsKey(nameMenu) && mnemonics.get(nameMenu).contains(c) )) {
+                if ( !mnemonics.containsKey(nameMenu) ){
+                    mnemonics.put(nameMenu, new TreeSet<Character>());
+                }
+                mnemonics.get(nameMenu).add(c);
+                return Character.toLowerCase(c)-'a';
+            }
+        }
+        return 0;
     }
 
     private class AppUserAction extends AbstractAction {
@@ -124,7 +108,8 @@ public class MainWindows extends javax.swing.JFrame {
             this.mainWindows = aThis;
 
             putValue(Action.NAME, ed.getNombre());
-            //putValue(Action.MNEMONIC_KEY,  new Integer(java.awt.event.KeyEvent.VK_A));
+            putValue(Action.MNEMONIC_KEY,
+                    new Integer(java.awt.event.KeyEvent.VK_A+ giveMeMnemonic(ed.getPredecesor(), ed.getNombre()) ));
         }
 
         public void actionPerformed(ActionEvent evt) {
@@ -157,11 +142,8 @@ public class MainWindows extends javax.swing.JFrame {
                     mi.setVisible(true);
                 }
             } else if (ed.getFuncion().isEmpty()) {
-                JFlowPanel t = createMenu(ed);
-                if ( t != null ){
-                    mainWindows.navegatorStack.add(t);
-                    mainWindows.showLast();
-                }
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
+                msg.show(mainWindows);
             }else{
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Funcion desconocida " + ed.getFuncion());
                 msb.show(mainWindows);
@@ -178,7 +160,7 @@ public class MainWindows extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scrollPanel = new javax.swing.JScrollPane();
+        menuBar = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
@@ -189,48 +171,26 @@ public class MainWindows extends javax.swing.JFrame {
             }
         });
 
-        scrollPanel.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPanel.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPanel.setName("scrollPanel"); // NOI18N
-        scrollPanel.setPreferredSize(new java.awt.Dimension(510, 118));
-        scrollPanel.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                scrollPanelKeyPressed(evt);
-            }
-        });
+        menuBar.setName("menuBar"); // NOI18N
+        setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 752, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 623, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void scrollPanelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_scrollPanelKeyPressed
-
-    }//GEN-LAST:event_scrollPanelKeyPressed
-
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            if ( navegatorStack.size() > 1 ){
-                navegatorStack.remove(navegatorStack.size()-1);
-                showLast();
-            }else{
-                logout();
-            }
+            logout();
         }
     }//GEN-LAST:event_formKeyPressed
 
@@ -248,7 +208,7 @@ public class MainWindows extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane scrollPanel;
+    private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -25,8 +25,9 @@ public class Item {
     private List<String> barcodes;
     private boolean status;
     private String imageAddr;
+    private String descuento;
 
-    public Item(String code, String description, Date registerDate, String mark, String sector, String sublineCode, String mainBarcode, String model, String sellUnits, String buyUnits, int currentStock, List<Price> price, List<Cost> cost, List<String> barcodes, boolean status, String imageAddr) {
+    public Item(String code, String description, Date registerDate, String mark, String sector, String sublineCode, String mainBarcode, String model, String sellUnits, String buyUnits, int currentStock, List<Price> price, List<Cost> cost, List<String> barcodes, boolean status, String imageAddr, String descuento) {
         this.code = code;
         this.description = description;
         this.registerDate = registerDate;
@@ -43,6 +44,7 @@ public class Item {
         this.barcodes = barcodes;
         this.status = status;
         this.imageAddr = imageAddr;
+        this.descuento = descuento;
     }
 
     public List<String> getBarcodes() {
@@ -118,6 +120,10 @@ public class Item {
         }
 
         return ans;
+    }
+
+    public String getDescuento() {
+        return descuento;
     }
 
 }

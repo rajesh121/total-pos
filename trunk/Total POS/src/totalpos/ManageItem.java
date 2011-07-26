@@ -29,9 +29,9 @@ public class ManageItem extends javax.swing.JDialog {
         updateAll();
     }
 
-    /*private void updateItems(){
+    private void updateItems(){
         try {
-            items = ConnectionDrivers.listItems(
+            items = ConnectionDrivers.listItems(barCodeField.getText(),
                     codigoField.getText() , descriptionField.getText() , modeloField.getText() );
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error con la base de datos.",ex);
@@ -45,7 +45,7 @@ public class ManageItem extends javax.swing.JDialog {
             Shared.reload();
         }
         
-    }*/
+    }
 
     private void updateTable(){
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
@@ -53,7 +53,7 @@ public class ManageItem extends javax.swing.JDialog {
         model.setRowCount(0);
 
         for (Item item : items) {
-            String s[] = {item.getCode(),item.getDescription(),item.getModel(),item.getPrice()+""};
+            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),item.getLastPrice().toString()};
             model.addRow(s);
         }
         
@@ -78,14 +78,15 @@ public class ManageItem extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         modeloField = new javax.swing.JTextField();
         descriptionField = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        barCodeField = new javax.swing.JTextField();
         imageLabel = new javax.swing.JLabel();
-        changePicture = new javax.swing.JButton();
         closeWindows = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18));
         jLabel1.setText("Artículos");
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -93,17 +94,17 @@ public class ManageItem extends javax.swing.JDialog {
 
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Codigo", "Modelo", "Descripción", "Precio"
+                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Actual"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -134,8 +135,31 @@ public class ManageItem extends javax.swing.JDialog {
         jLabel3.setName("jLabel3"); // NOI18N
 
         modeloField.setName("modeloField"); // NOI18N
+        modeloField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                modeloFieldKeyPressed(evt);
+            }
+        });
 
         descriptionField.setName("descriptionField"); // NOI18N
+        descriptionField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                descriptionFieldKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                descriptionFieldKeyReleased(evt);
+            }
+        });
+
+        jLabel4.setText("Código de Barra");
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        barCodeField.setName("barCodeField"); // NOI18N
+        barCodeField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                barCodeFieldKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout filterPanelLayout = new javax.swing.GroupLayout(filterPanel);
         filterPanel.setLayout(filterPanelLayout);
@@ -144,14 +168,16 @@ public class ManageItem extends javax.swing.JDialog {
             .addGroup(filterPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                    .addComponent(codigoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+                    .addComponent(codigoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(codigoField, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
-                    .addComponent(modeloField, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
-                    .addComponent(descriptionField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE))
+                    .addComponent(barCodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                    .addComponent(codigoField, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                    .addComponent(modeloField, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                    .addComponent(descriptionField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE))
                 .addContainerGap())
         );
         filterPanelLayout.setVerticalGroup(
@@ -168,16 +194,22 @@ public class ManageItem extends javax.swing.JDialog {
                 .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(descriptionField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(barCodeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         imageLabel.setName("imageLabel"); // NOI18N
 
-        changePicture.setText("Cambiar Imagen");
-        changePicture.setName("changePicture"); // NOI18N
-
         closeWindows.setText("Cerrar");
         closeWindows.setName("closeWindows"); // NOI18N
+        closeWindows.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeWindowsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -188,14 +220,11 @@ public class ManageItem extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
                             .addComponent(filterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(changePicture)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(closeWindows, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(closeWindows, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(imageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLabel1))
                 .addContainerGap())
@@ -210,12 +239,10 @@ public class ManageItem extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(filterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
-                    .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
+                    .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(closeWindows)
-                    .addComponent(changePicture))
+                .addComponent(closeWindows)
                 .addContainerGap())
         );
 
@@ -225,11 +252,45 @@ public class ManageItem extends javax.swing.JDialog {
     private void codigoFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_codigoFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             updateAll();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
         }
     }//GEN-LAST:event_codigoFieldKeyPressed
 
+    private void closeWindowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeWindowsActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_closeWindowsActionPerformed
+
+    private void modeloFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_modeloFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            updateAll();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_modeloFieldKeyPressed
+
+    private void descriptionFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionFieldKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_descriptionFieldKeyReleased
+
+    private void descriptionFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            updateAll();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_descriptionFieldKeyPressed
+
+    private void barCodeFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_barCodeFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            updateAll();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_barCodeFieldKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton changePicture;
+    private javax.swing.JTextField barCodeField;
     private javax.swing.JButton closeWindows;
     private javax.swing.JTextField codigoField;
     private javax.swing.JLabel codigoLabel;
@@ -240,12 +301,13 @@ public class ManageItem extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField modeloField;
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {
-        //updateItems();
+        updateItems();
         updateTable();
         
         isOk = true;

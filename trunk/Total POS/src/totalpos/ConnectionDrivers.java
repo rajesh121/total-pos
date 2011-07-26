@@ -460,7 +460,12 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement( "select monto , fecha from costo where codigo_de_articulo = ? " );
         stmt.setString(1, code);
-        stmt.executeUpdate();
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            ans.add(new Cost(rs.getDate("fecha"), rs.getDouble("monto")));
+        }
+        c.close();
 
         return ans;
     }
@@ -471,35 +476,73 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement( "select monto , fecha from precio where codigo_de_articulo = ? " );
         stmt.setString(1, code);
-        stmt.executeUpdate();
-
-        return ans;
-    }
-
-    /*protected static List<Item> listItems(String barCode, String code, String description, String model) throws SQLException, Exception{
-        verifyIdle();
-        List<Item> ans = new LinkedList<Item>();
-
-        Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select codigo, descripcion, fecha_registro, marca, sector,"
-                + " precio, imagen from articulo "
-                + "where codigo like ? and descripcion like ? and modelo like ? ");
-        stmt.setString(1, "%" + code + "%");
-        stmt.setString(2, "%" + description + "%");
-        stmt.setString(3, "%" + model + "%");
         ResultSet rs = stmt.executeQuery();
 
-        while ( rs.next() ){
-            ans.add(new Item(
-                    rs.getString("codigo"),
-                    rs.getString("descripcion"),
-                    rs.getString("modelo"),
-                    rs.getDouble("precio"),
-                    rs.getString("imagen")));
+        while (rs.next()) {
+            ans.add(new Price(rs.getDate("fecha"), rs.getDouble("monto")));
         }
         c.close();
 
         return ans;
-    }*/
+    }
+
+    private static List<String> listBarcodes(String code) throws SQLException{
+        List<String> ans = new LinkedList<String>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement( "select codigo_de_barras from codigo_de_barras where codigo_de_articulo = ? " );
+        stmt.setString(1, code);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            ans.add(rs.getString("codigo_de_barras"));
+        }
+        c.close();
+
+        return ans;
+    }
+
+    protected static List<Item> listItems(String barCode, String code, String description, String model) throws SQLException, Exception{
+        verifyIdle();
+        List<Item> ans = new LinkedList<Item>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen "
+                + "from articulo a , codigo_de_barras c "
+                + "where a.codigo like ? and a.descripcion like ? and a.modelo like ? and c.codigo_de_articulo = a.codigo "
+                + "and c.codigo_de_barras like ? ");
+        stmt.setString(1, "%" + code + "%");
+        stmt.setString(2, "%" + description + "%");
+        stmt.setString(3, "%" + model + "%");
+        stmt.setString(4, "%" + barCode + "%");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Item(
+                        rs.getString("codigo"),
+                        rs.getString("descripcion"),
+                        rs.getDate("fecha_registro"),
+                        rs.getString("marca"),
+                        rs.getString("sector"),
+                        rs.getString("codigo_sublinea"),
+                        rs.getString("codigo_de_barras"),
+                        rs.getString("modelo"),
+                        rs.getString("unidad_venta"),
+                        rs.getString("unidad_compra"),
+                        rs.getInt("existencia_actual"),
+                        listPrices(rs.getString("codigo")),
+                        listCosts(rs.getString("codigo")),
+                        listBarcodes(rs.getString("codigo")),
+                        rs.getBoolean("bloqueado"),
+                        rs.getString("imagen")
+                        )
+                    );
+        }
+        c.close();
+
+        return ans;
+    }
 
 }

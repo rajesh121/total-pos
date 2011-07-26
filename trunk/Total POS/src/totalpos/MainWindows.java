@@ -150,6 +150,12 @@ public class MainWindows extends javax.swing.JFrame {
                     Shared.centerFrame(cit);
                     cit.setVisible(true);
                 }
+            } else if ( ed.getFuncion().equals("manageItem") ) {
+                ManageItem mi = new ManageItem(mainWindows, true);
+                if( mi.isOk ){
+                    Shared.centerFrame(mi);
+                    mi.setVisible(true);
+                }
             } else if (ed.getFuncion().isEmpty()) {
                 JFlowPanel t = createMenu(ed);
                 if ( t != null ){

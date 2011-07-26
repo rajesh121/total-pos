@@ -109,4 +109,15 @@ public class Item {
         return sublineCode;
     }
 
+    public Price getLastPrice(){
+        assert(price.size() > 0);
+        Price ans = new Price(price.get(0));
+
+        for (Price p : price) {
+            ans = p.newest(ans);
+        }
+
+        return ans;
+    }
+
 }

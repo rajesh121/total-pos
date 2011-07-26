@@ -29,5 +29,10 @@ public class Cost {
         }
         return this;
     }
-    
+
+    @Override
+    public String toString() {
+        return quant + "";
+    }
+
 }

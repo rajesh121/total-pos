@@ -30,16 +30,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jScrollPane1" pref="509" max="32767" attributes="1"/>
+                          <Component id="jScrollPane1" pref="680" max="32767" attributes="1"/>
                           <Component id="filterPanel" alignment="1" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="changePicture" min="-2" max="-2" attributes="1"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="closeWindows" min="-2" pref="118" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="closeWindows" min="-2" pref="118" max="-2" attributes="0"/>
                           <Component id="imageLabel" min="-2" pref="450" max="-2" attributes="1"/>
                       </Group>
                   </Group>
@@ -59,15 +55,12 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="filterPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="302" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="469" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="imageLabel" pref="417" max="32767" attributes="0"/>
+                  <Component id="imageLabel" pref="610" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="closeWindows" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="changePicture" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="closeWindows" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -76,7 +69,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="18" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Art&#xed;culos"/>
@@ -96,15 +89,27 @@
         <Component class="javax.swing.JTable" name="itemTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="4" rowCount="4">
-                <Column editable="false" title="Codigo" type="java.lang.Object"/>
-                <Column editable="false" title="Modelo" type="java.lang.Object"/>
+              <Table columnCount="6" rowCount="4">
+                <Column editable="false" title="C&#xf3;digo" type="java.lang.Object"/>
                 <Column editable="false" title="Descripci&#xf3;n" type="java.lang.Object"/>
-                <Column editable="false" title="Precio" type="java.lang.Object"/>
+                <Column editable="false" title="Marca" type="java.lang.Object"/>
+                <Column editable="false" title="Sector" type="java.lang.Object"/>
+                <Column editable="false" title="Modelo" type="java.lang.Object"/>
+                <Column editable="false" title="Precio Actual" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
                   <Editor/>
@@ -151,18 +156,20 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel2" alignment="1" pref="80" max="32767" attributes="1"/>
-                      <Component id="jLabel3" alignment="0" pref="80" max="32767" attributes="1"/>
-                      <Component id="codigoLabel" alignment="0" min="-2" pref="80" max="-2" attributes="1"/>
+                      <Component id="jLabel4" pref="166" max="32767" attributes="0"/>
+                      <Component id="jLabel2" alignment="1" pref="166" max="32767" attributes="1"/>
+                      <Component id="jLabel3" alignment="0" pref="166" max="32767" attributes="1"/>
+                      <Component id="codigoLabel" alignment="0" pref="166" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="codigoField" alignment="0" pref="393" max="32767" attributes="0"/>
-                      <Component id="modeloField" alignment="0" pref="393" max="32767" attributes="0"/>
-                      <Component id="descriptionField" alignment="1" pref="393" max="32767" attributes="0"/>
+                      <Component id="barCodeField" alignment="0" pref="478" max="32767" attributes="0"/>
+                      <Component id="codigoField" alignment="0" pref="478" max="32767" attributes="0"/>
+                      <Component id="modeloField" alignment="0" pref="478" max="32767" attributes="0"/>
+                      <Component id="descriptionField" alignment="1" pref="478" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -184,6 +191,11 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="descriptionField" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="barCodeField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -221,11 +233,32 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="modeloField" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="modeloFieldKeyPressed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="descriptionField">
           <Properties>
             <Property name="name" type="java.lang.String" value="descriptionField" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="descriptionFieldKeyPressed"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="descriptionFieldKeyReleased"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel4">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="C&#xf3;digo de Barra"/>
+            <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="barCodeField">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="barCodeField" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="barCodeFieldKeyPressed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -234,17 +267,14 @@
         <Property name="name" type="java.lang.String" value="imageLabel" noResource="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="changePicture">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Cambiar Imagen"/>
-        <Property name="name" type="java.lang.String" value="changePicture" noResource="true"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JButton" name="closeWindows">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cerrar"/>
         <Property name="name" type="java.lang.String" value="closeWindows" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeWindowsActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

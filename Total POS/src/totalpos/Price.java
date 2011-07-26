@@ -15,6 +15,11 @@ public class Price {
         this.quant = quant;
     }
 
+    public Price(Price p){
+        this.date = p.getDate();
+        this.quant = p.getQuant();
+    }
+
     public Date getDate() {
         return date;
     }
@@ -29,4 +34,10 @@ public class Price {
         }
         return this;
     }
+
+    @Override
+    public String toString() {
+        return quant + "";
+    }
+
 }

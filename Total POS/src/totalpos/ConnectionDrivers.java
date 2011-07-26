@@ -194,7 +194,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select n.id,n.nombre,n.predecesor,n.icono,n.funcion "
                 + "from nodo n,tipo_de_usuario_puede t "
-                + "where n.predecesor= ? and t.id_tipo_usuario= ? and t.id_nodo=n.id");
+                + "where n.predecesor= ? and t.id_tipo_usuario= ? and t.id_nodo=n.id  and " + ((Constants.isPos)?"punto_de_venta = 1":"administrativo = 1"));
         stmt.setString(1, parent);
         stmt.setString(2, profile);
         ResultSet rs = stmt.executeQuery();
@@ -224,7 +224,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select n.id,n.nombre,n.predecesor,n.icono,n.funcion "
                 + "from nodo n "
-                + "where n.predecesor = ? ");
+                + "where n.predecesor = ? and " + ((Constants.isPos)?"punto_de_venta = 1":"administrativo = 1"));
         stmt.setString(1, parent);
         ResultSet rs = stmt.executeQuery();
 
@@ -508,7 +508,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
-                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen "
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento "
                 + "from articulo a , codigo_de_barras c "
                 + "where a.codigo like ? and a.descripcion like ? and a.modelo like ? and c.codigo_de_articulo = a.codigo "
                 + "and c.codigo_de_barras like ? ");
@@ -536,7 +536,8 @@ public class ConnectionDrivers {
                         listCosts(rs.getString("codigo")),
                         listBarcodes(rs.getString("codigo")),
                         rs.getBoolean("bloqueado"),
-                        rs.getString("imagen")
+                        rs.getString("imagen"),
+                        rs.getString("descuento")
                         )
                     );
         }

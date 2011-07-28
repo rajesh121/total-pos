@@ -216,7 +216,13 @@ public class SearchProfile extends javax.swing.JDialog {
 
     private void changePermitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePermitsActionPerformed
         if ( table.getSelectedRow() != -1 ){
-            showThisProfile((String)table.getValueAt(table.getSelectedRow(),0));
+            String toModify = (String)table.getValueAt(table.getSelectedRow(),0);
+            if ( MainWindows.getUser().getPerfil().equals(toModify)){
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se puede modificar el perfil del usuario que está loggeado.");
+                msb.show(this);
+            }else{
+                showThisProfile(toModify);
+            }
         }else{
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un perfil.");
             msb.show(this);

@@ -6,25 +6,21 @@
 
 package totalpos;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 
 /**
  *
@@ -34,18 +30,19 @@ public class MainWindows extends javax.swing.JFrame {
 
     private static User user;
     private TreeMap< String , Set<Character> > mnemonics = new TreeMap<String, Set<Character> >();
+    public static MainWindows mw;
 
     /** Creates new form MainWindows
      * @param user 
      */
     public MainWindows(User user) {
+        MainWindows.user = user;
+        mw = this;
         initComponents();
-        this.user = user;
 
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         
         createMenu(menuBar,"root");
-        //showLast();
     }
 
     private void createMenu(JComponent menu, String root){
@@ -159,7 +156,7 @@ public class MainWindows extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(Constants.appName);
+        setTitle(this.getUser().getLogin() + " @ " + Constants.appName);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {

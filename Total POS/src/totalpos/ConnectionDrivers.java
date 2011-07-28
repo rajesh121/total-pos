@@ -291,13 +291,13 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void createUser(String username, String role) throws SQLException, Exception{
+    protected static void createUser(String username, String role, String password) throws SQLException, Exception{
         verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into usuario"
                 + " ( login , password , tipo_de_usuario_id , bloqueado , nombre ) values ( ? , ? , ? , ? , ?)");
         stmt.setString(1, username);
-        stmt.setString(2, "0");
+        stmt.setString(2, Shared.hashPassword(password));
         stmt.setString(3, role);
         stmt.setInt(4, 0);
         stmt.setString(5, username);
@@ -415,7 +415,7 @@ public class ConnectionDrivers {
         if ( username != null && Calendar.getInstance().getTimeInMillis() - lastOperationTime > Long.valueOf(Shared.getConfig("idleTime")) ){
              MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "El usuario ha permanecido mucho tiempo sin uso. Requiere contraseña.");
              msg.show(MainWindows.mw);
-             PasswordNeeded pn = new PasswordNeeded(null, true, Shared.giveUser(listUsers(), username));
+             PasswordNeeded pn = new PasswordNeeded(MainWindows.mw, true, Shared.giveUser(listUsers(), username));
              Shared.centerFrame(pn);
              pn.setVisible(true);
              if ( pn.isPasswordOk() ){
@@ -440,7 +440,7 @@ public class ConnectionDrivers {
             c.close();
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Problemas con la base de datos.", ex);
-            msb.show(null);
+            msb.show(MainWindows.mw);
         }
     }
 

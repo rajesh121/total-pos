@@ -81,7 +81,7 @@ public class Sticker {
             job.print(doc, null);
         } catch (PrintException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la impresora.",ex);
-            msb.show(null);
+            msb.show(MainWindows.mw);
         }
     }
 

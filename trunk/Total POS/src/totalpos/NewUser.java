@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public class NewUser extends javax.swing.JDialog {
 
     private ManageUser parent;
+    public boolean isOk = false;
 
     /** Creates new form NewUser
      * @param parent
@@ -36,6 +37,7 @@ public class NewUser extends javax.swing.JDialog {
             this.parent = parent;
             Shared.updateProfiles(roleCombo, true);
             roleCombo.getModel();
+            isOk = true;
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
@@ -45,7 +47,6 @@ public class NewUser extends javax.swing.JDialog {
             this.dispose();
             Shared.reload();
         }
-
 
     }
 

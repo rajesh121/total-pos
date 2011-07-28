@@ -43,7 +43,7 @@ public class ManageUser extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        labelTitle = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -52,6 +52,10 @@ public class ManageUser extends javax.swing.JDialog {
         jLabel9 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         loginText = new javax.swing.JTextField();
         nombreText = new javax.swing.JTextField();
@@ -71,9 +75,9 @@ public class ManageUser extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
-        jLabel1.setText("Usuarios");
-        jLabel1.setName("jLabel1"); // NOI18N
+        labelTitle.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        labelTitle.setText("Usuarios");
+        labelTitle.setName("labelTitle"); // NOI18N
 
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -114,37 +118,68 @@ public class ManageUser extends javax.swing.JDialog {
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel3.setName("jLabel3"); // NOI18N
 
+        jLabel1.setForeground(new java.awt.Color(255, 51, 0));
+        jLabel1.setText("*");
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jLabel7.setForeground(new java.awt.Color(255, 51, 0));
+        jLabel7.setText("*");
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        jLabel8.setForeground(new java.awt.Color(255, 51, 0));
+        jLabel8.setText("*");
+        jLabel8.setName("jLabel8"); // NOI18N
+
+        jLabel10.setForeground(new java.awt.Color(255, 51, 0));
+        jLabel10.setText("*");
+        jLabel10.setName("jLabel10"); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel1))
+                        .addComponent(jLabel7))
+                    .addComponent(jLabel8))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addGap(92, 92, 92)
-                .addComponent(jLabel9)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10))
                 .addContainerGap(235, Short.MAX_VALUE))
         );
 
@@ -293,6 +328,7 @@ public class ManageUser extends javax.swing.JDialog {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
+        userList.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         userList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         userList.setName("userList"); // NOI18N
         userList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -313,14 +349,14 @@ public class ManageUser extends javax.swing.JDialog {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel1))
+                    .addComponent(labelTitle))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addComponent(jLabel1)
+                .addComponent(labelTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -396,9 +432,11 @@ public class ManageUser extends javax.swing.JDialog {
 
     private void newUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserButtonActionPerformed
         NewUser nu = new NewUser(this, true);
-        Shared.centerFrame(nu);
-        nu.setVisible(true);
-        updateAll();
+        if ( nu.isOk ){
+            Shared.centerFrame(nu);
+            nu.setVisible(true);
+            updateAll();
+        }
         
     }//GEN-LAST:event_newUserButtonActionPerformed
 
@@ -408,16 +446,20 @@ public class ManageUser extends javax.swing.JDialog {
     private javax.swing.JCheckBox canChangePasswordCheck;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labelTitle;
     private javax.swing.JTextField loginText;
     private javax.swing.JCheckBox mustChangePasswordCheck;
     private javax.swing.JPasswordField newPassword;
@@ -443,8 +485,9 @@ public class ManageUser extends javax.swing.JDialog {
     private void updateList() {
         String l[] = new String[users.size()];
         int i = 0;
-        for (User u : users) 
+        for (User u : users) {
             l[i++] = u.getLogin();
+        }
 
         
         userList.setListData(l);
@@ -456,15 +499,17 @@ public class ManageUser extends javax.swing.JDialog {
             updateUsers();
             updateList();
 
-            if ( newUserId == null )
+            if ( newUserId == null ) {
                 userList.setSelectedIndex(0);
+            }
             else{
-                for (int i = 0; i < users.size(); i++) 
-                    if ( users.get(i).getLogin().equals(newUserId)){
+                for (int i = 0; i < users.size(); i++) {
+                    if (users.get(i).getLogin().equals(newUserId)) {
                         userList.setSelectedIndex(i);
                         newUserId = null;
                         break;
                     }
+                }
             }
             isOk = true;
         } catch (SQLException ex) {

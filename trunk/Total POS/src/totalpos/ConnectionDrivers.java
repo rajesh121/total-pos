@@ -299,7 +299,7 @@ public class ConnectionDrivers {
         stmt.setString(1, username);
         stmt.setString(2, "0");
         stmt.setString(3, role);
-        stmt.setInt(4, 1);
+        stmt.setInt(4, 0);
         stmt.setString(5, username);
         stmt.executeUpdate();
 
@@ -414,7 +414,7 @@ public class ConnectionDrivers {
     private static void verifyIdle() throws SQLException, Exception{
         if ( username != null && Calendar.getInstance().getTimeInMillis() - lastOperationTime > Long.valueOf(Shared.getConfig("idleTime")) ){
              MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "El usuario ha permanecido mucho tiempo sin uso. Requiere contraseña.");
-             msg.show(null);
+             msg.show(MainWindows.mw);
              PasswordNeeded pn = new PasswordNeeded(null, true, Shared.giveUser(listUsers(), username));
              Shared.centerFrame(pn);
              pn.setVisible(true);

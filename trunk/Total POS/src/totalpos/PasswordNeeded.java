@@ -29,7 +29,7 @@ public class PasswordNeeded extends javax.swing.JDialog {
 
         this.user = u;
         this.parent = parent;
-        descriptionLabel.setText(("Introduzca la contraseña " + (user.getNombre()!=null?" para " + user.getNombre():"")));
+        descriptionLabel.setText(("Introduzca la contraseña " + (user.getNombre()!=null && !user.getNombre().isEmpty()?" para " + user.getNombre():"")));
     }
 
     /** This method is called from within the constructor to

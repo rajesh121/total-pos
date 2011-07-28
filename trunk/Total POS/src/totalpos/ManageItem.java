@@ -20,7 +20,6 @@ import javax.swing.table.DefaultTableModel;
 public class ManageItem extends javax.swing.JDialog {
 
     private List<Item> items;
-    private int selectedItem = -1;
     public boolean isOk = false;
     private String lastImage = "";
 
@@ -93,17 +92,19 @@ public class ManageItem extends javax.swing.JDialog {
         closeWindows = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         imageLabel = new javax.swing.JLabel();
+        printLabels = new javax.swing.JButton();
+        quantTicket = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel1.setText("Artículos");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        itemTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        itemTable.setFont(new java.awt.Font("Courier New", 0, 11));
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -153,19 +154,19 @@ public class ManageItem extends javax.swing.JDialog {
             }
         });
 
-        codigoLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        codigoLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         codigoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         codigoLabel.setText("Código");
         codigoLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         codigoLabel.setName("codigoLabel"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel2.setText("Modelo");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel3.setText("Descripción");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -188,7 +189,7 @@ public class ManageItem extends javax.swing.JDialog {
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel4.setText("Código de Barra");
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -261,7 +262,7 @@ public class ManageItem extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -271,6 +272,16 @@ public class ManageItem extends javax.swing.JDialog {
                 .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        printLabels.setText("Imprimir etiquetas");
+        printLabels.setName("printLabels"); // NOI18N
+        printLabels.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printLabelsActionPerformed(evt);
+            }
+        });
+
+        quantTicket.setName("quantTicket"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -283,13 +294,15 @@ public class ManageItem extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(filterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(471, 471, 471)
-                                .addComponent(closeWindows, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(quantTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(printLabels, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(263, 263, 263)
+                                .addComponent(closeWindows, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -306,7 +319,10 @@ public class ManageItem extends javax.swing.JDialog {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(closeWindows)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(closeWindows)
+                    .addComponent(quantTicket, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(printLabels))
                 .addContainerGap())
         );
 
@@ -369,6 +385,25 @@ public class ManageItem extends javax.swing.JDialog {
         loadImage();
     }//GEN-LAST:event_itemTableMouseReleased
 
+    private void printLabelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printLabelsActionPerformed
+        if ( itemTable.getSelectedRow() != -1 ){
+            Item i = items.get(itemTable.getSelectedRow());
+
+            int n = Integer.parseInt(quantTicket.getText());
+
+            if ( n > 0 ){
+                Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), i.getLastPrice().toString());
+                s.print(n);
+            }else{
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe ser una cantidad positiva de etiquetas.");
+                msb.show(this);
+            }
+        }else{
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
+            msb.show(this);
+        }
+    }//GEN-LAST:event_printLabelsActionPerformed
+
     private void loadImage(){
         Item i = items.get(itemTable.getSelectedRow());
         loadPhoto(i.getImageAddr());
@@ -391,6 +426,8 @@ public class ManageItem extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField modeloField;
+    private javax.swing.JButton printLabels;
+    private javax.swing.JTextField quantTicket;
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {

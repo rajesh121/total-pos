@@ -509,13 +509,16 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
                 + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento "
-                + "from articulo a , codigo_de_barras c "
-                + "where a.codigo like ? and a.descripcion like ? and a.modelo like ? and c.codigo_de_articulo = a.codigo "
-                + "and c.codigo_de_barras like ? ");
+                + "from articulo a "
+                + "where a.codigo like ? and a.descripcion like ? and a.modelo like ? and "
+                + "((exists  (select * from codigo_de_barras where codigo_de_barras.codigo_de_articulo = a.codigo "
+                + "and codigo_de_barras.codigo_de_barras = ? "
+                + ") ) or a.codigo_de_barras like ? )");
         stmt.setString(1, "%" + code + "%");
         stmt.setString(2, "%" + description + "%");
         stmt.setString(3, "%" + model + "%");
         stmt.setString(4, "%" + barCode + "%");
+        stmt.setString(5, "%" + barCode + "%");
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){

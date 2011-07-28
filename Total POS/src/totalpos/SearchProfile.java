@@ -42,10 +42,10 @@ public class SearchProfile extends javax.swing.JDialog {
 
             isOk = true;
         } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error con la base de datos.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
             msb.show(this);
         } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar perfiles.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al listar perfiles.",ex);
             msb.show(this);
             this.dispose();
             Shared.reload();
@@ -72,7 +72,7 @@ public class SearchProfile extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        searchTitle.setFont(new java.awt.Font("Tahoma", 1, 18));
+        searchTitle.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         searchTitle.setText("Buscar Perfil");
         searchTitle.setName("searchTitle"); // NOI18N
 
@@ -93,6 +93,7 @@ public class SearchProfile extends javax.swing.JDialog {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        table.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -173,7 +174,7 @@ public class SearchProfile extends javax.swing.JDialog {
                     .addComponent(changePermits)
                     .addComponent(changeDetails))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

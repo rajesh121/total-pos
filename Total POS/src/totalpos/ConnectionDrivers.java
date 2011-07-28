@@ -439,7 +439,7 @@ public class ConnectionDrivers {
             }
             c.close();
         } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Error con la base de datos.", ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Problemas con la base de datos.", ex);
             msb.show(null);
         }
     }

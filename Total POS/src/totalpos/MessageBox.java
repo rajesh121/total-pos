@@ -119,7 +119,7 @@ public class MessageBox {
         StringBuilder sb = new StringBuilder();
         int iSignalWord = getSignalWord();
         if (iSignalWord == SGN_DANGER) {
-            sb.append("Peligro: ");
+            sb.append("Error: ");
         } else if (iSignalWord == SGN_WARNING) {
             sb.append("Advertencia: ");
         } else if (iSignalWord == SGN_CAUTION) {

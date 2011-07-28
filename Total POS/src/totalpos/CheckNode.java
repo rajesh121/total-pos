@@ -42,10 +42,10 @@ public class CheckNode extends DefaultMutableTreeNode {
         this.isSelected = ConnectionDrivers.isAllowed(profile, name);
         isOk = true;
     } catch (SQLException ex) {
-        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
         msg.show(null);
     } catch (Exception ex) {
-        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al listar permisos de perfil.",ex);
+        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al listar permisos de perfil.",ex);
         msb.show(null);
         Shared.reload();
     }
@@ -79,10 +79,10 @@ public class CheckNode extends DefaultMutableTreeNode {
             ConnectionDrivers.disableMenuProfile(profile, name);
         }
     } catch (SQLException ex) {
-        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
         msg.show(new JDialog());
     } catch (Exception ex) {
-        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al cambiar permisos de perfil.",ex);
+        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al cambiar permisos de perfil.",ex);
         msb.show(null);
         Shared.reload();
     }

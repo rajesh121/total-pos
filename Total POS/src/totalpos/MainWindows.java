@@ -7,6 +7,7 @@
 package totalpos;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -60,6 +61,7 @@ public class MainWindows extends javax.swing.JFrame {
                 }else{
                     child = new JMenuItem(new AppUserAction(ed,this));
                 }
+                child.setFont(new Font("Courier New", 0, 12));
                 menu.add(child);
                 createMenu(child, ed.getId());
             }
@@ -75,10 +77,10 @@ public class MainWindows extends javax.swing.JFrame {
             jPeople.add(btn);*/
 
         } catch (SQLException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
         } catch (Exception ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, ex.getMessage(), ex);
             msg.show(this);
             this.dispose();
             Shared.reload();

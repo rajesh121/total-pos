@@ -49,8 +49,12 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jlblMessage">
           <Properties>
+            <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Courier New" size="14" style="1"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="jlblMessage"/>
             <Property name="verticalAlignment" type="int" value="1"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[200, 100]"/>
             </Property>

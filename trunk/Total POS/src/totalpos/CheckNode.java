@@ -46,7 +46,7 @@ public class CheckNode extends DefaultMutableTreeNode {
         msg.show(null);
     } catch (Exception ex) {
         MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al listar permisos de perfil.",ex);
-        msb.show(null);
+        msb.show(MainWindows.mw);
         Shared.reload();
     }
     setSelectionMode(DIG_IN_SELECTION);

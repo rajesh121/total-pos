@@ -111,7 +111,7 @@ public class ChangeIdleTime extends javax.swing.JDialog {
                 long t = (long) (tt * 60 * 1000);
                 if ( t <= 0 ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe ser un entero positivo.");
-                    msb.show(null);
+                    msb.show(MainWindows.mw);
                     this.idleTimeTextField.setText( Shared.getConfig("idleTime") );
                 }else{
                     try {
@@ -131,7 +131,7 @@ public class ChangeIdleTime extends javax.swing.JDialog {
                 }
             } catch ( NumberFormatException ex ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe tener un formato válido.",ex);
-                msb.show(null);
+                msb.show(MainWindows.mw);
                 this.idleTimeTextField.setText( Shared.getConfig("idleTime") );
             }
         }

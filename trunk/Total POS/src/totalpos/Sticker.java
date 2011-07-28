@@ -20,7 +20,7 @@ import javax.print.SimpleDoc;
 public class Sticker {
 
     private static int offset = 420;
-    private static int separations[] = {165,175,205,165,185,25,25,240,222,25};
+    private static int separations[] = {165,175,175,135,185,25,25,240,222,25};
 
     private String barCode, mark, description, price;
 

@@ -6,8 +6,13 @@
 
 package totalpos;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.util.TreeMap;
+import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 /**
  *
@@ -48,7 +53,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         jLabel1.setText("Usuario");
@@ -56,7 +61,7 @@ public class Login extends javax.swing.JFrame {
         jLabel1.setIconTextGap(0);
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         jLabel2.setText("Contraseña");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -82,11 +87,11 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(loginText)
                     .addComponent(passwordText, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))
-                .addContainerGap())
+                .addContainerGap(444, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap(353, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)

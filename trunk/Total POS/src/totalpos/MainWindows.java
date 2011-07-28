@@ -32,7 +32,7 @@ import javax.swing.SwingConstants;
  */
 public class MainWindows extends javax.swing.JFrame {
 
-    private User user;
+    private static User user;
     private TreeMap< String , Set<Character> > mnemonics = new TreeMap<String, Set<Character> >();
 
     /** Creates new form MainWindows
@@ -66,16 +66,6 @@ public class MainWindows extends javax.swing.JFrame {
                 createMenu(child, ed.getId());
             }
 
-            
-            /*btn.setText("Salir");
-            btn.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    logout();
-                }
-            });
-            jPeople.add(btn);*/
-
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
@@ -85,6 +75,10 @@ public class MainWindows extends javax.swing.JFrame {
             this.dispose();
             Shared.reload();
         }
+    }
+
+    public static User getUser() {
+        return user;
     }
 
     private int giveMeMnemonic(String nameMenu, String name){

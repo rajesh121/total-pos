@@ -48,7 +48,7 @@ public class PasswordNeeded extends javax.swing.JDialog {
         setTitle(Constants.appName);
         setResizable(false);
 
-        descriptionLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
         descriptionLabel.setText("Introduzca la contraseña");
         descriptionLabel.setName("descriptionLabel"); // NOI18N
 
@@ -94,21 +94,21 @@ public class PasswordNeeded extends javax.swing.JDialog {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No se pudo establecer conexión con la base de datos.");
             msg.show(this);
         } catch (Exception ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error.", ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, ex.getMessage(), ex);
             msg.show(this);
             if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
                 try {
                     Shared.userTrying(this.user.getLogin());
                 } catch (Exception ex1) {
                     msg = new MessageBox(MessageBox.SGN_DANGER,
-                                (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
+                                (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :ex1.getMessage()),
                                 ex1);
                     msg.show(null);
                     this.dispose();
                     Shared.reload();
                 }
             }else{
-                msg = new MessageBox(MessageBox.SGN_DANGER, "Error." , ex);
+                msg = new MessageBox(MessageBox.SGN_DANGER, ex.getMessage() , ex);
                 msg.show(null);
             }
         }

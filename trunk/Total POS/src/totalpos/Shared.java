@@ -87,7 +87,7 @@ public class Shared {
             try {
                 ConnectionDrivers.lockUser(l);
             } catch (SQLException ex1) {
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex1);
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex1);
                 msg.show(null);
             }
             throw new Exception(Constants.userLocked);

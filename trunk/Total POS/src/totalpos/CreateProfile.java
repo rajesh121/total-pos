@@ -39,11 +39,14 @@ public class CreateProfile extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        titleLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         titleLabel.setText("Crear Perfil");
         titleLabel.setName("titleLabel"); // NOI18N
 
+        idLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        idLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         idLabel.setText("ID");
+        idLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         idLabel.setName("idLabel"); // NOI18N
 
         idTextField.setName("idTextField"); // NOI18N
@@ -73,7 +76,10 @@ public class CreateProfile extends javax.swing.JDialog {
             }
         });
 
+        descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        descriptionLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         descriptionLabel.setText("Descripción");
+        descriptionLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setName("descriptionLabel"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -85,13 +91,13 @@ public class CreateProfile extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(titleLabel)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                            .addComponent(idLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(idTextField)
-                            .addComponent(descriptionTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE))))
+                            .addComponent(idLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(descriptionTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                            .addComponent(idTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -105,8 +111,8 @@ public class CreateProfile extends javax.swing.JDialog {
                     .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(descriptionLabel))
+                    .addComponent(descriptionLabel)
+                    .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -137,10 +143,10 @@ public class CreateProfile extends javax.swing.JDialog {
                 MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente.");
                 msb.show(this);
             } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error con la base de datos.",ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
                 msb.show(this);
             } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear perfil.",ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear perfil.",ex);
                 msb.show(this);
                 this.dispose();
                 Shared.reload();

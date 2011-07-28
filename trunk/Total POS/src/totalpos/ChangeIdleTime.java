@@ -8,8 +8,6 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -28,11 +26,16 @@ public class ChangeIdleTime extends javax.swing.JDialog {
         initComponents();
 
         String c = Shared.getConfig("idleTime");
-        if ( c == null ) {
-            return;
-        }
 
-        this.idleTimeTextField.setText( c );
+        long t = 0;
+        try{
+            t = Long.valueOf(c);
+        } catch ( NumberFormatException ex ){
+            t = 0;
+        }
+        t /= 60*1000;
+
+        this.idleTimeTextField.setText( t + "" );
 
         isOk = true;
     }
@@ -53,8 +56,9 @@ public class ChangeIdleTime extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        titleLabel.setFont(new java.awt.Font("Tahoma", 1, 14));
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         titleLabel.setText("Cambiar tiempo de autobloqueo");
+        titleLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         titleLabel.setName("titleLabel"); // NOI18N
 
         idleTimeTextField.setName("idleTimeTextField"); // NOI18N
@@ -64,7 +68,11 @@ public class ChangeIdleTime extends javax.swing.JDialog {
             }
         });
 
-        secondsLabel.setText("Milisegundos.");
+        secondsLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        secondsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        secondsLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        secondsLabel.setText("Minutos");
+        secondsLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         secondsLabel.setName("secondsLabel"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -100,8 +108,9 @@ public class ChangeIdleTime extends javax.swing.JDialog {
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             try{
                 long t = Long.valueOf(idleTimeTextField.getText());
-                if ( t <= 10000 ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo no puede ser menor a 10 segundos.");
+                t *= 60*1000;
+                if ( t <= 0 ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe ser un entero positivo.");
                     msb.show(null);
                     this.idleTimeTextField.setText( Shared.getConfig("idleTime") );
                 }else{
@@ -112,10 +121,10 @@ public class ChangeIdleTime extends javax.swing.JDialog {
                         ConnectionDrivers.initializeConfig();
                         this.dispose();
                     } catch (SQLException ex) {
-                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
                         msg.show(this);
                     } catch (Exception ex) {
-                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error", ex);
+                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, ex.getMessage(), ex);
                         msg.show(this);
                         Shared.reload();
                     }

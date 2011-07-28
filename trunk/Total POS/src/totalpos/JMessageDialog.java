@@ -119,8 +119,10 @@ public class JMessageDialog extends javax.swing.JDialog {
         jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
+        jlblMessage.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
         jlblMessage.setText("jlblMessage");
         jlblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jlblMessage.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jlblMessage.setMinimumSize(new java.awt.Dimension(200, 100));
         jlblMessage.setPreferredSize(new java.awt.Dimension(200, 100));
         jPanel4.add(jlblMessage);

@@ -40,7 +40,7 @@ public class NewUser extends javax.swing.JDialog {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
         }  catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear usuario.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear usuario.",ex);
             msb.show(this);
             this.dispose();
             Shared.reload();
@@ -181,10 +181,10 @@ public class NewUser extends javax.swing.JDialog {
             parent.newUserId = loginText.getText();
             closeWindows();
         } catch (SQLException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error con la base de datos.", ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
         } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al crear el nuevo usuario.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear el nuevo usuario.",ex);
             msb.show(this);
             Shared.reload();
         }

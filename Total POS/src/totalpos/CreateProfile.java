@@ -39,11 +39,11 @@ public class CreateProfile extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Crear Perfil");
         titleLabel.setName("titleLabel"); // NOI18N
 
-        idLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        idLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         idLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         idLabel.setText("ID");
         idLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -59,6 +59,9 @@ public class CreateProfile extends javax.swing.JDialog {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 idTextFieldKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                idTextFieldKeyReleased(evt);
+            }
         });
 
         descriptionTextField.setName("descriptionTextField"); // NOI18N
@@ -71,12 +74,15 @@ public class CreateProfile extends javax.swing.JDialog {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 descriptionTextFieldKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                descriptionTextFieldKeyReleased(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 descriptionTextFieldKeyTyped(evt);
             }
         });
 
-        descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         descriptionLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         descriptionLabel.setText("Descripción");
         descriptionLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -163,6 +169,18 @@ public class CreateProfile extends javax.swing.JDialog {
             dispose();
         }
     }//GEN-LAST:event_idTextFieldKeyPressed
+
+    private void idTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idTextFieldKeyReleased
+        if ( idTextField.getText().length() > 20 ){
+            idTextField.setText(idTextField.getText().substring(0, 20));
+        }
+    }//GEN-LAST:event_idTextFieldKeyReleased
+
+    private void descriptionTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyReleased
+        if ( descriptionTextField.getText().length() > 200 ){
+            descriptionTextField.setText(descriptionTextField.getText().substring(0, 200));
+        }
+    }//GEN-LAST:event_descriptionTextFieldKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;

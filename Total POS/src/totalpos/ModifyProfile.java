@@ -47,7 +47,7 @@ public class ModifyProfile extends JDialog {
     tree.addMouseListener(new NodeSelectionListener(tree));
     JScrollPane sp = new JScrollPane(tree);
 
-    this.setTitle("Ver/Modificar permisos de Perfil");
+    this.setTitle("Ver/Modificar permisos de Perfil de " + profile);
     this.setSize(500, 300);
     
     getContentPane().add(sp,    BorderLayout.CENTER);

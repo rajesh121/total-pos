@@ -72,10 +72,7 @@ public class CheckNode extends DefaultMutableTreeNode {
 
     String name = matcher.group(1);
     try {
-        if ( isSelected ){
-            ConnectionDrivers.disableMenuProfile(profile, name);
-            ConnectionDrivers.enableMenuProfile(profile, name);
-        }else{
+        if ( !isSelected ){
             ConnectionDrivers.disableMenuProfile(profile, name);
         }
     } catch (SQLException ex) {

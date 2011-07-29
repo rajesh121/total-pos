@@ -386,21 +386,28 @@ public class ManageItem extends javax.swing.JDialog {
     }//GEN-LAST:event_itemTableMouseReleased
 
     private void printLabelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printLabelsActionPerformed
-        if ( itemTable.getSelectedRow() != -1 ){
-            Item i = items.get(itemTable.getSelectedRow());
 
-            int n = Integer.parseInt(quantTicket.getText());
+        try{
+            if ( itemTable.getSelectedRow() != -1 ){
+                Item i = items.get(itemTable.getSelectedRow());
 
-            if ( n > 0 ){
-                Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), i.getLastPrice().toString());
-                s.print(n);
+                int n = Integer.parseInt(quantTicket.getText());
+                System.out.println("n = " + n);
+
+                if ( n > 0 ){
+                    Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), i.getLastPrice().toString());
+                    s.print(n);
+                }else{
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe ser una cantidad positiva de etiquetas.");
+                    msb.show(this);
+                }
             }else{
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe ser una cantidad positiva de etiquetas.");
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
                 msb.show(this);
             }
-        }else{
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
-            msb.show(this);
+        }catch ( NumberFormatException ex){
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error en la cantidad de etiquetas", ex);
+            msg.show(this);
         }
     }//GEN-LAST:event_printLabelsActionPerformed
 

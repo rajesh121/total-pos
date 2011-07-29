@@ -49,6 +49,19 @@ public class MainWindows extends javax.swing.JFrame {
         try {
             List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root, user.getPerfil());
 
+            /*if ( root.equals("root") ){
+                JMenuItem e = new JMenuItem("Salir");
+                e.setFont(new Font("Courier New", 0, 12));
+                e.addActionListener(new AbstractAction() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        logout();
+                    }
+                });
+                menu.add(e);
+            }*/
+
             for (int i = 0; i < edges.size(); i++) {
 
                 Edge ed = edges.get(i);

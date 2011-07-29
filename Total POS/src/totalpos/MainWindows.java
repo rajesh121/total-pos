@@ -188,7 +188,7 @@ public class MainWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_formKeyPressed
 
     private void logout(){
-        if ( JOptionPane.showConfirmDialog(null, "¿Está seguro que desea cerrar sesión?") == 0 ){
+        if ( JOptionPane.showConfirmDialog(MainWindows.mw, "¿Está seguro que desea cerrar sesión?") == 0 ){
             Login l = new Login();
             Shared.centerFrame(l);
             Shared.maximize(l);

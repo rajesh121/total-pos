@@ -17,6 +17,7 @@ import java.sql.SQLException;
 public class ChangeIdleTime extends javax.swing.JDialog {
 
     public boolean isOk = false;
+    private double currentTime;
     /** Creates new form ChangeIdleTime
      * @param parent
      * @param modal
@@ -35,6 +36,7 @@ public class ChangeIdleTime extends javax.swing.JDialog {
         }
         t /= 60*1000;
 
+        currentTime = t;
         this.idleTimeTextField.setText( t + "" );
 
         isOk = true;
@@ -109,10 +111,10 @@ public class ChangeIdleTime extends javax.swing.JDialog {
             try{
                 double tt = Double.valueOf(idleTimeTextField.getText());
                 long t = (long) (tt * 60 * 1000);
-                if ( t <= 0 ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe ser un entero positivo.");
+                if ( t <= 0 || t >= 1000*60*1000){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe ser un entero positivo menor a 1000.");
                     msb.show(MainWindows.mw);
-                    this.idleTimeTextField.setText( Shared.getConfig("idleTime") );
+                    this.idleTimeTextField.setText( currentTime + "" );
                 }else{
                     try {
                         ConnectionDrivers.saveConfig("idleTime", t + "");
@@ -132,7 +134,7 @@ public class ChangeIdleTime extends javax.swing.JDialog {
             } catch ( NumberFormatException ex ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe tener un formato válido.",ex);
                 msb.show(MainWindows.mw);
-                this.idleTimeTextField.setText( Shared.getConfig("idleTime") );
+                this.idleTimeTextField.setText( currentTime + "" );
             }
         }
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){

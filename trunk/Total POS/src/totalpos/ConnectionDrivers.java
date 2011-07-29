@@ -479,7 +479,8 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
-            ans.add(new Price(rs.getDate("fecha"), rs.getDouble("monto")));
+            ans.add(new Price(rs.getDate("fecha")
+                    , (double)Math.round(rs.getDouble("monto")*(Double.valueOf(Shared.config.get("iva"))+1.0))));
         }
         c.close();
 
@@ -512,7 +513,7 @@ public class ConnectionDrivers {
                 + "from articulo a "
                 + "where a.codigo like ? and a.descripcion like ? and a.modelo like ? and "
                 + "((exists  (select * from codigo_de_barras where codigo_de_barras.codigo_de_articulo = a.codigo "
-                + "and codigo_de_barras.codigo_de_barras = ? "
+                + "and codigo_de_barras.codigo_de_barras like ? "
                 + ") ) or a.codigo_de_barras like ? )");
         stmt.setString(1, "%" + code + "%");
         stmt.setString(2, "%" + description + "%");

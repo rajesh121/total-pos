@@ -74,7 +74,7 @@ public class NewUser extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel1.setText("Nuevo Usuario");
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -82,6 +82,9 @@ public class NewUser extends javax.swing.JDialog {
         loginText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 loginTextKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                loginTextKeyReleased(evt);
             }
         });
 
@@ -103,25 +106,25 @@ public class NewUser extends javax.swing.JDialog {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel2.setText("Login");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel3.setText("Perfil");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel4.setText("Contraseña");
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel5.setText("Contraseña de nuevo");
         jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -136,13 +139,12 @@ public class NewUser extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(jLabel1)
                         .addGap(71, 71, 71))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -207,7 +209,11 @@ public class NewUser extends javax.swing.JDialog {
         doit();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
-    
+    private void loginTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginTextKeyReleased
+        if ( loginText.getText().length() > 20 ){
+            loginText.setText(loginText.getText().substring(0, 20));
+        }
+    }//GEN-LAST:event_loginTextKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;

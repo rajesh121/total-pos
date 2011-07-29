@@ -75,7 +75,7 @@ public class ManageUser extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
 
-        labelTitle.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        labelTitle.setFont(new java.awt.Font("Courier New", 1, 18));
         labelTitle.setText("Usuarios");
         labelTitle.setName("labelTitle"); // NOI18N
 
@@ -83,36 +83,36 @@ public class ManageUser extends javax.swing.JDialog {
 
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel4.setText("Usuario");
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel5.setText("Nombre");
         jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel6.setText("Apellido");
         jLabel6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        jLabel9.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel9.setText("Perfil");
         jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel9.setName("jLabel9"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel2.setText("Contraseña");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel3.setText("Contraseña de nuevo");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -189,8 +189,18 @@ public class ManageUser extends javax.swing.JDialog {
         loginText.setName("loginText"); // NOI18N
 
         nombreText.setName("nombreText"); // NOI18N
+        nombreText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nombreTextKeyReleased(evt);
+            }
+        });
 
         apellidoText.setName("apellidoText"); // NOI18N
+        apellidoText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                apellidoTextKeyReleased(evt);
+            }
+        });
 
         roleCombo.setName("roleCombo"); // NOI18N
 
@@ -328,7 +338,7 @@ public class ManageUser extends javax.swing.JDialog {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        userList.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        userList.setFont(new java.awt.Font("Courier New", 0, 11));
         userList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         userList.setName("userList"); // NOI18N
         userList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -439,6 +449,18 @@ public class ManageUser extends javax.swing.JDialog {
         }
         
     }//GEN-LAST:event_newUserButtonActionPerformed
+
+    private void nombreTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreTextKeyReleased
+        if ( nombreText.getText().length() > 15 ){
+            nombreText.setText(nombreText.getText().substring(0, 15));
+        }
+    }//GEN-LAST:event_nombreTextKeyReleased
+
+    private void apellidoTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_apellidoTextKeyReleased
+        if ( apellidoText.getText().length() > 15 ){
+            apellidoText.setText(apellidoText.getText().substring(0, 15));
+        }
+    }//GEN-LAST:event_apellidoTextKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField apellidoText;

@@ -23,6 +23,7 @@ public class Login extends javax.swing.JFrame {
     protected static TreeMap<String,Integer> tries = new TreeMap<String, Integer>();
     public boolean userChangedHerPass = false; // Nice name xDD
     protected static MainWindows myMainWindows = null;
+    protected static MainRetailWindows myMainRetailWindows = null;
 
     /** Creates new form Login */
     public Login() {
@@ -137,9 +138,16 @@ public class Login extends javax.swing.JFrame {
                 }
             }
             Shared.userInsertedPasswordOk(loginText.getText());
-            MainWindows mw = myMainWindows = new MainWindows(u);
-            Shared.centerFrame(mw);
-            mw.setVisible(true);
+
+            if ( Constants.isPos ){
+                MainRetailWindows mrw = myMainRetailWindows = new MainRetailWindows(u);
+                Shared.centerFrame(mrw);
+                mrw.setVisible(true);
+            }else{
+                MainWindows mw = myMainWindows = new MainWindows(u);
+                Shared.centerFrame(mw);
+                mw.setVisible(true);
+            }
             this.setVisible(false);
             dispose();
         } catch (SQLException ex) {

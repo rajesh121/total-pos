@@ -395,7 +395,6 @@ public class ManageItem extends javax.swing.JDialog {
                 Item i = items.get(itemTable.getSelectedRow());
 
                 int n = Integer.parseInt(quantTicket.getText());
-                System.out.println("n = " + n);
 
                 if ( n > 0 ){
                     Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), (Integer.parseInt(i.getLastPrice().toString().split("\\.")[0]))+"");

@@ -11,7 +11,7 @@ public class Constants {
     public static final int numberConnection = 5;
 
     public static final String dbHost = "192.168.0.33";
-    public static final String dbName = "gt99testing";
+    public static final String dbName = "gt99";
     public static final String dbUser = "root";
     public static final String dbPassword = "123456789";
     public static final String defaultUser = "Invitado";
@@ -19,6 +19,6 @@ public class Constants {
     public static final String wrongPasswordMsg = "Contraseña errónea.";
     public static final String userLocked = "El usuario ha sido bloqueado.";
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
 }

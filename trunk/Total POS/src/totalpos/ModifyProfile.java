@@ -86,7 +86,7 @@ public class ModifyProfile extends JDialog {
 
       private CheckNode exploreTree(String realName , String id){
         try {
-            CheckNode ans = new CheckNode(realName + " (" + id + ") " , profile);
+            CheckNode ans = new CheckNode(realName, profile);
 
             if ( !ans.isOk ) return null;
             for (Edge edge : ConnectionDrivers.listEdges(id)) {

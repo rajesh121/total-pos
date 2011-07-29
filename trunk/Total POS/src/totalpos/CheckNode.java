@@ -33,12 +33,7 @@ public class CheckNode extends DefaultMutableTreeNode {
                                     , String profile) {
     super(userObject, allowsChildren);
     try {
-        Pattern pattern = Pattern.compile("[^(]+\\(([^)]+)\\)");
-        Matcher matcher = pattern.matcher(this.toString());
-        boolean found = matcher.find();
-        assert( found );
-
-        String name = matcher.group(1);
+        String name = ConnectionDrivers.getIdProfile(this.toString());
         this.isSelected = ConnectionDrivers.isAllowed(profile, name);
         isOk = true;
     } catch (SQLException ex) {
@@ -65,14 +60,14 @@ public class CheckNode extends DefaultMutableTreeNode {
 
   public void setSelected(boolean isSelected) {
     this.isSelected = isSelected;
-    Pattern pattern = Pattern.compile("[^(]+\\(([^)]+)\\)");
-    Matcher matcher = pattern.matcher(this.toString());
-    boolean found = matcher.find();
-    assert( found );
 
-    String name = matcher.group(1);
+    // DO NOT MODIFY!! IT WORKS OK!!
     try {
-        if ( !isSelected ){
+        String name = ConnectionDrivers.getIdProfile(this.toString());
+        if ( isSelected ){
+            ConnectionDrivers.disableMenuProfile(profile, name);
+            ConnectionDrivers.enableMenuProfile(profile, name);
+        }else{
             ConnectionDrivers.disableMenuProfile(profile, name);
         }
     } catch (SQLException ex) {

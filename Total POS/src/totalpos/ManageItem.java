@@ -104,7 +104,7 @@ public class ManageItem extends javax.swing.JDialog {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        itemTable.setFont(new java.awt.Font("Courier New", 0, 11));
+        itemTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -140,6 +140,9 @@ public class ManageItem extends javax.swing.JDialog {
         itemTable.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 itemTableKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                itemTableKeyReleased(evt);
             }
         });
         jScrollPane1.setViewportView(itemTable);
@@ -370,7 +373,7 @@ public class ManageItem extends javax.swing.JDialog {
     }//GEN-LAST:event_barCodeFieldKeyPressed
 
     private void itemTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_itemTableKeyPressed
-        loadImage();
+        
     }//GEN-LAST:event_itemTableKeyPressed
 
     private void itemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableMouseClicked
@@ -395,7 +398,7 @@ public class ManageItem extends javax.swing.JDialog {
                 System.out.println("n = " + n);
 
                 if ( n > 0 ){
-                    Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), i.getLastPrice().toString());
+                    Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), (Integer.parseInt(i.getLastPrice().toString().split("\\.")[0]))+"");
                     s.print(n);
                 }else{
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe ser una cantidad positiva de etiquetas.");
@@ -406,10 +409,14 @@ public class ManageItem extends javax.swing.JDialog {
                 msb.show(this);
             }
         }catch ( NumberFormatException ex){
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Error en la cantidad de etiquetas", ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problema al parsear ", ex);
             msg.show(this);
         }
     }//GEN-LAST:event_printLabelsActionPerformed
+
+    private void itemTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_itemTableKeyReleased
+        loadImage();
+    }//GEN-LAST:event_itemTableKeyReleased
 
     private void loadImage(){
         Item i = items.get(itemTable.getSelectedRow());

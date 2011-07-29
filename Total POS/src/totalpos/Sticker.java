@@ -18,7 +18,7 @@ import javax.print.SimpleDoc;
 public class Sticker {
 
     private static int offset = 420;
-    private static int separations[] = {165,175,175,135,185,25,25,240,222,25};
+    private static int separations[] = {160,170,200,130,180,20,20,235,228,20};
 
     private String barCode, mark, description, price;
 
@@ -70,9 +70,9 @@ public class Sticker {
                 "N\n" +
                 "A" + separations[0] +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + separations[1] + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
-                "A" + separations[2] + ",30,0,5,1,1,N,\""+price +"\"\n"+
+                "A" + separations[2] + ",40,0,5,1,1,N,\""+price +"\"\n"+
                 "A" + separations[3] + ",45,0,3,1,1,N,\"Bsf\"\n"+
-                "A" + separations[4] + ",80,0,3,1,1,N,\""+mark+"\"\n"+
+                //"A" + separations[4] + ",80,0,3,1,1,N,\""+mark+"\"\n"+
                 "A" + separations[5] + ",100,0,1,1,1,N,\""+description+"\"\n"+
                 "A" + separations[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
                 "A" + separations[7] + ",140,0,1,1,1,N,\""+date + "\"\n"+
@@ -81,9 +81,9 @@ public class Sticker {
 
                 "A" + (offset+separations[0]) +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + (offset+separations[1]) + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
-                "A" + (offset+separations[2]) + ",30,0,5,1,1,N,\""+price +"\"\n"+
+                "A" + (offset+separations[2]) + ",40,0,5,1,1,N,\""+price +"\"\n"+
                 "A" + (offset+separations[3]) + ",45,0,3,1,1,N,\"Bsf\"\n"+
-                "A" + (offset+separations[4]) + ",80,0,3,1,1,N,\""+mark+"\"\n"+
+                //"A" + (offset+separations[4]) + ",80,0,3,1,1,N,\""+mark+"\"\n"+
                 "A" + (offset+separations[5]) + ",100,0,1,1,1,N,\""+description+"\"\n"+
                 "A" + (offset+separations[6]) + ",115,0,1,1,1,N,\""+description2+"\"\n"+
                 "A" + (offset+separations[7]) + ",140,0,1,1,1,N,\""+date + "\"\n"+

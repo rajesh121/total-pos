@@ -49,7 +49,23 @@ public class Sticker {
             Date d = new Date();
             String date = dateFormat.format(d);
             n = (n + 1) / 2;
-            PrintService psZebra = PrintServiceLookup.lookupDefaultPrintService();
+            PrintService psZebra = null;
+
+            PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
+            for (int i = 0; i < services.length; i++) {
+                PrintService printService = services[i];
+                if ( printService.getName().equals("Zebra") ){
+                    psZebra = printService;
+                    break;
+                }
+            }
+
+            if ( psZebra == null  ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha conseguido la impresora llamada \"Zebra\"");
+                msb.show(MainWindows.mw);
+                return;
+            }
+            //= PrintServiceLookup.lookupDefaultPrintService();
             DocPrintJob job = psZebra.createPrintJob();
             String buff =
                 "N\n" +
@@ -80,7 +96,7 @@ public class Sticker {
             Doc doc = new SimpleDoc(buff.getBytes(), flavor, null);
             job.print(doc, null);
         } catch (PrintException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la impresora.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la impresora.",ex);
             msb.show(MainWindows.mw);
         }
     }

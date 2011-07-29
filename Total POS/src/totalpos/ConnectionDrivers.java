@@ -550,4 +550,23 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static String getIdProfile(String name) throws SQLException, Exception{
+        verifyIdle();
+
+        if ( name.equals("/") ) {
+            return "root";
+        }
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select id from nodo where nombre = ? ");
+        stmt.setString(1, name);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        String ans = rs.getString("id");
+        c.close();
+        return ans;
+    }
+
 }

@@ -65,7 +65,6 @@ public class Sticker {
                 msb.show(MainWindows.mw);
                 return;
             }
-            //= PrintServiceLookup.lookupDefaultPrintService();
             DocPrintJob job = psZebra.createPrintJob();
             String buff =
                 "N\n" +

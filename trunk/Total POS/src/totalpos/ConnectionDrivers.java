@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -560,6 +561,19 @@ public class ConnectionDrivers {
         assert(ok);
         String ans = rs.getString("id");
         c.close();
+        return ans;
+    }
+
+    protected static List<User> listRetailUsers() throws SQLException, Exception{
+        List<User> u = listUsers();
+        List<User> ans = new ArrayList<User>();
+
+        for (User us : u) {
+            if (isAllowed(us.getPerfil(), "createReceipts")) {
+                ans.add(us);
+            }
+        }
+
         return ans;
     }
 

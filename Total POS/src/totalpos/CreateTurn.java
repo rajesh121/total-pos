@@ -1,6 +1,9 @@
 package totalpos;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -11,12 +14,27 @@ public class CreateTurn extends javax.swing.JDialog {
     private List<User> modelUserList;
 
 
-    /** Creates new form CreateTurn */
+    /** Creates new form CreateTurn
+     * @param parent
+     * @param modal
+     */
     public CreateTurn(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-
-        modelUserList
+        
+        try {
+            modelUserList = ConnectionDrivers.listRetailUsers();
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al listar los artículos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
     }
 
     /** This method is called from within the constructor to

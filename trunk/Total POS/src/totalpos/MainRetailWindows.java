@@ -321,6 +321,27 @@ public class MainRetailWindows extends javax.swing.JFrame {
             }
             gridTable.setRowSelectionInterval(gridTable.getSelectedRow()-1, gridTable.getSelectedRow()-1);
             updateCurrentItem();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_BACK_SPACE ){
+            if ( gridTable.getSelectedRow() != -1 ){
+
+                items.remove(gridTable.getSelectedRow());
+
+                DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
+                model.removeRow(gridTable.getSelectedRow());
+
+                if ( items.isEmpty() ){
+                    updateAll();
+                }else{
+                    gridTable.setRowSelectionInterval( model.getRowCount()-1, model.getRowCount()-1);
+
+                    updateCurrentItem();
+                    updateSubTotal();
+                    cleanForNewItem();
+                }
+            }else{
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
+                msb.show(this);
+            }
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 

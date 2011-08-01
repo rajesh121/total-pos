@@ -107,7 +107,7 @@ public class Shared {
         Shared.centerFrame(login);
         login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         login.setVisible(true);
-        ConnectionDrivers.username = null;
+        ConnectionDrivers.user = null;
     }
 
     public static String getConfig(String k){

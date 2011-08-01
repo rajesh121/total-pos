@@ -397,7 +397,7 @@ public class ManageItem extends javax.swing.JDialog {
                 int n = Integer.parseInt(quantTicket.getText());
 
                 if ( n > 0 ){
-                    Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), (Integer.parseInt(i.getLastPrice().toString().split("\\.")[0]))+"");
+                    Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), (Integer.parseInt(i.getLastPrice().toString().split(",")[0]))+"");
                     s.print(n);
                 }else{
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe ser una cantidad positiva de etiquetas.");

@@ -8,13 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JPanel;
-import sun.security.krb5.Config;
 
 /**
  *
@@ -44,7 +39,7 @@ public class ConnectionDrivers {
             return true;
 
         } catch (PropertyVetoException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "No se encontró el driver.");
+            MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "No se encontró el driver.",ex);
             msb.show(Main.splash);
             return false;
         }

@@ -6,7 +6,10 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -25,6 +28,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         initComponents();
         user = u;
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        updateAll();
     }
 
     public User getUser() {
@@ -36,10 +40,17 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }
 
     protected void updateAll(){
-        descriptionLabel.setText("Total POS");
+        descriptionLabel.setText("Bievenido a Mundo Total");
         subTotalLabel.setText("");
-        currentPrice.setText("");
+        currentPrice.setText("0.00 Bsf");
+
+        updateTable();
         
+    }
+
+    protected void updateTable(){
+        DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
+        model.setRowCount(0);
     }
 
     /** This method is called from within the constructor to
@@ -64,7 +75,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         logoLabel = new javax.swing.JPanel();
         imageLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
@@ -72,6 +83,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
         descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 24)); // NOI18N
         descriptionLabel.setForeground(new java.awt.Color(255, 255, 255));
+        descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setName("descriptionLabel"); // NOI18N
 
         subTotalLabel.setFont(new java.awt.Font("Courier New", 0, 18)); // NOI18N
@@ -111,7 +123,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Descripción", "Precio", "Descuento", "Cantidad"
+                "Descripción", "Descuento", "Cantidad", "Precio"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -128,6 +140,11 @@ public class MainRetailWindows extends javax.swing.JFrame {
         gridTable.getColumnModel().getColumn(0).setPreferredWidth(300);
 
         barcodeField.setName("barcodeField"); // NOI18N
+        barcodeField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                barcodeFieldKeyReleased(evt);
+            }
+        });
 
         jPanel4.setName("jPanel4"); // NOI18N
 
@@ -145,7 +162,9 @@ public class MainRetailWindows extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(0, 0, 0));
         jPanel5.setName("jPanel5"); // NOI18N
 
+        currentPrice.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
         currentPrice.setForeground(new java.awt.Color(255, 255, 255));
+        currentPrice.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         currentPrice.setName("currentPrice"); // NOI18N
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -238,6 +257,12 @@ public class MainRetailWindows extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void barcodeFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_barcodeFieldKeyReleased
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            logout();
+        }
+    }//GEN-LAST:event_barcodeFieldKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField barcodeField;
     private javax.swing.JLabel currentPrice;
@@ -252,5 +277,18 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JPanel logoLabel;
     private javax.swing.JLabel subTotalLabel;
     // End of variables declaration//GEN-END:variables
+
+    private void logout(){
+        if ( JOptionPane.showConfirmDialog(MainWindows.mw, "¿Está seguro que desea cerrar sesión?") == 0 ){
+            Login l = new Login();
+            Shared.centerFrame(l);
+            Shared.maximize(l);
+            l.setVisible(true);
+            ConnectionDrivers.user = null;
+
+            setVisible(false);
+            dispose();
+        }
+    }
 
 }

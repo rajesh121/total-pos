@@ -28,7 +28,6 @@ import javax.swing.JOptionPane;
  */
 public class MainWindows extends javax.swing.JFrame {
 
-    private static User user;
     private TreeMap< String , Set<Character> > mnemonics = new TreeMap<String, Set<Character> >();
     public static MainWindows mw;
 
@@ -36,7 +35,7 @@ public class MainWindows extends javax.swing.JFrame {
      * @param user 
      */
     public MainWindows(User user) {
-        MainWindows.user = user;
+        ConnectionDrivers.user = user;
         mw = this;
         initComponents();
 
@@ -47,20 +46,7 @@ public class MainWindows extends javax.swing.JFrame {
 
     private void createMenu(JComponent menu, String root){
         try {
-            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root, user.getPerfil());
-
-            /*if ( root.equals("root") ){
-                JMenuItem e = new JMenuItem("Salir");
-                e.setFont(new Font("Courier New", 0, 12));
-                e.addActionListener(new AbstractAction() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        logout();
-                    }
-                });
-                menu.add(e);
-            }*/
+            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root, ConnectionDrivers.user.getPerfil());
 
             for (int i = 0; i < edges.size(); i++) {
 
@@ -85,10 +71,6 @@ public class MainWindows extends javax.swing.JFrame {
             this.dispose();
             Shared.reload();
         }
-    }
-
-    public static User getUser() {
-        return user;
     }
 
     private int giveMeMnemonic(String nameMenu, String name){
@@ -169,7 +151,7 @@ public class MainWindows extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(this.getUser().getLogin() + " @ " + Constants.appName);
+        setTitle(ConnectionDrivers.user.getLogin() + " @ " + Constants.appName);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -206,7 +188,7 @@ public class MainWindows extends javax.swing.JFrame {
             Shared.centerFrame(l);
             Shared.maximize(l);
             l.setVisible(true);
-            ConnectionDrivers.username = null;
+            ConnectionDrivers.user = null;
 
             setVisible(false);
             dispose();

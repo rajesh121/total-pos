@@ -24,7 +24,7 @@ public class ConnectionDrivers {
 
     protected static ComboPooledDataSource cpds ;
     private static long lastOperationTime = Calendar.getInstance().getTimeInMillis();
-    public static String username = null;
+    public static User user;
 
     /** Crea la piscina de conexiones.
      * 
@@ -69,7 +69,6 @@ public class ConnectionDrivers {
             throw new Exception(Constants.wrongPasswordMsg);
         }
 
-        username = user.toString();
         lastOperationTime = Calendar.getInstance().getTimeInMillis();
 
         c.close();
@@ -412,10 +411,10 @@ public class ConnectionDrivers {
     }
 
     private static void verifyIdle() throws SQLException, Exception{
-        if ( username != null && Calendar.getInstance().getTimeInMillis() - lastOperationTime > Long.valueOf(Shared.getConfig("idleTime")) ){
+        if ( user != null && Calendar.getInstance().getTimeInMillis() - lastOperationTime > Long.valueOf(Shared.getConfig("idleTime")) ){
              MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "El usuario ha permanecido mucho tiempo sin uso. Requiere contraseña.");
              msg.show(MainWindows.mw);
-             PasswordNeeded pn = new PasswordNeeded(MainWindows.mw, true, Shared.giveUser(listUsers(), username));
+             PasswordNeeded pn = new PasswordNeeded(MainWindows.mw, true, user);
              Shared.centerFrame(pn);
              pn.setVisible(true);
              if ( pn.isPasswordOk() ){

@@ -118,10 +118,8 @@ public class Shared {
     }
 
     public static void loadPhoto(JLabel imageLabel , String addr){
-        if ( !lastImage.equals(addr) ){
-            imageLabel.setIcon(new ImageIcon(addr));
-            lastImage = addr;
-        }
+        imageLabel.setIcon(new ImageIcon(addr));
+        imageLabel.setVisible(true);
     }
 
 }

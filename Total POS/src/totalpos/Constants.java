@@ -19,6 +19,11 @@ public class Constants {
     public static final String wrongPasswordMsg = "Contraseña errónea.";
     public static final String userLocked = "El usuario ha sido bloqueado.";
 
-    public static final boolean isPos = true;
+    public static final boolean isPos = false;
+
+    /**
+     * TODO: This must be in the local database!!!
+     */
+    public static String myId = "01";
 
 }

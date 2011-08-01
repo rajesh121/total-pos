@@ -105,7 +105,11 @@ public class Shared {
     }
 
     protected static void reload(){
-        Login.myMainWindows.dispose();
+        if ( Login.myMainWindows != null){
+            Login.myMainWindows.dispose();
+        }else if ( Login.myMainRetailWindows != null){
+            Login.myMainRetailWindows.dispose();
+        }
         Login login = new Login();
         Shared.centerFrame(login);
         login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);

@@ -1,5 +1,6 @@
 package totalpos;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
@@ -37,7 +38,8 @@ public class Price {
 
     @Override
     public String toString() {
-        return quant + "";
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(quant) + " Bsf";
     }
 
 }

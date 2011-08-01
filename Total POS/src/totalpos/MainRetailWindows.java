@@ -346,8 +346,10 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
     private void updateCurrentItem(){
-        descriptionLabel.setText(items.get(gridTable.getSelectedRow()).getDescription());
-        currentPrice.setText(items.get(gridTable.getSelectedRow()).getLastPrice().toString());
+        Item i = items.get(gridTable.getSelectedRow());
+        descriptionLabel.setText(i.getDescription());
+        currentPrice.setText(i.getLastPrice().toString());
+        Shared.loadPhoto(imageLabel, i.getImageAddr());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

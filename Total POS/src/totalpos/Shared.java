@@ -6,9 +6,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.TreeMap;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 /**
  *
@@ -17,6 +19,7 @@ import javax.swing.JFrame;
 public class Shared {
 
     public static TreeMap<String,String> config = new TreeMap<String, String>();
+    private static String lastImage = "";
 
     protected static void centerFrame(javax.swing.JFrame frame){
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -112,6 +115,13 @@ public class Shared {
 
     public static String getConfig(String k){
         return config.get(k);
+    }
+
+    public static void loadPhoto(JLabel imageLabel , String addr){
+        if ( !lastImage.equals(addr) ){
+            imageLabel.setIcon(new ImageIcon(addr));
+            lastImage = addr;
+        }
     }
 
 }

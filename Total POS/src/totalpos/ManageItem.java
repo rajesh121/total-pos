@@ -61,12 +61,7 @@ public class ManageItem extends javax.swing.JDialog {
         
     }
 
-    private void loadPhoto(String addr){
-        if ( !lastImage.equals(addr) ){
-            imageLabel.setIcon(new ImageIcon(addr));
-            lastImage = addr;
-        }
-    }
+    
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -419,7 +414,7 @@ public class ManageItem extends javax.swing.JDialog {
 
     private void loadImage(){
         Item i = items.get(itemTable.getSelectedRow());
-        loadPhoto(i.getImageAddr());
+        Shared.loadPhoto(imageLabel,i.getImageAddr());
         imageLabel.setVisible(true);
     }
 

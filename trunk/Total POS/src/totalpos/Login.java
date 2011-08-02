@@ -144,9 +144,12 @@ public class Login extends javax.swing.JFrame {
 
                 List<Turn> t = ConnectionDrivers.listTurnsToday();
                 boolean toContinue = false;
+                Turn theTurn = null;
+
                 for (Turn turn : t) {
                     if ( turn.getUsername().equals(u.getLogin()) && turn.isAbierto() && turn.getPos().equals(Constants.myId)){
                         toContinue = true;
+                        theTurn = turn;
                     }
                 }
                 if ( !toContinue ){
@@ -155,7 +158,7 @@ public class Login extends javax.swing.JFrame {
                     return;
                 }
 
-                MainRetailWindows mrw = new MainRetailWindows(u);
+                MainRetailWindows mrw = new MainRetailWindows(u,theTurn);
                 myMainWindows = mrw;
                 Shared.centerFrame(mrw);
                 mrw.setVisible(true);

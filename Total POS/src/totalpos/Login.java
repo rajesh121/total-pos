@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -22,8 +23,7 @@ public class Login extends javax.swing.JFrame {
 
     protected static TreeMap<String,Integer> tries = new TreeMap<String, Integer>();
     public boolean userChangedHerPass = false; // Nice name xDD
-    protected static MainWindows myMainWindows = null;
-    protected static MainRetailWindows myMainRetailWindows = null;
+    protected static Component myMainWindows = null;
 
     /** Creates new form Login */
     public Login() {
@@ -140,11 +140,13 @@ public class Login extends javax.swing.JFrame {
             Shared.userInsertedPasswordOk(loginText.getText());
 
             if ( Constants.isPos ){
-                MainRetailWindows mrw = myMainRetailWindows = new MainRetailWindows(u);
+                MainRetailWindows mrw = new MainRetailWindows(u);
+                myMainWindows = mrw;
                 Shared.centerFrame(mrw);
                 mrw.setVisible(true);
             }else{
-                MainWindows mw = myMainWindows = new MainWindows(u);
+                MainWindows mw = new MainWindows(u);
+                myMainWindows = mw;
                 Shared.centerFrame(mw);
                 mw.setVisible(true);
             }

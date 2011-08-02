@@ -106,9 +106,7 @@ public class Shared {
 
     protected static void reload(){
         if ( Login.myMainWindows != null){
-            Login.myMainWindows.dispose();
-        }else if ( Login.myMainRetailWindows != null){
-            Login.myMainRetailWindows.dispose();
+            Login.myMainWindows.setVisible(false);
         }
         Login login = new Login();
         Shared.centerFrame(login);

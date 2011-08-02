@@ -129,6 +129,12 @@ public class MainWindows extends javax.swing.JFrame {
                     Shared.centerFrame(mi);
                     mi.setVisible(true);
                 }
+            } else if ( ed.getFuncion().equals("createTurn") ) {
+                CreateTurn ct = new CreateTurn(mainWindows, true);
+                if( ct.isOk ){
+                    Shared.centerFrame(ct);
+                    ct.setVisible(true);
+                }
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);

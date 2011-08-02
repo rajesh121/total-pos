@@ -625,7 +625,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static List<Turn> listTurns() throws SQLException{
+    protected static List<Turn> listTurnsToday() throws SQLException{
         List<Turn> ans = new ArrayList<Turn>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();

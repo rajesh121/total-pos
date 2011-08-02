@@ -130,7 +130,7 @@ public class MainWindows extends javax.swing.JFrame {
                     mi.setVisible(true);
                 }
             } else if ( ed.getFuncion().equals("listTurns") ) {
-                ListTurns ct = new ListTurns(mainWindows, true);
+                ListTurnsForm ct = new ListTurnsForm(mainWindows, true);
                 if( ct.isOk ){
                     Shared.centerFrame(ct);
                     ct.setVisible(true);

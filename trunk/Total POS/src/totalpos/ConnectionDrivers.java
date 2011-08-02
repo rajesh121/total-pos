@@ -569,12 +569,42 @@ public class ConnectionDrivers {
         List<User> ans = new ArrayList<User>();
 
         for (User us : u) {
-            if (isAllowed(us.getPerfil(), "createReceipts")) {
+            if (isAllowed(us.getPerfil(), "retail")) {
                 ans.add(us);
             }
         }
 
         return ans;
+    }
+
+    protected static List<String> listPOS() throws SQLException, Exception{
+        verifyIdle();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        Statement stmt = c.createStatement();
+        ResultSet rs = stmt.executeQuery("select identificador from punto_de_venta");
+
+        List<String> ans = new ArrayList<String>();
+        while ( rs.next() ) {
+            String id = rs.getString("identificador");
+            ans.add(id);
+        }
+
+        return ans;
+    }
+
+    protected static void createTurn(String user, String comp, double cash) throws SQLException, Exception{
+        verifyIdle();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into turno"
+                + " ( codigo_de_usuario , codigo_de_pos , fecha , efectivo_en_caja , estado ) values ( ? , ? , now() , ? , 'Abierto')");
+        stmt.setString(1, user);
+        stmt.setString(2, comp);
+        stmt.setDouble(3, cash);
+        stmt.executeUpdate();
+
+        c.close();
     }
 
 }

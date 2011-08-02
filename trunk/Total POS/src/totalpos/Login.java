@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.TreeMap;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
@@ -140,6 +141,20 @@ public class Login extends javax.swing.JFrame {
             Shared.userInsertedPasswordOk(loginText.getText());
 
             if ( Constants.isPos ){
+
+                List<Turn> t = ConnectionDrivers.listTurnsToday();
+                boolean toContinue = false;
+                for (Turn turn : t) {
+                    if ( turn.getUsername().equals(u.getLogin()) && turn.isAbierto() && turn.getPos().equals(Constants.myId)){
+                        toContinue = true;
+                    }
+                }
+                if ( !toContinue ){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No hay turno creado para este usuario el día de hoy.");
+                    msg.show(this);
+                    return;
+                }
+
                 MainRetailWindows mrw = new MainRetailWindows(u);
                 myMainWindows = mrw;
                 Shared.centerFrame(mrw);

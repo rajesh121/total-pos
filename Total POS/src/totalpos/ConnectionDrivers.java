@@ -593,8 +593,25 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    private static boolean existTurnOpenFor(String username) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement(" select * from turno "
+                + "where datediff(now(),fecha) = 0 and codigo_de_usuario = ? and estado = 'Abierto'");
+        stmt.setString(1, username);
+
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ans = rs.next();
+        c.close();
+
+        return ans;
+    }
+
     protected static void createTurn(String user, String comp, double cash) throws SQLException, Exception{
         verifyIdle();
+        if ( existTurnOpenFor(user) ){
+            throw new Exception(Constants.dataRepeated);
+        }
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into turno"

@@ -236,10 +236,15 @@ public class CreateTurn extends javax.swing.JDialog {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
         } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear turno.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
+            if ( ex.getMessage().equals(Constants.dataRepeated) ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, ex.getMessage(),ex);
+                msb.show(this);
+            }else{
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear turno.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
         }
     }
 

@@ -9,7 +9,9 @@ package totalpos;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,15 +28,18 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private User user;
     protected int quant = 1;
     private List<Item> items;
+    private Turn turn;
+    private String actualId;
 
     /** Creates new form MainRetailWindows
      * @param parent
      * @param modal
      * @param u
      */
-    public MainRetailWindows(User u) {
+    public MainRetailWindows(User u, Turn t) {
         initComponents();
         user = u;
+        this.turn = t;
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         updateAll();
     }
@@ -48,14 +53,28 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }
 
     protected void updateAll(){
-        descriptionLabel.setText("Bievenido a Mundo Total");
-        currentPrice.setText("");
-        subTotalLabel.setText("0.00 Bsf");
-        items = new ArrayList<Item>();
-        imageLabel.setVisible(false);
+        try {
+            descriptionLabel.setText("Bievenido a Mundo Total");
+            currentPrice.setText("");
+            subTotalLabel.setText("0.00 Bsf");
+            items = new ArrayList<Item>();
+            imageLabel.setVisible(false);
 
-        updateTable();
-        
+            updateTable();
+
+            actualId = nextId();
+            ConnectionDrivers.createReceipt(actualId, user.getLogin());
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al creando el recibo.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
     }
 
     protected void updateTable(){
@@ -91,12 +110,12 @@ public class MainRetailWindows extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
         jPanel1.setName("jPanel1"); // NOI18N
 
-        descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 24)); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 24));
         descriptionLabel.setForeground(new java.awt.Color(255, 255, 255));
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setName("descriptionLabel"); // NOI18N
 
-        currentPrice.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        currentPrice.setFont(new java.awt.Font("Courier New", 1, 24));
         currentPrice.setForeground(new java.awt.Color(255, 255, 255));
         currentPrice.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         currentPrice.setName("currentPrice"); // NOI18N
@@ -128,17 +147,17 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
         gridTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Descripción", "Descuento", "Cantidad", "Precio"
+                "Descripción", "Descuento", "Precio"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -177,7 +196,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(0, 0, 0));
         jPanel5.setName("jPanel5"); // NOI18N
 
-        subTotalLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        subTotalLabel.setFont(new java.awt.Font("Courier New", 1, 24));
         subTotalLabel.setForeground(new java.awt.Color(255, 255, 255));
         subTotalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         subTotalLabel.setName("subTotalLabel"); // NOI18N
@@ -293,12 +312,6 @@ public class MainRetailWindows extends javax.swing.JFrame {
                     cleanForNewItem();
                     return;
                 }
-                if ( itemC.size() != 1 ){
-                    System.out.println(itemC.size());
-                    for (Item item : itemC) {
-                        System.out.println(item);
-                    }
-                }
                 assert( itemC.size() == 1 );
                 addItem(itemC.get(0));
                 updateCurrentItem();
@@ -327,26 +340,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
             gridTable.setRowSelectionInterval(gridTable.getSelectedRow()-1, gridTable.getSelectedRow()-1);
             updateCurrentItem();
         }else if ( evt.getKeyCode() == KeyEvent.VK_BACK_SPACE ){
-            if ( gridTable.getSelectedRow() != -1 ){
-
-                items.remove(gridTable.getSelectedRow());
-
-                DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
-                model.removeRow(gridTable.getSelectedRow());
-
-                if ( items.isEmpty() ){
-                    updateAll();
-                }else{
-                    gridTable.setRowSelectionInterval( model.getRowCount()-1, model.getRowCount()-1);
-
-                    updateCurrentItem();
-                    updateSubTotal();
-                    cleanForNewItem();
-                }
-            }else{
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
-                msb.show(this);
-            }
+            deleteItem();
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -386,14 +380,23 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }
 
     private void addItem(Item get) {
-        DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
+        try {
+            ConnectionDrivers.addItem2Receipt(actualId, get);
+            DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
-        String s[] = {get.getDescription(),get.getDescuento(), quant+"" , get.getLastPrice().toString()};
-        model.addRow(s);
-
-        gridTable.setRowSelectionInterval( model.getRowCount()-1, model.getRowCount()-1);
-        
-        items.add(get);
+            String[] s = {get.getDescription(), get.getDescuento(), get.getLastPrice().toString()};
+            model.addRow(s);
+            gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
+            items.add(get);
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al agregar el artículo",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
         
     }
 
@@ -409,6 +412,62 @@ public class MainRetailWindows extends javax.swing.JFrame {
             subT += item.getLastPrice().getQuant();
         }
         subTotalLabel.setText(df.format(subT) + " Bsf");
+    }
+
+    private String nextId(){
+        try {
+            int rightNow = ConnectionDrivers.lastReceiptToday();
+
+            Date d = ConnectionDrivers.getDate();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            return sdf.format(d)+ Constants.myId + rightNow;
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+            return "";
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas al listar calcular el siguiente código de factura.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+            return "";
+        }
+        
+    }
+
+    private void deleteItem() {
+        if ( gridTable.getSelectedRow() != -1 ){
+            try {
+                ConnectionDrivers.deleteItem2Receipt(actualId, items.get(gridTable.getSelectedRow()));
+
+                items.remove(gridTable.getSelectedRow());
+                DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
+                model.removeRow(gridTable.getSelectedRow());
+                if (items.isEmpty()) {
+                    updateAll();
+                } else {
+                    gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
+                    updateCurrentItem();
+                    updateSubTotal();
+                    cleanForNewItem();
+                }
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            } catch (Exception ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas al eliminar artículo de la factura.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
+        }else{
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
+            msb.show(this);
+        }
     }
 
 }

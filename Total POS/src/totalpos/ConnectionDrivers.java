@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -644,6 +645,110 @@ public class ConnectionDrivers {
                         rs.getString("fecha"))
                     );
         }
+
+        return ans;
+    }
+
+    private static void changeItemStock( String id, int quant ) throws SQLException, Exception{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual +" + quant + " where codigo = ? ");
+        stmt.setString(1, id);
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    protected static void createReceipt(String id, String user) throws SQLException, Exception{
+        verifyIdle();
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into factura"
+                + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos ) "
+                + "values ( ? , 'Pedido' , now() , 0, 0, 0 , ? , 0 )");
+        stmt.setString(1, id);
+        stmt.setString(2, user);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    protected static void addItem2Receipt(String receiptId, Item item) throws SQLException, Exception{
+        verifyIdle();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into factura_contiene"
+                + " ( codigo_interno_factura, codigo_de_articulo ) "
+                + "values ( ? , ? )");
+        stmt.setString(1, receiptId);
+        stmt.setString(2, item.getCode());
+        stmt.executeUpdate();
+
+        changeItemStock(item.getCode(), -1);
+
+        double withoutTax = Shared.round( item.getLastPrice().getQuant()/(Double.valueOf(Shared.config.get("iva"))+1.0), 2);
+        double withTax = item.getLastPrice().getQuant();
+        stmt = c.prepareStatement("update factura "
+                + "set total_sin_iva = total_sin_iva + " + withoutTax +
+                " , total_con_iva = total_con_iva + " + withTax +
+                " , iva = iva + " + (withTax-withoutTax) +
+                " , cantidad_de_articulos = cantidad_de_articulos + 1 "
+                + "where codigo_interno = ? ");
+        stmt.setString(1, receiptId);
+        stmt.executeUpdate();
+        
+        c.close();
+
+    }
+
+    protected static void deleteItem2Receipt(String receiptId, Item item) throws SQLException, Exception{
+        verifyIdle();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from factura_contiene where"
+                + " codigo_interno_factura = ? and codigo_de_articulo = ? limit 1");
+        stmt.setString(1, receiptId);
+        stmt.setString(2, item.getCode());
+        stmt.executeUpdate();
+
+        changeItemStock(item.getCode(), 1);
+
+        double withoutTax = Shared.round(-1*(item.getLastPrice().getQuant()/(Double.valueOf(Shared.config.get("iva"))+1.0)),2);
+        double withTax = -1*item.getLastPrice().getQuant();
+        stmt = c.prepareStatement("update factura "
+                + "set total_sin_iva = total_sin_iva + " + withoutTax +
+                " , total_con_iva = total_con_iva + " + withTax +
+                " , iva = iva + " + (withTax-withoutTax) +
+                " , cantidad_de_articulos = cantidad_de_articulos + 1 "
+                + "where codigo_interno = ? ");
+        stmt.setString(1, receiptId);
+        stmt.executeUpdate();
+
+    }
+
+    protected static int lastReceiptToday() throws SQLException, Exception{
+        verifyIdle();
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        Statement stmt = c.createStatement();
+        ResultSet rs = stmt.executeQuery(
+                "select count(*) from factura "
+                + "where datediff(now(),fecha_creacion) = 0");
+
+        boolean ok = rs.next();
+        assert(ok);
+        int ans = rs.getInt(1);
+        c.close();
+
+        return ans;
+    }
+
+    public static Date getDate() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        Statement stmt = c.createStatement();
+        ResultSet rs = stmt.executeQuery(
+                "select now()");
+
+        boolean ok = rs.next();
+        assert(ok);
+        Date ans = rs.getDate(1);
+        c.close();
 
         return ans;
     }

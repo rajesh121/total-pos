@@ -129,8 +129,8 @@ public class MainWindows extends javax.swing.JFrame {
                     Shared.centerFrame(mi);
                     mi.setVisible(true);
                 }
-            } else if ( ed.getFuncion().equals("createTurn") ) {
-                CreateTurn ct = new CreateTurn(mainWindows, true);
+            } else if ( ed.getFuncion().equals("listTurns") ) {
+                ListTurns ct = new ListTurns(mainWindows, true);
                 if( ct.isOk ){
                     Shared.centerFrame(ct);
                     ct.setVisible(true);

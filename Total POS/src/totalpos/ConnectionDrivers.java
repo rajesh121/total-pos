@@ -615,13 +615,37 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into turno"
-                + " ( codigo_de_usuario , codigo_de_pos , fecha , efectivo_en_caja , estado ) values ( ? , ? , now() , ? , 'Abierto')");
+                + " ( codigo_de_usuario , codigo_de_pos , fecha , efectivo_en_caja , estado ) "
+                + "values ( ? , ? , now() , ? , 'Abierto')");
         stmt.setString(1, user);
         stmt.setString(2, comp);
         stmt.setDouble(3, cash);
         stmt.executeUpdate();
 
         c.close();
+    }
+
+    protected static List<Turn> listTurns() throws SQLException{
+        List<Turn> ans = new ArrayList<Turn>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        Statement stmt = c.createStatement();
+        ResultSet rs = stmt.executeQuery(
+                "select codigo_de_usuario , codigo_de_pos , fecha, efectivo_en_caja , estado from turno "
+                + "where datediff(now(),fecha) = 0");
+
+        while ( rs.next() ) {
+            ans.add(
+                    new Turn(
+                        rs.getString("codigo_de_usuario"),
+                        rs.getString("codigo_de_pos"),
+                        rs.getDouble("efectivo_en_caja"),
+                        rs.getString("estado").equals("Abierto"),
+                        rs.getString("fecha"))
+                    );
+        }
+
+        return ans;
     }
 
 }

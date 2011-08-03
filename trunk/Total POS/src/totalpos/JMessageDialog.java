@@ -29,16 +29,17 @@ public class JMessageDialog extends javax.swing.JDialog {
     
     public static void showMessage(Component parent, MessageBox inf) {
         
-        Window window = getWindow(parent);      
-        
+        Window window = getWindow(parent);
+
         JMessageDialog myMsg;
         if (window instanceof Frame) { 
             myMsg = new JMessageDialog((Frame) window, true);
         } else {
             myMsg = new JMessageDialog((Dialog) window, true);
         }
-        
+
         myMsg.initComponents();
+        myMsg.setVisibleCmdMore(inf.getCause() != null);
 //        myMsg.applyComponentOrientation(parent.getComponentOrientation());
         myMsg.jscrException.setVisible(false);        
         myMsg.getRootPane().setDefaultButton(myMsg.jcmdOK);
@@ -194,9 +195,12 @@ public class JMessageDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_closeDialog
 
     private void jPanel4MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseMoved
-        Shared.getScreenSaver().actioned();
+        
     }//GEN-LAST:event_jPanel4MouseMoved
-    
+
+    private void setVisibleCmdMore(boolean b){
+        jcmdMore.setVisible(b);
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel2;

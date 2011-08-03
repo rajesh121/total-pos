@@ -173,7 +173,7 @@ public class Login extends javax.swing.JFrame {
                 kindErr = Constants.wrongPasswordMsg;
             }
             
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, kindErr, ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr);
             msg.show(this);
 
             if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){

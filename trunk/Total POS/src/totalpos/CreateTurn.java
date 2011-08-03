@@ -24,7 +24,7 @@ public class CreateTurn extends JInternalFrame {
         
         try {
             modelUserList = ConnectionDrivers.listRetailUsers();
-            listPos = ConnectionDrivers.listPOS();
+            /*listPos = ConnectionDrivers.listPOS();*/
 
             for (User user : modelUserList) {
                 userList.addItem(user.getLogin());

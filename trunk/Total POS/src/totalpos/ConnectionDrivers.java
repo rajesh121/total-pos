@@ -407,9 +407,13 @@ public class ConnectionDrivers {
 
     protected static void saveConfig(String k, String v) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("update configuracion set `value` = ? where `key` = ? ");
-        stmt.setString(1, v);
-        stmt.setString(2, k);
+        PreparedStatement stmt = c.prepareStatement("delete from configuracion where `key` = ? ");
+        stmt.setString(1, k);
+        stmt.executeUpdate();
+
+        stmt = c.prepareStatement("insert into configuracion (`key`,`value`) values (?,?) ");
+        stmt.setString(1, k);
+        stmt.setString(2, v);
         stmt.executeUpdate();
         c.close();
     }
@@ -540,16 +544,18 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static List<String> listPOS() throws SQLException, Exception{
+    protected static List<PointOfSale> listPOS() throws SQLException{
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
         ResultSet rs = stmt.executeQuery("select identificador from punto_de_venta");
 
-        List<String> ans = new ArrayList<String>();
+        List<PointOfSale> ans = new ArrayList<PointOfSale>();
         while ( rs.next() ) {
-            String id = rs.getString("identificador");
-            ans.add(id);
+            ans.add( new PointOfSale(
+                    rs.getString("identificador"),
+                    rs.getString("descripcion"),
+                    rs.getString("impresora")) );
         }
 
         return ans;

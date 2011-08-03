@@ -300,6 +300,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_barcodeFieldKeyReleased
 
     private void barcodeFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_barcodeFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             logout();
             return;

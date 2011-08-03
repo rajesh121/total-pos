@@ -57,6 +57,11 @@ public class ChangeIdleTime extends JInternalFrame {
 
         setClosable(true);
         setTitle("Cambiar tiempo de bloqueo");
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Cambiar tiempo de autobloqueo");
@@ -64,6 +69,11 @@ public class ChangeIdleTime extends JInternalFrame {
         titleLabel.setName("titleLabel"); // NOI18N
 
         idleTimeTextField.setName("idleTimeTextField"); // NOI18N
+        idleTimeTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idleTimeTextFieldActionPerformed(evt);
+            }
+        });
         idleTimeTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 idleTimeTextFieldKeyPressed(evt);
@@ -107,6 +117,7 @@ public class ChangeIdleTime extends JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void idleTimeTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idleTimeTextFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             try{
                 double tt = Double.valueOf(idleTimeTextField.getText());
@@ -141,6 +152,14 @@ public class ChangeIdleTime extends JInternalFrame {
             this.dispose();
         }
     }//GEN-LAST:event_idleTimeTextFieldKeyPressed
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void idleTimeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idleTimeTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_idleTimeTextFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField idleTimeTextField;

@@ -74,6 +74,11 @@ public class ManageUser extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setTitle("Usuarios");
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
         labelTitle.setFont(new java.awt.Font("Courier New", 1, 18));
         labelTitle.setText("Usuarios");
@@ -82,6 +87,11 @@ public class ManageUser extends javax.swing.JInternalFrame {
         jPanel1.setName("jPanel1"); // NOI18N
 
         jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jPanel2MouseMoved(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Courier New", 0, 11));
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
@@ -183,12 +193,25 @@ public class ManageUser extends javax.swing.JInternalFrame {
         );
 
         jPanel3.setName("jPanel3"); // NOI18N
+        jPanel3.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jPanel3MouseMoved(evt);
+            }
+        });
 
         loginText.setEditable(false);
         loginText.setName("loginText"); // NOI18N
+        loginText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                loginTextKeyPressed(evt);
+            }
+        });
 
         nombreText.setName("nombreText"); // NOI18N
         nombreText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nombreTextKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 nombreTextKeyReleased(evt);
             }
@@ -196,15 +219,31 @@ public class ManageUser extends javax.swing.JInternalFrame {
 
         apellidoText.setName("apellidoText"); // NOI18N
         apellidoText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                apellidoTextKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 apellidoTextKeyReleased(evt);
             }
         });
 
         roleCombo.setName("roleCombo"); // NOI18N
+        roleCombo.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                roleComboMouseMoved(evt);
+            }
+        });
 
         bloqueadoCheck.setText("Bloqueado");
         bloqueadoCheck.setName("bloqueadoCheck"); // NOI18N
+        bloqueadoCheck.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                bloqueadoCheckMouseDragged(evt);
+            }
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                bloqueadoCheckMouseMoved(evt);
+            }
+        });
         bloqueadoCheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bloqueadoCheckActionPerformed(evt);
@@ -212,14 +251,34 @@ public class ManageUser extends javax.swing.JInternalFrame {
         });
 
         newPassword.setName("newPassword"); // NOI18N
+        newPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                newPasswordKeyPressed(evt);
+            }
+        });
 
         newPassword2.setName("newPassword2"); // NOI18N
+        newPassword2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                newPassword2KeyPressed(evt);
+            }
+        });
 
         mustChangePasswordCheck.setText("Debe cambiar contraseña al iniciar sesión por primera vez.");
         mustChangePasswordCheck.setName("mustChangePasswordCheck"); // NOI18N
+        mustChangePasswordCheck.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                mustChangePasswordCheckMouseMoved(evt);
+            }
+        });
 
         canChangePasswordCheck.setText("Puede cambiar contraseña.");
         canChangePasswordCheck.setName("canChangePasswordCheck"); // NOI18N
+        canChangePasswordCheck.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                canChangePasswordCheckMouseMoved(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -348,6 +407,14 @@ public class ManageUser extends javax.swing.JInternalFrame {
         userList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 userListValueChanged(evt);
+            }
+        });
+        userList.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                userListMouseDragged(evt);
+            }
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                userListMouseMoved(evt);
             }
         });
         jScrollPane2.setViewportView(userList);
@@ -484,6 +551,66 @@ public class ManageUser extends javax.swing.JInternalFrame {
             apellidoText.setText(apellidoText.getText().substring(0, 15));
         }
     }//GEN-LAST:event_apellidoTextKeyReleased
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void jPanel2MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_jPanel2MouseMoved
+
+    private void jPanel3MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_jPanel3MouseMoved
+
+    private void loginTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginTextKeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_loginTextKeyPressed
+
+    private void newPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newPasswordKeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_newPasswordKeyPressed
+
+    private void newPassword2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newPassword2KeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_newPassword2KeyPressed
+
+    private void nombreTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreTextKeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_nombreTextKeyPressed
+
+    private void apellidoTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_apellidoTextKeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_apellidoTextKeyPressed
+
+    private void roleComboMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_roleComboMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_roleComboMouseMoved
+
+    private void bloqueadoCheckMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bloqueadoCheckMouseDragged
+
+    }//GEN-LAST:event_bloqueadoCheckMouseDragged
+
+    private void bloqueadoCheckMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bloqueadoCheckMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_bloqueadoCheckMouseMoved
+
+    private void mustChangePasswordCheckMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mustChangePasswordCheckMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_mustChangePasswordCheckMouseMoved
+
+    private void canChangePasswordCheckMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canChangePasswordCheckMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_canChangePasswordCheckMouseMoved
+
+    private void userListMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userListMouseDragged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_userListMouseDragged
+
+    private void userListMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userListMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_userListMouseMoved
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField apellidoText;

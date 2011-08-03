@@ -20,7 +20,7 @@ public class Constants {
     public static final String userLocked = "El usuario ha sido bloqueado.";
     public static final String dataRepeated = "Esta intentando ingresar valores repetidos";
 
-    public static final boolean isPos = true;
+    public static final boolean isPos = false;
 
     /**
      * TODO: This must be in the local database!!!

@@ -11,7 +11,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-      <Connection code="ConnectionDrivers.user.getLogin() + &quot; @ &quot; + Constants.appName" type="code"/>
+      <Connection code="Shared.getUser().getLogin() + &quot; @ &quot; + Constants.appName" type="code"/>
     </Property>
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
       <Color id="Cursor predeterminado"/>
@@ -22,6 +22,8 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
   <Events>
+    <EventHandler event="windowClosed" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosed"/>
+    <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
     <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="formKeyPressed"/>
   </Events>
   <AuxValues>
@@ -39,8 +41,8 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="mdiPanel" alignment="0" pref="752" max="32767" attributes="0"/>
           <Component id="jPanel1" alignment="1" max="32767" attributes="0"/>
+          <Component id="mdiPanel" alignment="0" pref="752" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">

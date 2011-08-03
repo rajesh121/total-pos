@@ -3,14 +3,13 @@ package totalpos;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JInternalFrame;
 
 /**
  *
  * @author Saul Hidalgo
  */
-public class CreateTurn extends javax.swing.JDialog {
+public class CreateTurn extends JInternalFrame {
 
     private List<User> modelUserList;
     private List<String> listPos;
@@ -20,8 +19,7 @@ public class CreateTurn extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public CreateTurn(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public CreateTurn() {
         initComponents();
         
         try {
@@ -41,12 +39,12 @@ public class CreateTurn extends javax.swing.JDialog {
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-            msb.show(MainWindows.mw);
+            msb.show(Shared.getMyMainWindows());
             this.dispose();
             Shared.reload();
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al listar los usuarios.",ex);
-            msb.show(this);
+            msb.show(Shared.getMyMainWindows());
             this.dispose();
             Shared.reload();
         }

@@ -29,14 +29,11 @@ import javax.swing.JOptionPane;
 public class MainWindows extends javax.swing.JFrame {
 
     private TreeMap< String , Set<Character> > mnemonics = new TreeMap<String, Set<Character> >();
-    public static MainWindows mw;
 
     /** Creates new form MainWindows
      * @param user 
      */
     public MainWindows(User user) {
-        ConnectionDrivers.user = user;
-        mw = this;
         initComponents();
 
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -46,7 +43,7 @@ public class MainWindows extends javax.swing.JFrame {
 
     private void createMenu(JComponent menu, String root){
         try {
-            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root, ConnectionDrivers.user.getPerfil());
+            List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root, Shared.getUser().getPerfil());
 
             for (int i = 0; i < edges.size(); i++) {
 
@@ -161,8 +158,16 @@ public class MainWindows extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(ConnectionDrivers.user.getLogin() + " @ " + Constants.appName);
+        setTitle(Shared.getUser().getLogin() + " @ " + Constants.appName);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);
@@ -179,7 +184,7 @@ public class MainWindows extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
-        esc2exit.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        esc2exit.setFont(new java.awt.Font("Courier New", 0, 11));
         esc2exit.setText("ESC = Salir.");
         esc2exit.setName("esc2exit"); // NOI18N
 
@@ -213,8 +218,8 @@ public class MainWindows extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,13 +244,21 @@ public class MainWindows extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mdiPanelKeyPressed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        Shared.setUser(null);
+    }//GEN-LAST:event_formWindowClosing
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowClosed
+
     private void logout(){
-        if ( JOptionPane.showConfirmDialog(MainWindows.mw, "¿Está seguro que desea cerrar sesión?") == 0 ){
+        if ( JOptionPane.showConfirmDialog(this, "¿Está seguro que desea cerrar sesión?") == 0 ){
             Login l = new Login();
             Shared.centerFrame(l);
             Shared.maximize(l);
             l.setVisible(true);
-            ConnectionDrivers.user = null;
+            Shared.setUser(null);
 
             setVisible(false);
             dispose();

@@ -1,5 +1,6 @@
 package totalpos;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.sql.SQLException;
@@ -18,8 +19,11 @@ import javax.swing.JLabel;
  */
 public class Shared {
 
-    public static TreeMap<String,String> config = new TreeMap<String, String>();
-    private static String lastImage = "";
+    private static TreeMap<String,String> config = new TreeMap<String, String>();
+    private static Component myMainWindows = null;
+    private static TreeMap<String, Integer> tries = new TreeMap<String, Integer>();
+    private static User user;
+    private static UpdateClock screenSaver;
 
     protected static void centerFrame(javax.swing.JFrame frame){
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -83,40 +87,40 @@ public class Shared {
     }
 
     public static void userTrying(String l) throws Exception{
-        TreeMap<String,Integer> tries = Login.tries;
         if ( !tries.containsKey(l) ){
-            tries.put(l, new Integer(1));
-        }else if ( tries.get(l).compareTo(new Integer(1)) > 0 ){
+            getTries().put(l, new Integer(1));
+        }else if ( getTries().get(l).compareTo(new Integer(1)) > 0 ){
             try {
                 ConnectionDrivers.lockUser(l);
             } catch (SQLException ex1) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex1);
-                msg.show(MainWindows.mw);
+                msg.show(Shared.getMyMainWindows());
             }
             throw new Exception(Constants.userLocked);
         }else{
-            tries.put(l, new Integer(tries.get(l) + 1));
+            getTries().put(l, new Integer(getTries().get(l) + 1));
         }
     }
 
     public static void userInsertedPasswordOk(String username){
-        TreeMap<String,Integer> tries = Login.tries;
-        tries.put(username, 0);
+        getTries().put(username, 0);
     }
 
     protected static void reload(){
-        if ( Login.myMainWindows != null){
-            Login.myMainWindows.setVisible(false);
-        }
         Login login = new Login();
         Shared.centerFrame(login);
         login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         login.setVisible(true);
-        ConnectionDrivers.user = null;
+        if ( getMyMainWindows() instanceof MainWindows ){
+            ((MainWindows)getMyMainWindows()).dispose();
+        }else if ( getMyMainWindows() instanceof MainRetailWindows ) {
+            ((MainRetailWindows)getMyMainWindows()).dispose();
+        }
+        setUser(null);
     }
 
     public static String getConfig(String k){
-        return config.get(k);
+        return getConfig().get(k);
     }
 
     public static void loadPhoto(JLabel imageLabel , String addr){
@@ -133,6 +137,70 @@ public class Shared {
          fudge_factor /= 10.0d;
       }
       return Math.round((value + fudge_factor)* power_of_ten)  / power_of_ten;
+    }
+
+    /**
+     * @return the config
+     */
+    public static TreeMap<String, String> getConfig() {
+        return config;
+    }
+
+    /**
+     * @param aConfig the config to set
+     */
+    public static void setConfig(TreeMap<String, String> aConfig) {
+        config = aConfig;
+    }
+
+    /**
+     * @return the myMainWindows
+     */
+    protected static Component getMyMainWindows() {
+        return myMainWindows;
+    }
+
+    /**
+     * @param aMyMainWindows the myMainWindows to set
+     */
+    protected static void setMyMainWindows(Component aMyMainWindows) {
+        myMainWindows = aMyMainWindows;
+    }
+
+    /**
+     * @return the tries
+     */
+    protected static TreeMap<String, Integer> getTries() {
+        return tries;
+    }
+
+    /**
+     * @param aTries the tries to set
+     */
+    protected static void setTries(TreeMap<String, Integer> aTries) {
+        tries = aTries;
+    }
+
+    /**
+     * @return the user
+     */
+    protected static User getUser() {
+        return user;
+    }
+
+    /**
+     * @param aUser the user to set
+     */
+    protected static void setUser(User aUser) {
+        user = aUser;
+    }
+
+    public static UpdateClock getScreenSaver() {
+        return screenSaver;
+    }
+
+    public static void setScreenSaver(UpdateClock screenSaver) {
+        Shared.screenSaver = screenSaver;
     }
 
 }

@@ -99,7 +99,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="24" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Crear Turno"/>
@@ -108,7 +108,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="12" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Usuario"/>
@@ -184,7 +184,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="12" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Bsf"/>

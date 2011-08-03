@@ -156,8 +156,13 @@ public class CreateProfile extends JInternalFrame {
                 MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente.");
                 msb.show(this);
             } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-                msb.show(this);
+                if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
+                    msb.show(this);
+                }else{
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                    msb.show(this);
+                }
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear perfil.",ex);
                 msb.show(this);

@@ -18,6 +18,7 @@ public class ChangePassword extends javax.swing.JDialog {
 
     private User user;
     private Login parent;
+    public boolean isOk = false;
 
     /** Creates new form ChangePassword */
     public ChangePassword(Login parent, boolean modal , User u) {
@@ -120,7 +121,7 @@ public class ChangePassword extends javax.swing.JDialog {
             }
             ConnectionDrivers.setPassword(user.getLogin(), Shared.hashPassword(newPasswordText.getText()));
             ConnectionDrivers.mustntChangePassword(user.getLogin());
-            parent.userChangedHerPass = true;
+            isOk = true;
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Contraseña cambiada satisfactoriamente");
             msg.show(this);
             this.setVisible(false);

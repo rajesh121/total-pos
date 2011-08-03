@@ -19,9 +19,7 @@ import java.util.List;
  */
 public class ConnectionDrivers {
 
-    protected static ComboPooledDataSource cpds ;
-    private static long lastOperationTime = Calendar.getInstance().getTimeInMillis();
-    public static User user;
+    protected static ComboPooledDataSource cpds ;    
 
     /** Crea la piscina de conexiones.
      * 
@@ -65,9 +63,6 @@ public class ConnectionDrivers {
             c.close();
             throw new Exception(Constants.wrongPasswordMsg);
         }
-
-        lastOperationTime = Calendar.getInstance().getTimeInMillis();
-
         c.close();
     }
 
@@ -107,7 +102,6 @@ public class ConnectionDrivers {
      */
     protected static Edge getPredecesor(String e) throws SQLException, Exception{
 
-        verifyIdle();
         if ( e == null ) {
             return null;
         }
@@ -142,7 +136,6 @@ public class ConnectionDrivers {
      * @throws Exception 
      */
     protected static void createProfile(String id, String description) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario( id, descripcion ) values ( ? , ? )");
         stmt.setString(1, id);
@@ -158,7 +151,6 @@ public class ConnectionDrivers {
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
     protected static List<Profile> listProfile(String id) throws SQLException, Exception{
-        verifyIdle();
         List<Profile> ans = new LinkedList<Profile>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -184,7 +176,6 @@ public class ConnectionDrivers {
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
     protected static List<Edge> listEdgesAllowed(String parent, String profile) throws SQLException, Exception{
-        verifyIdle();
         List<Edge> ans = new LinkedList<Edge>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -214,7 +205,6 @@ public class ConnectionDrivers {
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
     protected static List<Edge> listEdges(String parent) throws SQLException, Exception{
-        verifyIdle();
         List<Edge> ans = new LinkedList<Edge>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -238,7 +228,6 @@ public class ConnectionDrivers {
     }
 
     protected static boolean isAllowed(String profile, String id) throws SQLException, Exception{
-        verifyIdle();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select n.id "
@@ -255,7 +244,6 @@ public class ConnectionDrivers {
     }
 
     protected static void disableMenuProfile(String profile, String id) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario_puede where id_tipo_usuario = ? and id_nodo = ?");
         stmt.setString(1, profile);
@@ -266,7 +254,6 @@ public class ConnectionDrivers {
     }
 
     protected static void enableMenuProfile(String profile, String id) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario_puede(id_tipo_usuario , id_nodo) values ( ? , ? )");
         stmt.setString(1, profile);
@@ -277,7 +264,6 @@ public class ConnectionDrivers {
     }
 
     protected static void setPassword(String user, String password) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set password = ? where login = ? ");
         stmt.setString(1, password);
@@ -288,7 +274,6 @@ public class ConnectionDrivers {
     }
 
     protected static void createUser(String username, String role, String password) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into usuario"
                 + " ( login , password , tipo_de_usuario_id , bloqueado , nombre ) values ( ? , ? , ? , ? , ?)");
@@ -305,7 +290,6 @@ public class ConnectionDrivers {
     public static void changeProperties(String loginT, String nombreT,
             String apellidoT, String roleT,
             boolean bloqueado, boolean puede , boolean debe) throws SQLException, Exception {
-        verifyIdle();
         
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set nombre = ? ,"
@@ -361,7 +345,6 @@ public class ConnectionDrivers {
     }
 
     static void changeProfileDetails(String prevId, String id, String description) throws SQLException, Exception {
-        verifyIdle();
         if ( prevId.equals(id) ){ //Caso trivial xD;
             Connection c = ConnectionDrivers.cpds.getConnection();
             PreparedStatement stmt = c.prepareStatement("update tipo_de_usuario set descripcion = ? where id = ? ");
@@ -398,7 +381,6 @@ public class ConnectionDrivers {
     }
 
     public static void mustntChangePassword(String username) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set debeCambiarPassword = 0 where login = ? ");
         stmt.setString(1, username);
@@ -407,41 +389,23 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    private static void verifyIdle() throws SQLException, Exception{
-        if ( user != null && Calendar.getInstance().getTimeInMillis() - lastOperationTime > Long.valueOf(Shared.getConfig("idleTime")) ){
-             MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "El usuario ha permanecido mucho tiempo sin uso. Requiere contraseña.");
-             msg.show(MainWindows.mw);
-             PasswordNeeded pn = new PasswordNeeded(MainWindows.mw, true, user);
-             Shared.centerFrame(pn);
-             pn.setVisible(true);
-             if ( pn.isPasswordOk() ){
-                 lastOperationTime = Calendar.getInstance().getTimeInMillis();
-             }else{
-                 throw new Exception("No se realizó la operación. Contraseña Incorrecta.");
-             }
-        }else{
-            lastOperationTime = Calendar.getInstance().getTimeInMillis();
-        }
-    }
-
     protected static void initializeConfig(){
         try {
-            Shared.config.clear();
+            Shared.getConfig().clear();
             Connection c = ConnectionDrivers.cpds.getConnection();
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("select `Key` , `Value` from configuracion");
             while (rs.next()) {
-                Shared.config.put(rs.getString("Key"), rs.getString("Value"));
+                Shared.getConfig().put(rs.getString("Key"), rs.getString("Value"));
             }
             c.close();
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Problemas con la base de datos.", ex);
-            msb.show(MainWindows.mw);
+            msb.show(Shared.getMyMainWindows());
         }
     }
 
     protected static void saveConfig(String k, String v) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update configuracion set `value` = ? where `key` = ? ");
         stmt.setString(1, v);
@@ -476,7 +440,7 @@ public class ConnectionDrivers {
 
         while (rs.next()) {
             ans.add(new Price(rs.getDate("fecha")
-                    , (double)Math.round(rs.getDouble("monto")*(Double.valueOf(Shared.config.get("iva"))+1.0))));
+                    , (double)Math.round(rs.getDouble("monto")*(Double.valueOf(Shared.getConfig().get("iva"))+1.0))));
         }
         c.close();
 
@@ -500,7 +464,6 @@ public class ConnectionDrivers {
     }
 
     protected static List<Item> listItems(String barCode, String code, String description, String model) throws SQLException, Exception{
-        verifyIdle();
         List<Item> ans = new LinkedList<Item>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -547,7 +510,6 @@ public class ConnectionDrivers {
     }
 
     protected static String getIdProfile(String name) throws SQLException, Exception{
-        verifyIdle();
 
         if ( name.equals("/") ) {
             return "root";
@@ -579,7 +541,6 @@ public class ConnectionDrivers {
     }
 
     protected static List<String> listPOS() throws SQLException, Exception{
-        verifyIdle();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
@@ -609,7 +570,6 @@ public class ConnectionDrivers {
     }
 
     protected static void createTurn(String user, String comp, double cash) throws SQLException, Exception{
-        verifyIdle();
         if ( existTurnOpenFor(user) ){
             throw new Exception(Constants.dataRepeated);
         }
@@ -658,7 +618,6 @@ public class ConnectionDrivers {
     }
 
     protected static void createReceipt(String id, String user) throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura"
                 + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos ) "
@@ -671,7 +630,6 @@ public class ConnectionDrivers {
     }
 
     protected static void addItem2Receipt(String receiptId, Item item) throws SQLException, Exception{
-        verifyIdle();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura_contiene"
@@ -683,7 +641,7 @@ public class ConnectionDrivers {
 
         changeItemStock(item.getCode(), -1);
 
-        double withoutTax = Shared.round( item.getLastPrice().getQuant()/(Double.valueOf(Shared.config.get("iva"))+1.0), 2);
+        double withoutTax = Shared.round( item.getLastPrice().getQuant()/(Double.valueOf(Shared.getConfig().get("iva"))+1.0), 2);
         double withTax = item.getLastPrice().getQuant();
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = total_sin_iva + " + withoutTax +
@@ -699,7 +657,6 @@ public class ConnectionDrivers {
     }
 
     protected static void deleteItem2Receipt(String receiptId, Item item) throws SQLException, Exception{
-        verifyIdle();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from factura_contiene where"
@@ -710,7 +667,7 @@ public class ConnectionDrivers {
 
         changeItemStock(item.getCode(), 1);
 
-        double withoutTax = Shared.round(-1*(item.getLastPrice().getQuant()/(Double.valueOf(Shared.config.get("iva"))+1.0)),2);
+        double withoutTax = Shared.round(-1*(item.getLastPrice().getQuant()/(Double.valueOf(Shared.getConfig().get("iva"))+1.0)),2);
         double withTax = -1*item.getLastPrice().getQuant();
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = total_sin_iva + " + withoutTax +
@@ -724,7 +681,6 @@ public class ConnectionDrivers {
     }
 
     protected static int lastReceiptToday() throws SQLException, Exception{
-        verifyIdle();
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
         ResultSet rs = stmt.executeQuery(

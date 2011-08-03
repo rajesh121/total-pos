@@ -18,7 +18,7 @@ public class ModifyProfile extends JDialog {
     public boolean isOk = false;
   
   public ModifyProfile(String profileId) {
-    super((JFrame)Login.myMainWindows,true);
+    super((JFrame)Shared.getMyMainWindows(),true);
 
     this.profile = profileId;
 

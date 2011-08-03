@@ -109,8 +109,7 @@ public class ListTurnsForm extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newTurnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTurnActionPerformed
-        CreateTurn ct = new CreateTurn(MainWindows.mw, true);
-        Shared.centerFrame(ct);
+        CreateTurn ct = new CreateTurn();
         ct.setVisible(true);
         updateAll();
     }//GEN-LAST:event_newTurnActionPerformed

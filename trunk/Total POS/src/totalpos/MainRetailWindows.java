@@ -367,12 +367,12 @@ public class MainRetailWindows extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void logout(){
-        if ( JOptionPane.showConfirmDialog(MainWindows.mw, "¿Está seguro que desea cerrar sesión?") == 0 ){
+        if ( JOptionPane.showConfirmDialog( (Shared.getMyMainWindows()) , "¿Está seguro que desea cerrar sesión?") == 0 ){
             Login l = new Login();
             Shared.centerFrame(l);
             Shared.maximize(l);
             l.setVisible(true);
-            ConnectionDrivers.user = null;
+            Shared.setUser(null);
 
             setVisible(false);
             dispose();

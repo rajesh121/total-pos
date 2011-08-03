@@ -62,7 +62,7 @@ public class Sticker {
 
             if ( psZebra == null  ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha conseguido la impresora llamada \"Zebra\"");
-                msb.show(MainWindows.mw);
+                msb.show(Shared.getMyMainWindows());
                 return;
             }
             DocPrintJob job = psZebra.createPrintJob();
@@ -96,7 +96,7 @@ public class Sticker {
             job.print(doc, null);
         } catch (PrintException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la impresora.",ex);
-            msb.show(MainWindows.mw);
+            msb.show(Shared.getMyMainWindows());
         }
     }
 

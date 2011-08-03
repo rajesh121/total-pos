@@ -113,7 +113,7 @@ public class ChangeIdleTime extends JInternalFrame {
                 long t = (long) (tt * 60 * 1000);
                 if ( t <= 0 || t >= 1000*60*1000){
                     MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe ser un entero positivo menor a 1000.");
-                    msb.show(MainWindows.mw);
+                    msb.show(Shared.getMyMainWindows());
                     this.idleTimeTextField.setText( currentTime + "" );
                 }else{
                     try {
@@ -133,7 +133,7 @@ public class ChangeIdleTime extends JInternalFrame {
                 }
             } catch ( NumberFormatException ex ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe tener un formato válido.",ex);
-                msb.show(MainWindows.mw);
+                msb.show(Shared.getMyMainWindows());
                 this.idleTimeTextField.setText( currentTime + "" );
             }
         }

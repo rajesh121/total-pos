@@ -119,11 +119,11 @@ public class MessageBox {
         StringBuilder sb = new StringBuilder();
         int iSignalWord = getSignalWord();
         if (iSignalWord == SGN_DANGER) {
-            sb.append("Error: ");
+            sb.append("Error Fatal: ");
         } else if (iSignalWord == SGN_WARNING) {
             sb.append("Advertencia: ");
         } else if (iSignalWord == SGN_CAUTION) {
-            sb.append("Precaución: ");
+            sb.append("Error: ");
         } else if (iSignalWord == SGN_NOTICE) {
             sb.append("Noticia: ");
         } else if (iSignalWord == SGN_IMPORTANT) {

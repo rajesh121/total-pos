@@ -73,6 +73,11 @@ public class SearchProfile extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setResizable(true);
         setTitle("Buscar Perfil");
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
         searchTitle.setFont(new java.awt.Font("Courier New", 1, 18));
         searchTitle.setText("Buscar Perfil");
@@ -95,7 +100,7 @@ public class SearchProfile extends javax.swing.JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        table.setFont(new java.awt.Font("Courier New", 0, 11));
+        table.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -125,6 +130,11 @@ public class SearchProfile extends javax.swing.JInternalFrame {
         table.setName("table"); // NOI18N
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                tableMouseMoved(evt);
+            }
+        });
         table.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 tableKeyReleased(evt);
@@ -134,6 +144,11 @@ public class SearchProfile extends javax.swing.JInternalFrame {
 
         changePermits.setText("Permisos");
         changePermits.setName("changePermits"); // NOI18N
+        changePermits.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                changePermitsMouseMoved(evt);
+            }
+        });
         changePermits.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 changePermitsActionPerformed(evt);
@@ -142,6 +157,11 @@ public class SearchProfile extends javax.swing.JInternalFrame {
 
         changeDetails.setText("Detalles");
         changeDetails.setName("changeDetails"); // NOI18N
+        changeDetails.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                changeDetailsMouseMoved(evt);
+            }
+        });
         changeDetails.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 changeDetailsActionPerformed(evt);
@@ -188,6 +208,7 @@ public class SearchProfile extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_searchTextFieldActionPerformed
 
     private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.setVisible(false);
             dispose();
@@ -243,6 +264,22 @@ public class SearchProfile extends javax.swing.JInternalFrame {
         }
         
     }//GEN-LAST:event_changeDetailsActionPerformed
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void changeDetailsMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changeDetailsMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_changeDetailsMouseMoved
+
+    private void changePermitsMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changePermitsMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_changePermitsMouseMoved
+
+    private void tableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_tableMouseMoved
 
     private void showThisProfile(String p){
         ModifyProfile cnte = new ModifyProfile(p);

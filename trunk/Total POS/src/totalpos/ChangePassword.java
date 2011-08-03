@@ -45,15 +45,20 @@ public class ChangePassword extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(Constants.appName);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel2.setText("Contraseña Nueva");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel3.setText("Contraseña nueva (Repetición)");
@@ -61,11 +66,21 @@ public class ChangePassword extends javax.swing.JDialog {
         jLabel3.setName("jLabel3"); // NOI18N
 
         newPasswordText.setName("newPasswordText"); // NOI18N
+        newPasswordText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                newPasswordTextKeyPressed(evt);
+            }
+        });
 
         newPasswordText2.setName("newPasswordText2"); // NOI18N
         newPasswordText2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newPasswordText2ActionPerformed(evt);
+            }
+        });
+        newPasswordText2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                newPasswordText2KeyPressed(evt);
             }
         });
 
@@ -104,6 +119,18 @@ public class ChangePassword extends javax.swing.JDialog {
     private void newPasswordText2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPasswordText2ActionPerformed
         changePasswordNow();
     }//GEN-LAST:event_newPasswordText2ActionPerformed
+
+    private void newPasswordText2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newPasswordText2KeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_newPasswordText2KeyPressed
+
+    private void newPasswordTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newPasswordTextKeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_newPasswordTextKeyPressed
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel2;

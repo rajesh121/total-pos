@@ -117,9 +117,14 @@ public class JMessageDialog extends javax.swing.JDialog {
         });
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        jPanel4.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jPanel4MouseMoved(evt);
+            }
+        });
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
-        jlblMessage.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        jlblMessage.setFont(new java.awt.Font("Courier New", 1, 14));
         jlblMessage.setText("jlblMessage");
         jlblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jlblMessage.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -187,6 +192,10 @@ public class JMessageDialog extends javax.swing.JDialog {
         setVisible(false);
         dispose();
     }//GEN-LAST:event_closeDialog
+
+    private void jPanel4MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_jPanel4MouseMoved
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -39,6 +39,11 @@ public class CreateProfile extends JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("Crear Perfil");
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Crear Perfil");
@@ -139,6 +144,7 @@ public class CreateProfile extends JInternalFrame {
     }//GEN-LAST:event_descriptionTextFieldKeyTyped
 
     private void descriptionTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             try {
                 if ( !idTextField.getText().matches("\\A[a-zA-Z0-9 ]+$") ){
@@ -165,6 +171,7 @@ public class CreateProfile extends JInternalFrame {
     }//GEN-LAST:event_descriptionTextFieldKeyPressed
 
     private void idTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idTextFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.setVisible(false);
             dispose();
@@ -182,6 +189,10 @@ public class CreateProfile extends JInternalFrame {
             descriptionTextField.setText(descriptionTextField.getText().substring(0, 200));
         }
     }//GEN-LAST:event_descriptionTextFieldKeyReleased
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;

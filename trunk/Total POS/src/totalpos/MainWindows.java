@@ -175,6 +175,11 @@ public class MainWindows extends javax.swing.JFrame {
         });
 
         mdiPanel.setName("mdiPanel"); // NOI18N
+        mdiPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                mdiPanelMouseMoved(evt);
+            }
+        });
         mdiPanel.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 mdiPanelKeyPressed(evt);
@@ -183,6 +188,11 @@ public class MainWindows extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
+        jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jPanel1MouseMoved(evt);
+            }
+        });
 
         esc2exit.setFont(new java.awt.Font("Courier New", 0, 11));
         esc2exit.setText("ESC = Salir.");
@@ -251,6 +261,14 @@ public class MainWindows extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowClosed
+
+    private void mdiPanelMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mdiPanelMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_mdiPanelMouseMoved
+
+    private void jPanel1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_jPanel1MouseMoved
 
     private void logout(){
         if ( JOptionPane.showConfirmDialog(this, "¿Está seguro que desea cerrar sesión?") == 0 ){

@@ -47,14 +47,19 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
         setTitle(Constants.appName);
         setMinimumSize(new java.awt.Dimension(400, 96));
         setResizable(false);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel1.setText("ID");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel2.setText("Descripción");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -62,6 +67,9 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
 
         changeId.setName("changeId"); // NOI18N
         changeId.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                changeIdKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 changeIdKeyReleased(evt);
             }
@@ -74,12 +82,15 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
             }
         });
         changeDescription.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                changeDescriptionKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 changeDescriptionKeyReleased(evt);
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel3.setText("Cambiar detalles");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel3.setName("jLabel3"); // NOI18N
@@ -152,10 +163,23 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
     }//GEN-LAST:event_changeDescriptionKeyReleased
 
     private void changeIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_changeIdKeyReleased
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             closeWindows();
         }
     }//GEN-LAST:event_changeIdKeyReleased
+
+    private void changeIdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_changeIdKeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_changeIdKeyPressed
+
+    private void changeDescriptionKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_changeDescriptionKeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_changeDescriptionKeyPressed
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField changeDescription;

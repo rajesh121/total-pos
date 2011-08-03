@@ -90,6 +90,11 @@ public class ManageItem extends JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setTitle("Artículos");
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel1.setText("Artículos");
@@ -128,6 +133,11 @@ public class ManageItem extends JInternalFrame {
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 itemTableMouseReleased(evt);
+            }
+        });
+        itemTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                itemTableMouseMoved(evt);
             }
         });
         itemTable.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -251,6 +261,11 @@ public class ManageItem extends JInternalFrame {
         jPanel1.setName("jPanel1"); // NOI18N
 
         imageLabel.setName("imageLabel"); // NOI18N
+        imageLabel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                imageLabelMouseMoved(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -277,6 +292,11 @@ public class ManageItem extends JInternalFrame {
         });
 
         quantTicket.setName("quantTicket"); // NOI18N
+        quantTicket.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                quantTicketKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -327,6 +347,7 @@ public class ManageItem extends JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void codigoFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_codigoFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             updateAll();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
@@ -339,6 +360,7 @@ public class ManageItem extends JInternalFrame {
     }//GEN-LAST:event_closeWindowsActionPerformed
 
     private void modeloFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_modeloFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             updateAll();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
@@ -351,6 +373,7 @@ public class ManageItem extends JInternalFrame {
     }//GEN-LAST:event_descriptionFieldKeyReleased
 
     private void descriptionFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             updateAll();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
@@ -359,6 +382,7 @@ public class ManageItem extends JInternalFrame {
     }//GEN-LAST:event_descriptionFieldKeyPressed
 
     private void barCodeFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_barCodeFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             updateAll();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
@@ -410,6 +434,22 @@ public class ManageItem extends JInternalFrame {
     private void itemTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_itemTableKeyReleased
         loadImage();
     }//GEN-LAST:event_itemTableKeyReleased
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void itemTableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_itemTableMouseMoved
+
+    private void imageLabelMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imageLabelMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_imageLabelMouseMoved
+
+    private void quantTicketKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_quantTicketKeyPressed
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_quantTicketKeyPressed
 
     private void loadImage(){
         Item i = items.get(itemTable.getSelectedRow());

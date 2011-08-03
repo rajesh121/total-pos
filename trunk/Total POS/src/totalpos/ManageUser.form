@@ -10,6 +10,9 @@
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="formMouseMoved"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
@@ -119,6 +122,9 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="jPanel2" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="jPanel2MouseMoved"/>
+          </Events>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -298,6 +304,9 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="jPanel3" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="jPanel3MouseMoved"/>
+          </Events>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -370,12 +379,16 @@
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="loginText" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="loginTextKeyPressed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="nombreText">
               <Properties>
                 <Property name="name" type="java.lang.String" value="nombreText" noResource="true"/>
               </Properties>
               <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="nombreTextKeyPressed"/>
                 <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="nombreTextKeyReleased"/>
               </Events>
             </Component>
@@ -384,6 +397,7 @@
                 <Property name="name" type="java.lang.String" value="apellidoText" noResource="true"/>
               </Properties>
               <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="apellidoTextKeyPressed"/>
                 <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="apellidoTextKeyReleased"/>
               </Events>
             </Component>
@@ -394,6 +408,9 @@
                 </Property>
                 <Property name="name" type="java.lang.String" value="roleCombo" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="roleComboMouseMoved"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="bloqueadoCheck">
               <Properties>
@@ -401,6 +418,8 @@
                 <Property name="name" type="java.lang.String" value="bloqueadoCheck" noResource="true"/>
               </Properties>
               <Events>
+                <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="bloqueadoCheckMouseDragged"/>
+                <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="bloqueadoCheckMouseMoved"/>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bloqueadoCheckActionPerformed"/>
               </Events>
             </Component>
@@ -408,23 +427,35 @@
               <Properties>
                 <Property name="name" type="java.lang.String" value="newPassword" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="newPasswordKeyPressed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JPasswordField" name="newPassword2">
               <Properties>
                 <Property name="name" type="java.lang.String" value="newPassword2" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="newPassword2KeyPressed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="mustChangePasswordCheck">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Debe cambiar contrase&#xf1;a al iniciar sesi&#xf3;n por primera vez."/>
                 <Property name="name" type="java.lang.String" value="mustChangePasswordCheck" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="mustChangePasswordCheckMouseMoved"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="canChangePasswordCheck">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Puede cambiar contrase&#xf1;a."/>
                 <Property name="name" type="java.lang.String" value="canChangePasswordCheck" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="canChangePasswordCheckMouseMoved"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -480,6 +511,8 @@
           </Properties>
           <Events>
             <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="userListValueChanged"/>
+            <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="userListMouseDragged"/>
+            <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="userListMouseMoved"/>
           </Events>
         </Component>
       </SubComponents>

@@ -51,7 +51,7 @@ public class ManageItem extends JInternalFrame {
         model.setRowCount(0);
 
         for (Item item : items) {
-            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),item.getLastPrice().toString(),item.getDescuento()};
+            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),new Price(null, item.getLastPrice().getQuant()/1.12).toString(),item.getLastPrice().toString(),item.getDescuento()};
             model.addRow(s);
         }
         
@@ -105,17 +105,17 @@ public class ManageItem extends JInternalFrame {
         itemTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Actual", "Descuento"
+                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Sin Iva", "Precio Actual", "Descuento"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -124,6 +124,7 @@ public class ManageItem extends JInternalFrame {
         });
         itemTable.setName("itemTable"); // NOI18N
         itemTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        itemTable.getTableHeader().setReorderingAllowed(false);
         itemTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 itemTableMouseClicked(evt);
@@ -480,6 +481,11 @@ public class ManageItem extends JInternalFrame {
     private void updateAll() {
         updateItems();
         updateTable();
+
+        if ( !items.isEmpty() ){
+            itemTable.setRowSelectionInterval(0, 0);
+            itemTable.requestFocus();
+        }
 
         imageLabel.setVisible(false);
         isOk = true;

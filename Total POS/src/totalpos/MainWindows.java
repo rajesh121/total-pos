@@ -102,31 +102,31 @@ public class MainWindows extends javax.swing.JFrame {
 
         public void actionPerformed(ActionEvent evt) {
             if ( ed.getFuncion().equals("addProfile") ){
-                CreateProfile cp = new CreateProfile(mainWindows, enabled);
-                Shared.centerFrame(cp);
+                CreateProfile cp = new CreateProfile();
+                mdiPanel.add(cp);
                 cp.setVisible(true);
             }else if ( ed.getFuncion().equals("searchProfile") ) {
-                SearchProfile sp = new SearchProfile(mainWindows, enabled);
+                SearchProfile sp = new SearchProfile();
                 if ( sp.isOk ){
-                    Shared.centerFrame(sp);
+                    mdiPanel.add(sp);
                     sp.setVisible(true);
                 }
             }else if ( ed.getFuncion().equals("manageUser") ){
-                ManageUser mu = new ManageUser(mainWindows, true);
+                ManageUser mu = new ManageUser();
                 if ( mu.isOk ){
-                    Shared.centerFrame(mu);
+                    mdiPanel.add(mu);
                     mu.setVisible(true);
                 }
             } else if ( ed.getFuncion().equals("changeIdleTime") ){
-                ChangeIdleTime cit = new ChangeIdleTime(mainWindows, true);
+                ChangeIdleTime cit = new ChangeIdleTime();
                 if ( cit.isOk ){
-                    Shared.centerFrame(cit);
+                    mdiPanel.add(cit);
                     cit.setVisible(true);
                 }
             } else if ( ed.getFuncion().equals("manageItem") ) {
-                ManageItem mi = new ManageItem(mainWindows, true);
+                ManageItem mi = new ManageItem();
                 if( mi.isOk ){
-                    Shared.centerFrame(mi);
+                    mdiPanel.add(mi);
                     mi.setVisible(true);
                 }
             } else if ( ed.getFuncion().equals("listTurns") ) {
@@ -155,6 +155,9 @@ public class MainWindows extends javax.swing.JFrame {
     private void initComponents() {
 
         mdiPanel = new javax.swing.JDesktopPane();
+        jPanel1 = new javax.swing.JPanel();
+        esc2exit = new javax.swing.JLabel();
+        whatTimeIsIt = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -167,6 +170,41 @@ public class MainWindows extends javax.swing.JFrame {
         });
 
         mdiPanel.setName("mdiPanel"); // NOI18N
+        mdiPanel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                mdiPanelKeyPressed(evt);
+            }
+        });
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        esc2exit.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        esc2exit.setText("ESC = Salir.");
+        esc2exit.setName("esc2exit"); // NOI18N
+
+        whatTimeIsIt.setName("whatTimeIsIt"); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(esc2exit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 520, Short.MAX_VALUE)
+                .addComponent(whatTimeIsIt, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(esc2exit)
+                    .addComponent(whatTimeIsIt, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         menuBar.setName("menuBar"); // NOI18N
         setJMenuBar(menuBar);
@@ -175,17 +213,15 @@ public class MainWindows extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
+                .addGap(1, 1, 1)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -196,6 +232,12 @@ public class MainWindows extends javax.swing.JFrame {
             logout();
         }
     }//GEN-LAST:event_formKeyPressed
+
+    private void mdiPanelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mdiPanelKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            logout();
+        }
+    }//GEN-LAST:event_mdiPanelKeyPressed
 
     private void logout(){
         if ( JOptionPane.showConfirmDialog(MainWindows.mw, "¿Está seguro que desea cerrar sesión?") == 0 ){
@@ -211,8 +253,11 @@ public class MainWindows extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel esc2exit;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JDesktopPane mdiPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JLabel whatTimeIsIt;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -8,16 +8,16 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import javax.swing.JInternalFrame;
 
 /**
  *
  * @author shidalgo
  */
-public class CreateProfile extends javax.swing.JDialog {
+public class CreateProfile extends JInternalFrame {
 
     /** Creates new form CreateProfile */
-    public CreateProfile(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public CreateProfile() {
         initComponents();
     }
 
@@ -36,8 +36,9 @@ public class CreateProfile extends javax.swing.JDialog {
         descriptionTextField = new javax.swing.JTextField();
         descriptionLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Constants.appName);
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Crear Perfil");
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Crear Perfil");

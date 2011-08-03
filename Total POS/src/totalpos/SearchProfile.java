@@ -17,13 +17,12 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author shidalgo
  */
-public class SearchProfile extends javax.swing.JDialog {
+public class SearchProfile extends javax.swing.JInternalFrame {
 
     public boolean isOk = false;
 
     /** Creates new form SearchProfile */
-    public SearchProfile(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public SearchProfile() {
         initComponents();
         update();
     }
@@ -69,10 +68,13 @@ public class SearchProfile extends javax.swing.JDialog {
         changePermits = new javax.swing.JButton();
         changeDetails = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Constants.appName);
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setTitle("Buscar Perfil");
 
-        searchTitle.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        searchTitle.setFont(new java.awt.Font("Courier New", 1, 18));
         searchTitle.setText("Buscar Perfil");
         searchTitle.setName("searchTitle"); // NOI18N
 
@@ -93,7 +95,7 @@ public class SearchProfile extends javax.swing.JDialog {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        table.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        table.setFont(new java.awt.Font("Courier New", 0, 11));
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -157,7 +159,7 @@ public class SearchProfile extends javax.swing.JDialog {
                     .addComponent(searchTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                     .addComponent(searchTitle, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(changeDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(changeDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(changePermits, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)))
                 .addContainerGap())

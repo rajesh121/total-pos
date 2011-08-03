@@ -8,13 +8,14 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import javax.swing.JInternalFrame;
 
 
 /**
  *
  * @author shidalgo
  */
-public class ChangeIdleTime extends javax.swing.JDialog {
+public class ChangeIdleTime extends JInternalFrame {
 
     public boolean isOk = false;
     private double currentTime;
@@ -22,8 +23,7 @@ public class ChangeIdleTime extends javax.swing.JDialog {
      * @param parent
      * @param modal
      */
-    public ChangeIdleTime(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public ChangeIdleTime() {
         initComponents();
 
         String c = Shared.getConfig("idleTime");
@@ -55,10 +55,10 @@ public class ChangeIdleTime extends javax.swing.JDialog {
         idleTimeTextField = new javax.swing.JTextField();
         secondsLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Constants.appName);
+        setClosable(true);
+        setTitle("Cambiar tiempo de bloqueo");
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Cambiar tiempo de autobloqueo");
         titleLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         titleLabel.setName("titleLabel"); // NOI18N
@@ -70,7 +70,7 @@ public class ChangeIdleTime extends javax.swing.JDialog {
             }
         });
 
-        secondsLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        secondsLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         secondsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         secondsLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         secondsLabel.setText("Minutos");

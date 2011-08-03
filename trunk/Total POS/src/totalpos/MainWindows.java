@@ -154,6 +154,7 @@ public class MainWindows extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mdiPanel = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -165,6 +166,8 @@ public class MainWindows extends javax.swing.JFrame {
             }
         });
 
+        mdiPanel.setName("mdiPanel"); // NOI18N
+
         menuBar.setName("menuBar"); // NOI18N
         setJMenuBar(menuBar);
 
@@ -172,11 +175,17 @@ public class MainWindows extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 752, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 623, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -202,6 +211,7 @@ public class MainWindows extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDesktopPane mdiPanel;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 

@@ -440,7 +440,7 @@ public class ConnectionDrivers {
 
         while (rs.next()) {
             ans.add(new Price(rs.getDate("fecha")
-                    , (double)Math.round(rs.getDouble("monto")*(Double.valueOf(Shared.getConfig().get("iva"))+1.0))));
+                    , (rs.getDouble("monto")*(Double.valueOf(Shared.getConfig().get("iva"))+1.0))));
         }
         c.close();
 

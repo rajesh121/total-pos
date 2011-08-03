@@ -39,7 +39,7 @@ public class Price {
     @Override
     public String toString() {
         DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(quant) + " Bsf";
+        return df.format(quant) + "";
     }
 
 }

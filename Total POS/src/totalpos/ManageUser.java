@@ -551,7 +551,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
         bloqueadoCheck.setSelected(false);
         mustChangePasswordCheck.setSelected(false);
         canChangePasswordCheck.setSelected(false);
-        
+        loginText.requestFocus();
     }//GEN-LAST:event_newUserButtonActionPerformed
 
     private void nombreTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreTextKeyReleased

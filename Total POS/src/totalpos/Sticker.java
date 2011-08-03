@@ -17,8 +17,11 @@ import javax.print.SimpleDoc;
  */
 public class Sticker {
 
-    private static int offset = 420;
-    private static int separations[] = {160,170,200,130,180,20,20,235,228,20};
+    private static int offset = 425;
+    private static int pixA[] = {160,170,215,130,180,20,20,235,228,20};
+    private static int pixB[] = {0,15,40,45,-1,100,115,140,160,130};
+    private static String header[] = {"A","A","A","A","A","A","A","A","A","B"};
+    
 
     private String barCode, mark, description, price;
 
@@ -41,9 +44,6 @@ public class Sticker {
             }
             if (mark.length() > 15) {
                 mark = mark.substring(0, 15);
-            }
-            if (price.length() > 5) {
-                price = price.substring(0, 5);
             }
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date d = new Date();
@@ -68,27 +68,27 @@ public class Sticker {
             DocPrintJob job = psZebra.createPrintJob();
             String buff =
                 "N\n" +
-                "A" + separations[0] +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
-                "A" + separations[1] + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
-                "A" + separations[2] + ",40,0,5,1,1,N,\""+price +"\"\n"+
-                "A" + separations[3] + ",45,0,3,1,1,N,\"Bsf\"\n"+
+                header[0] + pixA[0] + "," + pixB[0] + ",0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
+                "A" + pixA[1] + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
+                "A" + pixA[2] + ",40,0,4,1,2,N,\""+ price +"\"\n"+
+                "A" + pixA[3] + ",45,0,4,1,1,N,\"Bsf.\"\n"+
                 //"A" + separations[4] + ",80,0,3,1,1,N,\""+mark+"\"\n"+
-                "A" + separations[5] + ",100,0,1,1,1,N,\""+description+"\"\n"+
-                "A" + separations[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
-                "A" + separations[7] + ",140,0,1,1,1,N,\""+date + "\"\n"+
-                "A" + separations[8] + ",160,0,1,1,1,N,\""+barCode +"\"\n"+
-                "B" + separations[9] + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
+                "A" + pixA[5] + ",100,0,1,1,1,N,\""+description+"\"\n"+
+                "A" + pixA[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
+                "A" + pixA[7] + ",140,0,1,1,1,N,\""+date + "\"\n"+
+                "A" + pixA[8] + ",160,0,1,1,1,N,\""+barCode +"\"\n"+
+                "B" + pixA[9] + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
 
-                "A" + (offset+separations[0]) +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
-                "A" + (offset+separations[1]) + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
-                "A" + (offset+separations[2]) + ",40,0,5,1,1,N,\""+price +"\"\n"+
-                "A" + (offset+separations[3]) + ",45,0,3,1,1,N,\"Bsf\"\n"+
+                "A" + (offset+pixA[0]) +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
+                "A" + (offset+pixA[1]) + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
+                "A" + (offset+pixA[2]) + ",40,0,4,1,2,N,\""+price +"\"\n"+
+                "A" + (offset+pixA[3]) + ",45,0,4,1,1,N,\"Bsf.\"\n"+
                 //"A" + (offset+separations[4]) + ",80,0,3,1,1,N,\""+mark+"\"\n"+
-                "A" + (offset+separations[5]) + ",100,0,1,1,1,N,\""+description+"\"\n"+
-                "A" + (offset+separations[6]) + ",115,0,1,1,1,N,\""+description2+"\"\n"+
-                "A" + (offset+separations[7]) + ",140,0,1,1,1,N,\""+date + "\"\n"+
-                "A" + (offset+separations[8]) + ",160,0,1,1,1,N,\""+barCode +"\"\n"+
-                "B" + (offset+separations[9]) + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
+                "A" + (offset+pixA[5]) + ",100,0,1,1,1,N,\""+description+"\"\n"+
+                "A" + (offset+pixA[6]) + ",115,0,1,1,1,N,\""+description2+"\"\n"+
+                "A" + (offset+pixA[7]) + ",140,0,1,1,1,N,\""+date + "\"\n"+
+                "A" + (offset+pixA[8]) + ",160,0,1,1,1,N,\""+barCode +"\"\n"+
+                "B" + (offset+pixA[9]) + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
                 "P" + n + "\n";
 
             DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;

@@ -148,7 +148,7 @@ public class ChangeIdleTime extends JInternalFrame {
                     }
                 }
             } catch ( NumberFormatException ex ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe tener un formato válido.",ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "El tiempo debe tener un formato válido.");
                 msb.show(Shared.getMyMainWindows());
                 this.idleTimeTextField.setText( currentTime + "" );
             }

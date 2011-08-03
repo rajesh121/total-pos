@@ -134,8 +134,13 @@ public class ChangeIdleTime extends JInternalFrame {
                         ConnectionDrivers.initializeConfig();
                         this.dispose();
                     } catch (SQLException ex) {
-                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
-                        msg.show(this);
+                        if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+                            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
+                            msb.show(this);
+                        }else{
+                            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                            msb.show(this);
+                        }
                     } catch (Exception ex) {
                         MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, ex.getMessage(), ex);
                         msg.show(this);

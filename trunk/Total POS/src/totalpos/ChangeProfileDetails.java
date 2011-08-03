@@ -149,8 +149,13 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
                 msb.show(this);
                 closeWindows();
             } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-                msb.show(this);
+                if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
+                    msb.show(this);
+                }else{
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                    msb.show(this);
+                }
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, ex.getMessage(), ex);
                 msb.show(this);

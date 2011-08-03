@@ -220,7 +220,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select n.id,n.nombre,n.predecesor,n.icono,n.funcion "
                 + "from nodo n "
-                + "where n.predecesor = ? and " + ((Constants.isPos)?"punto_de_venta = 1":"administrativo = 1"));
+                + "where n.predecesor = ? " /*and " + ((Constants.isPos)?"punto_de_venta = 1":"administrativo = 1")*/);
         stmt.setString(1, parent);
         ResultSet rs = stmt.executeQuery();
 

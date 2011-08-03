@@ -132,6 +132,18 @@ public class MainWindows extends javax.swing.JFrame {
                     Shared.centerFrame(ct);
                     ct.setVisible(true);
                 }
+            } else if ( ed.getFuncion().equals("createStore") ) {
+                CreateStore cs = new CreateStore();
+                if( cs.isOk ){
+                    mdiPanel.add(cs);
+                    cs.setVisible(true);
+                }
+            } else if ( ed.getFuncion().equals("listPos") ) {
+                ListPOS cp = new ListPOS();
+                if( cp.isOk ){
+                    mdiPanel.add(cp);
+                    cp.setVisible(true);
+                }
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);

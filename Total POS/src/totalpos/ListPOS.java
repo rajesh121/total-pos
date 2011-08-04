@@ -40,12 +40,19 @@ public class ListPOS extends javax.swing.JInternalFrame {
         newPOS = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
+        changePos = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
         setTitle("Cajas");
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
 
         newPOS.setText("Nueva Caja");
+        newPOS.setFocusable(false);
         newPOS.setName("newPOS"); // NOI18N
         newPOS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,24 +83,43 @@ public class ListPOS extends javax.swing.JInternalFrame {
         });
         table.setName("table"); // NOI18N
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        table.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tableFocusGained(evt);
+            }
+        });
         jScrollPane1.setViewportView(table);
+
+        changePos.setText("Modificar Caja");
+        changePos.setFocusable(false);
+        changePos.setName("changePos"); // NOI18N
+        changePos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changePosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
-                    .addComponent(newPOS, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(newPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(changePos, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(newPOS)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newPOS)
+                    .addComponent(changePos))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addContainerGap())
@@ -103,14 +129,34 @@ public class ListPOS extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newPOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPOSActionPerformed
-        CreatePOS cp = new CreatePOS(this);
+        CreatePOS cp = new CreatePOS();
         this.getParent().add(cp);
         cp.setVisible(true);
         updateAll();
 }//GEN-LAST:event_newPOSActionPerformed
 
+    private void tableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tableFocusGained
+        updateAll();
+    }//GEN-LAST:event_tableFocusGained
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        updateAll();
+    }//GEN-LAST:event_formFocusGained
+
+    private void changePosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePosActionPerformed
+        if ( table.getSelectedRow() != -1 ){
+            CreatePOS cp = new CreatePOS(poses.get(table.getSelectedRow()));
+            this.getParent().add(cp);
+            cp.setVisible(true);
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar la caja");
+            msg.show(this);
+        }
+    }//GEN-LAST:event_changePosActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton changePos;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton newPOS;
     private javax.swing.JTable table;

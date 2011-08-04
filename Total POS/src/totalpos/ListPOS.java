@@ -45,6 +45,11 @@ public class ListPOS extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("Cajas");
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
         addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 formFocusGained(evt);
@@ -54,6 +59,11 @@ public class ListPOS extends javax.swing.JInternalFrame {
         newPOS.setText("Nueva Caja");
         newPOS.setFocusable(false);
         newPOS.setName("newPOS"); // NOI18N
+        newPOS.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                newPOSMouseMoved(evt);
+            }
+        });
         newPOS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newPOSActionPerformed(evt);
@@ -83,6 +93,11 @@ public class ListPOS extends javax.swing.JInternalFrame {
         });
         table.setName("table"); // NOI18N
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        table.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                tableMouseMoved(evt);
+            }
+        });
         table.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tableFocusGained(evt);
@@ -93,6 +108,11 @@ public class ListPOS extends javax.swing.JInternalFrame {
         changePos.setText("Modificar Caja");
         changePos.setFocusable(false);
         changePos.setName("changePos"); // NOI18N
+        changePos.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                changePosMouseMoved(evt);
+            }
+        });
         changePos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 changePosActionPerformed(evt);
@@ -154,6 +174,22 @@ public class ListPOS extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_changePosActionPerformed
 
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void tableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_tableMouseMoved
+
+    private void changePosMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_changePosMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_changePosMouseMoved
+
+    private void newPOSMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newPOSMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_newPOSMouseMoved
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton changePos;
@@ -175,6 +211,8 @@ public class ListPOS extends javax.swing.JInternalFrame {
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
+            this.dispose();
+            Shared.reload();
         }
     }
 

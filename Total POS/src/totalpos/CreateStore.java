@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * CreateStore.java
  *
  * Created on 03-ago-2011, 16:00:17
@@ -60,8 +55,13 @@ public class CreateStore extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setTitle("Crear/Modificar Tienda");
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setName("titleLabel"); // NOI18N
 
         jLabel2.setText("Código");
@@ -71,11 +71,26 @@ public class CreateStore extends javax.swing.JInternalFrame {
         jLabel3.setName("jLabel3"); // NOI18N
 
         nameFieldText.setName("nameFieldText"); // NOI18N
+        nameFieldText.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                nameFieldTextMouseMoved(evt);
+            }
+        });
 
         descriptionFieldText.setName("descriptionFieldText"); // NOI18N
+        descriptionFieldText.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                descriptionFieldTextMouseMoved(evt);
+            }
+        });
 
         cancelButton.setText("Cancelar");
         cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                cancelButtonMouseMoved(evt);
+            }
+        });
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
@@ -84,6 +99,11 @@ public class CreateStore extends javax.swing.JInternalFrame {
 
         acceptButton.setText("Aceptar");
         acceptButton.setName("acceptButton"); // NOI18N
+        acceptButton.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                acceptButtonMouseMoved(evt);
+            }
+        });
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 acceptButtonActionPerformed(evt);
@@ -148,11 +168,30 @@ public class CreateStore extends javax.swing.JInternalFrame {
             ConnectionDrivers.initializeConfig();
             this.dispose();
         } catch (SQLException ex) {
-            Logger.getLogger(CreateStore.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(CreateStore.class.getName()).log(Level.SEVERE, null, ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
         }
     }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void descriptionFieldTextMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_descriptionFieldTextMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_descriptionFieldTextMouseMoved
+
+    private void nameFieldTextMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameFieldTextMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_nameFieldTextMouseMoved
+
+    private void acceptButtonMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_acceptButtonMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_acceptButtonMouseMoved
+
+    private void cancelButtonMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelButtonMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_cancelButtonMouseMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,53 +1,38 @@
 package totalpos;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Time;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo xD
  */
 public class Turn {
-    private String username;
-    private String pos;
-    private Double cash;
-    private boolean abierto;
-    private String day;
+    private String identificador;
+    private String nombre;
+    private Time inicio;
+    private Time fin;
 
-    public Turn(String username, String pos, Double cash, boolean abierto) {
-        this.username = username;
-        this.pos = pos;
-        this.cash = cash;
-        this.abierto = abierto;
+    public Turn(String identificador, String nombre, Time inicio, Time fin) {
+        this.identificador = identificador;
+        this.nombre = nombre;
+        this.inicio = inicio;
+        this.fin = fin;
     }
 
-    public Turn(String username, String pos, Double cash, boolean abierto, String day) {
-        this.username = username;
-        this.pos = pos;
-        this.cash = cash;
-        this.abierto = abierto;
-        this.day = day;
+    public Time getFin() {
+        return fin;
     }
 
-    public boolean isAbierto() {
-        return abierto;
+    public String getIdentificador() {
+        return identificador;
     }
 
-    public Double getCash() {
-        return cash;
+    public Time getInicio() {
+        return inicio;
     }
 
-    public String getDay() {
-        return day;
-    }
-
-    public String getPos() {
-        return pos;
-    }
-
-    public String getUsername() {
-        return username;
+    public String getNombre() {
+        return nombre;
     }
 
 }

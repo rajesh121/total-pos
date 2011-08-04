@@ -548,7 +548,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery("select identificador from punto_de_venta");
+        ResultSet rs = stmt.executeQuery("select identificador, descripcion, impresora from punto_de_venta");
 
         List<PointOfSale> ans = new ArrayList<PointOfSale>();
         while ( rs.next() ) {
@@ -713,6 +713,19 @@ public class ConnectionDrivers {
         c.close();
 
         return ans;
+    }
+
+    protected static void createPos(String number, String local, String printer) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into punto_de_venta"
+                + " ( identificador, descripcion, impresora ) "
+                + "values ( ? , ? , ? )");
+        stmt.setString(1, number);
+        stmt.setString(2, local);
+        stmt.setString(3, printer);
+        stmt.executeUpdate();
+
+        c.close();
     }
 
 }

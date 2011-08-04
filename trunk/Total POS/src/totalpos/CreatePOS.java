@@ -6,15 +6,24 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author shidalgo
  */
 public class CreatePOS extends javax.swing.JInternalFrame {
 
+    private ListPOS list;
+
     /** Creates new form CreatePOS */
-    public CreatePOS() {
+    public CreatePOS(ListPOS l) {
         initComponents();
+        
+        this.list = l;
     }
 
     /** This method is called from within the constructor to
@@ -26,22 +35,164 @@ public class CreatePOS extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        titleLabel = new javax.swing.JLabel();
+        numberLabel = new javax.swing.JLabel();
+        locateLabel = new javax.swing.JLabel();
+        printerLabel = new javax.swing.JLabel();
+        numberField = new javax.swing.JTextField();
+        locateField = new javax.swing.JTextField();
+        fiscalPrinterField = new javax.swing.JTextField();
+        cancelButton = new javax.swing.JButton();
+        acceptButton = new javax.swing.JButton();
+
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Crear Caja");
+
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        titleLabel.setText("Crear Caja");
+        titleLabel.setName("titleLabel"); // NOI18N
+
+        numberLabel.setText("Número");
+        numberLabel.setName("numberLabel"); // NOI18N
+
+        locateLabel.setText("Ubicación");
+        locateLabel.setName("locateLabel"); // NOI18N
+
+        printerLabel.setText("Impresora Fiscal");
+        printerLabel.setName("printerLabel"); // NOI18N
+
+        numberField.setName("numberField"); // NOI18N
+
+        locateField.setName("locateField"); // NOI18N
+
+        fiscalPrinterField.setName("fiscalPrinterField"); // NOI18N
+        fiscalPrinterField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fiscalPrinterFieldActionPerformed(evt);
+            }
+        });
+        fiscalPrinterField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                fiscalPrinterFieldKeyPressed(evt);
+            }
+        });
+
+        cancelButton.setText("Cancelar");
+        cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        acceptButton.setText("Aceptar");
+        acceptButton.setName("acceptButton"); // NOI18N
+        acceptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(titleLabel)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(printerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                            .addComponent(locateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                            .addComponent(numberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(fiscalPrinterField)
+                            .addComponent(locateField)
+                            .addComponent(numberField, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(acceptButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(titleLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(numberLabel)
+                    .addComponent(numberField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(locateLabel)
+                    .addComponent(locateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(printerLabel)
+                    .addComponent(fiscalPrinterField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelButton)
+                    .addComponent(acceptButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        doIt();
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void fiscalPrinterFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fiscalPrinterFieldActionPerformed
+        
+    }//GEN-LAST:event_fiscalPrinterFieldActionPerformed
+
+    private void fiscalPrinterFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fiscalPrinterFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            doIt();
+        }
+    }//GEN-LAST:event_fiscalPrinterFieldKeyPressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton acceptButton;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JTextField fiscalPrinterField;
+    private javax.swing.JTextField locateField;
+    private javax.swing.JLabel locateLabel;
+    private javax.swing.JTextField numberField;
+    private javax.swing.JLabel numberLabel;
+    private javax.swing.JLabel printerLabel;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
+
+    private void doIt() {
+        try {
+            ConnectionDrivers.createPos(numberField.getText(), locateField.getText(), fiscalPrinterField.getText());
+            MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente.");
+            msb.show(this);
+            list.updateAll();
+            this.setVisible(false);
+            this.dispose();
+        } catch (SQLException ex) {
+            if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
+                msb.show(this);
+            }else{
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                msb.show(this);
+            }
+        }
+    }
 
 }

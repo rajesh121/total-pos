@@ -41,6 +41,8 @@ public class ListPOS extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
 
+        setClosable(true);
+        setIconifiable(true);
         setTitle("Cajas");
 
         newPOS.setText("Nueva Caja");
@@ -73,13 +75,13 @@ public class ListPOS extends javax.swing.JInternalFrame {
             }
         });
         table.setName("table"); // NOI18N
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(table);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -89,7 +91,6 @@ public class ListPOS extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(newPOS)
@@ -102,8 +103,9 @@ public class ListPOS extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newPOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPOSActionPerformed
-        CreateTurn ct = new CreateTurn();
-        ct.setVisible(true);
+        CreatePOS cp = new CreatePOS(this);
+        this.getParent().add(cp);
+        cp.setVisible(true);
         updateAll();
 }//GEN-LAST:event_newPOSActionPerformed
 
@@ -114,7 +116,7 @@ public class ListPOS extends javax.swing.JInternalFrame {
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 
-    private void updateAll() {
+    public void updateAll() {
         try {
             poses = ConnectionDrivers.listPOS();
             DefaultTableModel model = (DefaultTableModel) table.getModel();

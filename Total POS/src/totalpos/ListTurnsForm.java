@@ -188,7 +188,7 @@ public class ListTurnsForm extends JInternalFrame {
 
     private void updateAll() {
         try {
-            turns = ConnectionDrivers.listTurnsToday();
+            turns = ConnectionDrivers.listTurns();
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.setRowCount(0);
             for (Turn p : turns) {

@@ -10,19 +10,19 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JInternalFrame;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author shidalgo
  */
-public class ListTurnsForm extends javax.swing.JDialog {
+public class ListTurnsForm extends JInternalFrame {
 
     private List<Turn> turns;
     public boolean isOk = false;
     /** Creates new form ListTurnsForm */
-    public ListTurnsForm(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public ListTurnsForm() {
         initComponents();
         updateAll();
         isOk = true;
@@ -41,27 +41,28 @@ public class ListTurnsForm extends javax.swing.JDialog {
         table = new javax.swing.JTable();
         newTurn = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Constants.appName);
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Turnos");
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Usuario", "Punto de Venta", "Fecha", "Efectivo en Caja", "Abierto"
+                "Código", "Nombre", "Hora de Inicio", "Hora de Fin"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -73,8 +74,8 @@ public class ListTurnsForm extends javax.swing.JDialog {
             }
         });
         table.setName("table"); // NOI18N
+        table.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(table);
-        table.getColumnModel().getColumn(4).setPreferredWidth(35);
 
         newTurn.setText("Nuevo Turno");
         newTurn.setName("newTurn"); // NOI18N
@@ -110,7 +111,9 @@ public class ListTurnsForm extends javax.swing.JDialog {
 
     private void newTurnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTurnActionPerformed
         CreateTurn ct = new CreateTurn();
+        getParent().add(ct);
         ct.setVisible(true);
+        ct.requestFocus();
         updateAll();
     }//GEN-LAST:event_newTurnActionPerformed
 

@@ -22,32 +22,6 @@ public class CreateTurn extends JInternalFrame {
     public CreateTurn() {
         initComponents();
         
-        try {
-            modelUserList = ConnectionDrivers.listRetailUsers();
-            /*listPos = ConnectionDrivers.listPOS();*/
-
-            for (User user : modelUserList) {
-                userList.addItem(user.getLogin());
-            }
-
-            for (String pos : listPos) {
-                posList.addItem(pos);
-            }
-
-            cash.setText("0");
-            
-            isOk = true;
-        } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-            msb.show(Shared.getMyMainWindows());
-            this.dispose();
-            Shared.reload();
-        } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al listar los usuarios.",ex);
-            msb.show(Shared.getMyMainWindows());
-            this.dispose();
-            Shared.reload();
-        }
     }
 
     /** This method is called from within the constructor to
@@ -62,33 +36,38 @@ public class CreateTurn extends JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        userList = new javax.swing.JComboBox();
-        posList = new javax.swing.JComboBox();
         cancelButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
         cashLabel = new javax.swing.JLabel();
-        cash = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        nameField = new javax.swing.JTextField();
+        idField = new javax.swing.JTextField();
+        minuteInit = new javax.swing.JComboBox();
+        secondInit = new javax.swing.JComboBox();
+        hourInit = new javax.swing.JComboBox();
+        hourEnd = new javax.swing.JComboBox();
+        minuteEnd = new javax.swing.JComboBox();
+        secondEnd = new javax.swing.JComboBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Constants.appName);
-        setResizable(false);
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Crear Turno");
 
         jLabel1.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
         jLabel1.setText("Crear Turno");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        jLabel2.setText("Usuario");
+        jLabel2.setText("Identificador");
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        jLabel3.setText("Computadora");
+        jLabel3.setText("Nombre");
         jLabel3.setName("jLabel3"); // NOI18N
-
-        userList.setName("userList"); // NOI18N
-
-        posList.setName("posList"); // NOI18N
 
         cancelButton.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         cancelButton.setText("Cancelar");
@@ -109,20 +88,39 @@ public class CreateTurn extends JInternalFrame {
         });
 
         cashLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        cashLabel.setText("Efectivo Inicial");
+        cashLabel.setText("Hora Inicial");
         cashLabel.setName("cashLabel"); // NOI18N
 
-        cash.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        cash.setName("cash"); // NOI18N
-        cash.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                cashKeyPressed(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        jLabel4.setText("Bsf");
+        jLabel4.setText("Hora Final");
         jLabel4.setName("jLabel4"); // NOI18N
+
+        jLabel5.setText(":");
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        jLabel6.setText(":");
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        jLabel7.setText(":");
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        jLabel8.setText(":");
+        jLabel8.setName("jLabel8"); // NOI18N
+
+        nameField.setName("nameField"); // NOI18N
+
+        idField.setName("idField"); // NOI18N
+
+        minuteInit.setName("minuteInit"); // NOI18N
+
+        secondInit.setName("secondInit"); // NOI18N
+
+        hourInit.setName("hourInit"); // NOI18N
+
+        hourEnd.setName("hourEnd"); // NOI18N
+
+        minuteEnd.setName("minuteEnd"); // NOI18N
+
+        secondEnd.setName("secondEnd"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,17 +136,37 @@ public class CreateTurn extends JInternalFrame {
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cashLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                            .addComponent(cashLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(posList, 0, 251, Short.MAX_VALUE)
-                            .addComponent(userList, 0, 251, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(cash, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)))))
+                            .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                            .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(hourEnd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(hourInit, 0, 60, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel5)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(minuteInit, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(secondInit, 0, 60, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(minuteEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(secondEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -159,91 +177,65 @@ public class CreateTurn extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(userList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(idField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(7, 7, 7)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(posList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cashLabel)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cashLabel)
+                    .addComponent(secondInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(hourInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(minuteInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel4)
+                    .addComponent(hourEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(minuteEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(secondEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        doIt();
+        
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void cashKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cashKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
-        }
-    }//GEN-LAST:event_cashKeyPressed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
-    private javax.swing.JTextField cash;
     private javax.swing.JLabel cashLabel;
+    private javax.swing.JComboBox hourEnd;
+    private javax.swing.JComboBox hourInit;
+    private javax.swing.JTextField idField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JComboBox minuteEnd;
+    private javax.swing.JComboBox minuteInit;
+    private javax.swing.JTextField nameField;
     private javax.swing.JButton okButton;
-    private javax.swing.JComboBox posList;
-    private javax.swing.JComboBox userList;
+    private javax.swing.JComboBox secondEnd;
+    private javax.swing.JComboBox secondInit;
     // End of variables declaration//GEN-END:variables
-
-    private void doIt() {
-        try {
-
-            double a = Double.parseDouble(cash.getText());
-            if ( a < 0){
-                throw new NumberFormatException("El numero debe ser posivito");
-            }
-            ConnectionDrivers.createTurn(
-                    modelUserList.get(userList.getSelectedIndex()).getLogin(),
-                    listPos.get(posList.getSelectedIndex()),
-                    a);
-
-            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno creado satisfactoriamente");
-            msg.show(this);
-            this.dispose();
-            
-        } catch (NumberFormatException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "El dinero en efectivo no es correcto.", ex);
-            msg.show(this);
-        } catch (SQLException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
-            msg.show(this);
-        } catch (Exception ex) {
-            if ( ex.getMessage().equals(Constants.dataRepeated) ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, ex.getMessage(),ex);
-                msb.show(this);
-            }else{
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear turno.",ex);
-                msb.show(this);
-                this.dispose();
-                Shared.reload();
-            }
-        }
-    }
 
 }

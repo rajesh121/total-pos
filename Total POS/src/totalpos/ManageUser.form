@@ -32,7 +32,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="jScrollPane2" pref="135" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="124" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -75,21 +75,24 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" max="-2" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-                          <Component id="newUserButton" linkSize="3" min="-2" pref="121" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="saveButton" linkSize="3" min="-2" pref="118" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="cancelButton" linkSize="3" min="-2" pref="119" max="-2" attributes="0"/>
-                      </Group>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="newUserButton" alignment="0" max="32767" attributes="1"/>
+                              <Group type="102" alignment="0" max="-2" attributes="0">
+                                  <Component id="saveButton" linkSize="4" min="-2" pref="148" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="cancelButton" linkSize="4" min="-2" pref="153" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -102,10 +105,11 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jPanel3" max="32767" attributes="2"/>
+                          <Component id="jPanel3" min="-2" max="-2" attributes="2"/>
+                          <EmptySpace pref="41" max="32767" attributes="0"/>
+                          <Component id="newUserButton" linkSize="2" min="-2" pref="33" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="newUserButton" linkSize="2" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
                               <Component id="saveButton" linkSize="2" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                               <Component id="cancelButton" linkSize="2" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                           </Group>
@@ -324,39 +328,20 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="canChangePasswordCheck" alignment="0" pref="370" max="32767" attributes="0"/>
-                                  <Component id="mustChangePasswordCheck" alignment="0" pref="370" max="32767" attributes="0"/>
-                                  <Component id="bloqueadoCheck" alignment="0" pref="370" max="32767" attributes="1"/>
-                                  <Component id="roleCombo" alignment="0" pref="370" max="32767" attributes="1"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="newPassword2" pref="370" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="newPassword" pref="370" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="loginText" pref="370" max="32767" attributes="1"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="nombreText" pref="368" max="32767" attributes="1"/>
-                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="apellidoText" pref="370" max="32767" attributes="1"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="roleCombo" alignment="0" max="32767" attributes="1"/>
+                          <Component id="mustChangePasswordCheck" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
+                          <Component id="bloqueadoCheck" alignment="0" pref="293" max="32767" attributes="1"/>
+                          <Component id="apellidoText" alignment="0" max="32767" attributes="1"/>
+                          <Component id="nombreText" alignment="0" max="32767" attributes="1"/>
+                          <Component id="newPassword2" alignment="0" max="32767" attributes="1"/>
+                          <Component id="newPassword" alignment="0" max="32767" attributes="1"/>
+                          <Component id="loginText" alignment="0" pref="299" max="32767" attributes="1"/>
+                          <Component id="canChangePasswordCheck" alignment="0" max="32767" attributes="1"/>
                       </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -381,7 +366,7 @@
                       <Component id="mustChangePasswordCheck" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="canChangePasswordCheck" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="153" max="32767" attributes="0"/>
+                      <EmptySpace pref="79" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -454,7 +439,7 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="mustChangePasswordCheck">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Debe cambiar contrase&#xf1;a al iniciar sesi&#xf3;n por primera vez."/>
+                <Property name="text" type="java.lang.String" value="Debe cambiar contrase&#xf1;a al iniciar sesi&#xf3;n por primera vez"/>
                 <Property name="name" type="java.lang.String" value="mustChangePasswordCheck" noResource="true"/>
               </Properties>
               <Events>

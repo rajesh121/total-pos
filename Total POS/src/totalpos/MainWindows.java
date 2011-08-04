@@ -127,9 +127,9 @@ public class MainWindows extends javax.swing.JFrame {
                     mi.setVisible(true);
                 }
             } else if ( ed.getFuncion().equals("listTurns") ) {
-                ListTurnsForm ct = new ListTurnsForm(mainWindows, true);
+                ListTurnsForm ct = new ListTurnsForm();
                 if( ct.isOk ){
-                    Shared.centerFrame(ct);
+                    mdiPanel.add(ct);
                     ct.setVisible(true);
                 }
             } else if ( ed.getFuncion().equals("createStore") ) {

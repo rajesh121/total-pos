@@ -273,7 +273,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
             }
         });
 
-        mustChangePasswordCheck.setText("Debe cambiar contraseña al iniciar sesión por primera vez.");
+        mustChangePasswordCheck.setText("Debe cambiar contraseña al iniciar sesión por primera vez");
         mustChangePasswordCheck.setName("mustChangePasswordCheck"); // NOI18N
         mustChangePasswordCheck.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
@@ -295,29 +295,17 @@ public class ManageUser extends javax.swing.JInternalFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(canChangePasswordCheck, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                            .addComponent(mustChangePasswordCheck, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                            .addComponent(bloqueadoCheck, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                            .addComponent(roleCombo, 0, 370, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(newPassword2, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(newPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(loginText, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(nombreText, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
-                        .addGap(12, 12, 12))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(apellidoText, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(roleCombo, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(mustChangePasswordCheck, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(bloqueadoCheck, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                    .addComponent(apellidoText, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nombreText, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(newPassword2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(newPassword, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(loginText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                    .addComponent(canChangePasswordCheck, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -340,7 +328,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
                 .addComponent(mustChangePasswordCheck)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(canChangePasswordCheck)
-                .addContainerGap(153, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         newUserButton.setText("Nuevo Usuario");
@@ -374,21 +362,22 @@ public class ManageUser extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(newUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(newUserButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cancelButton, newUserButton, saveButton});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cancelButton, saveButton});
 
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -396,10 +385,11 @@ public class ManageUser extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                        .addComponent(newUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(newUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -410,7 +400,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        userList.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        userList.setFont(new java.awt.Font("Courier New", 0, 11));
         userList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         userList.setName("userList"); // NOI18N
         userList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -436,7 +426,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(labelTitle))
@@ -464,23 +454,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
 
     private void userListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_userListValueChanged
         if ( !creatingNewUser ){
-            selectedUser = userList.getSelectedIndex();
-
-            if ( selectedUser == -1 ){
-                userList.setSelectedIndex(0);
-                selectedUser = 0;
-            }
-
-            User u = users.get(selectedUser);
-            loginText.setText(u.getLogin());
-            nombreText.setText(u.getNombre());
-            apellidoText.setText(u.getApellido());
-            roleCombo.setSelectedIndex(profiles.indexOf(new Profile(u.getPerfil(),null)));
-            bloqueadoCheck.setSelected(u.getBloqueado());
-            mustChangePasswordCheck.setSelected(u.getDebeCambiarPassword());
-            canChangePasswordCheck.setSelected(u.getPuedeCambiarPassword());
-            newPassword.setText("");
-            newPassword2.setText("");
+            updateFields();
         }
         
     }//GEN-LAST:event_userListValueChanged
@@ -536,22 +510,51 @@ public class ManageUser extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_saveButtonActionPerformed
 
-    private void newUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserButtonActionPerformed
+    private void updateFields(){
+        selectedUser = userList.getSelectedIndex();
 
-        creatingNewUser = true;
-        userList.setSelectedIndex(-1);
+        if ( selectedUser == -1 ){
+            userList.setSelectedIndex(0);
+            selectedUser = 0;
+        }
 
-        userList.setEnabled(false);
-        loginText.setEditable(true);
-        loginText.setText("");
+        User u = users.get(selectedUser);
+        loginText.setText(u.getLogin());
+        nombreText.setText(u.getNombre());
+        apellidoText.setText(u.getApellido());
+        roleCombo.setSelectedIndex(profiles.indexOf(new Profile(u.getPerfil(),null)));
+        bloqueadoCheck.setSelected(u.getBloqueado());
+        mustChangePasswordCheck.setSelected(u.getDebeCambiarPassword());
+        canChangePasswordCheck.setSelected(u.getPuedeCambiarPassword());
         newPassword.setText("");
         newPassword2.setText("");
-        nombreText.setText("");
-        apellidoText.setText("");
-        bloqueadoCheck.setSelected(false);
-        mustChangePasswordCheck.setSelected(false);
-        canChangePasswordCheck.setSelected(false);
-        loginText.requestFocus();
+    }
+
+    private void newUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserButtonActionPerformed
+
+        if ( creatingNewUser ){
+            updateAll();
+            newUserButton.setText("Nuevo Usuario");
+            updateFields();
+        }else{
+            creatingNewUser = true;
+            userList.setSelectedIndex(-1);
+
+            userList.setEnabled(false);
+            loginText.setEditable(true);
+            loginText.setText("");
+            newPassword.setText("");
+            newPassword2.setText("");
+            nombreText.setText("");
+            apellidoText.setText("");
+            bloqueadoCheck.setSelected(false);
+            mustChangePasswordCheck.setSelected(false);
+            canChangePasswordCheck.setSelected(false);
+            loginText.requestFocus();
+
+            newUserButton.setText("Cancelar Nuevo Usuario");
+        }
+
     }//GEN-LAST:event_newUserButtonActionPerformed
 
     private void nombreTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreTextKeyReleased

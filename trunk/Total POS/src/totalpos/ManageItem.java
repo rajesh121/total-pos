@@ -124,7 +124,6 @@ public class ManageItem extends JInternalFrame {
         });
         itemTable.setName("itemTable"); // NOI18N
         itemTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        itemTable.getTableHeader().setReorderingAllowed(false);
         itemTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 itemTableMouseClicked(evt);

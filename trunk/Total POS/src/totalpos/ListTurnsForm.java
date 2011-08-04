@@ -8,8 +8,6 @@ package totalpos;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.table.DefaultTableModel;
 
@@ -40,10 +38,16 @@ public class ListTurnsForm extends JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         newTurn = new javax.swing.JButton();
+        changeTurn = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
         setTitle("Turnos");
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -74,33 +78,58 @@ public class ListTurnsForm extends JInternalFrame {
             }
         });
         table.setName("table"); // NOI18N
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                tableMouseMoved(evt);
+            }
+        });
+        table.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tableFocusGained(evt);
+            }
+        });
         jScrollPane1.setViewportView(table);
 
         newTurn.setText("Nuevo Turno");
+        newTurn.setFocusable(false);
         newTurn.setName("newTurn"); // NOI18N
+        newTurn.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                newTurnMouseMoved(evt);
+            }
+        });
         newTurn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newTurnActionPerformed(evt);
             }
         });
 
+        changeTurn.setText("Modificar Turno");
+        changeTurn.setName("changeTurn"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
-                    .addComponent(newTurn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(newTurn, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(changeTurn, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(newTurn)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newTurn)
+                    .addComponent(changeTurn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
                 .addContainerGap())
@@ -117,7 +146,24 @@ public class ListTurnsForm extends JInternalFrame {
         updateAll();
     }//GEN-LAST:event_newTurnActionPerformed
 
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void tableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_tableMouseMoved
+
+    private void newTurnMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newTurnMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_newTurnMouseMoved
+
+    private void tableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tableFocusGained
+        updateAll();
+    }//GEN-LAST:event_tableFocusGained
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton changeTurn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton newTurn;
     private javax.swing.JTable table;
@@ -129,12 +175,14 @@ public class ListTurnsForm extends JInternalFrame {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.setRowCount(0);
             for (Turn p : turns) {
-                Object[] s = {p.getUsername(), p.getPos(), p.getDay(), p.getCash(), p.isAbierto()};
+                Object[] s = {p.getIdentificador(), p.getNombre(), p.getInicio(), p.getFin()};
                 model.addRow(s);
             }
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
+            this.dispose();
+            Shared.reload();
         }
     }
 

@@ -7,8 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -405,7 +405,7 @@ public class ConnectionDrivers {
         }
     }
 
-    protected static void saveConfig(String k, String v) throws SQLException, Exception{
+    protected static void saveConfig(String k, String v) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from configuracion where `key` = ? ");
         stmt.setString(1, k);
@@ -575,18 +575,15 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static void createTurn(String user, String comp, double cash) throws SQLException, Exception{
-        if ( existTurnOpenFor(user) ){
-            throw new Exception(Constants.dataRepeated);
-        }
-
+    protected static void createTurn(String id, String description, Time a, Time b) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into turno"
-                + " ( codigo_de_usuario , codigo_de_pos , fecha , efectivo_en_caja , estado ) "
-                + "values ( ? , ? , now() , ? , 'Abierto')");
-        stmt.setString(1, user);
-        stmt.setString(2, comp);
-        stmt.setDouble(3, cash);
+                + " ( identificador , nombre , inicio, fin ) "
+                + "values ( ? , ? , ? , ? )");
+        stmt.setString(1, id);
+        stmt.setString(2, description);
+        stmt.setTime(3, a);
+        stmt.setTime(4, b);
         stmt.executeUpdate();
 
         c.close();
@@ -597,18 +594,15 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery(
-                "select codigo_de_usuario , codigo_de_pos , fecha, efectivo_en_caja , estado from turno "
-                + "where datediff(now(),fecha) = 0");
+        ResultSet rs = stmt.executeQuery( "select identificador , nombre , inicio, fin from turno ");
 
         while ( rs.next() ) {
             ans.add(
                     new Turn(
-                        rs.getString("codigo_de_usuario"),
-                        rs.getString("codigo_de_pos"),
-                        rs.getDouble("efectivo_en_caja"),
-                        rs.getString("estado").equals("Abierto"),
-                        rs.getString("fecha"))
+                        rs.getString("identificador"),
+                        rs.getString("nombre"),
+                        rs.getTime("inicio"),
+                        rs.getTime("fin"))
                     );
         }
 

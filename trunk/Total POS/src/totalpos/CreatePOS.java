@@ -185,6 +185,11 @@ public class CreatePOS extends javax.swing.JInternalFrame {
 
     private void doIt() {
         try {
+            if ( numberField.getText().isEmpty() ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "El número no puede ser vacío");
+                msb.show(this);
+                return;
+            }
             if ( modify ){
                 ConnectionDrivers.modifyPos(numberField.getText(), locateField.getText(), fiscalPrinterField.getText());
             }else{

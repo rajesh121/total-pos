@@ -136,7 +136,7 @@ public class Login extends javax.swing.JFrame {
                 boolean toContinue = false;
                 Turn theTurn = null;
 
-                for (Turn turn : t) {
+                /*for (Turn turn : t) {
                     if ( turn.getUsername().equals(u.getLogin()) && turn.isAbierto() && turn.getPos().equals(Constants.myId)){
                         toContinue = true;
                         theTurn = turn;
@@ -146,7 +146,7 @@ public class Login extends javax.swing.JFrame {
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No hay turno creado para este usuario el día de hoy.");
                     msg.show(this);
                     return;
-                }
+                }*/
 
                 uc.start(); //Start the screensaver xDD
                 Shared.setUser(u);
@@ -167,6 +167,8 @@ public class Login extends javax.swing.JFrame {
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
+            this.dispose();
+            Shared.reload();
         } catch (Exception ex) {
             String kindErr = "";
             if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {

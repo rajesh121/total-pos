@@ -589,6 +589,19 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    protected static void modifyTurn(String id, String description, Time a, Time b) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update turno set "
+                + " nombre = ? , inicio = ? , fin = ? where Identificador = ?");
+        stmt.setString(1, description);
+        stmt.setTime(2, a);
+        stmt.setTime(3, b);
+        stmt.setString(4, id);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
     protected static List<Turn> listTurnsToday() throws SQLException{
         List<Turn> ans = new ArrayList<Turn>();
 

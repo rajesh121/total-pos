@@ -3,8 +3,6 @@ package totalpos;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 
 /**
@@ -16,6 +14,7 @@ public class CreateTurn extends JInternalFrame {
     private List<User> modelUserList;
     private List<String> listPos;
     public boolean isOk = false;
+    private boolean modify = false;
 
     /** Creates new form CreateTurn
      * @param parent
@@ -23,28 +22,29 @@ public class CreateTurn extends JInternalFrame {
      */
     public CreateTurn() {
         initComponents();
+        fillForms();
+    }
 
-        hourEnd.addItem(12);
-        hourInit.addItem(12);
+    public CreateTurn(Turn t) {
+        initComponents();
+        fillForms();
+        idField.setText(t.getIdentificador());
+        nameField.setText(t.getNombre()==null?"":t.getNombre());
+        hourInit.setSelectedIndex(t.getInicio().getHours()%12);
+        minuteInit.setSelectedIndex(t.getInicio().getMinutes());
+        secondInit.setSelectedIndex(t.getInicio().getSeconds());
+        amOrPm.setSelectedIndex(t.getInicio().getHours() > 12 ? 1 : 0);
 
-        for (int i = 1; i < 12; i++) {
-            hourEnd.addItem(i);
-            hourInit.addItem(i);
-        }
-        for (int i = 0; i < 60; i++) {
-            minuteInit.addItem(i);
-            minuteEnd.addItem(i);
-        }
-        for (int i = 0; i < 60; i++) {
-            secondEnd.addItem(i);
-            secondInit.addItem(i);
-        }
+        hourEnd.setSelectedIndex(t.getFin().getHours()%12);
+        minuteEnd.setSelectedIndex(t.getFin().getMinutes());
+        secondEnd.setSelectedIndex(t.getFin().getSeconds());
+        amOrPmEnd.setSelectedIndex(t.getFin().getHours() > 12 ? 1 : 0);
 
-        amOrPm.addItem("am");
-        amOrPm.addItem("pm");
+        modify = true;
 
-        amOrPmEnd.addItem("am");
-        amOrPmEnd.addItem("pm");
+        titleLabel.setText("Modificar Turno");
+        setTitle("Modificar Turno");
+        idField.setEditable(false);
     }
 
     /** This method is called from within the constructor to
@@ -56,7 +56,7 @@ public class CreateTurn extends JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
@@ -77,6 +77,7 @@ public class CreateTurn extends JInternalFrame {
         secondEnd = new javax.swing.JComboBox();
         amOrPm = new javax.swing.JComboBox();
         amOrPmEnd = new javax.swing.JComboBox();
+        jLabel11 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -87,19 +88,19 @@ public class CreateTurn extends JInternalFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
-        jLabel1.setText("Crear Turno");
-        jLabel1.setName("jLabel1"); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        titleLabel.setText("Crear Turno");
+        titleLabel.setName("titleLabel"); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        jLabel2.setText("Identificador");
+        jLabel2.setText("Identificador *");
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         jLabel3.setText("Nombre");
         jLabel3.setName("jLabel3"); // NOI18N
 
-        cancelButton.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        cancelButton.setFont(new java.awt.Font("Courier New", 0, 12));
         cancelButton.setText("Cancelar");
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -118,11 +119,11 @@ public class CreateTurn extends JInternalFrame {
         });
 
         cashLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        cashLabel.setText("Hora Inicial");
+        cashLabel.setText("Hora Inicial  *");
         cashLabel.setName("cashLabel"); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
-        jLabel4.setText("Hora Final");
+        jLabel4.setText("Hora Final    *");
         jLabel4.setName("jLabel4"); // NOI18N
 
         jLabel5.setText(":");
@@ -167,6 +168,9 @@ public class CreateTurn extends JInternalFrame {
 
         amOrPmEnd.setName("amOrPmEnd"); // NOI18N
 
+        jLabel11.setText("* = Campo Obligatorio");
+        jLabel11.setName("jLabel11"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -174,58 +178,60 @@ public class CreateTurn extends JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(280, 280, 280))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                                .addComponent(cashLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(hourEnd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(hourInit, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel5)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(minuteInit, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(jLabel6)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(secondInit, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel8)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(minuteEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(jLabel7)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(secondEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(amOrPmEnd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(amOrPm, 0, 50, Short.MAX_VALUE)))
-                                .addComponent(nameField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
-                                .addComponent(idField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))
-                            .addContainerGap()))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(titleLabel)
+                        .addGap(280, 280, 280))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                            .addComponent(cashLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(hourEnd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(hourInit, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel5)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(minuteInit, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(jLabel6)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(secondInit, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel8)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(minuteEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(jLabel7)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(secondEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(amOrPmEnd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(amOrPm, 0, 50, Short.MAX_VALUE)))
+                                    .addComponent(nameField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                                    .addComponent(idField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(97, 97, 97)
+                                .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(titleLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(idField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -255,7 +261,8 @@ public class CreateTurn extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
-                    .addComponent(okButton))
+                    .addComponent(okButton)
+                    .addComponent(jLabel11))
                 .addContainerGap())
         );
 
@@ -290,7 +297,7 @@ public class CreateTurn extends JInternalFrame {
     private javax.swing.JComboBox hourEnd;
     private javax.swing.JComboBox hourInit;
     private javax.swing.JTextField idField;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -304,6 +311,7 @@ public class CreateTurn extends JInternalFrame {
     private javax.swing.JButton okButton;
     private javax.swing.JComboBox secondEnd;
     private javax.swing.JComboBox secondInit;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
     private void doIt() {
@@ -320,7 +328,12 @@ public class CreateTurn extends JInternalFrame {
                 msb.show(this);
                 return;
             }
-            ConnectionDrivers.createTurn(idField.getText(), nameField.getText(), a, b);
+
+            if ( modify ){
+                ConnectionDrivers.modifyTurn(idField.getText(), nameField.getText(), a, b);
+            }else{
+                ConnectionDrivers.createTurn(idField.getText(), nameField.getText(), a, b);
+            }
 
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
             msb.show(this);
@@ -338,6 +351,30 @@ public class CreateTurn extends JInternalFrame {
             }
         }
         
+    }
+
+    private void fillForms() {
+        hourEnd.addItem(12);
+        hourInit.addItem(12);
+
+        for (int i = 1; i < 12; i++) {
+            hourEnd.addItem(i);
+            hourInit.addItem(i);
+        }
+        for (int i = 0; i < 60; i++) {
+            minuteInit.addItem(i);
+            minuteEnd.addItem(i);
+        }
+        for (int i = 0; i < 60; i++) {
+            secondEnd.addItem(i);
+            secondInit.addItem(i);
+        }
+
+        amOrPm.addItem("am");
+        amOrPm.addItem("pm");
+
+        amOrPmEnd.addItem("am");
+        amOrPmEnd.addItem("pm");
     }
 
 }

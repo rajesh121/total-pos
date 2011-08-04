@@ -107,7 +107,13 @@ public class ListTurnsForm extends JInternalFrame {
         });
 
         changeTurn.setText("Modificar Turno");
+        changeTurn.setFocusable(false);
         changeTurn.setName("changeTurn"); // NOI18N
+        changeTurn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeTurnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -161,6 +167,17 @@ public class ListTurnsForm extends JInternalFrame {
     private void tableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tableFocusGained
         updateAll();
     }//GEN-LAST:event_tableFocusGained
+
+    private void changeTurnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeTurnActionPerformed
+        if ( table.getSelectedRow() != -1 ){
+            CreateTurn cp = new CreateTurn(turns.get(table.getSelectedRow()));
+            this.getParent().add(cp);
+            cp.setVisible(true);
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el turno");
+            msg.show(this);
+        }
+    }//GEN-LAST:event_changeTurnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton changeTurn;

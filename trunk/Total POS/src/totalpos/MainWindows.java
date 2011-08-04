@@ -144,6 +144,12 @@ public class MainWindows extends javax.swing.JFrame {
                     mdiPanel.add(cp);
                     cp.setVisible(true);
                 }
+            } else if ( ed.getFuncion().equals("listTurnsAssigned") ) {
+                ListTurnsAssigned lta = new ListTurnsAssigned();
+                if( lta.isOk ){
+                    mdiPanel.add(lta);
+                    lta.setVisible(true);
+                }
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);

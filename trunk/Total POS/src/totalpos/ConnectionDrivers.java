@@ -58,12 +58,15 @@ public class ConnectionDrivers {
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and password = ? ");
         pstmt.setString(1, user);
         pstmt.setString(2, Shared.hashPassword(new String(password)));
+        ResultSet rs = pstmt.executeQuery();
 
-        if ( ! pstmt.executeQuery().next() ){
+        if ( ! rs.next() ){
             c.close();
+            rs.close();
             throw new Exception(Constants.wrongPasswordMsg);
         }
         c.close();
+        rs.close();
     }
 
     /** Genera la lista de usuarios.
@@ -91,6 +94,7 @@ public class ConnectionDrivers {
         }
 
         c.close();
+        rs.close();
         return ans;
     }
 
@@ -113,6 +117,7 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         if ( ! rs.next() ){
+            rs.close();
             c.close();
             return null;
         }
@@ -124,6 +129,7 @@ public class ConnectionDrivers {
                     rs.getString("funcion"));
 
         c.close();
+        rs.close();
 
         return ee;
     }
@@ -163,6 +169,7 @@ public class ConnectionDrivers {
         }
 
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -195,6 +202,7 @@ public class ConnectionDrivers {
         }
 
         c.close();
+        rs.close();
         return ans;
     }
 
@@ -223,6 +231,7 @@ public class ConnectionDrivers {
         }
 
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -236,9 +245,11 @@ public class ConnectionDrivers {
         stmt.setString(1, id);
         stmt.setString(2, profile);
 
-        boolean ans = stmt.executeQuery().next();
+        ResultSet rs = stmt.executeQuery();
+        boolean ans = rs.next();
         
         c.close();
+        rs.close();
         
         return ans;
     }
@@ -312,13 +323,16 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? ");
         pstmt.setString(1, username);
+        ResultSet rs = pstmt.executeQuery();
 
-        if ( ! pstmt.executeQuery().next() ){
+        if ( ! rs.next() ){
+            rs.close();
             c.close();
             return false;
         }
 
         c.close();
+        rs.close();
         return true;
     }
 
@@ -326,13 +340,16 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and bloqueado = 1 ");
         pstmt.setString(1, username);
+        ResultSet rs = pstmt.executeQuery();
 
-        if ( ! pstmt.executeQuery().next() ){
+        if ( ! rs.next() ){
             c.close();
+            rs.close();
             return false;
         }
 
         c.close();
+        rs.close();
         return true;
     }
 
@@ -399,6 +416,7 @@ public class ConnectionDrivers {
                 Shared.getConfig().put(rs.getString("Key"), rs.getString("Value"));
             }
             c.close();
+            rs.close();
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Problemas con la base de datos.", ex);
             msb.show(Shared.getMyMainWindows());
@@ -430,6 +448,7 @@ public class ConnectionDrivers {
             ans.add(new Cost(rs.getDate("fecha"), rs.getDouble("monto")));
         }
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -447,6 +466,7 @@ public class ConnectionDrivers {
                     , (rs.getDouble("monto")*(Double.valueOf(Shared.getConfig().get("iva"))+1.0))));
         }
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -463,6 +483,7 @@ public class ConnectionDrivers {
             ans.add(rs.getString("codigo_de_barras"));
         }
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -509,6 +530,7 @@ public class ConnectionDrivers {
                     );
         }
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -528,6 +550,7 @@ public class ConnectionDrivers {
         assert(ok);
         String ans = rs.getString("id");
         c.close();
+        rs.close();
         return ans;
     }
 
@@ -557,6 +580,8 @@ public class ConnectionDrivers {
                     rs.getString("descripcion"),
                     rs.getString("impresora")) );
         }
+        c.close();
+        rs.close();
 
         return ans;
     }
@@ -571,6 +596,7 @@ public class ConnectionDrivers {
 
         boolean ans = rs.next();
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -602,7 +628,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static List<Turn> listTurnsToday() throws SQLException{
+    protected static List<Turn> listTurns() throws SQLException{
         List<Turn> ans = new ArrayList<Turn>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -618,6 +644,8 @@ public class ConnectionDrivers {
                         rs.getTime("fin"))
                     );
         }
+        c.close();
+        rs.close();
 
         return ans;
     }
@@ -704,6 +732,7 @@ public class ConnectionDrivers {
         assert(ok);
         int ans = rs.getInt(1);
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -718,6 +747,7 @@ public class ConnectionDrivers {
         assert(ok);
         Date ans = rs.getDate(1);
         c.close();
+        rs.close();
 
         return ans;
     }
@@ -745,6 +775,34 @@ public class ConnectionDrivers {
         stmt.executeUpdate();
 
         c.close();
+    }
+
+    protected static List<Assigns> listAsignaTurnPosToday() throws SQLException{
+        List<Assigns> ans = new ArrayList<Assigns>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select identificador_turno, "
+                + "identificador_pos , fecha , abierto , dinero_efectivo , dinero_tarjeta_credito ,"
+                + " dinero_tarjeta_debito from asigna where fecha = now()");
+
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ) {
+            ans.add(
+                    new Assigns(
+                        rs.getString("identificador_turno"),
+                        rs.getString("identificador_pos"),
+                        rs.getDate("fecha"),
+                        rs.getBoolean("abierto"),
+                        rs.getDouble("dinero_efectivo"),
+                        rs.getDouble("dinero_tarjeta_credito"),
+                        rs.getDouble("dinero_tarjeta_debito"))
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
     }
 
 }

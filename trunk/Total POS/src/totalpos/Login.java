@@ -132,7 +132,7 @@ public class Login extends javax.swing.JFrame {
 
             if ( Constants.isPos ){
 
-                List<Turn> t = ConnectionDrivers.listTurnsToday();
+                List<Turn> t = ConnectionDrivers.listTurns();
                 boolean toContinue = false;
                 Turn theTurn = null;
 

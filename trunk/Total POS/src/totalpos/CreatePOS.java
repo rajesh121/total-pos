@@ -8,22 +8,29 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class CreatePOS extends javax.swing.JInternalFrame {
 
-    private ListPOS list;
+    private boolean modify; // To save code xDD.
 
     /** Creates new form CreatePOS */
-    public CreatePOS(ListPOS l) {
+    public CreatePOS() {
         initComponents();
-        
-        this.list = l;
+    }
+
+    public CreatePOS(PointOfSale pos) {
+        initComponents();
+        modify = true;
+        titleLabel.setText("Modificar Caja");
+        numberField.setText(pos.getId());
+        fiscalPrinterField.setText(pos.getPrinter());
+        locateField.setText(pos.getDescription());
+
+        numberField.setEditable(false);
     }
 
     /** This method is called from within the constructor to
@@ -178,10 +185,13 @@ public class CreatePOS extends javax.swing.JInternalFrame {
 
     private void doIt() {
         try {
-            ConnectionDrivers.createPos(numberField.getText(), locateField.getText(), fiscalPrinterField.getText());
+            if ( modify ){
+                ConnectionDrivers.modifyPos(numberField.getText(), locateField.getText(), fiscalPrinterField.getText());
+            }else{
+                ConnectionDrivers.createPos(numberField.getText(), locateField.getText(), fiscalPrinterField.getText());
+            }
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente.");
             msb.show(this);
-            list.updateAll();
             this.setVisible(false);
             this.dispose();
         } catch (SQLException ex) {

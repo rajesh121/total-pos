@@ -728,4 +728,16 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    protected static void modifyPos(String number, String local, String printer) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update punto_de_venta set "
+                + " descripcion = ? , impresora = ? where identificador = ? ");
+        stmt.setString(1, local);
+        stmt.setString(2, printer);
+        stmt.setString(3, number);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
 }

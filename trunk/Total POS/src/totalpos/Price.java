@@ -13,12 +13,14 @@ public class Price {
 
     public Price(Date date, Double quant) {
         this.date = date;
-        this.quant = quant;
+        int quantI = (int)(quant*100.0);
+        this.quant = (double)quantI/100;
     }
 
     public Price(Price p){
         this.date = p.getDate();
-        this.quant = p.getQuant();
+        int quantI = (int)(p.getQuant()*100.0);
+        this.quant = (double)quantI/100;
     }
 
     public Date getDate() {
@@ -40,6 +42,12 @@ public class Price {
     public String toString() {
         DecimalFormat df = new DecimalFormat("#.00");
         return df.format(quant) + "";
+    }
+
+    public Price plusIva(){
+        return new Price(
+                getDate(),
+                getQuant()*(Double.valueOf(Shared.getConfig().get("iva"))+1.0));
     }
 
 }

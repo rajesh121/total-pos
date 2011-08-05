@@ -146,17 +146,17 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
         gridTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Descripción", "Descuento", "Precio"
+                "Descripción", "Descuento", "Precio", "Iva", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -195,12 +195,12 @@ public class MainRetailWindows extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(0, 0, 0));
         jPanel5.setName("jPanel5"); // NOI18N
 
-        subTotalLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        subTotalLabel.setFont(new java.awt.Font("Courier New", 1, 24));
         subTotalLabel.setForeground(new java.awt.Color(255, 255, 255));
         subTotalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         subTotalLabel.setName("subTotalLabel"); // NOI18N
 
-        subTotalLabel1.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        subTotalLabel1.setFont(new java.awt.Font("Courier New", 1, 24));
         subTotalLabel1.setForeground(new java.awt.Color(255, 255, 255));
         subTotalLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         subTotalLabel1.setName("subTotalLabel1"); // NOI18N

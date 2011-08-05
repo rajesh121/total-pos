@@ -777,19 +777,19 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static List<Assigns> listAsignaTurnPosToday() throws SQLException{
-        List<Assigns> ans = new ArrayList<Assigns>();
+    protected static List<Assign> listAssignsTurnPosToday() throws SQLException{
+        List<Assign> ans = new ArrayList<Assign>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select identificador_turno, "
                 + "identificador_pos , fecha , abierto , dinero_efectivo , dinero_tarjeta_credito ,"
-                + " dinero_tarjeta_debito from asigna where fecha = now()");
+                + " dinero_tarjeta_debito from asigna where datediff(fecha,now()) = 0");
 
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ) {
             ans.add(
-                    new Assigns(
+                    new Assign(
                         rs.getString("identificador_turno"),
                         rs.getString("identificador_pos"),
                         rs.getDate("fecha"),
@@ -803,6 +803,63 @@ public class ConnectionDrivers {
         rs.close();
 
         return ans;
+    }
+
+    protected static List<PointOfSale> listPointOfSales() throws SQLException{
+        List<PointOfSale> ans = new ArrayList<PointOfSale>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select identificador , descripcion , impresora "
+                + "from punto_de_venta");
+
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ) {
+            ans.add(
+                    new PointOfSale(
+                        rs.getString("identificador"),
+                        rs.getString("descripcion"),
+                        rs.getString("impresora"))
+                        );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static void createAssign(Assign a) throws SQLException{
+
+        if ( ! assignIsOk(a) ){
+            throw new SQLException(Constants.duplicatedMsg);
+        }
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into asigna "
+                + "(identificador_turno , identificador_pos , fecha , "
+                + "abierto , dinero_efectivo , dinero_tarjeta_credito, "
+                + "dinero_tarjeta_debito )  values ( ? , ? , now() , ? , ? , ? , ? )");
+        stmt.setString(1, a.getTurn());
+        stmt.setString(2, a.getPos());
+        //stmt.setDate(3, a.getDate());
+        stmt.setBoolean(3, a.isOpen());
+        stmt.setDouble(4, a.getCash());
+        stmt.setDouble(5, a.getCreditCard());
+        stmt.setDouble(6, a.getDebitCard());
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    private static boolean assignIsOk(Assign a) throws SQLException{
+        List<Assign> l = listAssignsTurnPosToday();
+        for (Assign assign : l) {
+            if ( a.getPos().equals(assign.getPos()) && a.getTurn().equals(assign.getTurn())){
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

@@ -51,6 +51,7 @@ public class ListTurnsForm extends JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        table.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -92,6 +93,7 @@ public class ListTurnsForm extends JInternalFrame {
         });
         jScrollPane1.setViewportView(table);
 
+        newTurn.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         newTurn.setText("Nuevo Turno");
         newTurn.setFocusable(false);
         newTurn.setName("newTurn"); // NOI18N
@@ -106,6 +108,7 @@ public class ListTurnsForm extends JInternalFrame {
             }
         });
 
+        changeTurn.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         changeTurn.setText("Modificar Turno");
         changeTurn.setFocusable(false);
         changeTurn.setName("changeTurn"); // NOI18N
@@ -149,7 +152,6 @@ public class ListTurnsForm extends JInternalFrame {
         getParent().add(ct);
         ct.setVisible(true);
         ct.requestFocus();
-        updateAll();
     }//GEN-LAST:event_newTurnActionPerformed
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved

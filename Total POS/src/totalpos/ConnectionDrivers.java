@@ -862,4 +862,35 @@ public class ConnectionDrivers {
         return true;
     }
 
+    protected static List<Assign> listAssignsTurnPosRightNow() throws SQLException{
+        List<Assign> ans = new ArrayList<Assign>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select a.identificador_turno, "
+                + "a.identificador_pos , a.fecha , a.abierto , a.dinero_efectivo , a.dinero_tarjeta_credito ,"
+                + " a.dinero_tarjeta_debito "
+                + "from asigna a , turno t "
+                + "where datediff(fecha,now()) = 0 and "
+                + "t.Identificador = a.identificador_turno and t.inicio <= now() and t.fin >= now()");
+
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ) {
+            ans.add(
+                    new Assign(
+                        rs.getString("identificador_turno"),
+                        rs.getString("identificador_pos"),
+                        rs.getDate("fecha"),
+                        rs.getBoolean("abierto"),
+                        rs.getDouble("dinero_efectivo"),
+                        rs.getDouble("dinero_tarjeta_credito"),
+                        rs.getDouble("dinero_tarjeta_debito"))
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
 }

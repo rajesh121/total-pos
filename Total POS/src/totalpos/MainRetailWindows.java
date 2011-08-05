@@ -28,7 +28,6 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private User user;
     protected int quant = 1;
     private List<Item> items;
-    private Turn turn;
     private String actualId;
 
     /** Creates new form MainRetailWindows
@@ -36,10 +35,9 @@ public class MainRetailWindows extends javax.swing.JFrame {
      * @param modal
      * @param u
      */
-    public MainRetailWindows(User u, Turn t) {
+    public MainRetailWindows(User u) {
         initComponents();
         user = u;
-        this.turn = t;
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         updateAll();
     }

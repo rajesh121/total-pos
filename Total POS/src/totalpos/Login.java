@@ -132,25 +132,23 @@ public class Login extends javax.swing.JFrame {
 
             if ( Constants.isPos ){
 
-                List<Turn> t = ConnectionDrivers.listTurns();
+                List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                 boolean toContinue = false;
-                Turn theTurn = null;
 
-                /*for (Turn turn : t) {
-                    if ( turn.getUsername().equals(u.getLogin()) && turn.isAbierto() && turn.getPos().equals(Constants.myId)){
+                for (Assign assign : as) {
+                    if ( assign.getPos().equals(Constants.myId) ){
                         toContinue = true;
-                        theTurn = turn;
                     }
                 }
                 if ( !toContinue ){
-                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No hay turno creado para este usuario el día de hoy.");
+                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No hay asignación para esta caja el día de hoy.");
                     msg.show(this);
                     return;
-                }*/
+                }
 
                 uc.start(); //Start the screensaver xDD
                 Shared.setUser(u);
-                MainRetailWindows mrw = new MainRetailWindows(u,theTurn);
+                MainRetailWindows mrw = new MainRetailWindows(u);
                 Shared.setMyMainWindows(mrw);
                 Shared.centerFrame(mrw);
                 mrw.setVisible(true);

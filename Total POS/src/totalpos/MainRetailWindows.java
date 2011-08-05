@@ -55,7 +55,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
             descriptionLabel.setText("Bievenido a Mundo Total");
             currentPrice.setText("");
             ivaLabelResult.setText("0.00 Bsf");
-            totalLabelResult.setText("0.00 Bsf");
+            ivaLabelResult1.setText("0.00 Bsf");
             subTotalLabelResult.setText("0.00 Bsf");
             items = new ArrayList<Item>();
             imageLabel.setVisible(false);
@@ -105,7 +105,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         subTotalLabelResult = new javax.swing.JLabel();
         subTotalLabel = new javax.swing.JLabel();
         totalLabel = new javax.swing.JLabel();
-        totalLabelResult = new javax.swing.JLabel();
+        ivaLabelResult1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         imageLabel = new javax.swing.JLabel();
 
@@ -229,10 +229,10 @@ public class MainRetailWindows extends javax.swing.JFrame {
         totalLabel.setText("Total:");
         totalLabel.setName("totalLabel"); // NOI18N
 
-        totalLabelResult.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
-        totalLabelResult.setForeground(new java.awt.Color(255, 255, 255));
-        totalLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        totalLabelResult.setName("totalLabelResult"); // NOI18N
+        ivaLabelResult1.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        ivaLabelResult1.setForeground(new java.awt.Color(255, 255, 255));
+        ivaLabelResult1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ivaLabelResult1.setName("ivaLabelResult1"); // NOI18N
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -241,14 +241,18 @@ public class MainRetailWindows extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(subTotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ivaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(totalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(totalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                    .addComponent(ivaLabelResult, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                    .addComponent(subTotalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(subTotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ivaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(ivaLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                            .addComponent(subTotalLabelResult, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(totalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ivaLabelResult1, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -267,7 +271,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(ivaLabelResult, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(totalLabelResult, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ivaLabelResult1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -294,7 +298,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(barcodeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                .addGap(98, 98, 98))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Imagen"));
@@ -442,6 +446,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel imageLabel;
     private javax.swing.JLabel ivaLabel;
     private javax.swing.JLabel ivaLabelResult;
+    private javax.swing.JLabel ivaLabelResult1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -451,7 +456,6 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel subTotalLabel;
     private javax.swing.JLabel subTotalLabelResult;
     private javax.swing.JLabel totalLabel;
-    private javax.swing.JLabel totalLabelResult;
     // End of variables declaration//GEN-END:variables
 
     private void logout(){
@@ -503,7 +507,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         }
         subTotalLabelResult.setText(df.format(subT) + " Bsf");
         ivaLabelResult.setText(df.format(ivaT) + " Bsf");
-        totalLabelResult.setText(df.format(total) + " Bsf");
+        ivaLabelResult1.setText(df.format(total) + " Bsf");
     }
 
     private String nextId(){

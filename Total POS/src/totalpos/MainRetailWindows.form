@@ -254,15 +254,22 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="subTotalLabel" alignment="0" min="-2" pref="211" max="-2" attributes="0"/>
-                          <Component id="ivaLabel" alignment="0" min="-2" pref="211" max="-2" attributes="0"/>
-                          <Component id="totalLabel" alignment="0" min="-2" pref="211" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="totalLabelResult" alignment="0" pref="265" max="32767" attributes="0"/>
-                          <Component id="ivaLabelResult" alignment="1" pref="265" max="32767" attributes="0"/>
-                          <Component id="subTotalLabelResult" alignment="0" pref="265" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="subTotalLabel" alignment="0" min="-2" pref="211" max="-2" attributes="0"/>
+                                  <Component id="ivaLabel" alignment="0" min="-2" pref="211" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="ivaLabelResult" pref="265" max="32767" attributes="0"/>
+                                  <Component id="subTotalLabelResult" alignment="0" pref="265" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="totalLabel" min="-2" pref="211" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="ivaLabelResult1" pref="273" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -286,7 +293,7 @@
                           <Group type="102" attributes="1">
                               <Component id="ivaLabelResult" min="-2" pref="46" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="totalLabelResult" min="-2" pref="46" max="-2" attributes="0"/>
+                              <Component id="ivaLabelResult1" min="-2" pref="46" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -358,7 +365,7 @@
                 <Property name="name" type="java.lang.String" value="totalLabel" noResource="true"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="totalLabelResult">
+            <Component class="javax.swing.JLabel" name="ivaLabelResult1">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Courier New" size="24" style="1"/>
@@ -367,7 +374,7 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="4"/>
-                <Property name="name" type="java.lang.String" value="totalLabelResult" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="ivaLabelResult1" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>

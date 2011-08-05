@@ -69,8 +69,6 @@ public class ManageItem extends JInternalFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        itemTable = new javax.swing.JTable();
         filterPanel = new javax.swing.JPanel();
         codigoField = new javax.swing.JTextField();
         codigoLabel = new javax.swing.JLabel();
@@ -80,11 +78,15 @@ public class ManageItem extends JInternalFrame {
         descriptionField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         barCodeField = new javax.swing.JTextField();
-        closeWindows = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         imageLabel = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         printLabels = new javax.swing.JButton();
-        quantTicket = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        stickerTable = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        itemTable = new javax.swing.JTable();
 
         setClosable(true);
         setIconifiable(true);
@@ -99,56 +101,6 @@ public class ManageItem extends JInternalFrame {
         jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel1.setText("Artículos");
         jLabel1.setName("jLabel1"); // NOI18N
-
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        itemTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
-        itemTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Sin Iva", "Precio Actual", "Descuento"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        itemTable.setName("itemTable"); // NOI18N
-        itemTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        itemTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                itemTableMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                itemTableMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                itemTableMouseReleased(evt);
-            }
-        });
-        itemTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                itemTableMouseMoved(evt);
-            }
-        });
-        itemTable.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                itemTableKeyPressed(evt);
-            }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                itemTableKeyReleased(evt);
-            }
-        });
-        jScrollPane1.setViewportView(itemTable);
 
         filterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Filtros", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Courier New", 0, 11))); // NOI18N
         filterPanel.setName("filterPanel"); // NOI18N
@@ -249,14 +201,6 @@ public class ManageItem extends JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        closeWindows.setText("Cerrar");
-        closeWindows.setName("closeWindows"); // NOI18N
-        closeWindows.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeWindowsActionPerformed(evt);
-            }
-        });
-
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Foto"));
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -279,9 +223,12 @@ public class ManageItem extends JInternalFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Etiquetas"));
+        jPanel2.setName("jPanel2"); // NOI18N
 
         printLabels.setText("Imprimir etiquetas");
         printLabels.setName("printLabels"); // NOI18N
@@ -291,12 +238,150 @@ public class ManageItem extends JInternalFrame {
             }
         });
 
-        quantTicket.setName("quantTicket"); // NOI18N
-        quantTicket.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                quantTicketKeyPressed(evt);
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        stickerTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Código", "Descripción", "Precio Actual", "Cantidad Etiquetas"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
+        stickerTable.setName("stickerTable"); // NOI18N
+        stickerTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        stickerTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                stickerTableMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                stickerTableMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                stickerTableMouseReleased(evt);
+            }
+        });
+        stickerTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                stickerTableMouseMoved(evt);
+            }
+        });
+        stickerTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                stickerTableKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                stickerTableKeyReleased(evt);
+            }
+        });
+        jScrollPane2.setViewportView(stickerTable);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                    .addComponent(printLabels, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(printLabels)
+                .addContainerGap())
+        );
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Detalles"));
+        jPanel3.setName("jPanel3"); // NOI18N
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        itemTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        itemTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Sin Iva", "Precio Actual", "Descuento"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        itemTable.setName("itemTable"); // NOI18N
+        itemTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        itemTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                itemTableMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                itemTableMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                itemTableMouseReleased(evt);
+            }
+        });
+        itemTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                itemTableMouseMoved(evt);
+            }
+        });
+        itemTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                itemTableKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                itemTableKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(itemTable);
+        itemTable.getColumnModel().getColumn(2).setHeaderValue("Marca");
+        itemTable.getColumnModel().getColumn(3).setHeaderValue("Sector");
+        itemTable.getColumnModel().getColumn(4).setHeaderValue("Modelo");
+        itemTable.getColumnModel().getColumn(5).setHeaderValue("Precio Sin Iva");
+        itemTable.getColumnModel().getColumn(7).setHeaderValue("Descuento");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -306,19 +391,12 @@ public class ManageItem extends JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
-                            .addComponent(filterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(quantTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(printLabels, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(closeWindows, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(239, 239, 239))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(filterPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -329,17 +407,13 @@ public class ManageItem extends JInternalFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(quantTicket, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(printLabels)
-                            .addComponent(closeWindows)))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(filterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -354,10 +428,6 @@ public class ManageItem extends JInternalFrame {
             this.dispose();
         }
     }//GEN-LAST:event_codigoFieldKeyPressed
-
-    private void closeWindowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeWindowsActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_closeWindowsActionPerformed
 
     private void modeloFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_modeloFieldKeyPressed
         Shared.getScreenSaver().actioned();
@@ -412,7 +482,7 @@ public class ManageItem extends JInternalFrame {
             if ( itemTable.getSelectedRow() != -1 ){
                 Item i = items.get(itemTable.getSelectedRow());
 
-                int n = Integer.parseInt(quantTicket.getText());
+                int n = 0;//Integer.parseInt(quantTicket.getText());
 
                 if ( n > 0 ){
                     Sticker s = new Sticker(i.getMainBarcode(), i.getMark(), i.getDescription(), i.getLastPrice().toString());
@@ -447,9 +517,29 @@ public class ManageItem extends JInternalFrame {
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_imageLabelMouseMoved
 
-    private void quantTicketKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_quantTicketKeyPressed
-        Shared.getScreenSaver().actioned();
-    }//GEN-LAST:event_quantTicketKeyPressed
+    private void stickerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stickerTableMouseClicked
+
+    private void stickerTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stickerTableMousePressed
+
+    private void stickerTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stickerTableMouseReleased
+
+    private void stickerTableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stickerTableMouseMoved
+
+    private void stickerTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stickerTableKeyPressed
+
+    private void stickerTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stickerTableKeyReleased
 
     private void loadImage(){
         Item i = items.get(itemTable.getSelectedRow());
@@ -459,7 +549,6 @@ public class ManageItem extends JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField barCodeField;
-    private javax.swing.JButton closeWindows;
     private javax.swing.JTextField codigoField;
     private javax.swing.JLabel codigoLabel;
     private javax.swing.JTextField descriptionField;
@@ -471,10 +560,13 @@ public class ManageItem extends JInternalFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField modeloField;
     private javax.swing.JButton printLabels;
-    private javax.swing.JTextField quantTicket;
+    private javax.swing.JTable stickerTable;
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {

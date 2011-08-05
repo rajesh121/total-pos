@@ -1,6 +1,9 @@
 package totalpos;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import javax.swing.JFrame;
 
 /**
@@ -45,6 +48,15 @@ public class UpdateClock extends Thread{
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problema desconocido",ex);
                 msb.show(null);
             }
+
+            Date d = new Date(Calendar.getInstance().getTimeInMillis());
+            DateFormat dfm = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+            if ( Shared.getMyMainWindows() instanceof MainWindows ){
+                MainWindows m = (MainWindows)Shared.getMyMainWindows();
+                m.whatTimeIsIt.setText(dfm.format(d));
+            }
+
         }
     }
 

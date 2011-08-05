@@ -234,10 +234,12 @@ public class MainWindows extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(esc2exit)
-                    .addComponent(whatTimeIsIt, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(esc2exit)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(11, Short.MAX_VALUE)
+                .addComponent(whatTimeIsIt, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -307,7 +309,7 @@ public class MainWindows extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JDesktopPane mdiPanel;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JLabel whatTimeIsIt;
+    public javax.swing.JLabel whatTimeIsIt;
     // End of variables declaration//GEN-END:variables
 
 }

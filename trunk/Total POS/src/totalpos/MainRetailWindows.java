@@ -201,23 +201,23 @@ public class MainRetailWindows extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(0, 0, 0));
         jPanel5.setName("jPanel5"); // NOI18N
 
-        ivaLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        ivaLabel.setFont(new java.awt.Font("Courier New", 1, 24));
         ivaLabel.setForeground(new java.awt.Color(255, 255, 255));
         ivaLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         ivaLabel.setText("Iva:");
         ivaLabel.setName("ivaLabel"); // NOI18N
 
-        ivaLabelResult.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        ivaLabelResult.setFont(new java.awt.Font("Courier New", 1, 24));
         ivaLabelResult.setForeground(new java.awt.Color(255, 255, 255));
         ivaLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         ivaLabelResult.setName("ivaLabelResult"); // NOI18N
 
-        subTotalLabelResult.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        subTotalLabelResult.setFont(new java.awt.Font("Courier New", 1, 24));
         subTotalLabelResult.setForeground(new java.awt.Color(255, 255, 255));
         subTotalLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         subTotalLabelResult.setName("subTotalLabelResult"); // NOI18N
 
-        subTotalLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        subTotalLabel.setFont(new java.awt.Font("Courier New", 1, 24));
         subTotalLabel.setForeground(new java.awt.Color(255, 255, 255));
         subTotalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         subTotalLabel.setText("SubTotal:");
@@ -229,7 +229,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         totalLabel.setText("Total:");
         totalLabel.setName("totalLabel"); // NOI18N
 
-        ivaLabelResult1.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        ivaLabelResult1.setFont(new java.awt.Font("Courier New", 1, 24));
         ivaLabelResult1.setForeground(new java.awt.Color(255, 255, 255));
         ivaLabelResult1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         ivaLabelResult1.setName("ivaLabelResult1"); // NOI18N
@@ -319,7 +319,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -412,7 +412,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
             if ( n == 0 ){
                 deleteItem();
             }
-        }else if ( evt.getKeyCode() == KeyEvent.VK_F10 ){
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F10 ){
             Object[] options = {"Si",
                     "No"};
             int n = JOptionPane.showOptionDialog(this,
@@ -428,6 +428,9 @@ public class MainRetailWindows extends javax.swing.JFrame {
                     deleteItem();
                 }
             }
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F11 ){
+            toWait();
+            updateAll();
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -564,6 +567,18 @@ public class MainRetailWindows extends javax.swing.JFrame {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
             msb.show(this);
         }
+    }
+
+    private void toWait() {
+        try {
+            ConnectionDrivers.putToIdle(actualId);
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
+
     }
 
 }

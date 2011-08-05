@@ -515,9 +515,7 @@ public class ManageItem extends JInternalFrame {
                 nRest = quantToPrint.get(0) % 2;
                 rest = toPrint.get(0);
 
-                //if ( quantToPrint.get(0)-nRest > 2 ){
-                    Sticker.print(i,quantToPrint.get(0)-nRest);
-                //}
+                Sticker.print(i,quantToPrint.get(0)-nRest);
                 
                 toPrint.remove(0);
                 quantToPrint.remove(0);

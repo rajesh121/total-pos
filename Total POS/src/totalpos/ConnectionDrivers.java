@@ -893,4 +893,14 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    public static void putToIdle(String receiptId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura set "
+                + "  estado = 'Espera' where codigo_interno = ? ");
+        stmt.setString(1, receiptId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
 }

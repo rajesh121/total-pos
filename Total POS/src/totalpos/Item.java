@@ -47,6 +47,26 @@ public class Item {
         this.descuento = descuento;
     }
 
+    public Item(Item o){
+        this.code = o.getCode();
+        this.description = o.getDescription();
+        this.registerDate = o.getRegisterDate();
+        this.mark = o.getMark();
+        this.sector = o.getSector();
+        this.sublineCode = o.getSublineCode();
+        this.mainBarcode = o.getMainBarcode();
+        this.model = o.getModel();
+        this.sellUnits = o.getSellUnits();
+        this.buyUnits = o.getBuyUnits();
+        this.currentStock = o.getCurrentStock();
+        this.price = o.getPrice();
+        this.cost = o.getCost();
+        this.barcodes = o.getBarcodes();
+        this.status = o.isStatus();
+        this.imageAddr = o.getImageAddr();
+        this.descuento = o.getDescuento();
+    }
+
     public List<String> getBarcodes() {
         return Collections.unmodifiableList(barcodes);
     }

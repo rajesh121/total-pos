@@ -72,6 +72,7 @@ public class MainWindows extends javax.swing.JFrame {
 
     private int giveMeMnemonic(String nameMenu, String name){
         for ( char c : name.toCharArray() ) {
+            c = Character.toLowerCase(c);
             if (!( mnemonics.containsKey(nameMenu) && mnemonics.get(nameMenu).contains(c) )) {
                 if ( !mnemonics.containsKey(nameMenu) ){
                     mnemonics.put(nameMenu, new TreeSet<Character>());

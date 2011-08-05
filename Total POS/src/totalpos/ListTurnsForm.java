@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JInternalFrame;
@@ -51,7 +52,7 @@ public class ListTurnsForm extends JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        table.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        table.setFont(new java.awt.Font("Courier New", 0, 12));
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -91,9 +92,14 @@ public class ListTurnsForm extends JInternalFrame {
                 tableFocusGained(evt);
             }
         });
+        table.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tableKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(table);
 
-        newTurn.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        newTurn.setFont(new java.awt.Font("Courier New", 0, 12));
         newTurn.setText("Nuevo Turno");
         newTurn.setFocusable(false);
         newTurn.setName("newTurn"); // NOI18N
@@ -108,7 +114,7 @@ public class ListTurnsForm extends JInternalFrame {
             }
         });
 
-        changeTurn.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        changeTurn.setFont(new java.awt.Font("Courier New", 0, 12));
         changeTurn.setText("Modificar Turno");
         changeTurn.setFocusable(false);
         changeTurn.setName("changeTurn"); // NOI18N
@@ -180,6 +186,13 @@ public class ListTurnsForm extends JInternalFrame {
             msg.show(this);
         }
     }//GEN-LAST:event_changeTurnActionPerformed
+
+    private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            setVisible(false);
+            dispose();
+        }
+    }//GEN-LAST:event_tableKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton changeTurn;

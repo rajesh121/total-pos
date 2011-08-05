@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -91,6 +92,11 @@ public class ListTurnsAssigned extends JInternalFrame {
                 tableFocusGained(evt);
             }
         });
+        table.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tableKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(table);
         table.getColumnModel().getColumn(3).setPreferredWidth(20);
 
@@ -128,6 +134,13 @@ public class ListTurnsAssigned extends JInternalFrame {
     private void tableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tableFocusGained
         updateAll();
     }//GEN-LAST:event_tableFocusGained
+
+    private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            setVisible(false);
+            dispose();
+        }
+    }//GEN-LAST:event_tableKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;

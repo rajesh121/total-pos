@@ -54,7 +54,9 @@ public class MainRetailWindows extends javax.swing.JFrame {
         try {
             descriptionLabel.setText("Bievenido a Mundo Total");
             currentPrice.setText("");
-            subTotalLabel.setText("0.00 Bsf");
+            ivaLabelResult.setText("0.00 Bsf");
+            totalLabelResult.setText("0.00 Bsf");
+            subTotalLabelResult.setText("0.00 Bsf");
             items = new ArrayList<Item>();
             imageLabel.setVisible(false);
 
@@ -98,8 +100,12 @@ public class MainRetailWindows extends javax.swing.JFrame {
         barcodeField = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        ivaLabel = new javax.swing.JLabel();
+        ivaLabelResult = new javax.swing.JLabel();
+        subTotalLabelResult = new javax.swing.JLabel();
         subTotalLabel = new javax.swing.JLabel();
-        subTotalLabel1 = new javax.swing.JLabel();
+        totalLabel = new javax.swing.JLabel();
+        totalLabelResult = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         imageLabel = new javax.swing.JLabel();
 
@@ -126,8 +132,8 @@ public class MainRetailWindows extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(currentPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE))
+                    .addComponent(currentPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -185,7 +191,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 443, Short.MAX_VALUE)
+            .addGap(0, 514, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,15 +201,38 @@ public class MainRetailWindows extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(0, 0, 0));
         jPanel5.setName("jPanel5"); // NOI18N
 
-        subTotalLabel.setFont(new java.awt.Font("Courier New", 1, 24));
+        ivaLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        ivaLabel.setForeground(new java.awt.Color(255, 255, 255));
+        ivaLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ivaLabel.setText("Iva:");
+        ivaLabel.setName("ivaLabel"); // NOI18N
+
+        ivaLabelResult.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        ivaLabelResult.setForeground(new java.awt.Color(255, 255, 255));
+        ivaLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ivaLabelResult.setName("ivaLabelResult"); // NOI18N
+
+        subTotalLabelResult.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        subTotalLabelResult.setForeground(new java.awt.Color(255, 255, 255));
+        subTotalLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        subTotalLabelResult.setName("subTotalLabelResult"); // NOI18N
+
+        subTotalLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
         subTotalLabel.setForeground(new java.awt.Color(255, 255, 255));
         subTotalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        subTotalLabel.setText("SubTotal:");
         subTotalLabel.setName("subTotalLabel"); // NOI18N
 
-        subTotalLabel1.setFont(new java.awt.Font("Courier New", 1, 24));
-        subTotalLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        subTotalLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        subTotalLabel1.setName("subTotalLabel1"); // NOI18N
+        totalLabel.setFont(new java.awt.Font("Courier New", 1, 24));
+        totalLabel.setForeground(new java.awt.Color(255, 255, 255));
+        totalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalLabel.setText("Total:");
+        totalLabel.setName("totalLabel"); // NOI18N
+
+        totalLabelResult.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        totalLabelResult.setForeground(new java.awt.Color(255, 255, 255));
+        totalLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalLabelResult.setName("totalLabelResult"); // NOI18N
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -212,18 +241,34 @@ public class MainRetailWindows extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(subTotalLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
-                    .addComponent(subTotalLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE))
+                    .addComponent(subTotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ivaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(totalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(totalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                    .addComponent(ivaLabelResult, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                    .addComponent(subTotalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+            .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(subTotalLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(subTotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(subTotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(subTotalLabelResult, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(ivaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(ivaLabelResult, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(totalLabelResult, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -235,8 +280,8 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                    .addComponent(barcodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+                    .addComponent(barcodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -263,14 +308,14 @@ public class MainRetailWindows extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -395,6 +440,8 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTable gridTable;
     private javax.swing.JLabel imageLabel;
+    private javax.swing.JLabel ivaLabel;
+    private javax.swing.JLabel ivaLabelResult;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -402,7 +449,9 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel subTotalLabel;
-    private javax.swing.JLabel subTotalLabel1;
+    private javax.swing.JLabel subTotalLabelResult;
+    private javax.swing.JLabel totalLabel;
+    private javax.swing.JLabel totalLabelResult;
     // End of variables declaration//GEN-END:variables
 
     private void logout(){
@@ -423,7 +472,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
             ConnectionDrivers.addItem2Receipt(actualId, get);
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
-            String[] s = {get.getDescription(), get.getDescuento(), get.getLastPrice().toString()};
+            String[] s = {get.getDescription(), get.getDescuento(), get.getLastPrice().toString(), get.getLastPrice().getIva().toString(), get.getLastPrice().plusIva().toString()};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
             items.add(get);
@@ -446,11 +495,15 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
     private void updateSubTotal() {
         DecimalFormat df = new DecimalFormat("#.00");
-        double subT = .0;
+        double subT = .0 , ivaT = .0 , total = .0;
         for (Item item : items) {
             subT += item.getLastPrice().getQuant();
+            ivaT += item.getLastPrice().getIva().getQuant();
+            total += item.getLastPrice().plusIva().getQuant();
         }
-        subTotalLabel.setText(df.format(subT) + " Bsf");
+        subTotalLabelResult.setText(df.format(subT) + " Bsf");
+        ivaLabelResult.setText(df.format(ivaT) + " Bsf");
+        totalLabelResult.setText(df.format(total) + " Bsf");
     }
 
     private String nextId(){

@@ -22,7 +22,7 @@ public class Constants {
     public static final String isDataRepeated = "Duplicate entry \'[^\\\']*\' for key \'[^\\\']*\'";
     public static final String duplicatedMsg = "Duplicate entry \'GenericTable\' for key \'Generic Key\'";
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
     /**
      * TODO: This must be in the local database!!!

@@ -50,4 +50,10 @@ public class Price {
                 getQuant()*(Double.valueOf(Shared.getConfig().get("iva"))+1.0));
     }
 
+    public Price getIva(){
+        return new Price(
+                getDate(),
+                getQuant()*(Double.valueOf(Shared.getConfig().get("iva"))));
+    }
+
 }

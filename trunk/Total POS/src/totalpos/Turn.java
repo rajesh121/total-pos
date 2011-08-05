@@ -35,4 +35,19 @@ public class Turn {
         return nombre;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Turn other = (Turn) obj;
+        if ((this.identificador == null) ? (other.identificador != null) : !this.identificador.equals(other.identificador)) {
+            return false;
+        }
+        return true;
+    }
+
 }

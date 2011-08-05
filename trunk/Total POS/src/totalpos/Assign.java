@@ -1,12 +1,12 @@
 package totalpos;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  *
  * @author Saúl Hidalgo
  */
-public class Assigns {
+public class Assign {
     private String turn;
     private String pos;
     private Date date;
@@ -15,7 +15,7 @@ public class Assigns {
     private double creditCard;
     private double debitCard;
 
-    public Assigns(String turn, String pos, Date date, boolean open, double cash, double creditCard, double debitCard) {
+    public Assign(String turn, String pos, Date date, boolean open, double cash, double creditCard, double debitCard) {
         this.turn = turn;
         this.pos = pos;
         this.date = date;

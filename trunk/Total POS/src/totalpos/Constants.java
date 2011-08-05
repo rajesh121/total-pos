@@ -20,6 +20,7 @@ public class Constants {
     public static final String userLocked = "El usuario ha sido bloqueado.";
     public static final String dataRepeated = "Esta intentando ingresar valores repetidos";
     public static final String isDataRepeated = "Duplicate entry \'[^\\\']*\' for key \'[^\\\']*\'";
+    public static final String duplicatedMsg = "Duplicate entry \'GenericTable\' for key \'Generic Key\'";
 
     public static final boolean isPos = false;
 

@@ -349,7 +349,36 @@ public class MainRetailWindows extends javax.swing.JFrame {
             gridTable.setRowSelectionInterval(gridTable.getSelectedRow()-1, gridTable.getSelectedRow()-1);
             updateCurrentItem();
         }else if ( evt.getKeyCode() == KeyEvent.VK_BACK_SPACE ){
-            deleteItem();
+            Object[] options = {"Si",
+                    "No"};
+            int n = JOptionPane.showOptionDialog(this,
+                "¿Desea eliminar el artículo?",
+                Constants.appName,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+
+            if ( n == 0 ){
+                deleteItem();
+            }
+        }else if ( evt.getKeyCode() == KeyEvent.VK_F10 ){
+            Object[] options = {"Si",
+                    "No"};
+            int n = JOptionPane.showOptionDialog(this,
+                "¿Desea eliminar el pedido?",
+                Constants.appName,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+            if ( n == 0 ){
+                while( !items.isEmpty() ){
+                    deleteItem();
+                }
+            }
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -448,7 +477,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }
 
     private void deleteItem() {
-        if ( gridTable.getSelectedRow() != -1 ){
+        if ( gridTable.getSelectedRow() != -1){
             try {
                 ConnectionDrivers.deleteItem2Receipt(actualId, items.get(gridTable.getSelectedRow()));
 

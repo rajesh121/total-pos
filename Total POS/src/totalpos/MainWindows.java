@@ -292,7 +292,17 @@ public class MainWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel1MouseMoved
 
     private void logout(){
-        if ( JOptionPane.showConfirmDialog(this, "¿Está seguro que desea cerrar sesión?") == 0 ){
+
+        Object[] options = {"Si","No"};
+        int n = JOptionPane.showOptionDialog(this,"¿Desea eliminar el artículo?",
+                Constants.appName,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+
+        if ( n == 0 ){
             Login l = new Login();
             Shared.centerFrame(l);
             Shared.maximize(l);

@@ -13,8 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -371,6 +369,12 @@ public class MainRetailWindows extends javax.swing.JFrame {
                     return;
                 }
                 assert( itemC.size() == 1 );
+                if ( itemC.get(0).isStatus() ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo bloqueado. No puede ser facturado!");
+                    msb.show(this);
+                    cleanForNewItem();
+                    return;
+                }
                 addItem(itemC.get(0));
                 updateCurrentItem();
                 cleanForNewItem();
@@ -427,10 +431,27 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 while( !items.isEmpty() ){
                     deleteItem();
                 }
+                try {
+                    ConnectionDrivers.cancelReceipt(actualId);
+                    MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido anulado.");
+                    msb.show(this);
+                    updateAll();
+                } catch (SQLException ex) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                    msb.show(this);
+                    this.dispose();
+                    Shared.reload();
+                }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F11 ){
             toWait();
             updateAll();
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F12 ){
+            ListIdleReceipts lir = new ListIdleReceipts(this, true);
+            if ( lir.isOk ){
+                Shared.centerFrame(lir);
+                lir.setVisible(true);
+            }
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -545,7 +566,17 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
                 model.removeRow(gridTable.getSelectedRow());
                 if (items.isEmpty()) {
-                    updateAll();
+                    try {
+                        ConnectionDrivers.cancelReceipt(actualId);
+                        MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido anulado.");
+                        msb.show(this);
+                        updateAll();
+                    } catch (SQLException ex) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                        msb.show(this);
+                        this.dispose();
+                        Shared.reload();
+                    }
                 } else {
                     gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
                     updateCurrentItem();
@@ -572,13 +603,27 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private void toWait() {
         try {
             ConnectionDrivers.putToIdle(actualId);
+            MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido puesto en espera.");
+            msb.show(this);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(this);
             this.dispose();
             Shared.reload();
         }
-
     }
 
+    public void loadThisReceipt(Receipt r){
+        actualId = r.getInternId();
+        DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
+
+        for (Item item : r.getItems()) {
+            String[] s = {item.getDescription(), item.getDescuento(), item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
+            model.addRow(s);
+            items.add(item);
+        }
+        gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
+        updateCurrentItem();
+        updateSubTotal();
+    }
 }

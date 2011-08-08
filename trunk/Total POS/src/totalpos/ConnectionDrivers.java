@@ -903,4 +903,92 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static void cancelReceipt(String receiptId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura set "
+                + "  estado = 'Anulada' where codigo_interno = ? ");
+        stmt.setString(1, receiptId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    protected static List<Item> listItems(String receiptID) throws SQLException{
+        List<Item> ans = new ArrayList<Item>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento "
+                + "from articulo a , factura_contiene fc where fc.codigo_interno_factura = ? and fc.codigo_de_articulo = a.codigo");
+        stmt.setString(1, receiptID);
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Item(
+                        rs.getString("codigo"),
+                        rs.getString("descripcion"),
+                        rs.getDate("fecha_registro"),
+                        rs.getString("marca"),
+                        rs.getString("sector"),
+                        rs.getString("codigo_sublinea"),
+                        rs.getString("codigo_de_barras"),
+                        rs.getString("modelo"),
+                        rs.getString("unidad_venta"),
+                        rs.getString("unidad_compra"),
+                        rs.getInt("existencia_actual"),
+                        listPrices(rs.getString("codigo")),
+                        listCosts(rs.getString("codigo")),
+                        listBarcodes(rs.getString("codigo")),
+                        rs.getBoolean("bloqueado"),
+                        rs.getString("imagen"),
+                        rs.getString("descuento")
+                        )
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static List<Receipt> listIdleReceiptToday() throws SQLException{
+        List<Receipt> ans = new ArrayList<Receipt>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
+                + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
+                + "descuento_global, iva, impresora, numero_fiscal, "
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos "
+                + "from factura where estado='Espera' and datediff(fecha_creacion,now()) = 0");
+        
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Receipt(
+                            rs.getString("codigo_interno"),
+                            rs.getString("estado"),
+                            rs.getDate("fecha_creacion"),
+                            rs.getDate("fecha_impresion"),
+                            rs.getString("codigo_de_cliente"),
+                            rs.getDouble("total_sin_iva"),
+                            rs.getDouble("total_con_iva"),
+                            rs.getDouble("descuento_global"),
+                            rs.getDouble("iva"),
+                            rs.getString("impresora"),
+                            rs.getString("numero_fiscal"),
+                            rs.getString("numero_reporte_z"),
+                            rs.getString("codigo_de_usuario"),
+                            rs.getInt("cantidad_de_articulos"),
+                            listItems(rs.getString("codigo_interno"))
+                        )
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
 }

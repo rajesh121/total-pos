@@ -330,7 +330,7 @@ public class CreateTurn extends JInternalFrame {
             Time a = new Time(amOrPm.getSelectedIndex() * 12 + hourInit.getSelectedIndex(), minuteInit.getSelectedIndex(), secondInit.getSelectedIndex());
             Time b = new Time(amOrPmEnd.getSelectedIndex() * 12 + hourEnd.getSelectedIndex(), minuteEnd.getSelectedIndex(), secondEnd.getSelectedIndex());
             if (a.after(b)) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "El tiempo final debe ser luego del tiempo inicial");
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "El tiempo final debe ser luego del tiempo inicial");
                 msb.show(this);
                 return;
             }

@@ -417,6 +417,9 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 deleteItem();
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F10 ){
+            if ( items.isEmpty() ){
+                return;
+            }
             Object[] options = {"Si",
                     "No"};
             int n = JOptionPane.showOptionDialog(this,
@@ -430,17 +433,6 @@ public class MainRetailWindows extends javax.swing.JFrame {
             if ( n == 0 ){
                 while( !items.isEmpty() ){
                     deleteItem();
-                }
-                try {
-                    ConnectionDrivers.cancelReceipt(actualId);
-                    MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido anulado.");
-                    msb.show(this);
-                    updateAll();
-                } catch (SQLException ex) {
-                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-                    msb.show(this);
-                    this.dispose();
-                    Shared.reload();
                 }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F11 ){
@@ -602,9 +594,11 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
     private void toWait() {
         try {
-            ConnectionDrivers.putToIdle(actualId);
-            MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido puesto en espera.");
-            msb.show(this);
+            if ( !items.isEmpty() ){
+                ConnectionDrivers.putToIdle(actualId);
+                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido puesto en espera.");
+                msb.show(this);
+            }
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(this);
@@ -614,16 +608,18 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }
 
     public void loadThisReceipt(Receipt r){
-        actualId = r.getInternId();
-        DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
+        if ( !r.getItems().isEmpty() ){
+            actualId = r.getInternId();
+            DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
-        for (Item item : r.getItems()) {
-            String[] s = {item.getDescription(), item.getDescuento(), item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
-            model.addRow(s);
-            items.add(item);
+            for (Item item : r.getItems()) {
+                String[] s = {item.getDescription(), item.getDescuento(), item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
+                model.addRow(s);
+                items.add(item);
+            }
+            gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
+            updateCurrentItem();
+            updateSubTotal();
         }
-        gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
-        updateCurrentItem();
-        updateSubTotal();
     }
 }

@@ -6,16 +6,23 @@
 
 package totalpos;
 
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.jawin.COMException;
 
 /**
  *
@@ -444,6 +451,15 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 Shared.centerFrame(lir);
                 lir.setVisible(true);
             }
+        } else if (evt.getKeyCode() == KeyEvent.VK_F5 ){
+            FiscalDriver fd = (FiscalDriver) Native.loadLibrary("tfhkaif", FiscalDriver.class);
+            System.out.println(fd.OpenFpctrl("COM1"));
+            
+            IntByReference a = new IntByReference();
+            IntByReference b = new IntByReference();
+            System.out.println(fd.UploadStatusCmd(a, b, "S1", "archivo.txt"));
+            System.out.println(fd.CloseFpctrl());
+
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 

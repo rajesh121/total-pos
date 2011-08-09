@@ -294,7 +294,7 @@ public class MainWindows extends javax.swing.JFrame {
     private void logout(){
 
         Object[] options = {"Si","No"};
-        int n = JOptionPane.showOptionDialog(this,"¿Desea eliminar el artículo?",
+        int n = JOptionPane.showOptionDialog(this,"¿Desea salir del sistema?",
                 Constants.appName,
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,

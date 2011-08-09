@@ -92,13 +92,13 @@ public class CreateTurn extends JInternalFrame {
         titleLabel.setText("Crear Turno");
         titleLabel.setName("titleLabel"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel2.setText("Identificador *");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel3.setText("Nombre");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -122,13 +122,13 @@ public class CreateTurn extends JInternalFrame {
             }
         });
 
-        cashLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        cashLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         cashLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         cashLabel.setText("Hora Inicial  *");
         cashLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         cashLabel.setName("cashLabel"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel4.setText("Hora Final    *");
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -150,6 +150,11 @@ public class CreateTurn extends JInternalFrame {
         nameField.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 nameFieldMouseMoved(evt);
+            }
+        });
+        nameField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nameFieldKeyPressed(evt);
             }
         });
 
@@ -289,11 +294,21 @@ public class CreateTurn extends JInternalFrame {
 
     private void idFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idFieldKeyPressed
         Shared.getScreenSaver().actioned();
+        if ( idField.getText().length() > 20 ){
+            idField.setText(idField.getText().substring(0, 20));
+        }
     }//GEN-LAST:event_idFieldKeyPressed
 
     private void nameFieldMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameFieldMouseMoved
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_nameFieldMouseMoved
+
+    private void nameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyPressed
+        Shared.getScreenSaver().actioned();
+        if ( nameField.getText().length() > 20 ){
+            nameField.setText(nameField.getText().substring(0, 20));
+        }
+    }//GEN-LAST:event_nameFieldKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox amOrPm;

@@ -481,7 +481,7 @@ public class ManageItem extends JInternalFrame {
     }//GEN-LAST:event_barCodeFieldKeyPressed
 
     private void itemTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_itemTableKeyPressed
-        
+        Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_itemTableKeyPressed
 
     private void itemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableMouseClicked
@@ -555,15 +555,15 @@ public class ManageItem extends JInternalFrame {
     }//GEN-LAST:event_stickerTableMousePressed
 
     private void stickerTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMouseReleased
-        // TODO add your handling code here:
+        Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_stickerTableMouseReleased
 
     private void stickerTableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMouseMoved
-        // TODO add your handling code here:
+        Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_stickerTableMouseMoved
 
     private void stickerTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyPressed
-        // TODO add your handling code here:
+        Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_stickerTableKeyPressed
 
     private void stickerTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyReleased

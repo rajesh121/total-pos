@@ -459,9 +459,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 options,
                 options[1]);
             if ( n == 0 ){
-                while( !items.isEmpty() ){
-                    deleteItem();
-                }
+                deleteCurrent();
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F11 ){
             toWait();
@@ -472,14 +470,6 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 Shared.centerFrame(lir);
                 lir.setVisible(true);
             }
-        } else if (evt.getKeyCode() == KeyEvent.VK_F5 ){
-            FiscalDriver fd = (FiscalDriver) Native.loadLibrary("tfhkaif", FiscalDriver.class);
-            System.out.println(fd.OpenFpctrl("COM1"));
-            
-            IntByReference a = new IntByReference();
-            IntByReference b = new IntByReference();
-            System.out.println(fd.UploadStatusCmd(a, b, "S1", "archivo.txt"));
-            System.out.println(fd.CloseFpctrl());
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -662,5 +652,11 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private boolean checkPrinter() throws SQLException, FileNotFoundException {
         String p = ConnectionDrivers.getMyPrinter();
         return printer.isTheSame(p);
+    }
+
+    public void deleteCurrent(){
+        while( !items.isEmpty() ){
+            deleteItem();
+        }
     }
 }

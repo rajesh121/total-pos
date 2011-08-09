@@ -13,14 +13,12 @@ public class Price {
 
     public Price(Date date, Double quant) {
         this.date = date;
-        int quantI = (int)(quant*100.0);
-        this.quant = (double)quantI/100;
+        this.quant = Shared.round(quant,2);
     }
 
     public Price(Price p){
         this.date = p.getDate();
-        int quantI = (int)(p.getQuant()*100.0);
-        this.quant = (double)quantI/100;
+        this.quant = Shared.round(p.getQuant(),2);
     }
 
     public Date getDate() {

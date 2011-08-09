@@ -991,4 +991,14 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static String getMyPrinter() throws SQLException{
+        List<PointOfSale> poses = listPointOfSales();
+        for (PointOfSale pointOfSale : poses) {
+            if ( pointOfSale.getId().equals(Constants.myId) ){
+                return pointOfSale.getPrinter();
+            }
+        }
+        return null;
+    }
+
 }

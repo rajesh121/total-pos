@@ -10,6 +10,8 @@ import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -109,8 +111,17 @@ public class ListIdleReceipts extends javax.swing.JDialog {
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             if ( table.getSelectedRow() != -1 ){
-                parent.loadThisReceipt(receipts.get(table.getSelectedRow()));
-                this.dispose();
+                try {
+                    parent.deleteCurrent();
+                    parent.loadThisReceipt(receipts.get(table.getSelectedRow()));
+                    ConnectionDrivers.cancelReceipt(receipts.get(table.getSelectedRow()).getInternId());
+                    this.dispose();
+                } catch (SQLException ex) {
+                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+                    msg.show(this);
+                    this.dispose();
+                    Shared.reload();
+                }
             }else{
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
                 msb.show(this);

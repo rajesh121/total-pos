@@ -682,8 +682,8 @@ public class ConnectionDrivers {
 
         changeItemStock(item.getCode(), -1);
 
-        double withoutTax = Shared.round( item.getLastPrice().getQuant()/(Double.valueOf(Shared.getConfig().get("iva"))+1.0), 2);
-        double withTax = item.getLastPrice().getQuant();
+        double withoutTax = item.getLastPrice().getQuant();
+        double withTax = item.getLastPrice().plusIva().getQuant();
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = total_sin_iva + " + withoutTax +
                 " , total_con_iva = total_con_iva + " + withTax +
@@ -708,8 +708,8 @@ public class ConnectionDrivers {
 
         changeItemStock(item.getCode(), 1);
 
-        double withoutTax = Shared.round(-1*(item.getLastPrice().getQuant()/(Double.valueOf(Shared.getConfig().get("iva"))+1.0)),2);
-        double withTax = -1*item.getLastPrice().getQuant();
+        double withoutTax = -1*(item.getLastPrice().getQuant());
+        double withTax = -1*item.getLastPrice().plusIva().getQuant();
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = total_sin_iva + " + withoutTax +
                 " , total_con_iva = total_con_iva + " + withTax +

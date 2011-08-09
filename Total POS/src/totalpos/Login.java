@@ -102,15 +102,18 @@ public class Login extends javax.swing.JFrame {
 
     private void passwordTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordTextActionPerformed
         try {
+            passwordText.setEnabled(false);
             if ( !ConnectionDrivers.existsUser(loginText.getText().trim()) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario no existe");
                 msg.show(this);
+                passwordText.setEnabled(true);
                 return;
             }
 
             if ( ConnectionDrivers.isLocked(loginText.getText().trim()) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario bloqueado");
                 msg.show(this);
+                passwordText.setEnabled(true);
                 return;
             }
             ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
@@ -123,6 +126,7 @@ public class Login extends javax.swing.JFrame {
                 if ( !cp.isOk ){
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Debes cambiar el password. Intenta de nuevo.");
                     msg.show(this);
+                    passwordText.setEnabled(true);
                     return;
                 }
             }
@@ -138,20 +142,24 @@ public class Login extends javax.swing.JFrame {
                 for (Assign assign : as) {
                     if ( assign.getPos().equals(Constants.myId) ){
                         toContinue = true;
+                        break; // for performance ...  =D!
                     }
                 }
                 if ( !toContinue ){
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No hay asignación para esta caja el día de hoy.");
                     msg.show(this);
+                    passwordText.setEnabled(true);
                     return;
                 }
 
                 uc.start(); //Start the screensaver xDD
                 Shared.setUser(u);
                 MainRetailWindows mrw = new MainRetailWindows(u);
-                Shared.setMyMainWindows(mrw);
-                Shared.centerFrame(mrw);
-                mrw.setVisible(true);
+                if ( mrw.isOk ){
+                    Shared.setMyMainWindows(mrw);
+                    Shared.centerFrame(mrw);
+                    mrw.setVisible(true);
+                }
             }else{
                 uc.start(); //Same here
                 Shared.setUser(u);

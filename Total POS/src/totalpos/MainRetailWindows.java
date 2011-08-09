@@ -7,10 +7,9 @@
 package totalpos;
 
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -22,7 +21,6 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import org.jawin.COMException;
 
 /**
  *
@@ -34,6 +32,8 @@ public class MainRetailWindows extends javax.swing.JFrame {
     protected int quant = 1;
     private List<Item> items;
     private String actualId;
+    FiscalPrinter printer;
+    public boolean isOk = false;
 
     /** Creates new form MainRetailWindows
      * @param parent
@@ -41,10 +41,31 @@ public class MainRetailWindows extends javax.swing.JFrame {
      * @param u
      */
     public MainRetailWindows(User u) {
-        initComponents();
-        user = u;
-        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        updateAll();
+        try {
+            initComponents();
+            this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+            user = u;
+            printer = new FiscalPrinter();
+            updateAll();
+            if ( !checkPrinter() ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+            }else{
+                isOk = true;
+            }
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+            msb.show(null);
+            this.dispose();
+            Shared.reload();
+        } catch (FileNotFoundException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas en la comunicación con la impresora.",ex);
+            msb.show(null);
+            this.dispose();
+            Shared.reload();
+        }
     }
 
     public User getUser() {
@@ -459,7 +480,6 @@ public class MainRetailWindows extends javax.swing.JFrame {
             IntByReference b = new IntByReference();
             System.out.println(fd.UploadStatusCmd(a, b, "S1", "archivo.txt"));
             System.out.println(fd.CloseFpctrl());
-
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -637,5 +657,10 @@ public class MainRetailWindows extends javax.swing.JFrame {
             updateCurrentItem();
             updateSubTotal();
         }
+    }
+
+    private boolean checkPrinter() throws SQLException, FileNotFoundException {
+        String p = ConnectionDrivers.getMyPrinter();
+        return printer.isTheSame(p);
     }
 }

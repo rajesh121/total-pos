@@ -28,5 +28,6 @@ public class Constants {
      * TODO: This must be in the local database!!!
      */
     public static String myId = "01";
+    public static String tmpFileName = "tmp.data";
 
 }

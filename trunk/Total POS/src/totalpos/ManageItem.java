@@ -259,7 +259,7 @@ public class ManageItem extends JInternalFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -284,12 +284,34 @@ public class ManageItem extends JInternalFrame {
                 stickerTableMouseMoved(evt);
             }
         });
+        stickerTable.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                stickerTableFocusLost(evt);
+            }
+        });
+        stickerTable.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                stickerTableInputMethodTextChanged(evt);
+            }
+        });
+        stickerTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                stickerTablePropertyChange(evt);
+            }
+        });
         stickerTable.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 stickerTableKeyPressed(evt);
             }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 stickerTableKeyReleased(evt);
+            }
+        });
+        stickerTable.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
+            public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
+                stickerTableVetoableChange(evt);
             }
         });
         jScrollPane2.setViewportView(stickerTable);
@@ -547,11 +569,11 @@ public class ManageItem extends JInternalFrame {
     }//GEN-LAST:event_imageLabelMouseMoved
 
     private void stickerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMouseClicked
-        // TODO add your handling code here:
+        Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_stickerTableMouseClicked
 
     private void stickerTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMousePressed
-        // TODO add your handling code here:
+        Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_stickerTableMousePressed
 
     private void stickerTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stickerTableMouseReleased
@@ -564,7 +586,19 @@ public class ManageItem extends JInternalFrame {
 
     private void stickerTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyPressed
         Shared.getScreenSaver().actioned();
-        
+        DefaultTableModel model = (DefaultTableModel) stickerTable.getModel();
+        for (int i = 0; i < quantToPrint.size(); i++) {
+            quantToPrint.set(i, Integer.parseInt((String) model.getValueAt(i, 3)));
+        }
+        if ( evt.getKeyChar() == KeyEvent.VK_BACK_SPACE ){
+            int n = stickerTable.getSelectedRow();
+            if ( n != -1 ){
+                model = (DefaultTableModel) stickerTable.getModel();
+                model.removeRow(n);
+                toPrint.remove(n);
+                quantToPrint.remove(n);
+            }
+        }
     }//GEN-LAST:event_stickerTableKeyPressed
 
     private void stickerTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyReleased
@@ -603,6 +637,26 @@ public class ManageItem extends JInternalFrame {
             msb.show(this);
         }
     }//GEN-LAST:event_addStickerActionPerformed
+
+    private void stickerTableInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_stickerTableInputMethodTextChanged
+
+        
+    }//GEN-LAST:event_stickerTableInputMethodTextChanged
+
+    private void stickerTableVetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {//GEN-FIRST:event_stickerTableVetoableChange
+        
+    }//GEN-LAST:event_stickerTableVetoableChange
+
+    private void stickerTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_stickerTablePropertyChange
+        
+    }//GEN-LAST:event_stickerTablePropertyChange
+
+    private void stickerTableFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_stickerTableFocusLost
+        DefaultTableModel model = (DefaultTableModel) stickerTable.getModel();
+        for (int i = 0; i < quantToPrint.size(); i++) {
+            quantToPrint.set(i, Integer.parseInt((String) model.getValueAt(i, 3)));
+        }
+    }//GEN-LAST:event_stickerTableFocusLost
 
     private void loadImage(){
         Item i = items.get(itemTable.getSelectedRow());

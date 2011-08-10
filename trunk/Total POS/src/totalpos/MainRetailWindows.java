@@ -14,8 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -32,6 +30,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private String actualId;
     FiscalPrinter printer;
     public boolean isOk = false;
+    public boolean closing = false;
 
     /** Creates new form MainRetailWindows
      * @param u
@@ -141,6 +140,14 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
         jPanel1.setName("jPanel1"); // NOI18N
@@ -542,6 +549,14 @@ public class MainRetailWindows extends javax.swing.JFrame {
         }
 }//GEN-LAST:event_jPanel6KeyPressed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        deleteCurrent();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        deleteCurrent();
+    }//GEN-LAST:event_formWindowClosed
+
     private void updateCurrentItem(){
         Item i = items.get(gridTable.getSelectedRow());
         descriptionLabel.setText(i.getDescription());
@@ -658,8 +673,9 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 if (items.isEmpty()) {
                     try {
                         ConnectionDrivers.cancelReceipt(actualId);
-                        MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido anulado.");
-                        msb.show(this);
+                        //MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido anulado.");
+                        //msb.show(this);
+                        //Tbat msg might be annoying...
                         updateAll();
                     } catch (SQLException ex) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);

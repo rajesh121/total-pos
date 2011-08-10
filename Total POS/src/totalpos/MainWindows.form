@@ -58,6 +58,7 @@
   <SubComponents>
     <Container class="javax.swing.JDesktopPane" name="mdiPanel">
       <Properties>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="mdiPanel" noResource="true"/>
       </Properties>
       <Events>
@@ -78,6 +79,7 @@
       </Properties>
       <Events>
         <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="jPanel1MouseMoved"/>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jPanel1KeyPressed"/>
       </Events>
 
       <Layout>
@@ -116,6 +118,9 @@
             <Property name="text" type="java.lang.String" value="ESC = Salir."/>
             <Property name="name" type="java.lang.String" value="esc2exit" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="esc2exitKeyPressed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="whatTimeIsIt">
           <Properties>

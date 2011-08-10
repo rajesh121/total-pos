@@ -203,4 +203,12 @@ public class Shared {
         Shared.screenSaver = screenSaver;
     }
 
+    public static Turn getTurn(List<Turn> l ,String turnId){
+        for (Turn turn : l) {
+            if ( turn.getIdentificador().equals(turnId))
+                return turn;
+        }
+        return null;
+    }
+
 }

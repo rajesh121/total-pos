@@ -1,5 +1,7 @@
 package totalpos;
 
+import java.text.SimpleDateFormat;
+
 /**
  *
  * @author Saul Hidalgo.
@@ -11,7 +13,7 @@ public class Constants {
     public static final int numberConnection = 5;
 
     public static final String dbHost = "192.168.0.34";
-    public static final String dbName = "gt99testing";
+    public static final String dbName = "gt99";
     public static final String dbUser = "root";
     public static final String dbPassword = "123456789";
     public static final String defaultUser = "Invitado";
@@ -21,6 +23,9 @@ public class Constants {
     public static final String dataRepeated = "Esta intentando ingresar valores repetidos";
     public static final String isDataRepeated = "Duplicate entry \'[^\\\']*\' for key \'[^\\\']*\'";
     public static final String duplicatedMsg = "Duplicate entry \'GenericTable\' for key \'Generic Key\'";
+
+    public static SimpleDateFormat sdfHour = new SimpleDateFormat("h:mm a");
+    public static SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
 
     public static final boolean isPos = false;
 

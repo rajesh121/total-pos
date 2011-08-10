@@ -55,6 +55,7 @@ public class MainWindows extends javax.swing.JFrame {
                     child = new JMenuItem(new AppUserAction(ed,this));
                 }
                 child.setFont(new Font("Courier New", 0, 12));
+                child.setFocusable(false);
                 menu.add(child);
                 createMenu(child, ed.getId());
             }
@@ -193,6 +194,7 @@ public class MainWindows extends javax.swing.JFrame {
             }
         });
 
+        mdiPanel.setFocusable(false);
         mdiPanel.setName("mdiPanel"); // NOI18N
         mdiPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
@@ -212,10 +214,20 @@ public class MainWindows extends javax.swing.JFrame {
                 jPanel1MouseMoved(evt);
             }
         });
+        jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jPanel1KeyPressed(evt);
+            }
+        });
 
         esc2exit.setFont(new java.awt.Font("Courier New", 0, 11));
         esc2exit.setText("ESC = Salir.");
         esc2exit.setName("esc2exit"); // NOI18N
+        esc2exit.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                esc2exitKeyPressed(evt);
+            }
+        });
 
         whatTimeIsIt.setName("whatTimeIsIt"); // NOI18N
 
@@ -285,11 +297,24 @@ public class MainWindows extends javax.swing.JFrame {
 
     private void mdiPanelMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mdiPanelMouseMoved
         Shared.getScreenSaver().actioned();
+        this.requestFocus();
     }//GEN-LAST:event_mdiPanelMouseMoved
 
     private void jPanel1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseMoved
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_jPanel1MouseMoved
+
+    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            logout();
+        }
+    }//GEN-LAST:event_jPanel1KeyPressed
+
+    private void esc2exitKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_esc2exitKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            logout();
+        }
+    }//GEN-LAST:event_esc2exitKeyPressed
 
     private void logout(){
 

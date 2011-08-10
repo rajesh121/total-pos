@@ -46,6 +46,8 @@ public class ListTurnsAssigned extends JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
         setTitle("Lista de Turnos Asignados");
 
         newAssign.setText("Nueva Asignación");
@@ -61,20 +63,20 @@ public class ListTurnsAssigned extends JInternalFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Turno", "Caja", "Fecha", "Abierto", "Efectivo", "Crédito", "Débito"
+                "Turno", "Caja", "Fecha", "Abierto", "Efectivo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -154,7 +156,10 @@ public class ListTurnsAssigned extends JInternalFrame {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.setRowCount(0);
             for (Assign a : assigns) {
-                Object[] s = {a.getTurn(),a.getPos(),a.getDate(),a.isOpen(),a.getCash(),a.getCreditCard(),a.getDebitCard()};
+                Turn t = Shared.getTurn(ConnectionDrivers.listTurns(), a.getTurn());
+                Object[] s = {"(" + t.getIdentificador() + ") " + Constants.sdfHour.format(t.getInicio()) + " -> "
+                        + Constants.sdfHour.format(t.getFin()),a.getPos(),Constants.sdfDay.format(a.getDate()),a.isOpen(),
+                        (a.getCash()+"").replace('.', ',')};
                 model.addRow(s);
             }
         } catch (SQLException ex) {

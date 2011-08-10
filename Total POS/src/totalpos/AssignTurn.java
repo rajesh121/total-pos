@@ -9,13 +9,10 @@ package totalpos;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class AssignTurn extends javax.swing.JInternalFrame {
 
@@ -53,23 +50,23 @@ public class AssignTurn extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("Asignar Turnos");
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 24));
         titleLabel.setText("Asignar Turnos");
         titleLabel.setName("titleLabel"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel1.setText("Turno");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel2.setText("Caja");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel3.setText("Efectivo Inicial");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -191,7 +188,9 @@ public class AssignTurn extends javax.swing.JInternalFrame {
 
     private void doIt() {
         try {
-            double money = Double.parseDouble(bsfField.getText());
+            //With comma or point
+            String moneyStr = bsfField.getText().replace(',', '.');
+            double money = Double.parseDouble(moneyStr);
             if ( money < .0 ){
                 throw new NumberFormatException();
             }
@@ -207,7 +206,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
             msb.show(this);
         } catch (SQLException ex) {
             if ( ex.getMessage().matches(Constants.isDataRepeated) ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Asignación ya existente. Intente otro.");
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Asignación ya existente o algún turno está solapado. Intente otro.");
                 msb.show(this);
             }else{
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
@@ -222,9 +221,9 @@ public class AssignTurn extends javax.swing.JInternalFrame {
         try {
             turns = ConnectionDrivers.listTurns();
             poses = ConnectionDrivers.listPointOfSales();
-            
+
             for (Turn t : turns) {
-                turnCombo.addItem(t.getIdentificador());
+                turnCombo.addItem( "(" + t.getIdentificador() + ") " + Constants.sdfHour.format(t.getInicio()) + " -> " + Constants.sdfHour.format(t.getFin()));
             }
 
             for (PointOfSale pointOfSale : poses) {

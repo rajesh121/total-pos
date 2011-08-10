@@ -123,6 +123,8 @@ public class ListIdleReceipts extends javax.swing.JDialog {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
                 msb.show(this);
             }
+        } else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
         }
     }//GEN-LAST:event_tableKeyPressed
 

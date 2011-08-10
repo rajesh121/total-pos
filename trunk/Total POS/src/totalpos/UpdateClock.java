@@ -50,11 +50,13 @@ public class UpdateClock extends Thread{
             }
 
             Date d = new Date(Calendar.getInstance().getTimeInMillis());
-            DateFormat dfm = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
             if ( Shared.getMyMainWindows() instanceof MainWindows ){
                 MainWindows m = (MainWindows)Shared.getMyMainWindows();
-                m.whatTimeIsIt.setText(dfm.format(d));
+                m.whatTimeIsIt.setText(Constants.sdfDateHour.format(d));
+            } else if ( Shared.getMyMainWindows() instanceof MainRetailWindows ){
+                MainRetailWindows m = (MainRetailWindows)Shared.getMyMainWindows();
+                m.whatTimeIsIt.setText(Constants.sdfDateHour.format(d));
             }
 
         }

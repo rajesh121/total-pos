@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -59,7 +61,12 @@ public class MainRetailWindows extends javax.swing.JFrame {
             msb.show(null);
             this.dispose();
             Shared.reload();
-        }
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas en la comunicación con la impresora.",ex);
+            msb.show(null);
+            this.dispose();
+            Shared.reload();
+        } 
     }
 
     public User getUser() {
@@ -643,7 +650,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         }
     }
 
-    private boolean checkPrinter() throws SQLException, FileNotFoundException {
+    private boolean checkPrinter() throws SQLException, FileNotFoundException, Exception {
         String p = ConnectionDrivers.getMyPrinter();
         return printer.isTheSame(p);
     }

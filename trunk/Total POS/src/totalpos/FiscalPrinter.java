@@ -27,7 +27,6 @@ public class FiscalPrinter {
         assert (ansT);
 
         ansT = printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
-        System.out.println(b.getValue());
         if ( b.getValue() != 0 ){
             throw new Exception(Shared.getErrMapping().get(b.getValue()));
         }

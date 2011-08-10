@@ -572,30 +572,35 @@ public class ManageItem extends JInternalFrame {
     }//GEN-LAST:event_stickerTableKeyReleased
 
     private void addStickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStickerActionPerformed
-        String n = JOptionPane.showInputDialog("Cantidad");
-        if ( n != null ){
-            try{
-                int nn = Integer.parseInt(n);
+        if ( itemTable.getSelectedRow() != -1 ){
 
-                if ( nn < 0 ){
-                    throw new NumberFormatException();
+            if ( items.get(itemTable.getSelectedRow()).getLastPrice().getQuant() > .0 ){
+                String n = JOptionPane.showInputDialog("Cantidad");
+                if ( n != null ){
+                    try{
+                        int nn = Integer.parseInt(n);
+
+                        if ( nn < 0 ){
+                            throw new NumberFormatException();
+                        }
+
+                        Item i = items.get(itemTable.getSelectedRow());
+
+                        toPrint.add(i);
+                        quantToPrint.add(nn);
+                        updateToPrint();
+                    }catch ( NumberFormatException ex){
+                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Formato del número incorrecto", ex);
+                        msg.show(this);
+                    }
                 }
-
-                if ( itemTable.getSelectedRow() != -1 ){
-                    Item i = items.get(itemTable.getSelectedRow());
-
-                    toPrint.add(i);
-                    quantToPrint.add(nn);
-                    updateToPrint();
-                    
-                }else{
-                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
-                    msb.show(this);
-                }
-            }catch ( NumberFormatException ex){
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Formato del número incorrecto", ex);
-                msg.show(this);
+            }else{
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No puede imprimir etiquetas de artículos con costo 0.00");
+                msb.show(this);
             }
+        }else{
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo.");
+            msb.show(this);
         }
     }//GEN-LAST:event_addStickerActionPerformed
 

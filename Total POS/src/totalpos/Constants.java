@@ -1,6 +1,7 @@
 package totalpos;
 
 import java.text.SimpleDateFormat;
+import java.util.TreeMap;
 
 /**
  *
@@ -27,12 +28,12 @@ public class Constants {
     public static SimpleDateFormat sdfHour = new SimpleDateFormat("h:mm a");
     public static SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
     /**
      * TODO: This must be in the local database!!!
      */
-    public static String myId = "02";
+    public static String myId = "01";
     public static String tmpFileName = "tmp.data";
 
 }

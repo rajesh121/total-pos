@@ -17,8 +17,10 @@ public class Main {
         
         splash.changeStatus("Conectado a base de datos...", 30);
         ConnectionDrivers.initialize();
-        splash.changeStatus("Inicializando configuración...", 45);
+        splash.changeStatus("Inicializando configuración de base de datos...", 45);
         ConnectionDrivers.initializeConfig();
+        splash.changeStatus("Inicializando configuración general...", 45);
+        Shared.initialize();
 
         splash.changeStatus("Creando ventana de login...", 60);
         Login login = new Login();

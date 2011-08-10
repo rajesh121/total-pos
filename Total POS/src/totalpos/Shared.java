@@ -24,6 +24,27 @@ public class Shared {
     private static TreeMap<String, Integer> tries = new TreeMap<String, Integer>();
     private static User user;
     private static UpdateClock screenSaver;
+    private static TreeMap<Integer, String> errMapping = new TreeMap<Integer, String>();
+
+    protected static void initialize(){
+        errMapping.put(new Integer(0), "No hay error");
+        errMapping.put(new Integer(1), "Fin de entrega de papel");
+        errMapping.put(new Integer(2), "Error mecánico con el papel");
+        errMapping.put(new Integer(3), "Fin en la entrega de papel");
+        errMapping.put(new Integer(80), "Comando Inválido");
+        errMapping.put(new Integer(84), "Tasa Inválida");
+        errMapping.put(new Integer(88), "Directivas Inválidas");
+        errMapping.put(new Integer(92), "Comando Inválido");
+        errMapping.put(new Integer(96), "Error fiscal");
+        errMapping.put(new Integer(100), "Error de la memoria fiscal");
+        errMapping.put(new Integer(108), "Memoria fiscal llena");
+        errMapping.put(new Integer(112), "Buffer completo");
+        errMapping.put(new Integer(128), "Error en la comunicación");
+        errMapping.put(new Integer(137), "No hay respuesta");
+        errMapping.put(new Integer(144), "Error LRC");
+        errMapping.put(new Integer(145), "Error con el API");
+        errMapping.put(new Integer(153), "Error al crear el archivo");
+    }
 
     protected static void centerFrame(javax.swing.JFrame frame){
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -209,6 +230,20 @@ public class Shared {
                 return turn;
         }
         return null;
+    }
+
+    /**
+     * @return the errMapping
+     */
+    public static TreeMap<Integer, String> getErrMapping() {
+        return errMapping;
+    }
+
+    /**
+     * @param errMapping the errMapping to set
+     */
+    public static void setErrMapping(TreeMap<Integer, String> errMapping_) {
+        errMapping = errMapping_;
     }
 
 }

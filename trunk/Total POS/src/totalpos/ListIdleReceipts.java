@@ -6,17 +6,14 @@
 
 package totalpos;
 
-import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class ListIdleReceipts extends javax.swing.JDialog {
 
@@ -49,7 +46,7 @@ public class ListIdleReceipts extends javax.swing.JDialog {
         setTitle("Listar Facturas en Espera");
 
         jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
-        jLabel1.setText("Lista Facturas en espera");
+        jLabel1.setText("Lista Pedidos en espera");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N

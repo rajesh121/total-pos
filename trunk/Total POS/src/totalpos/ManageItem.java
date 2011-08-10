@@ -564,6 +564,7 @@ public class ManageItem extends JInternalFrame {
 
     private void stickerTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyPressed
         Shared.getScreenSaver().actioned();
+        
     }//GEN-LAST:event_stickerTableKeyPressed
 
     private void stickerTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyReleased

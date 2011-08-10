@@ -841,7 +841,6 @@ public class ConnectionDrivers {
                 + "dinero_tarjeta_debito )  values ( ? , ? , now() , ? , ? , ? , ? )");
         stmt.setString(1, a.getTurn());
         stmt.setString(2, a.getPos());
-        //stmt.setDate(3, a.getDate());
         stmt.setBoolean(3, a.isOpen());
         stmt.setDouble(4, a.getCash());
         stmt.setDouble(5, a.getCreditCard());
@@ -853,8 +852,14 @@ public class ConnectionDrivers {
 
     private static boolean assignIsOk(Assign a) throws SQLException{
         List<Assign> l = listAssignsTurnPosToday();
+        Turn newTurn = Shared.getTurn(listTurns(), a.getTurn());
         for (Assign assign : l) {
-            if ( a.getPos().equals(assign.getPos()) && a.getTurn().equals(assign.getTurn())){
+            Turn t = Shared.getTurn(listTurns(), assign.getTurn());
+            // Yo denominaría a esto como un if en Cascada :-o!
+            if ( a.getPos().equals(assign.getPos()) &&
+                    (a.getTurn().equals(assign.getTurn()) ||
+                        ( (t.getInicio().before(newTurn.getFin()) && newTurn.getInicio().before(t.getFin())) ||
+                            (newTurn.getInicio().before(t.getFin()) && t.getInicio().before(newTurn.getFin())) ) )){
                 return false;
             }
         }

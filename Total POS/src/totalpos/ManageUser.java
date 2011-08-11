@@ -484,7 +484,9 @@ public class ManageUser extends javax.swing.JInternalFrame {
                 return;
             }
 
-            ConnectionDrivers.createUser(loginText.getText() , (String)roleCombo.getSelectedItem(), newPassword.getText());
+            if ( creatingNewUser ){
+                ConnectionDrivers.createUser(loginText.getText() , (String)roleCombo.getSelectedItem(), newPassword.getText());
+            }
             ConnectionDrivers.changeProperties(loginText.getText(), nombreText.getText(), apellidoText.getText(), roleCombo.getSelectedItem().toString(), bloqueadoCheck.isSelected(), canChangePasswordCheck.isSelected() , mustChangePasswordCheck.isSelected());
             ConnectionDrivers.setPassword(loginText.getText(), Shared.hashPassword(newPassword.getText()));
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");

@@ -104,14 +104,14 @@ public class Login extends javax.swing.JFrame {
         try {
             passwordText.setEnabled(false);
             if ( !ConnectionDrivers.existsUser(loginText.getText().trim()) ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario no existe");
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
                 msg.show(this);
                 passwordText.setEnabled(true);
                 return;
             }
 
             if ( ConnectionDrivers.isLocked(loginText.getText().trim()) ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario bloqueado");
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario bloqueado");
                 msg.show(this);
                 passwordText.setEnabled(true);
                 return;
@@ -176,6 +176,7 @@ public class Login extends javax.swing.JFrame {
             this.dispose();
             Shared.reload();
         } catch (Exception ex) {
+            passwordText.setEnabled(true);
             String kindErr = "";
             if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {
                 kindErr = Constants.wrongPasswordMsg;

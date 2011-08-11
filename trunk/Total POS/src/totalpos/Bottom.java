@@ -2,6 +2,7 @@ package totalpos;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -11,14 +12,16 @@ import javax.swing.JPanel;
  */
 public class Bottom extends JPanel{
 
-    public Bottom() {
+    private Image wallpaper;
+
+    public Bottom(Image wallpaper) {
+        super();
+        this.wallpaper = wallpaper;
     }
 
     @Override
     public void paint(Graphics g) {
-        Dimension tam = getSize();
-        ImageIcon img = new ImageIcon(getClass().getResource("/totalpos/resources/Fondo-Inicio.jpg"));
-        g.drawImage(img.getImage(), 0, 0, tam.width,tam.height,null);
+        g.drawImage(wallpaper, 0, 0, getWidth(), getHeight(),this);
         super.paint(g);
     }
 

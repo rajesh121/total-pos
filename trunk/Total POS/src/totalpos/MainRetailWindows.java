@@ -30,7 +30,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     FiscalPrinter printer;
     public boolean isOk = false;
     public boolean closing = false;
-    public Double globDiscount = .0;
+    public Double globalDiscount = .0;
     private Client client = null;
 
     /** Creates new form MainRetailWindows
@@ -916,6 +916,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             phoneField.setText(client.getPhone());
             addressField.setText(client.getAddress());
         }
+    }
+
+    public void setGlobalDiscount(Double d){
+        this.globalDiscount = d;
+        updateSubTotal();
     }
 
 }

@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * GlobalDiscount.java
  *
  * Created on 10-ago-2011, 16:10:56
@@ -11,10 +6,9 @@
 
 package totalpos;
 
+import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -23,11 +17,16 @@ import java.util.logging.Logger;
 public class GlobalDiscount extends javax.swing.JDialog {
 
     public boolean isOk = false;
+    private MainRetailWindows parent;
 
-    /** Creates new form GlobalDiscount */
-    public GlobalDiscount(java.awt.Frame parent, boolean modal) {
+    /** Creates new form GlobalDiscount
+     * @param parent
+     * @param modal 
+     */
+    public GlobalDiscount(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.parent = (MainRetailWindows) parent;
         isOk = true;
     }
 
@@ -223,17 +222,13 @@ public class GlobalDiscount extends javax.swing.JDialog {
                 return;
             }
 
-            if ( ConnectionDrivers.isLocked(userField.getText().trim()) ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario bloqueado");
-                msg.show(this);
-                return;
-            }
             ConnectionDrivers.login(userField.getText(), passwordField.getPassword());
 
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), userField.getText());
-            ConnectionDrivers.isAllowed(u.getPerfil(), "globalDiscount");
-
-            Shared.userInsertedPasswordOk(userField.getText());
+            if ( ConnectionDrivers.isAllowed(u.getPerfil(), "globalDiscount") ){
+                Shared.userInsertedPasswordOk(userField.getText());
+                
+            }
 
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);

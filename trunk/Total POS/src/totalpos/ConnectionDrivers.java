@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class ConnectionDrivers {
 

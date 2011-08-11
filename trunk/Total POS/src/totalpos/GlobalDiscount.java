@@ -22,10 +22,13 @@ import java.util.logging.Logger;
  */
 public class GlobalDiscount extends javax.swing.JDialog {
 
+    public boolean isOk = false;
+
     /** Creates new form GlobalDiscount */
     public GlobalDiscount(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        isOk = true;
     }
 
     /** This method is called from within the constructor to
@@ -220,8 +223,17 @@ public class GlobalDiscount extends javax.swing.JDialog {
                 return;
             }
 
+            if ( ConnectionDrivers.isLocked(userField.getText().trim()) ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario bloqueado");
+                msg.show(this);
+                return;
+            }
             ConnectionDrivers.login(userField.getText(), passwordField.getPassword());
 
+            User u = Shared.giveUser(ConnectionDrivers.listUsers(), userField.getText());
+            ConnectionDrivers.isAllowed(u.getPerfil(), "globalDiscount");
+
+            Shared.userInsertedPasswordOk(userField.getText());
 
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);

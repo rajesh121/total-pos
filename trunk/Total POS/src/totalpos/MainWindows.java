@@ -7,6 +7,7 @@
 package totalpos;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -29,6 +31,7 @@ import javax.swing.JOptionPane;
 public class MainWindows extends javax.swing.JFrame {
 
     private TreeMap< String , Set<Character> > mnemonics = new TreeMap<String, Set<Character> >();
+    private ImageIcon wallpaper = new ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"));
 
     /** Creates new form MainWindows
      * @param user 
@@ -194,6 +197,7 @@ public class MainWindows extends javax.swing.JFrame {
             }
         });
 
+        mdiPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         mdiPanel.setFocusable(false);
         mdiPanel.setName("mdiPanel"); // NOI18N
         mdiPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {

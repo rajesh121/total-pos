@@ -50,25 +50,25 @@ public class GlobalDiscount extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        userLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        userLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         userLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        userLabel.setText("Usuario *");
+        userLabel.setText("Usuario    *");
         userLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         userLabel.setName("userLabel"); // NOI18N
 
-        passwordLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        passwordLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         passwordLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         passwordLabel.setText("Contraseña *");
         passwordLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         passwordLabel.setName("passwordLabel"); // NOI18N
 
-        percentLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        percentLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         percentLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        percentLabel.setText("Descuento *");
+        percentLabel.setText("Descuento  *");
         percentLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         percentLabel.setName("percentLabel"); // NOI18N
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Descuento Global");
         titleLabel.setName("titleLabel"); // NOI18N
 

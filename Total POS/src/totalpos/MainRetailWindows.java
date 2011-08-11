@@ -43,6 +43,13 @@ public class MainRetailWindows extends javax.swing.JFrame {
             this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
             user = u;
             printer = new FiscalPrinter();
+            if ( !ConnectionDrivers.isAllowed(u.getPerfil(), "retail") ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Esta usuario no tiene permisos para utilizar el punto de venta.");
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+                return;
+            }
             updateAll();
             if ( !checkPrinter() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
@@ -751,7 +758,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
     public void deleteCurrent(){
         try {
             ConnectionDrivers.cancelReceipt(actualId);
-            while (!items.isEmpty()) {
+            while (items != null && !items.isEmpty()) {
                 deleteItem();
             }
         } catch (SQLException ex) {

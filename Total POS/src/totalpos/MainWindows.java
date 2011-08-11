@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -31,13 +33,56 @@ import javax.swing.JOptionPane;
 public class MainWindows extends javax.swing.JFrame {
 
     private TreeMap< String , Set<Character> > mnemonics = new TreeMap<String, Set<Character> >();
-    private ImageIcon wallpaper = new ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"));
+    private Image wallpaper = new ImageIcon(getClass().getResource("/totalpos/resources/Fondo-Tramado.jpg")).getImage();
+    MdiPanel mdiPanel = new MdiPanel(wallpaper);
 
     /** Creates new form MainWindows
      * @param user 
      */
     public MainWindows(User user) {
         initComponents();
+
+        mdiPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        mdiPanel.setFocusable(false);
+        mdiPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                mdiPanelMouseMoved(evt);
+            }
+
+            private void mdiPanelMouseMoved(MouseEvent evt) {
+                Shared.getScreenSaver().actioned();
+                mdiPanel.requestFocus();
+            }
+        });
+        mdiPanel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                mdiPanelKeyPressed(evt);
+            }
+
+            private void mdiPanelKeyPressed(KeyEvent evt) {
+                if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+                    logout();
+                }
+            }
+        });
+
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        mdiPanel.setVisible(true);
+        getContentPane().add(mdiPanel);
 
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         
@@ -174,7 +219,6 @@ public class MainWindows extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mdiPanel = new javax.swing.JDesktopPane();
         jPanel1 = new javax.swing.JPanel();
         esc2exit = new javax.swing.JLabel();
         whatTimeIsIt = new javax.swing.JLabel();
@@ -194,20 +238,6 @@ public class MainWindows extends javax.swing.JFrame {
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);
-            }
-        });
-
-        mdiPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        mdiPanel.setFocusable(false);
-        mdiPanel.setName("mdiPanel"); // NOI18N
-        mdiPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                mdiPanelMouseMoved(evt);
-            }
-        });
-        mdiPanel.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                mdiPanelKeyPressed(evt);
             }
         });
 
@@ -266,13 +296,11 @@ public class MainWindows extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
-                .addGap(1, 1, 1)
+                .addContainerGap(608, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -285,12 +313,6 @@ public class MainWindows extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formKeyPressed
 
-    private void mdiPanelKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mdiPanelKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            logout();
-        }
-    }//GEN-LAST:event_mdiPanelKeyPressed
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         Shared.setUser(null);
     }//GEN-LAST:event_formWindowClosing
@@ -298,11 +320,6 @@ public class MainWindows extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         // TODO add your handling code here:
     }//GEN-LAST:event_formWindowClosed
-
-    private void mdiPanelMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mdiPanelMouseMoved
-        Shared.getScreenSaver().actioned();
-        this.requestFocus();
-    }//GEN-LAST:event_mdiPanelMouseMoved
 
     private void jPanel1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseMoved
         Shared.getScreenSaver().actioned();
@@ -346,7 +363,6 @@ public class MainWindows extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel esc2exit;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JDesktopPane mdiPanel;
     private javax.swing.JMenuBar menuBar;
     public javax.swing.JLabel whatTimeIsIt;
     // End of variables declaration//GEN-END:variables

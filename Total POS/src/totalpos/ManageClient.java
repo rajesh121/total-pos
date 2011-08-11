@@ -6,16 +6,25 @@
 
 package totalpos;
 
+import java.awt.Frame;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import java.util.List;
+
 /**
  *
  * @author Saúl Hidalgo
  */
 public class ManageClient extends javax.swing.JDialog {
 
+    private boolean found = false;
+    private MainRetailWindows parent;
+
     /** Creates new form ManageClient */
-    public ManageClient(java.awt.Frame parent, boolean modal) {
+    public ManageClient(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.parent = (MainRetailWindows) parent;
     }
 
     /** This method is called from within the constructor to
@@ -27,23 +36,267 @@ public class ManageClient extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        titleLabel = new javax.swing.JLabel();
+        cirifLabel = new javax.swing.JLabel();
+        Nombre = new javax.swing.JLabel();
+        addressLabel = new javax.swing.JLabel();
+        phoneLabel = new javax.swing.JLabel();
+        idField = new javax.swing.JTextField();
+        nameField = new javax.swing.JTextField();
+        phoneField = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        addressField = new javax.swing.JTextArea();
+        cancelButton = new javax.swing.JButton();
+        acceptButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Clientes");
+        setResizable(false);
+
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
+        titleLabel.setText("Clientes");
+        titleLabel.setName("titleLabel"); // NOI18N
+
+        cirifLabel.setFont(new java.awt.Font("Courier New", 0, 12));
+        cirifLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        cirifLabel.setText("C.I./R.I.F.*");
+        cirifLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        cirifLabel.setName("cirifLabel"); // NOI18N
+
+        Nombre.setFont(new java.awt.Font("Courier New", 0, 12));
+        Nombre.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        Nombre.setText("Nombre");
+        Nombre.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        Nombre.setName("Nombre"); // NOI18N
+
+        addressLabel.setFont(new java.awt.Font("Courier New", 0, 12));
+        addressLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        addressLabel.setText("Dirección");
+        addressLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        addressLabel.setName("addressLabel"); // NOI18N
+
+        phoneLabel.setFont(new java.awt.Font("Courier New", 0, 12));
+        phoneLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        phoneLabel.setText("Teléfono");
+        phoneLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        phoneLabel.setName("phoneLabel"); // NOI18N
+
+        idField.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        idField.setName("idField"); // NOI18N
+        idField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                idFieldFocusLost(evt);
+            }
+        });
+        idField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                idFieldKeyPressed(evt);
+            }
+        });
+
+        nameField.setFont(new java.awt.Font("Courier New", 0, 12));
+        nameField.setName("nameField"); // NOI18N
+        nameField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nameFieldKeyPressed(evt);
+            }
+        });
+
+        phoneField.setFont(new java.awt.Font("Courier New", 0, 12));
+        phoneField.setName("phoneField"); // NOI18N
+        phoneField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                phoneFieldKeyPressed(evt);
+            }
+        });
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        addressField.setColumns(20);
+        addressField.setRows(5);
+        addressField.setName("addressField"); // NOI18N
+        addressField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                addressFieldKeyPressed(evt);
+            }
+        });
+        jScrollPane1.setViewportView(addressField);
+
+        cancelButton.setText("Cancelar");
+        cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        acceptButton.setText("Aceptar");
+        acceptButton.setName("acceptButton"); // NOI18N
+        acceptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("* = Campo Obligatorio");
+        jLabel1.setName("jLabel1"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(titleLabel)
+                        .addGap(334, 334, 334))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(addressLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(phoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(Nombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cirifLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                                    .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                                    .addComponent(phoneField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
+                                .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(titleLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cirifLabel)
+                    .addComponent(idField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Nombre)
+                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(phoneLabel)
+                    .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cancelButton)
+                            .addComponent(acceptButton)
+                            .addComponent(jLabel1)))
+                    .addComponent(addressLabel))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void idFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idFieldFocusLost
+        try {
+            List<Client> clients = ConnectionDrivers.listClients(idField.getText());
+            if ( clients.isEmpty() ){
+                ;
+            }else if ( clients.size() == 1 ){
+                Client c = clients.get(0);
+                nameField.setText(c.getName());
+                phoneField.setText(c.getPhone());
+                addressField.setText(c.getAddress());
+                nameField.setEditable(false);
+                phoneField.setEditable(false);
+                addressField.setEditable(false);
+                found = true;
+            }else{
+                // It shouldn't reach this line.
+                assert( false );
+            }
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
+    }//GEN-LAST:event_idFieldFocusLost
+
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        doIt();
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void idFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            nameField.requestFocus();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_idFieldKeyPressed
+
+    private void nameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_nameFieldKeyPressed
+
+    private void phoneFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_phoneFieldKeyPressed
+
+    private void addressFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_addressFieldKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Nombre;
+    private javax.swing.JButton acceptButton;
+    private javax.swing.JTextArea addressField;
+    private javax.swing.JLabel addressLabel;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JLabel cirifLabel;
+    private javax.swing.JTextField idField;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JTextField phoneField;
+    private javax.swing.JLabel phoneLabel;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
+
+    private void doIt() {
+        Client myClient = new Client(idField.getText(), nameField.getText(), addressField.getText(), phoneField.getText());
+        if ( !found ){
+            try {
+                ConnectionDrivers.createClient(myClient);
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
+        }
+        parent.setClient(myClient);
+        this.dispose();
+    }
 
 }

@@ -9,13 +9,10 @@ package totalpos;
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -24,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author shidalgo
  */
-public class MainRetailWindows extends javax.swing.JFrame {
+public final class MainRetailWindows extends javax.swing.JFrame {
 
     private User user;
     protected int quant = 1;
@@ -34,6 +31,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
     public boolean isOk = false;
     public boolean closing = false;
     public Double globDiscount = .0;
+    private Client client = null;
 
     /** Creates new form MainRetailWindows
      * @param u
@@ -52,7 +50,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 return;
             }
             updateAll();
-            if ( !checkPrinter() ){
+            if ( false /*!checkPrinter()*/ ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
                 msb.show(null);
                 this.dispose();
@@ -100,6 +98,11 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
             actualId = nextId();
             ConnectionDrivers.createReceipt(actualId, user.getLogin());
+            setClient(null);
+            codigoField.setText("");
+            nameField.setText("");
+            addressField.setText("");
+            phoneField.setText("");
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
             msb.show(this);
@@ -149,6 +152,16 @@ public class MainRetailWindows extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         esc2exit = new javax.swing.JLabel();
         whatTimeIsIt = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        clientId = new javax.swing.JLabel();
+        codigoField = new javax.swing.JTextField();
+        nameField = new javax.swing.JTextField();
+        clientId1 = new javax.swing.JLabel();
+        phoneField = new javax.swing.JTextField();
+        clientId2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        addressField = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
@@ -181,8 +194,8 @@ public class MainRetailWindows extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(currentPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE))
+                    .addComponent(currentPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -283,7 +296,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
         ivaLabelResult1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         ivaLabelResult1.setName("ivaLabelResult1"); // NOI18N
 
-        discountLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        discountLabel.setFont(new java.awt.Font("Courier New", 1, 24));
         discountLabel.setForeground(new java.awt.Color(255, 255, 255));
         discountLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         discountLabel.setText("Descuento:");
@@ -376,14 +389,13 @@ public class MainRetailWindows extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 616, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(imageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -417,7 +429,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(esc2exit, javax.swing.GroupLayout.DEFAULT_SIZE, 978, Short.MAX_VALUE)
+                .addComponent(esc2exit, javax.swing.GroupLayout.DEFAULT_SIZE, 1003, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(whatTimeIsIt, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -434,15 +446,100 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Cliente"));
+        jPanel7.setName("jPanel7"); // NOI18N
+
+        clientId.setText("CI/Rif");
+        clientId.setFocusable(false);
+        clientId.setName("clientId"); // NOI18N
+
+        codigoField.setEditable(false);
+        codigoField.setFocusable(false);
+        codigoField.setName("codigoField"); // NOI18N
+
+        nameField.setEditable(false);
+        nameField.setFocusable(false);
+        nameField.setName("nameField"); // NOI18N
+
+        clientId1.setText("Nombre");
+        clientId1.setFocusable(false);
+        clientId1.setName("clientId1"); // NOI18N
+
+        phoneField.setEditable(false);
+        phoneField.setFocusable(false);
+        phoneField.setName("phoneField"); // NOI18N
+
+        clientId2.setText("Telefono");
+        clientId2.setFocusable(false);
+        clientId2.setName("clientId2"); // NOI18N
+
+        jLabel1.setText("Dirección");
+        jLabel1.setFocusable(false);
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        addressField.setColumns(20);
+        addressField.setEditable(false);
+        addressField.setRows(5);
+        addressField.setFocusable(false);
+        addressField.setName("addressField"); // NOI18N
+        jScrollPane2.setViewportView(addressField);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(clientId2, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                    .addComponent(clientId1, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                    .addComponent(clientId, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(codigoField, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nameField)
+                    .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, 0, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(codigoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(clientId))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(clientId1)))
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(clientId2))))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -456,8 +553,10 @@ public class MainRetailWindows extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -563,6 +662,10 @@ public class MainRetailWindows extends javax.swing.JFrame {
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F9 ){
             
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F8 ){
+            ManageClient mc = new ManageClient(this, true);
+            Shared.centerFrame(mc);
+            mc.setVisible(true);
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -598,7 +701,12 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea addressField;
     private javax.swing.JTextField barcodeField;
+    private javax.swing.JLabel clientId;
+    private javax.swing.JLabel clientId1;
+    private javax.swing.JLabel clientId2;
+    private javax.swing.JTextField codigoField;
     private javax.swing.JLabel currentPrice;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JLabel discountLabel;
@@ -609,13 +717,18 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel ivaLabel;
     private javax.swing.JLabel ivaLabelResult;
     private javax.swing.JLabel ivaLabelResult1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JTextField phoneField;
     private javax.swing.JLabel subTotalLabel;
     private javax.swing.JLabel subTotalLabelResult;
     private javax.swing.JLabel totalLabel;
@@ -790,4 +903,19 @@ public class MainRetailWindows extends javax.swing.JFrame {
             Shared.reload();
         }
     }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+        if ( client != null ){
+            codigoField.setText(client.getId());
+            nameField.setText(client.getName());
+            phoneField.setText(client.getPhone());
+            addressField.setText(client.getAddress());
+        }
+    }
+
 }

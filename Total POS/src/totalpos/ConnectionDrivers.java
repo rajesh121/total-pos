@@ -661,8 +661,8 @@ public class ConnectionDrivers {
     protected static void createReceipt(String id, String user) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura"
-                + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos ) "
-                + "values ( ? , 'Pedido' , now() , 0, 0, 0 , ? , 0 )");
+                + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , codigo_cliente ) "
+                + "values ( ? , 'Pedido' , now() , 0, 0, 0 , ? , 0 , \"Contado\" )");
         stmt.setString(1, id);
         stmt.setString(2, user);
         stmt.executeUpdate();
@@ -1015,6 +1015,45 @@ public class ConnectionDrivers {
             }
         }
         return null;
+    }
+
+    protected static List<Client> listClients(String id) throws SQLException{
+        List<Client> ans = new ArrayList<Client>();
+        
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo , nombre, direccion, telefono "
+                + "from cliente "
+                + "where codigo like ? ");
+        stmt.setString(1, id );
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Client(
+                        rs.getString("codigo"),
+                        rs.getString("nombre"),
+                        rs.getString("direccion"),
+                        rs.getString("telefono")
+                        )
+                    );
+        }
+
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    public static void createClient(Client client) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement(
+                "insert into cliente ( codigo, nombre , direccion , telefono ) values ( ? , ? , ? , ? )");
+        stmt.setString(1, client.getId());
+        stmt.setString(2, client.getName());
+        stmt.setString(3, client.getAddress());
+        stmt.setString(4, client.getPhone());
+        stmt.executeUpdate();
+        c.close();
     }
 
 }

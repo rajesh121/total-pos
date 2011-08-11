@@ -908,6 +908,17 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static void putToNormal(String receiptId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura set "
+                + "  estado = 'Pedido' where codigo_interno = ? ");
+        stmt.setString(1, receiptId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+
     public static void cancelReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "

@@ -111,7 +111,7 @@ public class ListIdleReceipts extends javax.swing.JDialog {
                 try {
                     parent.deleteCurrent();
                     parent.loadThisReceipt(receipts.get(table.getSelectedRow()));
-                    ConnectionDrivers.cancelReceipt(receipts.get(table.getSelectedRow()).getInternId());
+                    ConnectionDrivers.putToNormal(receipts.get(table.getSelectedRow()).getInternId());
                     this.dispose();
                 } catch (SQLException ex) {
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);

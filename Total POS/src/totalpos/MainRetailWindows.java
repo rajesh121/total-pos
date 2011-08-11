@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -27,7 +29,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
     private User user;
     protected int quant = 1;
     private List<Item> items;
-    private String actualId;
+    public String actualId;
     FiscalPrinter printer;
     public boolean isOk = false;
     public boolean closing = false;
@@ -503,6 +505,9 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
             if ( n == 0 ){
                 deleteItem();
+                if ( items.isEmpty() ){
+                    updateAll();
+                }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F10 ){
             if ( items.isEmpty() ){
@@ -520,6 +525,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
                 options[1]);
             if ( n == 0 ){
                 deleteCurrent();
+                updateAll();
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F11 ){
             toWait();
@@ -589,6 +595,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
     private void logout(){
         if ( JOptionPane.showConfirmDialog( (Shared.getMyMainWindows()) , "¿Está seguro que desea cerrar sesión?") == 0 ){
+            deleteCurrent();
             Login l = new Login();
             Shared.centerFrame(l);
             Shared.maximize(l);
@@ -645,7 +652,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
 
             Date d = ConnectionDrivers.getDate();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            return sdf.format(d)+ Constants.myId + rightNow;
+            return sdf.format(d)+ Constants.myId + String.format("%04d", rightNow);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(this);
@@ -675,8 +682,7 @@ public class MainRetailWindows extends javax.swing.JFrame {
                         ConnectionDrivers.cancelReceipt(actualId);
                         //MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Pedido anulado.");
                         //msb.show(this);
-                        //Tbat msg might be annoying...
-                        updateAll();
+                        //That msg might be annoying...
                     } catch (SQLException ex) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
                         msb.show(this);
@@ -743,8 +749,16 @@ public class MainRetailWindows extends javax.swing.JFrame {
     }
 
     public void deleteCurrent(){
-        while( !items.isEmpty() ){
-            deleteItem();
+        try {
+            ConnectionDrivers.cancelReceipt(actualId);
+            while (!items.isEmpty()) {
+                deleteItem();
+            }
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
         }
     }
 }

@@ -30,15 +30,15 @@ public class CreateTurn extends JInternalFrame {
         fillForms();
         idField.setText(t.getIdentificador());
         nameField.setText(t.getNombre()==null?"":t.getNombre());
-        hourInit.setSelectedIndex(t.getInicio().getHours()%12);
-        minuteInit.setSelectedIndex(t.getInicio().getMinutes());
-        secondInit.setSelectedIndex(t.getInicio().getSeconds());
-        amOrPm.setSelectedIndex(t.getInicio().getHours() > 12 ? 1 : 0);
+        hourInit.select(t.getInicio().getHours()%12);
+        minuteInit2.select(t.getInicio().getMinutes());
+        secondInit2.select(t.getInicio().getSeconds());
+        amOrPm2.select(t.getInicio().getHours() > 12 ? 1 : 0);
 
-        hourEnd.setSelectedIndex(t.getFin().getHours()%12);
-        minuteEnd.setSelectedIndex(t.getFin().getMinutes());
-        secondEnd.setSelectedIndex(t.getFin().getSeconds());
-        amOrPmEnd.setSelectedIndex(t.getFin().getHours() > 12 ? 1 : 0);
+        hourEnd2.select(t.getFin().getHours()%12);
+        minuteEnd2.select(t.getFin().getMinutes());
+        secondEnd2.select(t.getFin().getSeconds());
+        amOrPmEnd2.select(t.getFin().getHours() > 12 ? 1 : 0);
 
         modify = true;
 
@@ -69,15 +69,15 @@ public class CreateTurn extends JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
         idField = new javax.swing.JTextField();
-        minuteInit = new javax.swing.JComboBox();
-        secondInit = new javax.swing.JComboBox();
-        hourInit = new javax.swing.JComboBox();
-        hourEnd = new javax.swing.JComboBox();
-        minuteEnd = new javax.swing.JComboBox();
-        secondEnd = new javax.swing.JComboBox();
-        amOrPm = new javax.swing.JComboBox();
-        amOrPmEnd = new javax.swing.JComboBox();
         jLabel11 = new javax.swing.JLabel();
+        hourInit = new java.awt.Choice();
+        minuteInit2 = new java.awt.Choice();
+        secondInit2 = new java.awt.Choice();
+        amOrPm2 = new java.awt.Choice();
+        hourEnd2 = new java.awt.Choice();
+        minuteEnd2 = new java.awt.Choice();
+        secondEnd2 = new java.awt.Choice();
+        amOrPmEnd2 = new java.awt.Choice();
 
         setClosable(true);
         setIconifiable(true);
@@ -165,24 +165,24 @@ public class CreateTurn extends JInternalFrame {
             }
         });
 
-        minuteInit.setName("minuteInit"); // NOI18N
-
-        secondInit.setName("secondInit"); // NOI18N
+        jLabel11.setText("* = Campo Obligatorio");
+        jLabel11.setName("jLabel11"); // NOI18N
 
         hourInit.setName("hourInit"); // NOI18N
 
-        hourEnd.setName("hourEnd"); // NOI18N
+        minuteInit2.setName("minuteInit2"); // NOI18N
 
-        minuteEnd.setName("minuteEnd"); // NOI18N
+        secondInit2.setName("secondInit2"); // NOI18N
 
-        secondEnd.setName("secondEnd"); // NOI18N
+        amOrPm2.setName("amOrPm2"); // NOI18N
 
-        amOrPm.setName("amOrPm"); // NOI18N
+        hourEnd2.setName("hourEnd2"); // NOI18N
 
-        amOrPmEnd.setName("amOrPmEnd"); // NOI18N
+        minuteEnd2.setName("minuteEnd2"); // NOI18N
 
-        jLabel11.setText("* = Campo Obligatorio");
-        jLabel11.setName("jLabel11"); // NOI18N
+        secondEnd2.setName("secondEnd2"); // NOI18N
+
+        amOrPmEnd2.setName("amOrPmEnd2"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -199,43 +199,47 @@ public class CreateTurn extends JInternalFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(cashLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE))
+                                .addComponent(cashLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(hourEnd, 0, 63, Short.MAX_VALUE)
-                                    .addComponent(hourInit, 0, 63, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(layout.createSequentialGroup()
+                                        .addComponent(hourInit, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(minuteInit, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(secondInit, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(minuteInit2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
+                                        .addComponent(hourEnd2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel8)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(minuteEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(secondEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(minuteEnd2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(amOrPmEnd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(amOrPm, 0, 50, Short.MAX_VALUE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(secondInit2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(secondEnd2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-                            .addComponent(idField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(amOrPmEnd2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(amOrPm2, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)))
+                            .addComponent(nameField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                        .addGap(76, 76, 76)
+                        .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -251,30 +255,35 @@ public class CreateTurn extends JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(secondInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(hourInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6)
-                    .addComponent(minuteInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(amOrPm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cashLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(hourEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(minuteEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(secondInit2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)
+                            .addComponent(amOrPm2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(minuteInit2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cashLabel)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5)
+                            .addComponent(hourInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(hourEnd2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(minuteEnd2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(amOrPmEnd2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(secondEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(amOrPmEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(secondEnd2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton)
                     .addComponent(okButton)
+                    .addComponent(cancelButton)
                     .addComponent(jLabel11))
-                .addContainerGap())
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -311,12 +320,12 @@ public class CreateTurn extends JInternalFrame {
     }//GEN-LAST:event_nameFieldKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox amOrPm;
-    private javax.swing.JComboBox amOrPmEnd;
+    private java.awt.Choice amOrPm2;
+    private java.awt.Choice amOrPmEnd2;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel cashLabel;
-    private javax.swing.JComboBox hourEnd;
-    private javax.swing.JComboBox hourInit;
+    private java.awt.Choice hourEnd2;
+    private java.awt.Choice hourInit;
     private javax.swing.JTextField idField;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
@@ -326,12 +335,12 @@ public class CreateTurn extends JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JComboBox minuteEnd;
-    private javax.swing.JComboBox minuteInit;
+    private java.awt.Choice minuteEnd2;
+    private java.awt.Choice minuteInit2;
     private javax.swing.JTextField nameField;
     private javax.swing.JButton okButton;
-    private javax.swing.JComboBox secondEnd;
-    private javax.swing.JComboBox secondInit;
+    private java.awt.Choice secondEnd2;
+    private java.awt.Choice secondInit2;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
@@ -342,8 +351,8 @@ public class CreateTurn extends JInternalFrame {
                 msb.show(this);
                 return;
             }
-            Time a = new Time(amOrPm.getSelectedIndex() * 12 + hourInit.getSelectedIndex(), minuteInit.getSelectedIndex(), secondInit.getSelectedIndex());
-            Time b = new Time(amOrPmEnd.getSelectedIndex() * 12 + hourEnd.getSelectedIndex(), minuteEnd.getSelectedIndex(), secondEnd.getSelectedIndex());
+            Time a = new Time(amOrPm2.getSelectedIndex() * 12 + hourInit.getSelectedIndex(), minuteInit2.getSelectedIndex(), secondInit2.getSelectedIndex());
+            Time b = new Time(amOrPmEnd2.getSelectedIndex() * 12 + hourEnd2.getSelectedIndex(), minuteEnd2.getSelectedIndex(), secondEnd2.getSelectedIndex());
             if (a.after(b)) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "El tiempo final debe ser luego del tiempo inicial");
                 msb.show(this);
@@ -375,27 +384,27 @@ public class CreateTurn extends JInternalFrame {
     }
 
     private void fillForms() {
-        hourEnd.addItem(12);
-        hourInit.addItem(12);
+        hourEnd2.add("12");
+        hourInit.add("12");
 
         for (int i = 1; i < 12; i++) {
-            hourEnd.addItem(i);
-            hourInit.addItem(i);
+            hourEnd2.add(i + "");
+            hourInit.add(i + "");
         }
         for (int i = 0; i < 60; i++) {
-            minuteInit.addItem(i);
-            minuteEnd.addItem(i);
+            minuteInit2.add(i+"");
+            minuteEnd2.add(i+"");
         }
         for (int i = 0; i < 60; i++) {
-            secondEnd.addItem(i);
-            secondInit.addItem(i);
+            secondEnd2.add(i+"");
+            secondInit2.add(i+"");
         }
 
-        amOrPm.addItem("am");
-        amOrPm.addItem("pm");
+        amOrPm2.addItem("am");
+        amOrPm2.addItem("pm");
 
-        amOrPmEnd.addItem("am");
-        amOrPmEnd.addItem("pm");
+        amOrPmEnd2.addItem("am");
+        amOrPmEnd2.addItem("pm");
     }
 
 }

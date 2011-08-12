@@ -87,6 +87,18 @@ public class MainWindows extends javax.swing.JFrame {
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         
         createMenu(menuBar,"root");
+
+
+        if ( !Shared.getConfig().containsKey("storeName") ){
+            CreateStore cs = new CreateStore();
+            if ( cs.isOk ){
+                mdiPanel.add(cs);
+                cs.setVisible(true);
+            }else{
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se pudo crear la tienda. No se puede continuar.");
+                msb.show(null);
+            }
+        }
     }
 
     private void createMenu(JComponent menu, String root){

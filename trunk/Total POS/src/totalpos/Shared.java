@@ -2,11 +2,14 @@ package totalpos;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.TreeMap;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -144,8 +147,10 @@ public class Shared {
         return getConfig().get(k);
     }
 
-    public static void loadPhoto(JLabel imageLabel , String addr){
-        imageLabel.setIcon(new ImageIcon(addr));
+    public static void loadPhoto(JLabel imageLabel , String addr, int x, int y){
+        ImageIcon image = new ImageIcon(addr);
+        ImageIcon imageIcon = new ImageIcon(image.getImage().getScaledInstance( x, y, Image.SCALE_AREA_AVERAGING));
+        imageLabel.setIcon(imageIcon);
         imageLabel.setVisible(true);
     }
 

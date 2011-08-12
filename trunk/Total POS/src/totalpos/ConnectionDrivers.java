@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -1111,4 +1112,49 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static void deleteAllStores() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from almacen");
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    public static void createStore(DefaultTableModel model) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String id = (String) model.getValueAt(i, 0) ;
+            String description = (String) model.getValueAt(i, 1);
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into almacen ( codigo, descripcion ) values ( ? , ? )");
+            stmt.setString(1, id);
+            stmt.setString(2, description);
+            stmt.executeUpdate();
+        }
+        
+        c.close();
+    }
+
+    public static List<Store> listStores() throws SQLException{
+        List<Store> ans = new ArrayList<Store>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo , descripcion "
+                + "from almacen");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Store(
+                        rs.getString("codigo"),
+                        rs.getString("descripcion")
+                        )
+                    );
+        }
+
+        c.close();
+        rs.close();
+
+        return ans;
+    }
 }

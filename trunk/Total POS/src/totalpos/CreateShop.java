@@ -7,7 +7,14 @@
 package totalpos;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -22,6 +29,8 @@ public class CreateShop extends JInternalFrame {
     public CreateShop() {
         initComponents();
 
+        DefaultTableModel model = (DefaultTableModel) storeTable.getModel();
+        model.setRowCount(0);
         if ( !Shared.getConfig().containsKey("storeName") ){
             titleLabel.setText("Crear Tienda");
             this.setTitle("Crear Tienda");
@@ -29,11 +38,21 @@ public class CreateShop extends JInternalFrame {
             setResizable(false);
             cancelButton.setEnabled(false);
         }else{
-            titleLabel.setText("Modificar Tienda");
-            this.setTitle("Modificar Tienda");
-
-            nameFieldText.setText(Shared.getConfig("storeName"));
-            descriptionFieldText.setText(Shared.getConfig("storeDescription"));
+            try {
+                titleLabel.setText("Modificar Tienda");
+                this.setTitle("Modificar Tienda");
+                nameFieldText.setText(Shared.getConfig("storeName"));
+                descriptionFieldText.setText(Shared.getConfig("storeDescription"));
+                List<Store> stores = ConnectionDrivers.listStores();
+                for (Store store : stores) {
+                    String[] s = {store.getId(), store.getDescription()};
+                    model.addRow(s);
+                }
+            } catch (SQLException ex) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                msg.show(this);
+                return;
+            }
         }
 
         isOk = true;
@@ -58,9 +77,9 @@ public class CreateShop extends JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        storeTable = new javax.swing.JTable();
+        addStore = new javax.swing.JButton();
+        deleteStore = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Crear/Modificar Tienda");
@@ -131,7 +150,7 @@ public class CreateShop extends JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        storeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -142,9 +161,9 @@ public class CreateShop extends JInternalFrame {
                 "Código", "Descripción"
             }
         ));
-        jTable1.setName("jTable1"); // NOI18N
-        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(jTable1);
+        storeTable.setName("storeTable"); // NOI18N
+        storeTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(storeTable);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -157,11 +176,21 @@ public class CreateShop extends JInternalFrame {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
         );
 
-        jButton1.setText("Agregar Almacen");
-        jButton1.setName("jButton1"); // NOI18N
+        addStore.setText("Agregar Almacen");
+        addStore.setName("addStore"); // NOI18N
+        addStore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addStoreActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Eliminar Almacen");
-        jButton2.setName("jButton2"); // NOI18N
+        deleteStore.setText("Eliminar Almacen");
+        deleteStore.setName("deleteStore"); // NOI18N
+        deleteStore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteStoreActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -184,12 +213,12 @@ public class CreateShop extends JInternalFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deleteStore, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(addStore, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -208,9 +237,9 @@ public class CreateShop extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(addStore)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(deleteStore)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -229,14 +258,45 @@ public class CreateShop extends JInternalFrame {
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
 
         if ( nameFieldText.getText().isEmpty() ){
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El nombre no puede ser vacío");
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El código no puede ser vacío");
             msg.show(this);
             return;
+        }
+
+        if ( descriptionFieldText.getText().isEmpty() ){
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "La descripción no puede ser vacía");
+            msg.show(this);
+            return;
+        }
+
+        if ( storeTable.getRowCount() == 0 ){
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe haber al menos un almacen");
+            msg.show(this);
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) storeTable.getModel();
+        Set<String> s = new TreeSet<String>();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if ( model.getValueAt(i, 0) == null || model.getValueAt(i, 1) == null ||
+                    ((String)model.getValueAt(i, 0)).isEmpty() || ((String)model.getValueAt(i, 1)).isEmpty() ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios. No pueden haber almacenes con campos vacíos.");
+                msg.show(this);
+                return;
+            }
+            if ( s.contains(model.getValueAt(i, 0)) ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Los códigos no se pueden repetir");
+                msg.show(this);
+                return;
+            }
+            s.add((String) model.getValueAt(i, 0));
         }
         
         try {
             ConnectionDrivers.saveConfig("storeName", nameFieldText.getText());
             ConnectionDrivers.saveConfig("storeDescription", descriptionFieldText.getText());
+            ConnectionDrivers.deleteAllStores();
+            ConnectionDrivers.createStore(model);
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
             created = true;
@@ -270,20 +330,35 @@ public class CreateShop extends JInternalFrame {
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_cancelButtonMouseMoved
 
+    private void addStoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStoreActionPerformed
+        DefaultTableModel model = (DefaultTableModel) storeTable.getModel();
+        model.setRowCount(model.getRowCount()+1);
+    }//GEN-LAST:event_addStoreActionPerformed
+
+    private void deleteStoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStoreActionPerformed
+        if ( storeTable.getSelectedRow() != -1 ){
+            DefaultTableModel model = (DefaultTableModel) storeTable.getModel();
+            model.removeRow(storeTable.getSelectedRow());
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar un almacén!");
+            msg.show(this);
+        }
+    }//GEN-LAST:event_deleteStoreActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
+    private javax.swing.JButton addStore;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JButton deleteStore;
     private javax.swing.JTextField descriptionFieldText;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField nameFieldText;
+    private javax.swing.JTable storeTable;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 

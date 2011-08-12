@@ -975,7 +975,7 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
-                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos "
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno"
                 + "from factura where estado='Espera' and datediff(fecha_creacion,now()) = 0");
         
         ResultSet rs = stmt.executeQuery();
@@ -997,7 +997,8 @@ public class ConnectionDrivers {
                             rs.getString("numero_reporte_z"),
                             rs.getString("codigo_de_usuario"),
                             rs.getInt("cantidad_de_articulos"),
-                            listItems(rs.getString("codigo_interno"))
+                            listItems(rs.getString("codigo_interno")),
+                            rs.getString("identificador_turno")
                         )
                     );
         }
@@ -1067,5 +1068,9 @@ public class ConnectionDrivers {
 
         c.close();
     }
+
+    /*public static boolean turnAlreadyUsed(){
+        
+    }*/
 
 }

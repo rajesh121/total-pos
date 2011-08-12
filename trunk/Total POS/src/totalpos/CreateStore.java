@@ -7,12 +7,13 @@
 package totalpos;
 
 import java.sql.SQLException;
+import javax.swing.JInternalFrame;
 
 /**
  *
  * @author shidalgo
  */
-public class CreateStore extends javax.swing.JInternalFrame {
+public class CreateStore extends JInternalFrame {
 
     public boolean isOk = false;
     public boolean created = false;

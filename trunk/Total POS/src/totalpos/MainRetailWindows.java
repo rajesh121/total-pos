@@ -32,16 +32,19 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public boolean closing = false;
     public Double globalDiscount = .0;
     private Client client = null;
+    private Assign assign;
 
     /** Creates new form MainRetailWindows
      * @param u
+     * @param assign
      */
-    public MainRetailWindows(User u) {
+    public MainRetailWindows(User u, Assign assign) {
         try {
             initComponents();
             this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
             user = u;
             printer = new FiscalPrinter();
+            this.assign = assign;
             if ( !ConnectionDrivers.isAllowed(u.getPerfil(), "retail") ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Esta usuario no tiene permisos para utilizar el punto de venta.");
                 msb.show(null);
@@ -50,6 +53,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 return;
             }
             updateAll();
+            /**
+             * UNCOMMENT TO CHECK THE FISCAL PRINTER!!!!!!!!!!!!!!!!!!!!!!!!
+             */
+
             if ( false /*!checkPrinter()*/ ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
                 msb.show(null);

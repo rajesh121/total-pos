@@ -38,7 +38,7 @@ public class UpdateClock extends Thread{
                     List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                     boolean toContinue = false;
                     for (Assign assign : as) {
-                        if (assign.getPos().equals(Constants.myId)) {
+                        if (assign.getPos().equals(Constants.myId) && assign.isOpen()) {
                             toContinue = true;
                             break; // for performance ...  =D!
                         }

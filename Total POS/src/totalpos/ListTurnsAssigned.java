@@ -9,8 +9,6 @@ package totalpos;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.table.DefaultTableModel;
 
@@ -43,11 +41,12 @@ public class ListTurnsAssigned extends JInternalFrame {
         newAssign = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
+        cancelAssignButton = new javax.swing.JButton();
+        closeAssignButton = new javax.swing.JButton();
+        reopenAssignButton = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
-        setResizable(true);
         setTitle("Lista de Turnos Asignados");
 
         newAssign.setText("Nueva Asignación");
@@ -102,6 +101,33 @@ public class ListTurnsAssigned extends JInternalFrame {
         jScrollPane1.setViewportView(table);
         table.getColumnModel().getColumn(3).setPreferredWidth(20);
 
+        cancelAssignButton.setText("Cancelar Asignación");
+        cancelAssignButton.setFocusable(false);
+        cancelAssignButton.setName("cancelAssignButton"); // NOI18N
+        cancelAssignButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelAssignButtonActionPerformed(evt);
+            }
+        });
+
+        closeAssignButton.setText("Cerrar Asignación");
+        closeAssignButton.setFocusable(false);
+        closeAssignButton.setName("closeAssignButton"); // NOI18N
+        closeAssignButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeAssignButtonActionPerformed(evt);
+            }
+        });
+
+        reopenAssignButton.setText("Re-Abrir Asignación");
+        reopenAssignButton.setFocusable(false);
+        reopenAssignButton.setName("reopenAssignButton"); // NOI18N
+        reopenAssignButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reopenAssignButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -109,17 +135,30 @@ public class ListTurnsAssigned extends JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)
-                    .addComponent(newAssign, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(newAssign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(reopenAssignButton, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(closeAssignButton, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                            .addComponent(cancelAssignButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(newAssign)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newAssign)
+                    .addComponent(cancelAssignButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(closeAssignButton)
+                    .addComponent(reopenAssignButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -144,9 +183,72 @@ public class ListTurnsAssigned extends JInternalFrame {
         }
     }//GEN-LAST:event_tableKeyPressed
 
+    private void closeAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeAssignButtonActionPerformed
+        if ( table.getSelectedRow() != -1 ){
+            try {
+                ConnectionDrivers.setAssignOpen(assigns.get(table.getSelectedRow()),false);
+                updateAll();
+                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno cerrado satisfactoriamente");
+                msg.show(this);
+            } catch (SQLException ex) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+                msg.show(this);
+                Shared.reload();
+            }
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar una asignación.");
+            msg.show(null);
+        }
+    }//GEN-LAST:event_closeAssignButtonActionPerformed
+
+    private void reopenAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reopenAssignButtonActionPerformed
+        if ( table.getSelectedRow() != -1 ){
+            try {
+                ConnectionDrivers.setAssignOpen(assigns.get(table.getSelectedRow()), true);
+                updateAll();
+                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno cerrado satisfactoriamente");
+                msg.show(this);
+            } catch (SQLException ex) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+                msg.show(this);
+                Shared.reload();
+            }
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar una asignación.");
+            msg.show(null);
+        }
+    }//GEN-LAST:event_reopenAssignButtonActionPerformed
+
+    private void cancelAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelAssignButtonActionPerformed
+        if ( table.getSelectedRow() != -1 ){
+            try {
+                boolean ans = ConnectionDrivers.wasAssignUsedToday(assigns.get(table.getSelectedRow()));
+                if ( !ans ){
+                    ConnectionDrivers.deleteAssignToday(assigns.get(table.getSelectedRow()));
+                    updateAll();
+                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno eliminado satisfactoriamente.");
+                    msg.show(this);
+                }else{
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Esta caja posee movimientos registrados, por lo tanto debe hacer Cierre de Caja para poder eliminar el turno.");
+                    msg.show(this);
+                }
+            } catch (SQLException ex) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+                msg.show(this);
+                Shared.reload();
+            }
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar una asignación.");
+            msg.show(null);
+        }
+    }//GEN-LAST:event_cancelAssignButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancelAssignButton;
+    private javax.swing.JButton closeAssignButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton newAssign;
+    private javax.swing.JButton reopenAssignButton;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 
@@ -165,7 +267,6 @@ public class ListTurnsAssigned extends JInternalFrame {
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
-            this.dispose();
             Shared.reload();
         }
         

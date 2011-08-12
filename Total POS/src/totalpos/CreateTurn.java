@@ -94,13 +94,13 @@ public class CreateTurn extends JInternalFrame {
 
         jLabel2.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
-        jLabel2.setText("Identificador *");
+        jLabel2.setText("Código *");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
-        jLabel3.setText("Nombre");
+        jLabel3.setText("Descripción");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel3.setName("jLabel3"); // NOI18N
 
@@ -283,7 +283,7 @@ public class CreateTurn extends JInternalFrame {
                     .addComponent(okButton)
                     .addComponent(cancelButton)
                     .addComponent(jLabel11))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();

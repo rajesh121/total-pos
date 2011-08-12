@@ -1056,4 +1056,16 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static void modifyClient(Client myClient) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update cliente set nombre = ? , direccion = ? , telefono = ? where codigo = ?");
+        stmt.setString(1, myClient.getName());
+        stmt.setString(2, myClient.getAddress());
+        stmt.setString(3, myClient.getPhone());
+        stmt.setString(4, myClient.getId());
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
 }

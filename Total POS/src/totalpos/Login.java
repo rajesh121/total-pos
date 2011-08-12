@@ -140,9 +140,11 @@ public class Login extends JFrame {
                 List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                 boolean toContinue = false;
 
+                Assign a = null;
                 for (Assign assign : as) {
                     if ( assign.getPos().equals(Constants.myId) ){
                         toContinue = true;
+                        a = assign;
                         break; // for performance ...  =D!
                     }
                 }
@@ -155,7 +157,7 @@ public class Login extends JFrame {
 
                 uc.start(); //Start the screensaver xDD
                 Shared.setUser(u);
-                MainRetailWindows mrw = new MainRetailWindows(u);
+                MainRetailWindows mrw = new MainRetailWindows(u, a);
                 if ( mrw.isOk ){
                     Shared.setMyMainWindows(mrw);
                     Shared.centerFrame(mrw);

@@ -46,13 +46,13 @@
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="105" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jButton2" alignment="1" max="32767" attributes="1"/>
+                          <Component id="deleteStore" alignment="1" max="32767" attributes="1"/>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="acceptButton" min="-2" pref="89" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cancelButton" min="-2" pref="91" max="-2" attributes="1"/>
                           </Group>
-                          <Component id="jButton1" alignment="0" max="32767" attributes="1"/>
+                          <Component id="addStore" alignment="0" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>
@@ -78,9 +78,9 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+              <Component id="addStore" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+              <Component id="deleteStore" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -196,7 +196,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="jTable1">
+            <Component class="javax.swing.JTable" name="storeTable">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="2" rowCount="4">
@@ -218,7 +218,7 @@
                     </Column>
                   </TableColumnModel>
                 </Property>
-                <Property name="name" type="java.lang.String" value="jTable1" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="storeTable" noResource="true"/>
                 <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
                   <JTableSelectionModel selectionMode="0"/>
                 </Property>
@@ -231,17 +231,23 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="addStore">
       <Properties>
         <Property name="text" type="java.lang.String" value="Agregar Almacen"/>
-        <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="addStore" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addStoreActionPerformed"/>
+      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="deleteStore">
       <Properties>
         <Property name="text" type="java.lang.String" value="Eliminar Almacen"/>
-        <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="deleteStore" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteStoreActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

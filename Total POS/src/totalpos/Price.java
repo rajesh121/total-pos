@@ -38,8 +38,7 @@ public class Price {
 
     @Override
     public String toString() {
-        DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(quant) + "";
+        return Constants.df.format(quant) + "";
     }
 
     public Price plusIva(){

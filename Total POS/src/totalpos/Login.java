@@ -8,11 +8,12 @@ package totalpos;
 
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.JFrame;
 /**
  *
  * @author Saul Hidalgo
  */
-public class Login extends javax.swing.JFrame {
+public class Login extends JFrame {
 
     /** Creates new form Login */
     public Login() {
@@ -124,7 +125,7 @@ public class Login extends javax.swing.JFrame {
                 Shared.centerFrame(cp);
                 cp.setVisible(true);
                 if ( !cp.isOk ){
-                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Debes cambiar el password. Intenta de nuevo.");
+                    MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Debes cambiar el password. Intenta de nuevo.");
                     msg.show(this);
                     passwordText.setEnabled(true);
                     return;
@@ -146,7 +147,7 @@ public class Login extends javax.swing.JFrame {
                     }
                 }
                 if ( !toContinue ){
-                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No hay asignación para esta caja el día de hoy.");
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No hay asignación para esta caja el día de hoy.");
                     msg.show(this);
                     passwordText.setEnabled(true);
                     return;

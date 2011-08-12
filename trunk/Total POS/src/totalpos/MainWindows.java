@@ -90,7 +90,7 @@ public class MainWindows extends javax.swing.JFrame {
 
 
         if ( !Shared.getConfig().containsKey("storeName") ){
-            CreateStore cs = new CreateStore();
+            CreateShop cs = new CreateShop();
             if ( cs.isOk ){
                 mdiPanel.add(cs);
                 cs.setVisible(true);
@@ -195,7 +195,7 @@ public class MainWindows extends javax.swing.JFrame {
                     ct.setVisible(true);
                 }
             } else if ( ed.getFuncion().equals("createStore") ) {
-                CreateStore cs = new CreateStore();
+                CreateShop cs = new CreateShop();
                 if( cs.isOk ){
                     mdiPanel.add(cs);
                     cs.setVisible(true);

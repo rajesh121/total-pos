@@ -19,12 +19,17 @@ public class ManageClient extends javax.swing.JDialog {
 
     private boolean found = false;
     private MainRetailWindows parent;
+    private boolean modified = false;
 
     /** Creates new form ManageClient */
     public ManageClient(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.parent = (MainRetailWindows) parent;
+        modifyClient.setVisible(false);
+        modifyClient.setMnemonic('M');
+        cancelButton.setMnemonic('C');
+        acceptButton.setMnemonic('A');
     }
 
     /** This method is called from within the constructor to
@@ -49,6 +54,7 @@ public class ManageClient extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
         acceptButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        modifyClient = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Clientes");
@@ -82,7 +88,7 @@ public class ManageClient extends javax.swing.JDialog {
         phoneLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         phoneLabel.setName("phoneLabel"); // NOI18N
 
-        idField.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        idField.setFont(new java.awt.Font("Courier New", 0, 12));
         idField.setName("idField"); // NOI18N
         idField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -142,6 +148,15 @@ public class ManageClient extends javax.swing.JDialog {
         jLabel1.setText("* = Campo Obligatorio");
         jLabel1.setName("jLabel1"); // NOI18N
 
+        modifyClient.setText("Modificar");
+        modifyClient.setFocusable(false);
+        modifyClient.setName("modifyClient"); // NOI18N
+        modifyClient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifyClientActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,7 +183,9 @@ public class ManageClient extends javax.swing.JDialog {
                                     .addComponent(phoneField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                                .addComponent(modifyClient, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -199,7 +216,8 @@ public class ManageClient extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cancelButton)
                             .addComponent(acceptButton)
-                            .addComponent(jLabel1)))
+                            .addComponent(jLabel1)
+                            .addComponent(modifyClient)))
                     .addComponent(addressLabel))
                 .addContainerGap())
         );
@@ -215,7 +233,7 @@ public class ManageClient extends javax.swing.JDialog {
         try {
             List<Client> clients = ConnectionDrivers.listClients(idField.getText());
             if ( clients.isEmpty() ){
-                ;
+                modifyClient.setVisible(false);
             }else if ( clients.size() == 1 ){
                 Client c = clients.get(0);
                 nameField.setText(c.getName());
@@ -225,12 +243,14 @@ public class ManageClient extends javax.swing.JDialog {
                 phoneField.setEditable(false);
                 addressField.setEditable(false);
                 found = true;
+                modifyClient.setVisible(true);
             }else{
                 // It shouldn't reach this line.
+                // There are 2 clients with the same RIF.
                 assert( false );
             }
         } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(this);
             this.dispose();
             Shared.reload();
@@ -242,6 +262,7 @@ public class ManageClient extends javax.swing.JDialog {
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void idFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             nameField.requestFocus();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
@@ -250,22 +271,32 @@ public class ManageClient extends javax.swing.JDialog {
     }//GEN-LAST:event_idFieldKeyPressed
 
     private void nameFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }
     }//GEN-LAST:event_nameFieldKeyPressed
 
     private void phoneFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }
     }//GEN-LAST:event_phoneFieldKeyPressed
 
     private void addressFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyPressed
+        Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }
     }//GEN-LAST:event_addressFieldKeyPressed
+
+    private void modifyClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyClientActionPerformed
+        modified = true;
+        nameField.setEditable(true);
+        phoneField.setEditable(true);
+        addressField.setEditable(true);
+    }//GEN-LAST:event_modifyClientActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Nombre;
@@ -277,6 +308,7 @@ public class ManageClient extends javax.swing.JDialog {
     private javax.swing.JTextField idField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton modifyClient;
     private javax.swing.JTextField nameField;
     private javax.swing.JTextField phoneField;
     private javax.swing.JLabel phoneLabel;
@@ -284,16 +316,20 @@ public class ManageClient extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void doIt() {
+        Shared.getScreenSaver().actioned();
         Client myClient = new Client(idField.getText(), nameField.getText(), addressField.getText(), phoneField.getText());
-        if ( !found ){
-            try {
+
+        try {
+            if ( !found ){
                 ConnectionDrivers.createClient(myClient);
-            } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-                msb.show(this);
-                this.dispose();
-                Shared.reload();
+            } else if ( modified ){
+                ConnectionDrivers.modifyClient(myClient);
             }
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
         }
         parent.setClient(myClient);
         this.dispose();

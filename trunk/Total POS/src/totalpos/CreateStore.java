@@ -15,6 +15,7 @@ import java.sql.SQLException;
 public class CreateStore extends javax.swing.JInternalFrame {
 
     public boolean isOk = false;
+    public boolean created = false;
 
     /** Creates new form CreateStore */
     public CreateStore() {
@@ -23,6 +24,9 @@ public class CreateStore extends javax.swing.JInternalFrame {
         if ( !Shared.getConfig().containsKey("storeName") ){
             titleLabel.setText("Crear Tienda");
             this.setTitle("Crear Tienda");
+            setClosable(false);
+            setResizable(false);
+            cancelButton.setEnabled(false);
         }else{
             titleLabel.setText("Modificar Tienda");
             this.setTitle("Modificar Tienda");
@@ -169,11 +173,19 @@ public class CreateStore extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+
+        if ( nameFieldText.getText().isEmpty() ){
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El nombre no puede ser vacío");
+            msg.show(this);
+            return;
+        }
+        
         try {
             ConnectionDrivers.saveConfig("storeName", nameFieldText.getText());
             ConnectionDrivers.saveConfig("storeDescription", descriptionFieldText.getText());
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
+            created = true;
             ConnectionDrivers.initializeConfig();
             this.dispose();
         } catch (SQLException ex) {

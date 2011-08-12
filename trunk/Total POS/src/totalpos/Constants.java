@@ -2,7 +2,6 @@ package totalpos;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.TreeMap;
 
 /**
  *
@@ -31,7 +30,7 @@ public class Constants {
     public static SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy h:mm:ss a");
     public static DecimalFormat df = new DecimalFormat("#.00");
 
-    public static final boolean isPos = true;
+    public static final boolean isPos = false;
 
     public static int secondToCheckTurn = 30;
 

@@ -142,7 +142,7 @@ public class Login extends JFrame {
 
                 Assign a = null;
                 for (Assign assign : as) {
-                    if ( assign.getPos().equals(Constants.myId) ){
+                    if ( assign.getPos().equals(Constants.myId) && assign.isOpen() ){
                         toContinue = true;
                         a = assign;
                         break; // for performance ...  =D!

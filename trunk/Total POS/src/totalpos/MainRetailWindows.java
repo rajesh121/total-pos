@@ -91,39 +91,27 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         this.user = user;
     }
 
-    protected void updateAll(){
-        try {
-            descriptionLabel.setText("Bievenido a Mundo Total");
-            currentPrice.setText("");
-            ivaLabelResult.setText("0.00 Bsf");
-            ivaLabelResult1.setText("0.00 Bsf");
-            subTotalLabelResult.setText("0.00 Bsf");
-            discountLabel.setVisible(false);
-            discountResult.setVisible(false);
-            items = new ArrayList<Item>();
-            imageLabel.setVisible(false);
-            globalDiscount = .0;
+    protected void updateAll() throws SQLException{
+        descriptionLabel.setText("Bievenido a Mundo Total");
+        currentPrice.setText("");
+        ivaLabelResult.setText("0.00 Bsf");
+        ivaLabelResult1.setText("0.00 Bsf");
+        subTotalLabelResult.setText("0.00 Bsf");
+        discountLabel.setVisible(false);
+        discountResult.setVisible(false);
+        items = new ArrayList<Item>();
+        imageLabel.setVisible(false);
+        globalDiscount = .0;
 
-            updateTable();
+        updateTable();
 
-            actualId = nextId();
-            ConnectionDrivers.createReceipt(actualId, user.getLogin());
-            setClient(null);
-            codigoField.setText("");
-            nameField.setText("");
-            addressField.setText("");
-            phoneField.setText("");
-        } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
-        } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al creando el recibo.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
-        }
+        actualId = nextId();
+        ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
+        setClient(null);
+        codigoField.setText("");
+        nameField.setText("");
+        addressField.setText("");
+        phoneField.setText("");
     }
 
     protected void updateTable(){
@@ -640,7 +628,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             if ( n == 0 ){
                 deleteItem();
                 if ( items.isEmpty() ){
-                    updateAll();
+                    try{
+                        updateAll();
+                    } catch (SQLException ex) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                        msb.show(this);
+                        this.dispose();
+                        Shared.reload();
+                    }
                 }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F10 ){
@@ -659,24 +654,41 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 options[1]);
             if ( n == 0 ){
                 deleteCurrent();
-                updateAll();
+                try{
+                    updateAll();
+                } catch (SQLException ex) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                    msb.show(this);
+                    this.dispose();
+                    Shared.reload();
+                } catch (Exception ex) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al creando el pedido.",ex);
+                    msb.show(this);
+                    this.dispose();
+                    Shared.reload();
+                }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F11 ){
             toWait();
-            updateAll();
+            try{
+                updateAll();
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            } 
         } else if ( evt.getKeyCode() == KeyEvent.VK_F12 ){
             ListIdleReceipts lir = new ListIdleReceipts(this, true);
             if ( lir.isOk ){
                 Shared.centerFrame(lir);
                 lir.setVisible(true);
             }
-        } else if ( evt.getKeyCode() == KeyEvent.VK_F9 ){
-            
         } else if ( evt.getKeyCode() == KeyEvent.VK_F8 ){
             ManageClient mc = new ManageClient(this, true);
             Shared.centerFrame(mc);
             mc.setVisible(true);
-        } else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F9 ){
             GlobalDiscount gd = new GlobalDiscount(this, true);
             Shared.centerFrame(gd);
             gd.setVisible(true);
@@ -775,6 +787,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
             msb.show(this);
+            this.dispose();
+            Shared.reload();
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al agregar el artículo",ex);
             msb.show(this);

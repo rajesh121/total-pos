@@ -658,13 +658,15 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void createReceipt(String id, String user) throws SQLException, Exception{
+    protected static void createReceipt(String id, String user , Assign assign) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura"
-                + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , codigo_cliente ) "
-                + "values ( ? , 'Pedido' , now() , 0, 0, 0 , ? , 0 , \"Contado\" )");
+                + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , codigo_cliente , identificador_turno , identificador_pos) "
+                + "values ( ? , 'Pedido' , now() , 0, 0, 0 , ? , 0 , \"Contado\", ? , ?)");
         stmt.setString(1, id);
         stmt.setString(2, user);
+        stmt.setString(3, assign.getTurn());
+        stmt.setString(4, assign.getPos());
         stmt.executeUpdate();
 
         c.close();
@@ -1069,8 +1071,44 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    /*public static boolean turnAlreadyUsed(){
-        
-    }*/
+    public static boolean wasAssignUsedToday(Assign t) throws SQLException{
+        boolean ans = false;
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select * "
+                + "from factura where datediff(now(),fecha_creacion) = 0 and identificador_turno = ? and identificador_pos = ?");
+        stmt.setString(1, t.getTurn() );
+        stmt.setString(2, t.getPos() );
+        ResultSet rs = stmt.executeQuery();
+
+        ans = rs.next();
+
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    public static void deleteAssignToday(Assign t) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from asigna where datediff(now(),fecha) = 0 and identificador_turno = ? and identificador_pos = ?");
+        stmt.setString(1, t.getTurn() );
+        stmt.setString(2, t.getPos() );
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    public static void setAssignOpen(Assign a, boolean isOpen) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update asigna set abierto = ? where identificador_turno = ? and identificador_pos = ? and datediff( fecha, ? ) = 0");
+        stmt.setInt(1, isOpen?1:0);
+        stmt.setString(2, a.getTurn());
+        stmt.setString(3, a.getPos());
+        stmt.setDate(4, a.getDate());
+        stmt.executeUpdate();
+
+        c.close();
+    }
 
 }

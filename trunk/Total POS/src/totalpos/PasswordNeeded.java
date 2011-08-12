@@ -8,15 +8,13 @@ package totalpos;
 
 import java.awt.Frame;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 
 /**
  *
  * @author shidalgo
  */
-public class PasswordNeeded extends javax.swing.JDialog {
+public class PasswordNeeded extends JDialog {
 
     User user;
     private boolean isOk = false;
@@ -91,16 +89,16 @@ public class PasswordNeeded extends javax.swing.JDialog {
             this.setVisible(false);
             dispose();
         } catch (SQLException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "No se pudo establecer conexión con la base de datos.");
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se pudo establecer conexión con la base de datos.");
             msg.show(this);
         } catch (Exception ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, ex.getMessage(), ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, ex.getMessage(), ex);
             msg.show(this);
             if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
                 try {
                     Shared.userTrying(this.user.getLogin());
                 } catch (Exception ex1) {
-                    msg = new MessageBox(MessageBox.SGN_DANGER,
+                    msg = new MessageBox(MessageBox.SGN_CAUTION,
                                 (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :ex1.getMessage()),
                                 ex1);
                     msg.show(null);
@@ -108,7 +106,7 @@ public class PasswordNeeded extends javax.swing.JDialog {
                     Shared.reload();
                 }
             }else{
-                msg = new MessageBox(MessageBox.SGN_DANGER, ex.getMessage() , ex);
+                msg = new MessageBox(MessageBox.SGN_CAUTION, ex.getMessage() , ex);
                 msg.show(null);
             }
         }

@@ -35,6 +35,8 @@ public class CreateProfile extends JInternalFrame {
         idTextField = new javax.swing.JTextField();
         descriptionTextField = new javax.swing.JTextField();
         descriptionLabel = new javax.swing.JLabel();
+        cancelButton = new javax.swing.JButton();
+        acceptButton = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -94,6 +96,22 @@ public class CreateProfile extends JInternalFrame {
         descriptionLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setName("descriptionLabel"); // NOI18N
 
+        cancelButton.setText("Cancelar");
+        cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        acceptButton.setText("Aceptar");
+        acceptButton.setName("acceptButton"); // NOI18N
+        acceptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -109,7 +127,11 @@ public class CreateProfile extends JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(descriptionTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
-                            .addComponent(idTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))))
+                            .addComponent(idTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(acceptButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -125,6 +147,10 @@ public class CreateProfile extends JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(descriptionLabel)
                     .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelButton)
+                    .addComponent(acceptButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -146,29 +172,7 @@ public class CreateProfile extends JInternalFrame {
     private void descriptionTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyPressed
         Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            try {
-                if ( !idTextField.getText().matches("\\A[a-zA-Z0-9 ]+$") ){
-                    throw new Exception("El ID es inválido. No se pueden utilizar caracteres especiales.");
-                }
-
-                ConnectionDrivers.createProfile(idTextField.getText(), descriptionTextField.getText());
-                this.setVisible(false);
-                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente.");
-                msb.show(this);
-            } catch (SQLException ex) {
-                if ( ex.getMessage().matches(Constants.isDataRepeated) ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
-                    msb.show(this);
-                }else{
-                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-                    msb.show(this);
-                }
-            } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear perfil.",ex);
-                msb.show(this);
-                this.dispose();
-                Shared.reload();
-            }
+            doIt();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.setVisible(false);
             dispose();
@@ -199,12 +203,49 @@ public class CreateProfile extends JInternalFrame {
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_formMouseMoved
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        Shared.getScreenSaver().actioned();
+        doIt();
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton acceptButton;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JTextField descriptionTextField;
     private javax.swing.JLabel idLabel;
     private javax.swing.JTextField idTextField;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
+
+    private void doIt() {
+        try {
+            if ( !idTextField.getText().matches("\\A[a-zA-Z0-9 ]+$") ){
+                throw new Exception("El ID es inválido. No se pueden utilizar caracteres especiales.");
+            }
+
+            ConnectionDrivers.createProfile(idTextField.getText(), descriptionTextField.getText());
+            this.setVisible(false);
+            MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente.");
+            msb.show(this);
+        } catch (SQLException ex) {
+            if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
+                msb.show(this);
+            }else{
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                msb.show(this);
+            }
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear perfil.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
+    }
 
 }

@@ -52,6 +52,7 @@ public class CreateStore extends javax.swing.JInternalFrame {
         descriptionFieldText = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
         acceptButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setClosable(true);
         setTitle("Crear/Modificar Tienda");
@@ -65,12 +66,12 @@ public class CreateStore extends javax.swing.JInternalFrame {
         titleLabel.setName("titleLabel"); // NOI18N
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel2.setText("Código");
+        jLabel2.setText("Código *");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel3.setText("Descripción");
+        jLabel3.setText("Descripción *");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel3.setName("jLabel3"); // NOI18N
 
@@ -114,6 +115,9 @@ public class CreateStore extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel1.setText("* = Campo Obligatorio");
+        jLabel1.setName("jLabel1"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -131,6 +135,8 @@ public class CreateStore extends javax.swing.JInternalFrame {
                             .addComponent(descriptionFieldText, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
                             .addComponent(nameFieldText, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
                         .addComponent(acceptButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton)))
@@ -140,7 +146,7 @@ public class CreateStore extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
+                .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -152,7 +158,8 @@ public class CreateStore extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
-                    .addComponent(acceptButton))
+                    .addComponent(acceptButton)
+                    .addComponent(jLabel1))
                 .addContainerGap())
         );
 
@@ -204,6 +211,7 @@ public class CreateStore extends javax.swing.JInternalFrame {
     private javax.swing.JButton acceptButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JTextField descriptionFieldText;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField nameFieldText;

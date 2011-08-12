@@ -88,6 +88,7 @@ public class ManageItem extends JInternalFrame {
         printLabels = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         stickerTable = new javax.swing.JTable();
+        deleteAll = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         itemTable = new javax.swing.JTable();
@@ -229,7 +230,7 @@ public class ManageItem extends JInternalFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -246,7 +247,7 @@ public class ManageItem extends JInternalFrame {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11));
         stickerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -316,6 +317,14 @@ public class ManageItem extends JInternalFrame {
         });
         jScrollPane2.setViewportView(stickerTable);
 
+        deleteAll.setText("Eliminar Todas");
+        deleteAll.setName("deleteAll"); // NOI18N
+        deleteAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteAllActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -323,8 +332,11 @@ public class ManageItem extends JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
-                    .addComponent(printLabels, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(deleteAll, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(printLabels, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -332,7 +344,9 @@ public class ManageItem extends JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(printLabels)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(printLabels)
+                    .addComponent(deleteAll))
                 .addContainerGap())
         );
 
@@ -417,7 +431,7 @@ public class ManageItem extends JInternalFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addSticker)
                 .addContainerGap())
@@ -658,6 +672,14 @@ public class ManageItem extends JInternalFrame {
         }
     }//GEN-LAST:event_stickerTableFocusLost
 
+    private void deleteAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteAllActionPerformed
+        DefaultTableModel model = (DefaultTableModel) stickerTable.getModel();
+
+        model.setRowCount(0);
+        toPrint.clear();
+        quantToPrint.clear();
+    }//GEN-LAST:event_deleteAllActionPerformed
+
     private void loadImage(){
         Item i = items.get(itemTable.getSelectedRow());
         Shared.loadPhoto(imageLabel,i.getImageAddr());
@@ -669,6 +691,7 @@ public class ManageItem extends JInternalFrame {
     private javax.swing.JTextField barCodeField;
     private javax.swing.JTextField codigoField;
     private javax.swing.JLabel codigoLabel;
+    private javax.swing.JButton deleteAll;
     private javax.swing.JTextField descriptionField;
     private javax.swing.JPanel filterPanel;
     private javax.swing.JLabel imageLabel;

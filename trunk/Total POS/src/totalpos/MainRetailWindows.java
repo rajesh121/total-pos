@@ -91,8 +91,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ivaLabelResult.setText("0.00 Bsf");
             ivaLabelResult1.setText("0.00 Bsf");
             subTotalLabelResult.setText("0.00 Bsf");
+            discountLabel.setVisible(false);
+            discountResult.setVisible(false);
             items = new ArrayList<Item>();
             imageLabel.setVisible(false);
+            globalDiscount = .0;
 
             updateTable();
 
@@ -666,6 +669,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ManageClient mc = new ManageClient(this, true);
             Shared.centerFrame(mc);
             mc.setVisible(true);
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
+            GlobalDiscount gd = new GlobalDiscount(this, true);
+            Shared.centerFrame(gd);
+            gd.setVisible(true);
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -776,14 +783,24 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     public void updateSubTotal() {
-        double subT = .0 , ivaT = .0 , total = .0;
+        double subT = .0 , ivaT = .0 , total = .0 , subTwithoutD = .0;
         for (Item item : items) {
-            subT += item.getLastPrice().getQuant();
-            ivaT += item.getLastPrice().getIva().getQuant();
-            total += item.getLastPrice().plusIva().getQuant();
+            subTwithoutD += item.getLastPrice().getQuant();
+            subT += item.getLastPrice().getQuant()*(1.0-globalDiscount);
+            ivaT += item.getLastPrice().getIva().getQuant()*(1.0-globalDiscount);
+            total += item.getLastPrice().plusIva().getQuant()*(1.0-globalDiscount);
         }
-        
-        subTotalLabelResult.setText(Constants.df.format(subT) + " Bsf");
+
+        subTotalLabelResult.setText(Constants.df.format(subTwithoutD) + " Bsf");
+        if ( !globalDiscount.equals(.0) ){
+            discountLabel.setText("Desc (" + Constants.df.format(globalDiscount*100.0) + "%):");
+            discountLabel.setVisible(true);
+            discountResult.setText(Constants.df.format(subT) + " Bsf");
+            discountResult.setVisible(true);
+        }else{
+            discountLabel.setVisible(false);
+            discountResult.setVisible(false);
+        }
         ivaLabelResult.setText(Constants.df.format(ivaT) + " Bsf");
         ivaLabelResult1.setText(Constants.df.format(total) + " Bsf");
     }

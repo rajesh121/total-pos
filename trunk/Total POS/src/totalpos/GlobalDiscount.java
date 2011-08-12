@@ -189,10 +189,29 @@ public class GlobalDiscount extends javax.swing.JDialog {
     private void percentFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_percentFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            doIt();
         }
     }//GEN-LAST:event_percentFieldKeyPressed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        doIt();
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton acceptButton;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JPasswordField passwordField;
+    private javax.swing.JLabel passwordLabel;
+    private javax.swing.JTextField percentField;
+    private javax.swing.JLabel percentLabel;
+    private javax.swing.JLabel percentLabelxD;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextField userField;
+    private javax.swing.JLabel userLabel;
+    // End of variables declaration//GEN-END:variables
+
+    private void doIt() {
         if ( userField.getText().isEmpty() ){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");
             msg.show(this);
@@ -204,19 +223,19 @@ public class GlobalDiscount extends javax.swing.JDialog {
         }
         try{
             double p = Double.parseDouble(percentField.getText());
-            if ( p >= 100.0 || p <= .0){
+            if ( p >= 100.0 || p < .0){
                 throw new NumberFormatException("");
             }
 
             if ( !ConnectionDrivers.existsUser(userField.getText().trim()) ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario no existe");
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
                 msg.show(this);
                 passwordField.setEnabled(true);
                 return;
             }
 
             if ( ConnectionDrivers.isLocked(userField.getText().trim()) ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Usuario bloqueado");
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario bloqueado");
                 msg.show(this);
                 passwordField.setEnabled(true);
                 return;
@@ -227,8 +246,12 @@ public class GlobalDiscount extends javax.swing.JDialog {
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), userField.getText());
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "globalDiscount") ){
                 Shared.userInsertedPasswordOk(userField.getText());
-                
+                parent.setGlobalDiscount(p/100.0);
+            }else{
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para hacer el descuento global");
+                msg.show(this);
             }
+            this.dispose();
 
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);
@@ -260,20 +283,6 @@ public class GlobalDiscount extends javax.swing.JDialog {
             }
 
         }
-
-    }//GEN-LAST:event_acceptButtonActionPerformed
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton acceptButton;
-    private javax.swing.JButton cancelButton;
-    private javax.swing.JPasswordField passwordField;
-    private javax.swing.JLabel passwordLabel;
-    private javax.swing.JTextField percentField;
-    private javax.swing.JLabel percentLabel;
-    private javax.swing.JLabel percentLabelxD;
-    private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField userField;
-    private javax.swing.JLabel userLabel;
-    // End of variables declaration//GEN-END:variables
+    }
 
 }

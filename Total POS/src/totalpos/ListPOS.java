@@ -41,6 +41,7 @@ public class ListPOS extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         changePos = new javax.swing.JButton();
+        flipEnable = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -74,18 +75,25 @@ public class ListPOS extends javax.swing.JInternalFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Nro", "Ubicacion", "Impresora Fiscal"
+                "Nro", "Ubicacion", "Impresora Fiscal", "Habilitada"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -104,6 +112,7 @@ public class ListPOS extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(table);
+        table.getColumnModel().getColumn(3).setPreferredWidth(20);
 
         changePos.setText("Modificar Caja");
         changePos.setFocusable(false);
@@ -119,6 +128,15 @@ public class ListPOS extends javax.swing.JInternalFrame {
             }
         });
 
+        flipEnable.setText("Habilitar/Deshabilitar");
+        flipEnable.setFocusable(false);
+        flipEnable.setName("flipEnable"); // NOI18N
+        flipEnable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                flipEnableActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -129,8 +147,10 @@ public class ListPOS extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(newPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(changePos, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE))
+                        .addComponent(changePos, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(flipEnable, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -139,9 +159,10 @@ public class ListPOS extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newPOS)
-                    .addComponent(changePos))
+                    .addComponent(changePos)
+                    .addComponent(flipEnable))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -164,6 +185,7 @@ public class ListPOS extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formFocusGained
 
     private void changePosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePosActionPerformed
+        Shared.getScreenSaver().actioned();
         if ( table.getSelectedRow() != -1 ){
             CreatePOS cp = new CreatePOS(poses.get(table.getSelectedRow()));
             this.getParent().add(cp);
@@ -190,9 +212,29 @@ public class ListPOS extends javax.swing.JInternalFrame {
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_newPOSMouseMoved
 
+    private void flipEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipEnableActionPerformed
+        Shared.getScreenSaver().actioned();
+        if ( table.getSelectedRow() != -1 ){
+            try {
+                PointOfSale p = poses.get(table.getSelectedRow());
+                ConnectionDrivers.flipEnabledPointOfSale(p);
+                updateAll();
+            } catch (SQLException ex) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+                msg.show(this);
+                this.dispose();
+                Shared.reload();
+            }
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar la caja");
+            msg.show(this);
+        }
+    }//GEN-LAST:event_flipEnableActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton changePos;
+    private javax.swing.JButton flipEnable;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton newPOS;
     private javax.swing.JTable table;
@@ -204,7 +246,7 @@ public class ListPOS extends javax.swing.JInternalFrame {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.setRowCount(0);
             for (PointOfSale pointOfSale : poses) {
-                Object[] s = {pointOfSale.getId(),pointOfSale.getDescription(),pointOfSale.getPrinter()};
+                Object[] s = {pointOfSale.getId(),pointOfSale.getDescription(),pointOfSale.getPrinter(), pointOfSale.isEnabled()};
                 model.addRow(s);
             }
                 

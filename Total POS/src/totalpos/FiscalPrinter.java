@@ -4,6 +4,7 @@ import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -54,42 +55,35 @@ public class FiscalPrinter {
         IntByReference b = new IntByReference();
         printer.OpenFpctrl("COM1");
 
+        List<String> buffer = new ArrayList<String>();
+
         if ( !items.isEmpty() ){
             int line = 1;
             if ( client != null && !client.getId().isEmpty() ){
-                printer.SendCmd(a, b, "i0" + ( line++ ) + "CI/RIF: " + client.getId());
-                if ( b.getValue() != 0 ){
-                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                buffer.add("i0" + ( line++ ) + "CI/RIF: " + client.getId());
+                if ( !client.getName().trim().isEmpty() ) {
+                    buffer.add("i0" + (line++) + "Nombre: " + client.getName());
                 }
-                if ( !client.getName().trim().isEmpty() ){
-                    printer.SendCmd(a, b, "i0" + ( line++ ) + "Nombre: " + client.getName());
-                    if ( b.getValue() != 0 ){
-                        throw new Exception(Shared.getErrMapping().get(b.getValue()));
-                    }
+                if ( !client.getName().trim().isEmpty() ) {
+                    buffer.add("i0" + (line++) + "Nombre: " + client.getName());
                 }
-                if ( !client.getPhone().trim().isEmpty() ){
-                    printer.SendCmd(a, b, "i0" + ( line++ ) + "Telefono: " + client.getPhone());
-                    if ( b.getValue() != 0 ){
-                        throw new Exception(Shared.getErrMapping().get(b.getValue()));
-                    }
+                if ( !client.getPhone().trim().isEmpty() ) {
+                    buffer.add("i0" + (line++) + "Telefono: " + client.getPhone());
                 }
-                if ( !client.getAddress().trim().isEmpty() ){
-                    printer.SendCmd(a, b, "i0" + ( line++ ) + "Direccion: " + client.getAddress());
-                    if ( b.getValue() != 0 ){
-                        throw new Exception(Shared.getErrMapping().get(b.getValue()));
-                    }
+                if ( !client.getAddress().trim().isEmpty() ) {
+                    buffer.add("i0" + (line++) + "Direccion: " + client.getAddress());
                 }
-                printer.SendCmd(a, b, "i0" + ( line++ ) + "Correlativo: " + ticketId);
-                if ( b.getValue() != 0 ){
-                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
-                }
+            }
+            buffer.add("i0" + ( line++ ) + "Correlativo: " + ticketId);
+            buffer.add("i0" + ( line++ ) + "Vendedor: " + u.getNombre());
 
-                
+            for (String bu : buffer) {
+                printer.SendCmd(a, b, bu);
+                if ( b.getValue() != 0 ){
+                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                }
             }
-            printer.SendCmd(a, b, "i0" + ( line++ ) + "Vendedor: " + u.getNombre());
-            if ( b.getValue() != 0 ){
-                throw new Exception(Shared.getErrMapping().get(b.getValue()));
-            }
+
             for (Item item : items) {
                 printer.SendCmd(a, b, "!" + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
                         "00001000" + item.getDescription().substring(0, Math.min(item.getDescription().length(), 38)));
@@ -101,10 +95,6 @@ public class FiscalPrinter {
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
-            printer.SendCmd(a, b, "4");
-            if ( b.getValue() != 0 ){
-                throw new Exception(Shared.getErrMapping().get(b.getValue()));
-            }
             printer.SendCmd(a, b, "101");
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
@@ -112,6 +102,54 @@ public class FiscalPrinter {
             
         }
         printer.CloseFpctrl();
+        isOk = true;
+    }
+
+    public void extractMoney(User u, String boss, Double quant) throws Exception{
+        isOk = false;
+        IntByReference a = new IntByReference();
+        IntByReference b = new IntByReference();
+        printer.OpenFpctrl("COM1");
+
+        printer.SendCmd(a, b, "9001" + Shared.formatDoubleToPrint(quant) );
+        if ( b.getValue() != 0 ){
+            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+        }
+        printer.CloseFpctrl();
+        printer.OpenFpctrl("COM1");
+
+        List<String> buffer = new ArrayList<String>();
+        buffer.add("800 ");
+        buffer.add("800                 _______________________");
+        buffer.add("800                   Firma del encargado");
+        buffer.add("800 ");
+        buffer.add("800                 _______________________");
+        buffer.add("810                     Firma del cajero");
+
+         for (String bu : buffer) {
+            printer.SendCmd(a, b, bu);
+            if ( b.getValue() != 0 ){
+                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            }
+        }
+
+        printer.CloseFpctrl();
+        isOk = true;
+    }
+
+    public void reportExtraction() throws Exception{
+        isOk = false;
+        IntByReference a = new IntByReference();
+        IntByReference b = new IntByReference();
+        printer.OpenFpctrl("COM1");
+
+        printer.SendCmd(a, b, "t");
+        if ( b.getValue() != 0 ){
+            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+        }
+
+        printer.CloseFpctrl();
+        isOk = true;
     }
     
 }

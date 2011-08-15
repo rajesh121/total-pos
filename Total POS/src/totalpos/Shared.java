@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.TreeMap;
 import javax.swing.DefaultComboBoxModel;
@@ -249,6 +250,11 @@ public class Shared {
      */
     public static void setErrMapping(TreeMap<Integer, String> errMapping_) {
         errMapping = errMapping_;
+    }
+
+    public static String formatDoubleToPrint(Double d){
+        DecimalFormat df = new DecimalFormat("00000000.00");
+        return df.format(d).replaceAll(",", "");
     }
 
 }

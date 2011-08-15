@@ -809,12 +809,13 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static List<PointOfSale> listPointOfSales() throws SQLException{
+    protected static List<PointOfSale> listPointOfSales(boolean enabled) throws SQLException{
         List<PointOfSale> ans = new ArrayList<PointOfSale>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select identificador , descripcion , impresora , habilitada"
-                + "from punto_de_venta");
+        PreparedStatement stmt = c.prepareStatement("select identificador , descripcion , impresora , habilitada "
+                + "from punto_de_venta where habilitada = ? ");
+        stmt.setBoolean(1, enabled);
 
         ResultSet rs = stmt.executeQuery();
 
@@ -1014,7 +1015,7 @@ public class ConnectionDrivers {
     }
 
     protected static String getMyPrinter() throws SQLException{
-        List<PointOfSale> poses = listPointOfSales();
+        List<PointOfSale> poses = listPointOfSales(true);
         for (PointOfSale pointOfSale : poses) {
             if ( pointOfSale.getId().equals(Constants.myId) ){
                 return pointOfSale.getPrinter();

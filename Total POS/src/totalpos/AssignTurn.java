@@ -220,7 +220,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
     private void updateAll() {
         try {
             turns = ConnectionDrivers.listTurns();
-            poses = ConnectionDrivers.listPointOfSales();
+            poses = ConnectionDrivers.listPointOfSales(true);
 
             for (Turn t : turns) {
                 turnCombo.addItem( "(" + t.getIdentificador() + ") " + Constants.sdfHour.format(t.getInicio()) + " -> " + Constants.sdfHour.format(t.getFin()));

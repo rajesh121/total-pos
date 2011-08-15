@@ -590,6 +590,13 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     cleanForNewItem();
                     return;
                 }
+
+                if ( itemC.get(0).getCurrentStock() <= 0 ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Este artículo no tiene stock. No se puede agregar.");
+                    msb.show(this);
+                    cleanForNewItem();
+                    return;
+                }
                 addItem(itemC.get(0));
                 updateCurrentItem();
                 cleanForNewItem();

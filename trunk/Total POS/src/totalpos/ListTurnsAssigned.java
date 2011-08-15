@@ -226,7 +226,7 @@ public class ListTurnsAssigned extends JInternalFrame {
                 if ( !ans ){
                     ConnectionDrivers.deleteAssignToday(assigns.get(table.getSelectedRow()));
                     updateAll();
-                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno eliminado satisfactoriamente.");
+                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Asignación eliminada satisfactoriamente.");
                     msg.show(this);
                 }else{
                     MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Esta caja posee movimientos registrados, por lo tanto debe hacer Cierre de Caja para poder eliminar el turno.");

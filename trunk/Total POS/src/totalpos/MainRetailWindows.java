@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -702,6 +704,15 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             GlobalDiscount gd = new GlobalDiscount(this, true);
             Shared.centerFrame(gd);
             gd.setVisible(true);
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F5 ){
+            try {
+                printer.printTicket(items, client, globalDiscount, actualId, user);
+            } catch (Exception ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error al imprimir!",ex);
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+            }
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -817,7 +828,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         double subT = .0 , ivaT = .0 , total = .0 , subTwithoutD = .0;
         for (Item item : items) {
             subTwithoutD += item.getLastPrice().getQuant();
-            subT += item.getLastPrice().getQuant()*(1.0-globalDiscount);
+            subT += Shared.round( item.getLastPrice().getQuant()*(1.0-globalDiscount) , 2 );
             ivaT += item.getLastPrice().getIva().getQuant()*(1.0-globalDiscount);
             total += item.getLastPrice().plusIva().getQuant()*(1.0-globalDiscount);
         }
@@ -832,6 +843,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             discountLabel.setVisible(false);
             discountResult.setVisible(false);
         }
+        
+        ivaT = new Price(null, subT).getIva().getQuant();
+        total = subT + ivaT;
+
         ivaLabelResult.setText(Constants.df.format(ivaT) + " Bsf");
         ivaLabelResult1.setText(Constants.df.format(total) + " Bsf");
     }

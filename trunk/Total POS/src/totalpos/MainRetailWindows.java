@@ -713,7 +713,20 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 this.dispose();
                 Shared.reload();
             }
-        }
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F6 ){
+            ExtractMoney em = new ExtractMoney(this, true, printer);
+            Shared.centerFrame(em);
+            em.setVisible(true);
+        } /*else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
+            try {
+                printer.reportExtraction();
+            } catch (Exception ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error al imprimir!",ex);
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+            }
+        }*/
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
     private void esc2exitKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_esc2exitKeyPressed

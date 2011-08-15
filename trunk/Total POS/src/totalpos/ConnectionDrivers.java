@@ -981,7 +981,7 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
-                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno"
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno "
                 + "from factura where estado='Espera' and datediff(fecha_creacion,now()) = 0");
         
         ResultSet rs = stmt.executeQuery();

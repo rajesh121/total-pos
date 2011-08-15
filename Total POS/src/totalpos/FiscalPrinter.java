@@ -101,6 +101,10 @@ public class FiscalPrinter {
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
+            printer.SendCmd(a, b, "4");
+            if ( b.getValue() != 0 ){
+                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            }
             printer.SendCmd(a, b, "101");
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));

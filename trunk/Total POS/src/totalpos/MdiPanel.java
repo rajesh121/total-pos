@@ -18,10 +18,9 @@ public class MdiPanel extends JDesktopPane{
 
     @Override
     public void paint(Graphics g) {
-		g.drawImage(wallpaper, 0, 0, getWidth(), getHeight(),
-                         this);
+        g.drawImage(wallpaper, 0, 0, getWidth(), getHeight(), this);
 
-		setOpaque(false);
+        setOpaque(false);
         super.paint(g);
     }
 

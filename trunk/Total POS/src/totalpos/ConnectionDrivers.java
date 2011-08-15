@@ -572,14 +572,15 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery("select identificador, descripcion, impresora from punto_de_venta");
+        ResultSet rs = stmt.executeQuery("select identificador, descripcion, impresora, habilitada from punto_de_venta");
 
         List<PointOfSale> ans = new ArrayList<PointOfSale>();
         while ( rs.next() ) {
             ans.add( new PointOfSale(
                     rs.getString("identificador"),
                     rs.getString("descripcion"),
-                    rs.getString("impresora")) );
+                    rs.getString("impresora"),
+                    rs.getBoolean("habilitada")) );
         }
         c.close();
         rs.close();
@@ -758,8 +759,8 @@ public class ConnectionDrivers {
     protected static void createPos(String number, String local, String printer) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into punto_de_venta"
-                + " ( identificador, descripcion, impresora ) "
-                + "values ( ? , ? , ? )");
+                + " ( identificador, descripcion, impresora , habilitada) "
+                + "values ( ? , ? , ? , 1)");
         stmt.setString(1, number);
         stmt.setString(2, local);
         stmt.setString(3, printer);
@@ -812,7 +813,7 @@ public class ConnectionDrivers {
         List<PointOfSale> ans = new ArrayList<PointOfSale>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select identificador , descripcion , impresora "
+        PreparedStatement stmt = c.prepareStatement("select identificador , descripcion , impresora , habilitada"
                 + "from punto_de_venta");
 
         ResultSet rs = stmt.executeQuery();
@@ -822,7 +823,8 @@ public class ConnectionDrivers {
                     new PointOfSale(
                         rs.getString("identificador"),
                         rs.getString("descripcion"),
-                        rs.getString("impresora"))
+                        rs.getString("impresora"),
+                        rs.getBoolean("habilitada"))
                         );
         }
         c.close();
@@ -1156,5 +1158,15 @@ public class ConnectionDrivers {
         rs.close();
 
         return ans;
+    }
+
+    protected static void flipEnabledPointOfSale(PointOfSale p) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update punto_de_venta set habilitada = ? where identificador = ? ");
+        stmt.setInt(1, !p.isEnabled()?1:0);
+        stmt.setString(2, p.getId());
+        stmt.executeUpdate();
+
+        c.close();
     }
 }

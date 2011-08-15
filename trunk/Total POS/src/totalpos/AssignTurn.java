@@ -227,7 +227,10 @@ public class AssignTurn extends javax.swing.JInternalFrame {
             }
 
             for (PointOfSale pointOfSale : poses) {
-                posCombo.addItem(pointOfSale.getId());
+                // Should it be in the driver?? Maybe :-o
+                if ( pointOfSale.isEnabled() ){
+                    posCombo.addItem(pointOfSale.getId());
+                }
             }
 
         } catch (SQLException ex) {

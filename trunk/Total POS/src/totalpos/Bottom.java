@@ -22,6 +22,7 @@ public class Bottom extends JPanel{
     @Override
     public void paint(Graphics g) {
         g.drawImage(wallpaper, 0, 0, getWidth(), getHeight(),this);
+        setOpaque(false);
         super.paint(g);
     }
 

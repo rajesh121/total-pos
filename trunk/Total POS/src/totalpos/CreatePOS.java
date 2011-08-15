@@ -61,7 +61,7 @@ public class CreatePOS extends javax.swing.JInternalFrame {
         titleLabel.setName("titleLabel"); // NOI18N
 
         numberLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
-        numberLabel.setText("Número");
+        numberLabel.setText("Número *");
         numberLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         numberLabel.setName("numberLabel"); // NOI18N
 
@@ -99,8 +99,6 @@ public class CreatePOS extends javax.swing.JInternalFrame {
             }
         });
 
-        acceptButton.setText("Aceptar");
-        acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 acceptButtonActionPerformed(evt);
@@ -154,7 +152,7 @@ public class CreatePOS extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(acceptButton))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();

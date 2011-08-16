@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.SplashScreen;
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
@@ -13,8 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -56,18 +55,23 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             }
 
             //createPhotoLabel();
-
+            /*StartSplash ss = new StartSplash();
+            ss.changeStatus("Verificando Impresora", 30);
+            Shared.centerFrame(ss);
+            ss.setVisible(true);*/
             updateAll();
             /**
              * UNCOMMENT TO CHECK THE FISCAL PRINTER!!!!!!!!!!!!!!!!!!!!!!!!
              */
 
-            if ( false /*!checkPrinter()*/ ){
+            
+            if ( !checkPrinter() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
                 msb.show(null);
                 this.dispose();
                 Shared.reload();
             }else{
+                ConnectionDrivers.updateReportZ(printer.getZ());
                 isOk = true;
             }
         } catch (SQLException ex) {
@@ -706,7 +710,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             gd.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_F5 ){
             try {
-                printer.printTicket(items, client, globalDiscount, actualId, user);
+                if ( !items.isEmpty() ){
+                    printer.printTicket(items, client, globalDiscount, actualId, user);
+                    ConnectionDrivers.setFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber());
+                    ConnectionDrivers.setClient(client,actualId);
+                    ConnectionDrivers.setPritingHour(actualId);
+                    ConnectionDrivers.finishReceipt(actualId);
+                    updateAll();
+                }
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error al imprimir!",ex);
                 msb.show(null);
@@ -994,9 +1005,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         }
     }
 
-    public void setGlobalDiscount(Double d){
+    public void setGlobalDiscount(Double d) throws SQLException{
         this.globalDiscount = d;
         updateSubTotal();
+        ConnectionDrivers.setGlobalDiscount(actualId, d);
     }
 
 }

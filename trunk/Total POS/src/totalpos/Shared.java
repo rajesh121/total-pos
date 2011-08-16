@@ -262,4 +262,9 @@ public class Shared {
         return df.format(d).replaceAll(",", "");
     }
 
+    public static String formatDoubleToPrintDiscount(Double d){
+        DecimalFormat df = new DecimalFormat("00.00");
+        return df.format(d*100.0).replaceAll(",", "");
+    }
+
 }

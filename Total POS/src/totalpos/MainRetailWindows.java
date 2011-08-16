@@ -589,7 +589,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     cleanForNewItem();
                     return;
                 }
-                assert( itemC.size() == 1 );
+                assert( itemC.size() >= 1 );
                 if ( itemC.get(0).isStatus() ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo bloqueado. No puede ser facturado!");
                     msb.show(this);

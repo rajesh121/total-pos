@@ -674,6 +674,23 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    protected static double accumulatedInReceipt(String receiptId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("select total_sin_iva from factura where codigo_interno = ?");
+        stmt.setString(1, receiptId);
+        ResultSet rs = stmt.executeQuery();
+
+        Double ans = null;
+        boolean ok = rs.next();
+        assert(ok);
+        ans = rs.getDouble("total_sin_iva");
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
     protected static void addItem2Receipt(String receiptId, Item item) throws SQLException, Exception{
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -687,11 +704,11 @@ public class ConnectionDrivers {
         changeItemStock(item.getCode(), -1);
 
         double withoutTax = item.getLastPrice().getQuant();
-        double withTax = item.getLastPrice().plusIva().getQuant();
+        double subT = accumulatedInReceipt(receiptId) + withoutTax;
         stmt = c.prepareStatement("update factura "
-                + "set total_sin_iva = total_sin_iva + " + withoutTax +
-                " , total_con_iva = total_con_iva + " + withTax +
-                " , iva = iva + " + (withTax-withoutTax) +
+                + "set total_sin_iva = " + (subT) +
+                " , total_con_iva =" + (new Price(null,subT)).plusIva().getQuant() +
+                " , iva = " + (new Price(null,subT)).getIva().getQuant() +
                 " , cantidad_de_articulos = cantidad_de_articulos + 1 "
                 + "where codigo_interno = ? ");
         stmt.setString(1, receiptId);
@@ -713,12 +730,12 @@ public class ConnectionDrivers {
         changeItemStock(item.getCode(), 1);
 
         double withoutTax = -1*(item.getLastPrice().getQuant());
-        double withTax = -1*item.getLastPrice().plusIva().getQuant();
+        double subT = accumulatedInReceipt(receiptId) - withoutTax;
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = total_sin_iva + " + withoutTax +
-                " , total_con_iva = total_con_iva + " + withTax +
-                " , iva = iva + " + (withTax-withoutTax) +
-                " , cantidad_de_articulos = cantidad_de_articulos + 1 "
+                " , total_con_iva =" + (new Price(null,subT)).plusIva().getQuant() +
+                " , iva = " + (new Price(null,subT)).getIva().getQuant() +
+                " , cantidad_de_articulos = cantidad_de_articulos - 1 "
                 + "where codigo_interno = ? ");
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
@@ -1170,4 +1187,70 @@ public class ConnectionDrivers {
 
         c.close();
     }
+
+    protected static void updateReportZ(String z) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update punto_de_venta set reporte_z = ? where identificador = ? ");
+        stmt.setString(1, z);
+        stmt.setString(2, Constants.myId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    static void setFiscalData(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
+                + "where codigo_interno = ? ");
+        stmt.setString(1, serial);
+        stmt.setString(2, fiscalNumber);
+        stmt.setString(3, z);
+        stmt.setString(4, actualId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    public static void finishReceipt(String receiptId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura set "
+                + "  estado = 'Facturada' where codigo_interno = ? ");
+        stmt.setString(1, receiptId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    public static void setGlobalDiscount(String receiptId , Double d) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura set "
+                + "  descuento_global = ? where codigo_interno = ? ");
+        stmt.setDouble(1, d);
+        stmt.setString(2, receiptId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    static void setClient(Client cu, String actualId) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura set "
+                + "  codigo_de_cliente = ? where codigo_interno = ? ");
+        stmt.setString(1, cu.getId());
+        stmt.setString(2, actualId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    static void setPritingHour(String actualId) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura set "
+                + "  fecha_impresion = now() where codigo_interno = ? ");
+        stmt.setString(1, actualId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
 }

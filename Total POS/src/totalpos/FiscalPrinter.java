@@ -15,13 +15,16 @@ import java.util.Scanner;
 public class FiscalPrinter {
     private FiscalDriver printer;
     public boolean isOk = false;
+    private String printerSerial = null;
+    private String z = null;
+    private String lastReceipt = null;
 
     public FiscalPrinter() {
         printer = (FiscalDriver) Native.loadLibrary("tfhkaif", FiscalDriver.class);;
     }
 
-    public boolean isTheSame(String serial) throws FileNotFoundException, Exception{
-        boolean ans , ansT;
+    private void calculateSerial() throws Exception{
+        boolean ansT;
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -41,12 +44,15 @@ public class FiscalPrinter {
         ansT = sc.hasNext();
         assert(ansT);
         String s = sc.next().substring(66, 76);
-        ans = s.equals(serial);
+
+        printerSerial = s;
         sc.close();
         file.delete();
         printer.CloseFpctrl();
-        isOk = true;
-        return ans;
+    }
+
+    public boolean isTheSame(String serial) throws Exception{
+        return getSerial().equals(serial);
     }
 
     public void printTicket(List<Item> items , Client client, Double globalDiscount, String ticketId, User u) throws Exception{
@@ -61,9 +67,6 @@ public class FiscalPrinter {
             int line = 1;
             if ( client != null && !client.getId().isEmpty() ){
                 buffer.add("i0" + ( line++ ) + "CI/RIF: " + client.getId());
-                if ( !client.getName().trim().isEmpty() ) {
-                    buffer.add("i0" + (line++) + "Nombre: " + client.getName());
-                }
                 if ( !client.getName().trim().isEmpty() ) {
                     buffer.add("i0" + (line++) + "Nombre: " + client.getName());
                 }
@@ -95,12 +98,36 @@ public class FiscalPrinter {
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
+
+            if ( globalDiscount != null && globalDiscount > 0 ){
+                printer.SendCmd(a, b, "p-" + Shared.formatDoubleToPrintDiscount(globalDiscount));
+                if ( b.getValue() != 0 ){
+                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                }
+            }
             printer.SendCmd(a, b, "101");
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
             
         }
+
+        printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
+        if ( b.getValue() != 0 ){
+            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+        }
+
+        File file = new File(Constants.tmpFileName);
+
+        Scanner sc = new Scanner(file);
+
+        boolean ansT = sc.hasNext();
+        assert(ansT);
+        String s = sc.next().substring(21, 29);
+
+        lastReceipt = s;
+        sc.close();
+        file.delete();
         printer.CloseFpctrl();
         isOk = true;
     }
@@ -115,8 +142,6 @@ public class FiscalPrinter {
         if ( b.getValue() != 0 ){
             throw new Exception(Shared.getErrMapping().get(b.getValue()));
         }
-        printer.CloseFpctrl();
-        printer.OpenFpctrl("COM1");
 
         List<String> buffer = new ArrayList<String>();
         buffer.add("800 ");
@@ -150,6 +175,46 @@ public class FiscalPrinter {
 
         printer.CloseFpctrl();
         isOk = true;
+    }
+
+    public String getZ() throws Exception{
+        if ( z == null  ){
+            isOk = false;
+            IntByReference a = new IntByReference();
+            IntByReference b = new IntByReference();
+            printer.OpenFpctrl("COM1");
+
+            printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
+            if ( b.getValue() != 0 ){
+                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            }
+
+            File file = new File(Constants.tmpFileName);
+
+            Scanner sc = new Scanner(file);
+
+            sc.hasNext();
+            String s = sc.next().substring(0, 4);
+
+
+            sc.close();
+            file.delete();
+            printer.CloseFpctrl();
+            isOk = true;
+            z = s;
+        }
+        return z;
+    }
+
+    public String getSerial() throws Exception{
+        if ( printerSerial == null ){
+            calculateSerial();
+        }
+        return printerSerial;
+    }
+
+    public String getLastFiscalNumber(){
+        return lastReceipt;
     }
     
 }

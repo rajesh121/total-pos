@@ -93,6 +93,20 @@ public class FiscalPrinter {
                 if ( b.getValue() != 0 ){
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }
+                if ( item.getDescuento() != null && !item.getDescuento().isEmpty() ){
+                    // TODO
+                    /**
+                     * Parse discount like expressions;
+                     */
+                    Double finalDiscount = Double.parseDouble(item.getDescuento().replace(',', '.'));
+                    if ( finalDiscount > .0 ){
+                        String sss = "p-"+Shared.formatDoubleToPrintDiscount(finalDiscount/100.0);
+                        printer.SendCmd(a, b, "p-"+Shared.formatDoubleToPrintDiscount(finalDiscount/100.0));
+                        if ( b.getValue() != 0 ){
+                            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                        }
+                    }
+                }
             }
             printer.SendCmd(a, b, "3");
             if ( b.getValue() != 0 ){

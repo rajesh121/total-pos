@@ -713,7 +713,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 if ( !items.isEmpty() ){
                     printer.printTicket(items, client, globalDiscount, actualId, user);
                     ConnectionDrivers.setFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber());
-                    ConnectionDrivers.setClient(client,actualId);
+                    if ( client != null ){
+                        ConnectionDrivers.setClient(client,actualId);
+                    }
                     ConnectionDrivers.setPritingHour(actualId);
                     ConnectionDrivers.finishReceipt(actualId);
                     updateAll();

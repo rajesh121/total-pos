@@ -3,7 +3,6 @@ package totalpos;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,7 +14,7 @@ import java.util.Scanner;
 public class FiscalPrinter {
     private FiscalDriver printer;
     public boolean isOk = false;
-    private String printerSerial = null;
+    public String printerSerial = null;
     private String z = null;
     private String lastReceipt = null;
 
@@ -29,7 +28,9 @@ public class FiscalPrinter {
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
         ansT = printer.OpenFpctrl("COM1");
-        assert (ansT);
+        if ( !ansT ){
+            throw new Exception(Shared.getErrMapping().get(128));
+        }
 
         ansT = printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
         if ( b.getValue() != 0 ){
@@ -100,7 +101,6 @@ public class FiscalPrinter {
                      */
                     Double finalDiscount = Double.parseDouble(item.getDescuento().replace(',', '.'));
                     if ( finalDiscount > .0 ){
-                        String sss = "p-"+Shared.formatDoubleToPrintDiscount(finalDiscount/100.0);
                         printer.SendCmd(a, b, "p-"+Shared.formatDoubleToPrintDiscount(finalDiscount/100.0));
                         if ( b.getValue() != 0 ){
                             throw new Exception(Shared.getErrMapping().get(b.getValue()));

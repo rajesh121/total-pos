@@ -196,7 +196,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 250, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
                 .addComponent(jLabel11)
                 .addContainerGap())
         );
@@ -386,7 +386,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                         .addComponent(newUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -400,7 +400,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        userList.setFont(new java.awt.Font("Courier New", 0, 11));
+        userList.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         userList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         userList.setName("userList"); // NOI18N
         userList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -409,9 +409,6 @@ public class ManageUser extends javax.swing.JInternalFrame {
             }
         });
         userList.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                userListMouseDragged(evt);
-            }
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 userListMouseMoved(evt);
             }
@@ -440,7 +437,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -622,10 +619,6 @@ public class ManageUser extends javax.swing.JInternalFrame {
     private void canChangePasswordCheckMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canChangePasswordCheckMouseMoved
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_canChangePasswordCheckMouseMoved
-
-    private void userListMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userListMouseDragged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_userListMouseDragged
 
     private void userListMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userListMouseMoved
         Shared.getScreenSaver().actioned();

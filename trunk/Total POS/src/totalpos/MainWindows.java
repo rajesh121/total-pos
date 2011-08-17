@@ -9,6 +9,7 @@ package totalpos;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -43,9 +44,10 @@ public class MainWindows extends javax.swing.JFrame {
         initComponents();
 
         mdiPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        mdiPanel.setFocusable(false);
+        mdiPanel.setFocusable(true);
         mdiPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
+                
                 mdiPanelMouseMoved(evt);
             }
 
@@ -56,10 +58,6 @@ public class MainWindows extends javax.swing.JFrame {
         });
         mdiPanel.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                mdiPanelKeyPressed(evt);
-            }
-
-            private void mdiPanelKeyPressed(KeyEvent evt) {
                 if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
                     logout();
                 }
@@ -239,10 +237,8 @@ public class MainWindows extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Shared.getUser().getLogin() + " @ " + Constants.appName);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setFocusable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
-            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -254,6 +250,7 @@ public class MainWindows extends javax.swing.JFrame {
         });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.setFocusable(false);
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
@@ -268,6 +265,7 @@ public class MainWindows extends javax.swing.JFrame {
 
         esc2exit.setFont(new java.awt.Font("Courier New", 0, 11));
         esc2exit.setText("ESC = Salir.");
+        esc2exit.setFocusable(false);
         esc2exit.setName("esc2exit"); // NOI18N
         esc2exit.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -275,6 +273,7 @@ public class MainWindows extends javax.swing.JFrame {
             }
         });
 
+        whatTimeIsIt.setFocusable(false);
         whatTimeIsIt.setName("whatTimeIsIt"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -328,10 +327,6 @@ public class MainWindows extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         Shared.setUser(null);
     }//GEN-LAST:event_formWindowClosing
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_formWindowClosed
 
     private void jPanel1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseMoved
         Shared.getScreenSaver().actioned();

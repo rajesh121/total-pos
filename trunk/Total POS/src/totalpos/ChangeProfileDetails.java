@@ -76,11 +76,6 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
         });
 
         changeDescription.setName("changeDescription"); // NOI18N
-        changeDescription.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                changeDescriptionActionPerformed(evt);
-            }
-        });
         changeDescription.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 changeDescriptionKeyPressed(evt);
@@ -131,10 +126,6 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void changeDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeDescriptionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_changeDescriptionActionPerformed
 
     private void changeDescriptionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_changeDescriptionKeyReleased
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){

@@ -160,9 +160,6 @@ public class ManageItem extends JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 descriptionFieldKeyPressed(evt);
             }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                descriptionFieldKeyReleased(evt);
-            }
         });
 
         jLabel4.setFont(new java.awt.Font("Courier New", 0, 12));
@@ -238,7 +235,7 @@ public class ManageItem extends JInternalFrame {
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(imageLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+            .addComponent(imageLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Etiquetas"));
@@ -254,7 +251,7 @@ public class ManageItem extends JInternalFrame {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11));
+        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         stickerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -313,9 +310,6 @@ public class ManageItem extends JInternalFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 stickerTableKeyPressed(evt);
             }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                stickerTableKeyReleased(evt);
-            }
         });
         stickerTable.addVetoableChangeListener(new java.beans.VetoableChangeListener() {
             public void vetoableChange(java.beans.PropertyChangeEvent evt)throws java.beans.PropertyVetoException {
@@ -362,7 +356,7 @@ public class ManageItem extends JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        itemTable.setFont(new java.awt.Font("Courier New", 0, 11));
+        itemTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null},
@@ -438,7 +432,7 @@ public class ManageItem extends JInternalFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addSticker)
                 .addContainerGap())
@@ -500,10 +494,6 @@ public class ManageItem extends JInternalFrame {
             this.dispose();
         }
     }//GEN-LAST:event_modeloFieldKeyPressed
-
-    private void descriptionFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionFieldKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_descriptionFieldKeyReleased
 
     private void descriptionFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionFieldKeyPressed
         Shared.getScreenSaver().actioned();
@@ -621,10 +611,6 @@ public class ManageItem extends JInternalFrame {
             }
         }
     }//GEN-LAST:event_stickerTableKeyPressed
-
-    private void stickerTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stickerTableKeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_stickerTableKeyReleased
 
     private void addStickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStickerActionPerformed
         if ( itemTable.getSelectedRow() != -1 ){

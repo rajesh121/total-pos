@@ -69,11 +69,6 @@ public class ChangeIdleTime extends JInternalFrame {
         titleLabel.setName("titleLabel"); // NOI18N
 
         idleTimeTextField.setName("idleTimeTextField"); // NOI18N
-        idleTimeTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                idleTimeTextFieldActionPerformed(evt);
-            }
-        });
         idleTimeTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 idleTimeTextFieldKeyPressed(evt);
@@ -110,7 +105,7 @@ public class ChangeIdleTime extends JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(idleTimeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(secondsLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
@@ -161,10 +156,6 @@ public class ChangeIdleTime extends JInternalFrame {
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_formMouseMoved
-
-    private void idleTimeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idleTimeTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_idleTimeTextFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField idleTimeTextField;

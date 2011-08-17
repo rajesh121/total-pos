@@ -58,11 +58,6 @@ public class CreateProfile extends JInternalFrame {
         idLabel.setName("idLabel"); // NOI18N
 
         idTextField.setName("idTextField"); // NOI18N
-        idTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                idTextFieldActionPerformed(evt);
-            }
-        });
         idTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 idTextFieldKeyPressed(evt);
@@ -73,20 +68,12 @@ public class CreateProfile extends JInternalFrame {
         });
 
         descriptionTextField.setName("descriptionTextField"); // NOI18N
-        descriptionTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                descriptionTextFieldActionPerformed(evt);
-            }
-        });
         descriptionTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 descriptionTextFieldKeyPressed(evt);
             }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 descriptionTextFieldKeyReleased(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                descriptionTextFieldKeyTyped(evt);
             }
         });
 
@@ -151,23 +138,11 @@ public class CreateProfile extends JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(acceptButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void idTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_idTextFieldActionPerformed
-
-    private void descriptionTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descriptionTextFieldActionPerformed
-        
-    }//GEN-LAST:event_descriptionTextFieldActionPerformed
-
-    private void descriptionTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyTyped
-        
-    }//GEN-LAST:event_descriptionTextFieldKeyTyped
 
     private void descriptionTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_descriptionTextFieldKeyPressed
         Shared.getScreenSaver().actioned();

@@ -246,8 +246,8 @@ public class ExtractMoney extends javax.swing.JDialog {
                 Shared.userInsertedPasswordOk(idField.getText());
 
                 printer.extractMoney(u, idField.getText(), p);
-                //TODO
-                // Change money from point of sale.
+                //TODO Change money from point of sale.
+                // 
 
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Operación existosa!");
                 msg.show(this);

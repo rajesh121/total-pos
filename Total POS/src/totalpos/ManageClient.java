@@ -233,6 +233,12 @@ public class ManageClient extends javax.swing.JDialog {
         try {
             List<Client> clients = ConnectionDrivers.listClients(idField.getText());
             if ( clients.isEmpty() ){
+                nameField.setText("");
+                phoneField.setText("");
+                addressField.setText("");
+                nameField.setEditable(true);
+                phoneField.setEditable(true);
+                addressField.setEditable(true);
                 modifyClient.setVisible(false);
             }else if ( clients.size() == 1 ){
                 Client c = clients.get(0);
@@ -331,7 +337,7 @@ public class ManageClient extends javax.swing.JDialog {
             this.dispose();
             Shared.reload();
         }
-        parent.setClient(myClient);
+        parent.setClient(myClient.getId().isEmpty()?null:myClient);
         this.dispose();
     }
 

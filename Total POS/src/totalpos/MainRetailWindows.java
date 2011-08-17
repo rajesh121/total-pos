@@ -60,20 +60,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             Shared.centerFrame(ss);
             ss.setVisible(true);*/
             updateAll();
-            /**
-             * UNCOMMENT TO CHECK THE FISCAL PRINTER!!!!!!!!!!!!!!!!!!!!!!!!
-             */
 
-            
-            if ( !checkPrinter() ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
-                msb.show(null);
-                this.dispose();
-                Shared.reload();
-            }else{
-                ConnectionDrivers.updateReportZ(printer.getZ());
-                isOk = true;
-            }
+            ConnectionDrivers.updateReportZ(printer.getZ());
+            isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(null);
@@ -100,7 +89,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         this.user = user;
     }
 
-    protected void updateAll() throws SQLException{
+    protected void updateAll() throws SQLException, FileNotFoundException, Exception{
         descriptionLabel.setText("Bievenido a Mundo Total");
         currentPrice.setText("");
         ivaLabelResult.setText("0.00 Bsf");
@@ -121,6 +110,13 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         nameField.setText("");
         addressField.setText("");
         phoneField.setText("");
+        printer.printerSerial = null;
+        if (!checkPrinter()) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
+            msb.show(null);
+            this.dispose();
+            Shared.reload();
+        }
     }
 
     protected void updateTable(){
@@ -646,7 +642,18 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 if ( items.isEmpty() ){
                     try{
                         updateAll();
-                    } catch (SQLException ex) {
+                    } catch (FileNotFoundException ex) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                        msb.show(this);
+                        this.dispose();
+                        Shared.reload();
+                    }
+                    catch (SQLException ex) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                        msb.show(this);
+                        this.dispose();
+                        Shared.reload();
+                    } catch (Exception ex) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
                         msb.show(this);
                         this.dispose();
@@ -688,7 +695,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             toWait();
             try{
                 updateAll();
+            } catch (FileNotFoundException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
             } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
                 msb.show(this);
                 this.dispose();
@@ -1004,6 +1021,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             nameField.setText(client.getName());
             phoneField.setText(client.getPhone());
             addressField.setText(client.getAddress());
+        } else{
+            codigoField.setText("");
+            nameField.setText("");
+            phoneField.setText("");
+            addressField.setText("");
         }
     }
 

@@ -265,4 +265,12 @@ public class Shared {
         return df.format(d*100.0).replaceAll(",", "");
     }
 
+    public static Double getIva(){
+        try{
+            return Double.parseDouble(getConfig("iva"))*100.0;
+        }catch (NumberFormatException nfs){
+            return .0;
+        }
+    }
+
 }

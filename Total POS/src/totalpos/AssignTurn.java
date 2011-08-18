@@ -6,7 +6,6 @@
 
 package totalpos;
 
-import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -38,11 +37,8 @@ public class AssignTurn extends javax.swing.JInternalFrame {
         titleLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         turnCombo = new javax.swing.JComboBox();
         posCombo = new javax.swing.JComboBox();
-        bsfField = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         acceptButton = new javax.swing.JButton();
 
@@ -66,26 +62,9 @@ public class AssignTurn extends javax.swing.JInternalFrame {
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Courier New", 0, 12));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
-        jLabel3.setText("Efectivo Inicial");
-        jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel3.setName("jLabel3"); // NOI18N
-
         turnCombo.setName("turnCombo"); // NOI18N
 
         posCombo.setName("posCombo"); // NOI18N
-
-        bsfField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        bsfField.setName("bsfField"); // NOI18N
-        bsfField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                bsfFieldKeyPressed(evt);
-            }
-        });
-
-        jLabel4.setText("Bsf");
-        jLabel4.setName("jLabel4"); // NOI18N
 
         cancelButton.setText("Cancelar");
         cancelButton.setName("cancelButton"); // NOI18N
@@ -114,16 +93,11 @@ public class AssignTurn extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(posCombo, 0, 224, Short.MAX_VALUE)
-                            .addComponent(turnCombo, 0, 224, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(bsfField, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4))))
+                            .addComponent(turnCombo, 0, 224, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -143,11 +117,6 @@ public class AssignTurn extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(posCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(bsfField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -166,21 +135,12 @@ public class AssignTurn extends javax.swing.JInternalFrame {
         doIt();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
-    private void bsfFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_bsfFieldKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
-        }
-    }//GEN-LAST:event_bsfFieldKeyPressed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
-    private javax.swing.JTextField bsfField;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JComboBox posCombo;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JComboBox turnCombo;
@@ -188,13 +148,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
 
     private void doIt() {
         try {
-            //With comma or point
-            String moneyStr = bsfField.getText().replace(',', '.');
-            double money = Double.parseDouble(moneyStr);
-            if ( money < .0 ){
-                throw new NumberFormatException();
-            }
-            Assign a = new Assign(turns.get(turnCombo.getSelectedIndex()).getIdentificador(), poses.get(posCombo.getSelectedIndex()).getId(), null, true, money, .0, .0);
+            Assign a = new Assign(turns.get(turnCombo.getSelectedIndex()).getIdentificador(), poses.get(posCombo.getSelectedIndex()).getId(), null, true);
             ConnectionDrivers.createAssign(a);
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
             msb.show(this);

@@ -11,34 +11,15 @@ public class Assign {
     private String pos;
     private Date date;
     private boolean open;
-    private double cash;
-    private double creditCard;
-    private double debitCard;
 
-    public Assign(String turn, String pos, Date date, boolean open, double cash, double creditCard, double debitCard) {
+    public Assign(String turn, String pos, Date date, boolean open) {
         this.turn = turn;
         this.pos = pos;
         this.date = date;
         this.open = open;
-        this.cash = cash;
-        this.creditCard = creditCard;
-        this.debitCard = debitCard;
     }
-
-    public double getCash() {
-        return cash;
-    }
-
-    public double getCreditCard() {
-        return creditCard;
-    }
-
     public Date getDate() {
         return date;
-    }
-
-    public double getDebitCard() {
-        return debitCard;
     }
 
     public boolean isOpen() {

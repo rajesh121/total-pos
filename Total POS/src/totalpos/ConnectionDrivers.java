@@ -803,8 +803,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select identificador_turno, "
-                + "identificador_pos , fecha , abierto , dinero_efectivo , dinero_tarjeta_credito ,"
-                + " dinero_tarjeta_debito from asigna where datediff(fecha,now()) = 0");
+                + "identificador_pos , fecha , abierto from asigna where datediff(fecha,now()) = 0");
 
         ResultSet rs = stmt.executeQuery();
 
@@ -814,10 +813,8 @@ public class ConnectionDrivers {
                         rs.getString("identificador_turno"),
                         rs.getString("identificador_pos"),
                         rs.getDate("fecha"),
-                        rs.getBoolean("abierto"),
-                        rs.getDouble("dinero_efectivo"),
-                        rs.getDouble("dinero_tarjeta_credito"),
-                        rs.getDouble("dinero_tarjeta_debito"))
+                        rs.getBoolean("abierto")
+                       )
                     );
         }
         c.close();
@@ -860,14 +857,10 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into asigna "
                 + "(identificador_turno , identificador_pos , fecha , "
-                + "abierto , dinero_efectivo , dinero_tarjeta_credito, "
-                + "dinero_tarjeta_debito )  values ( ? , ? , now() , ? , ? , ? , ? )");
+                + "abierto )  values ( ? , ? , now() , ? )");
         stmt.setString(1, a.getTurn());
         stmt.setString(2, a.getPos());
         stmt.setBoolean(3, a.isOpen());
-        stmt.setDouble(4, a.getCash());
-        stmt.setDouble(5, a.getCreditCard());
-        stmt.setDouble(6, a.getDebitCard());
         stmt.executeUpdate();
 
         c.close();
@@ -895,8 +888,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.identificador_turno, "
-                + "a.identificador_pos , a.fecha , a.abierto , a.dinero_efectivo , a.dinero_tarjeta_credito ,"
-                + " a.dinero_tarjeta_debito "
+                + "a.identificador_pos , a.fecha , a.abierto "
                 + "from asigna a , turno t "
                 + "where datediff(fecha,now()) = 0 and "
                 + "t.Identificador = a.identificador_turno and t.inicio <= now() and t.fin >= now()");
@@ -909,10 +901,7 @@ public class ConnectionDrivers {
                         rs.getString("identificador_turno"),
                         rs.getString("identificador_pos"),
                         rs.getDate("fecha"),
-                        rs.getBoolean("abierto"),
-                        rs.getDouble("dinero_efectivo"),
-                        rs.getDouble("dinero_tarjeta_credito"),
-                        rs.getDouble("dinero_tarjeta_debito"))
+                        rs.getBoolean("abierto"))
                     );
         }
         c.close();

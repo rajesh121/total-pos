@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.SplashScreen;
 import java.awt.TexturePaint;
@@ -29,6 +30,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.table.DefaultTableModel;
@@ -146,84 +148,87 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Image ii;
+
         try{
-            wallpaper = new Bottom(ImageIO.read(new File("Fondo.jpg")));
-            jPanel2 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Factura.jpg"))).getImage());
-            jScrollPane1 = new javax.swing.JScrollPane(){
-                private final TexturePaint texture = receiptBottom();
-                @Override protected JViewport createViewport() {
-                    return new JViewport() {
-                        @Override public void paintComponent(Graphics g) {
-                            if(texture!=null) {
-                                Graphics2D g2 = (Graphics2D)g;
-                                g2.setPaint(texture);
-                                g2.fillRect(0,0,getWidth(),getHeight());
-                            }
-                            super.paintComponent(g);
-                        }
-                    };
-                }
-            };
-            gridTable = new javax.swing.JTable(){
-                @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
-                    Component comp = super.prepareRenderer(renderer, row, column);
-                    String disc = (String)getValueAt(row, 1);
-                    if ( gridTable.getSelectedRow() == row ){
-                        if ( !(disc.isEmpty() || disc.trim().equals("0")) ){
-                            comp.setBackground(Constants.lightGreen);
-                        }else{
-                            comp.setBackground(Constants.lightBlue);
-                        }
-                    } else if ( !(disc.isEmpty() || disc.trim().equals("0")) ){
-                        comp.setBackground(Color.YELLOW);
-                    }else{
-                        comp.setBackground(Constants.transparent);
-                    }
-                    return comp;
-                }
-            };
-            barcodeField = new javax.swing.JTextField();
-            subTotalLabelResult = new javax.swing.JLabel();
-            subTotalLabel = new javax.swing.JLabel();
-            discountLabel = new javax.swing.JLabel();
-            discountResult = new javax.swing.JLabel();
-            ivaLabelResult = new javax.swing.JLabel();
-            ivaLabel = new javax.swing.JLabel();
-            totalLabel = new javax.swing.JLabel();
-            TotalLabelResult = new javax.swing.JLabel();
-            jPanel1 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-descripcion-articulo.jpg"))).getImage());
-            descriptionLabel = new javax.swing.JLabel();
-            currentPrice = new javax.swing.JLabel();
-            imagePanel = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/area-foto-articulo.jpg")).getImage()));
-            imageLabel = new javax.swing.JLabel();
-            jPanel6 = new javax.swing.JPanel();
-            jLabel1 = new javax.swing.JLabel();
-            jLabel2 = new javax.swing.JLabel();
-            jLabel3 = new javax.swing.JLabel();
-            jLabel4 = new javax.swing.JLabel();
-            jLabel5 = new javax.swing.JLabel();
-            jLabel6 = new javax.swing.JLabel();
-            jLabel7 = new javax.swing.JLabel();
-            jLabel8 = new javax.swing.JLabel();
-            jLabel9 = new javax.swing.JLabel();
-            jPanel3 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/fecha-y-hora.jpg")).getImage()));
-            whatTimeIsIt = new javax.swing.JLabel();
-            messageToTheClients = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-mensajes-al-cajero.jpg")).getImage()));
-
-            setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-            setTitle(Constants.appName);
-            addWindowListener(new java.awt.event.WindowAdapter() {
-                public void windowClosed(java.awt.event.WindowEvent evt) {
-                    formWindowClosed(evt);
-                }
-                public void windowClosing(java.awt.event.WindowEvent evt) {
-                    formWindowClosing(evt);
-                }
-            });
-
-        } catch( Exception ex){
-
+            ii = ImageIO.read(new File("Fondo.jpg"));
+        }catch(Exception ex){
+            ii = (new ImageIcon(getClass().getResource("/totalpos/resources/Fondo-Inicio.jpg"))).getImage();
         }
+        wallpaper = new Bottom(ii);
+        jPanel2 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Factura.jpg"))).getImage());
+        jScrollPane1 = new javax.swing.JScrollPane(){
+            private final TexturePaint texture = receiptBottom();
+            @Override protected JViewport createViewport() {
+                return new JViewport() {
+                    @Override public void paintComponent(Graphics g) {
+                        if(texture!=null) {
+                            Graphics2D g2 = (Graphics2D)g;
+                            g2.setPaint(texture);
+                            g2.fillRect(0,0,getWidth(),getHeight());
+                        }
+                        super.paintComponent(g);
+                    }
+                };
+            }
+        };
+        gridTable = new javax.swing.JTable(){
+            @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
+                Component comp = super.prepareRenderer(renderer, row, column);
+                String disc = (String)getValueAt(row, 1);
+                if ( gridTable.getSelectedRow() == row ){
+                    if ( !(disc.isEmpty() || disc.trim().equals("0")) ){
+                        comp.setBackground(Constants.lightGreen);
+                    }else{
+                        comp.setBackground(Constants.lightBlue);
+                    }
+                } else if ( !(disc.isEmpty() || disc.trim().equals("0")) ){
+                    comp.setBackground(Color.YELLOW);
+                }else{
+                    comp.setBackground(Constants.transparent);
+                }
+                return comp;
+            }
+        };
+        barcodeField = new javax.swing.JTextField();
+        subTotalLabelResult = new javax.swing.JLabel();
+        subTotalLabel = new javax.swing.JLabel();
+        discountLabel = new javax.swing.JLabel();
+        discountResult = new javax.swing.JLabel();
+        ivaLabelResult = new javax.swing.JLabel();
+        ivaLabel = new javax.swing.JLabel();
+        totalLabel = new javax.swing.JLabel();
+        TotalLabelResult = new javax.swing.JLabel();
+        jPanel1 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-descripcion-articulo.jpg"))).getImage());
+        descriptionLabel = new javax.swing.JLabel();
+        currentPrice = new javax.swing.JLabel();
+        imagePanel = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/area-foto-articulo.jpg")).getImage()));
+        imageLabel = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jPanel3 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/fecha-y-hora.jpg")).getImage()));
+        whatTimeIsIt = new javax.swing.JLabel();
+        messageToTheClients = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-mensajes-al-cajero.jpg")).getImage()));
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle(Constants.appName);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
+
         wallpaper.setName("wallpaper"); // NOI18N
 
         jPanel2.setName("jPanel2"); // NOI18N

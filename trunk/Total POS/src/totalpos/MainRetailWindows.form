@@ -44,9 +44,8 @@
         <Property name="name" type="java.lang.String" value="wallpaper" noResource="true"/>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new Bottom(ImageIO.read(new File(&quot;Fondo.jpg&quot;)))"/>
-        <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="try{"/>
-        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="} catch( Exception ex){&#xa;    &#xa;}"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new Bottom(ii)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="Image ii;&#xa;&#xa;try{&#xa;    ii = ImageIO.read(new File(&quot;Fondo.jpg&quot;));&#xa;}catch(Exception ex){&#xa;    ii = (new ImageIcon(getClass().getResource(&quot;/totalpos/resources/Fondo-Inicio.jpg&quot;))).getImage();&#xa;}"/>
       </AuxValues>
 
       <Layout>

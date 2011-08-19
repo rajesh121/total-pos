@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -32,6 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -163,11 +165,21 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 }
             };
             gridTable = new javax.swing.JTable(){
-                @Override public Component prepareEditor(TableCellEditor editor, int row, int column) {
-                    Component c = super.prepareEditor(editor, row, column);
-                    JTextField tf = (JTextField)c;
-                    tf.setOpaque(false);
-                    return c;
+                @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
+                    Component comp = super.prepareRenderer(renderer, row, column);
+                    String disc = (String)getValueAt(row, 1);
+                    if ( gridTable.getSelectedRow() == row ){
+                        if ( !(disc.isEmpty() || disc.trim().equals("0")) ){
+                            comp.setBackground(Constants.lightGreen);
+                        }else{
+                            comp.setBackground(Constants.lightBlue);
+                        }
+                    } else if ( !(disc.isEmpty() || disc.trim().equals("0")) ){
+                        comp.setBackground(Color.YELLOW);
+                    }else{
+                        comp.setBackground(Constants.transparent);
+                    }
+                    return comp;
                 }
             };
             barcodeField = new javax.swing.JTextField();
@@ -185,6 +197,15 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             imagePanel = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/area-foto-articulo.jpg")).getImage()));
             imageLabel = new javax.swing.JLabel();
             jPanel6 = new javax.swing.JPanel();
+            jLabel1 = new javax.swing.JLabel();
+            jLabel2 = new javax.swing.JLabel();
+            jLabel3 = new javax.swing.JLabel();
+            jLabel4 = new javax.swing.JLabel();
+            jLabel5 = new javax.swing.JLabel();
+            jLabel6 = new javax.swing.JLabel();
+            jLabel7 = new javax.swing.JLabel();
+            jLabel8 = new javax.swing.JLabel();
+            jLabel9 = new javax.swing.JLabel();
             jPanel3 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/fecha-y-hora.jpg")).getImage()));
             whatTimeIsIt = new javax.swing.JLabel();
             messageToTheClients = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-mensajes-al-cajero.jpg")).getImage()));
@@ -211,7 +232,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
         gridTable.setAutoCreateRowSorter(true);
         gridTable.setOpaque(false);
-        gridTable.setBackground(Constants.transparent);
+        gridTable.setBackground(Constants.transparent); //THIS IS THE TRICK, ISN'T IT? xD
         gridTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -234,6 +255,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         gridTable.setFocusable(false);
         gridTable.setName("gridTable"); // NOI18N
         gridTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        gridTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(gridTable);
         gridTable.getColumnModel().getColumn(0).setPreferredWidth(300);
 
@@ -256,7 +278,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         subTotalLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         subTotalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         subTotalLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        subTotalLabel.setText("SubTotal:");
+        subTotalLabel.setText("SubTotal");
         subTotalLabel.setFocusable(false);
         subTotalLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         subTotalLabel.setName("subTotalLabel"); // NOI18N
@@ -264,7 +286,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         discountLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         discountLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         discountLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        discountLabel.setText("Descuento:");
+        discountLabel.setText("Descuento");
         discountLabel.setFocusable(false);
         discountLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         discountLabel.setName("discountLabel"); // NOI18N
@@ -290,7 +312,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         totalLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         totalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        totalLabel.setText("Total:");
+        totalLabel.setText("Total");
         totalLabel.setFocusable(false);
         totalLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         totalLabel.setName("totalLabel"); // NOI18N
@@ -423,15 +445,91 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel1.setText("F1 / Cantidad");
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel2.setText("F2 / Borrar");
+        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel3.setText("F5 / Pagar");
+        jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel4.setText("F8 / Clientes");
+        jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel5.setText("Esc / Salir");
+        jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel6.setText("F9 / Desc Global");
+        jLabel6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel7.setText("F10 / Borrar Pedido");
+        jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel8.setText("F11 / A espera");
+        jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel8.setName("jLabel8"); // NOI18N
+
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel9.setText("F12 / Ver  espera");
+        jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel9.setName("jLabel9"); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1250, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9)
+                .addContainerGap(247, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 46, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(16, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel9))
+                .addContainerGap())
         );
 
         jPanel3.setName("jPanel3"); // NOI18N
@@ -572,7 +670,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 return;
             }
             gridTable.setRowSelectionInterval(gridTable.getSelectedRow()-1, gridTable.getSelectedRow()-1);
-        }else if ( evt.getKeyCode() == KeyEvent.VK_BACK_SPACE ){
+        }else if ( evt.getKeyCode() == KeyEvent.VK_F2 ){
+            if ( items.isEmpty() ){
+                return;
+            }
             Object[] options = {"Si",
                     "No"};
             int n = JOptionPane.showOptionDialog(this,
@@ -751,6 +852,15 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public javax.swing.JPanel imagePanel;
     private javax.swing.JLabel ivaLabel;
     private javax.swing.JLabel ivaLabelResult;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

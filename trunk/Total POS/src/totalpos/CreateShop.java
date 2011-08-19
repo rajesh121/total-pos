@@ -7,12 +7,9 @@
 package totalpos;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.table.DefaultTableModel;
 
@@ -48,6 +45,9 @@ public class CreateShop extends JInternalFrame {
                     String[] s = {store.getId(), store.getDescription()};
                     model.addRow(s);
                 }
+
+                nameFieldText.setEditable(!ConnectionDrivers.hasMovements());
+
             } catch (SQLException ex) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
                 msg.show(this);

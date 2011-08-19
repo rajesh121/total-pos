@@ -160,7 +160,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
             msb.show(this);
         } catch (SQLException ex) {
             if ( ex.getMessage().matches(Constants.isDataRepeated) ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Asignación ya existente o algún turno está solapado. Intente otro.");
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Asignación ya existente, algún turno está solapado o intenta abrir un turno ya finalizado el día de hoy. Intente otro.");
                 msb.show(this);
             }else{
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);

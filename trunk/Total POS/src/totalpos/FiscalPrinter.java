@@ -77,6 +77,8 @@ public class FiscalPrinter {
                 if ( !client.getAddress().trim().isEmpty() ) {
                     buffer.add("i0" + (line++) + "Direccion: " + client.getAddress());
                 }
+            }else{
+                buffer.add("i0" + (line++) + "Cliente: Contado");
             }
             buffer.add("i0" + ( line++ ) + "Correlativo: " + ticketId);
             buffer.add("i0" + ( line++ ) + "Vendedor: " + u.getNombre());

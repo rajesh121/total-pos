@@ -16,7 +16,7 @@ public class Constants {
     public static final int numberConnection = 5;
 
     public static final String dbHost = "192.168.0.34";
-    public static final String dbName = "gt99testing";
+    public static final String dbName = "gt99";
     public static final String dbUser = "root";
     public static final String dbPassword = "123456789";
     public static final String defaultUser = "Invitado";
@@ -39,7 +39,7 @@ public class Constants {
     /**
      * TODO: This must be in the local database!!!
      */
-    public static String myId = "02";
+    public static String myId = "01";
     public static String tmpFileName = "tmp.data";
 
     public static Font font = new Font("Courier New", 0, 12);

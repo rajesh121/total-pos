@@ -12,29 +12,22 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.SplashScreen;
 import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -53,6 +46,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public Double globalDiscount = .0;
     private Client client = null;
     private Assign assign;
+    public double subtotal;
 
     /** Creates new form MainRetailWindows
      * @param u
@@ -80,7 +74,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ss.setVisible(true);*/
             updateAll();
 
-            ConnectionDrivers.updateReportZ(printer.getZ());
+            //ConnectionDrivers.updateReportZ(printer.getZ());
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
@@ -125,13 +119,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         actualId = nextId();
         ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
         setClient(null);
-        printer.printerSerial = null;
-        if (!checkPrinter()) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
-            msb.show(null);
-            this.dispose();
-            Shared.reload();
-        }
     }
 
     protected void updateTable(){
@@ -775,12 +762,23 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             Shared.centerFrame(mc);
             mc.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_F9 ){
-            GlobalDiscount gd = new GlobalDiscount(this, true);
+            if ( items.isEmpty() ){
+                return;
+            }
+            GlobalDiscount gd = new GlobalDiscount(this, true,subtotal);
             Shared.centerFrame(gd);
             gd.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_F5 ){
             try {
                 if ( !items.isEmpty() ){
+                    printer.printerSerial = null;
+                    if (!checkPrinter()) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
+                        msb.show(null);
+                        this.dispose();
+                        Shared.reload();
+                        return;
+                    }
                     printer.printTicket(items, client, globalDiscount, actualId, user);
                     ConnectionDrivers.setFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber());
                     if ( client != null ){
@@ -926,8 +924,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         for (Item item : items) {
             subTwithoutD += item.getLastPrice().getQuant();
             subT += Shared.round( item.getLastPrice().getQuant()*(1.0-globalDiscount) , 2 );
-            ivaT += item.getLastPrice().getIva().getQuant()*(1.0-globalDiscount);
-            total += item.getLastPrice().plusIva().getQuant()*(1.0-globalDiscount);
         }
 
         subTotalLabelResult.setText(Constants.df.format(subTwithoutD) + " Bsf");
@@ -940,7 +936,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             discountLabel.setVisible(false);
             discountResult.setVisible(false);
         }
-        
+        subtotal = subTwithoutD;
+
         ivaT = new Price(null, subT).getIva().getQuant();
         total = subT + ivaT;
 

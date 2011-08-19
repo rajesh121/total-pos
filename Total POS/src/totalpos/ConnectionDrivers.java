@@ -740,6 +740,8 @@ public class ConnectionDrivers {
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
 
+        c.close();
+
     }
 
     protected static int lastReceiptToday() throws SQLException, Exception{

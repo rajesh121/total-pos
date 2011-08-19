@@ -1,5 +1,6 @@
 package totalpos;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -28,7 +29,7 @@ public class Constants {
 
     public static SimpleDateFormat sdfHour = new SimpleDateFormat("h:mm a");
     public static SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
-    public static SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy h:mm:ss a");
+    public static SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
     public static DecimalFormat df = new DecimalFormat("#.00");
 
     public static final boolean isPos = true;
@@ -42,4 +43,5 @@ public class Constants {
     public static String tmpFileName = "tmp.data";
 
     public static Font font = new Font("Courier New", 0, 12);
+    public static final Color transparent = new Color(0, true);
 }

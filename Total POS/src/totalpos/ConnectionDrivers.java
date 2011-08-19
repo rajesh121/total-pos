@@ -881,8 +881,18 @@ public class ConnectionDrivers {
                 return false;
             }
         }
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        Turn t = Shared.getTurn(listTurns(), a.getTurn());
 
-        return true;
+        PreparedStatement stmt = c.prepareStatement("select curtime()");
+        ResultSet rs = stmt.executeQuery();
+        boolean ans = rs.next();
+        assert(ans);
+        ans = rs.getTime(1).before(t.getFin());
+
+        c.close();
+
+        return ans;
     }
 
     protected static List<Assign> listAssignsTurnPosRightNow() throws SQLException{
@@ -1244,4 +1254,13 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static boolean hasMovements() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select * from factura");
+        ResultSet rs = stmt.executeQuery();
+        boolean ans = rs.next();
+
+        c.close();
+        return ans;
+    }
 }

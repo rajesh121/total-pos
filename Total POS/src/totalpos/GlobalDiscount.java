@@ -18,15 +18,20 @@ public class GlobalDiscount extends javax.swing.JDialog {
 
     public boolean isOk = false;
     private MainRetailWindows parent;
+    private double subtotal;
 
     /** Creates new form GlobalDiscount
      * @param parent
      * @param modal 
      */
-    public GlobalDiscount(Frame parent, boolean modal) {
+    public GlobalDiscount(Frame parent, boolean modal, double subT) {
         super(parent, modal);
         initComponents();
         this.parent = (MainRetailWindows) parent;
+        subtotal = subT;
+        calculate.setMnemonic('l');
+        acceptButton.setMnemonic('a');
+        cancelButton.setMnemonic('c');
         isOk = true;
     }
 
@@ -41,34 +46,36 @@ public class GlobalDiscount extends javax.swing.JDialog {
 
         userLabel = new javax.swing.JLabel();
         passwordLabel = new javax.swing.JLabel();
-        percentLabel = new javax.swing.JLabel();
         titleLabel = new javax.swing.JLabel();
         userField = new javax.swing.JTextField();
         passwordField = new javax.swing.JPasswordField();
-        percentField = new javax.swing.JTextField();
-        percentLabelxD = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         acceptButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        percentLabel1 = new javax.swing.JLabel();
+        finalMoney = new javax.swing.JTextField();
+        percentLabel = new javax.swing.JLabel();
+        percentField = new javax.swing.JTextField();
+        percentLabelxD1 = new javax.swing.JLabel();
+        percentLabelxD = new javax.swing.JLabel();
+        calculate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         userLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         userLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        userLabel.setText("Usuario    *");
+        userLabel.setText("Usuario");
         userLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         userLabel.setName("userLabel"); // NOI18N
 
         passwordLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         passwordLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        passwordLabel.setText("Contraseña *");
+        passwordLabel.setText("Contraseña");
         passwordLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         passwordLabel.setName("passwordLabel"); // NOI18N
-
-        percentLabel.setFont(new java.awt.Font("Courier New", 0, 12));
-        percentLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        percentLabel.setText("Descuento  *");
-        percentLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        percentLabel.setName("percentLabel"); // NOI18N
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Descuento Global");
@@ -88,16 +95,6 @@ public class GlobalDiscount extends javax.swing.JDialog {
             }
         });
 
-        percentField.setName("percentField"); // NOI18N
-        percentField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                percentFieldKeyPressed(evt);
-            }
-        });
-
-        percentLabelxD.setText("%");
-        percentLabelxD.setName("percentLabelxD"); // NOI18N
-
         cancelButton.setText("Cancelar");
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -114,32 +111,125 @@ public class GlobalDiscount extends javax.swing.JDialog {
             }
         });
 
+        jLabel1.setText("* = Obligatorio");
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jLabel2.setText("*");
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jLabel3.setText("*");
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Cantidad de Descuento *"));
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        percentLabel1.setFont(new java.awt.Font("Courier New", 0, 12));
+        percentLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        percentLabel1.setText("Monto Final");
+        percentLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        percentLabel1.setName("percentLabel1"); // NOI18N
+
+        finalMoney.setName("finalMoney"); // NOI18N
+        finalMoney.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                finalMoneyKeyPressed(evt);
+            }
+        });
+
+        percentLabel.setFont(new java.awt.Font("Courier New", 0, 12));
+        percentLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        percentLabel.setText("Descuento");
+        percentLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        percentLabel.setName("percentLabel"); // NOI18N
+
+        percentField.setName("percentField"); // NOI18N
+        percentField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                percentFieldFocusLost(evt);
+            }
+        });
+        percentField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                percentFieldKeyPressed(evt);
+            }
+        });
+
+        percentLabelxD1.setText("Bsf");
+        percentLabelxD1.setName("percentLabelxD1"); // NOI18N
+
+        percentLabelxD.setText("%");
+        percentLabelxD.setName("percentLabelxD"); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(percentLabel)
+                    .addComponent(percentLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(percentField, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                    .addComponent(finalMoney, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(percentLabelxD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(percentLabelxD1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(percentField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(percentLabelxD)
+                    .addComponent(percentLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(finalMoney, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(percentLabel1)
+                    .addComponent(percentLabelxD1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        calculate.setText("Calcular");
+        calculate.setName("calculate"); // NOI18N
+        calculate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(titleLabel)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(titleLabel, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(percentLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(percentField, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                        .addComponent(calculate, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(percentLabelxD))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(userLabel)
                             .addComponent(passwordLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-                            .addComponent(userField, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
+                        .addGap(4, 4, 4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                            .addComponent(userField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -150,21 +240,22 @@ public class GlobalDiscount extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userLabel)
-                    .addComponent(userField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(userField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(passwordLabel)
-                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(percentLabel)
-                    .addComponent(percentField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(percentLabelxD))
+                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
-                    .addComponent(acceptButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(acceptButton)
+                    .addComponent(jLabel1)
+                    .addComponent(calculate))
+                .addContainerGap())
         );
 
         pack();
@@ -198,14 +289,45 @@ public class GlobalDiscount extends javax.swing.JDialog {
         doIt();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
+    private void finalMoneyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_finalMoneyKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_finalMoneyKeyPressed
+
+    private void percentFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_percentFieldFocusLost
+        
+    }//GEN-LAST:event_percentFieldFocusLost
+
+    private void calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateActionPerformed
+        try{
+            double p = Double.parseDouble(percentField.getText());
+            if ( subtotal*p/100.0 < 1.0 ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
+                msg.show(this);
+            }else{
+                finalMoney.setText(Constants.df.format((new Price(null,(100-p)*subtotal/100.0)).plusIva().getQuant()));
+            }
+        }catch(NumberFormatException ex){
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
+            msg.show(this);
+        }
+    }//GEN-LAST:event_calculateActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
+    private javax.swing.JButton calculate;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JTextField finalMoney;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JTextField percentField;
     private javax.swing.JLabel percentLabel;
+    private javax.swing.JLabel percentLabel1;
     private javax.swing.JLabel percentLabelxD;
+    private javax.swing.JLabel percentLabelxD1;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField userField;
     private javax.swing.JLabel userLabel;

@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -186,10 +187,21 @@ public class ListTurnsAssigned extends JInternalFrame {
     private void closeAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeAssignButtonActionPerformed
         if ( table.getSelectedRow() != -1 ){
             try {
-                ConnectionDrivers.setAssignOpen(assigns.get(table.getSelectedRow()),false);
-                updateAll();
-                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno cerrado satisfactoriamente");
-                msg.show(this);
+                Object[] options = {"Si","No"};
+                int n = JOptionPane.showOptionDialog(this,"¿Desea cerrar la asignación?",
+                        Constants.appName,
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
+
+                if ( n == 0 ){
+                    ConnectionDrivers.setAssignOpen(assigns.get(table.getSelectedRow()),false);
+                    updateAll();
+                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno cerrado satisfactoriamente");
+                    msg.show(this);
+                }
             } catch (SQLException ex) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
                 msg.show(this);
@@ -204,10 +216,21 @@ public class ListTurnsAssigned extends JInternalFrame {
     private void reopenAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reopenAssignButtonActionPerformed
         if ( table.getSelectedRow() != -1 ){
             try {
-                ConnectionDrivers.setAssignOpen(assigns.get(table.getSelectedRow()), true);
-                updateAll();
-                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno cerrado satisfactoriamente");
-                msg.show(this);
+                Object[] options = {"Si","No"};
+                int n = JOptionPane.showOptionDialog(this,"¿Desea re-abrir la asignación?",
+                        Constants.appName,
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
+
+                if ( n == 0 ){
+                    ConnectionDrivers.setAssignOpen(assigns.get(table.getSelectedRow()), true);
+                    updateAll();
+                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno cerrado satisfactoriamente");
+                    msg.show(this);
+                }
             } catch (SQLException ex) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
                 msg.show(this);
@@ -224,10 +247,22 @@ public class ListTurnsAssigned extends JInternalFrame {
             try {
                 boolean ans = ConnectionDrivers.wasAssignUsedToday(assigns.get(table.getSelectedRow()));
                 if ( !ans ){
-                    ConnectionDrivers.deleteAssignToday(assigns.get(table.getSelectedRow()));
-                    updateAll();
-                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Asignación eliminada satisfactoriamente.");
-                    msg.show(this);
+
+                    Object[] options = {"Si","No"};
+                    int n = JOptionPane.showOptionDialog(this,"¿Desea cancelar la asignación?",
+                            Constants.appName,
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            options,
+                            options[1]);
+
+                    if ( n == 0 ){
+                        ConnectionDrivers.deleteAssignToday(assigns.get(table.getSelectedRow()));
+                        updateAll();
+                        MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Asignación eliminada satisfactoriamente.");
+                        msg.show(this);
+                    }
                 }else{
                     MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Esta caja posee movimientos registrados, por lo tanto debe hacer Cierre de Caja para poder eliminar el turno.");
                     msg.show(this);

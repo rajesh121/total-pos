@@ -302,6 +302,7 @@ public class ManageClient extends javax.swing.JDialog {
         nameField.setEditable(true);
         phoneField.setEditable(true);
         addressField.setEditable(true);
+        nameField.requestFocus();
     }//GEN-LAST:event_modifyClientActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -323,6 +324,14 @@ public class ManageClient extends javax.swing.JDialog {
 
     private void doIt() {
         Shared.getScreenSaver().actioned();
+
+        if ( !idField.getText().matches("([VEJ][0-9]*)") ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La cédula o rif inválido.");
+            msb.show(this);
+            idField.requestFocus();
+            return;
+        }
+
         Client myClient = new Client(idField.getText(), nameField.getText(), addressField.getText(), phoneField.getText());
 
         try {

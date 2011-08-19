@@ -6,8 +6,14 @@
 
 package totalpos;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.SplashScreen;
+import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,7 +28,10 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 
 /**
  *
@@ -138,8 +147,29 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         try{
             wallpaper = new Bottom(ImageIO.read(new File("Fondo.jpg")));
             jPanel2 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Factura.jpg"))).getImage());
-            jScrollPane1 = new javax.swing.JScrollPane();
-            gridTable = new javax.swing.JTable();
+            jScrollPane1 = new javax.swing.JScrollPane(){
+                private final TexturePaint texture = receiptBottom();
+                @Override protected JViewport createViewport() {
+                    return new JViewport() {
+                        @Override public void paintComponent(Graphics g) {
+                            if(texture!=null) {
+                                Graphics2D g2 = (Graphics2D)g;
+                                g2.setPaint(texture);
+                                g2.fillRect(0,0,getWidth(),getHeight());
+                            }
+                            super.paintComponent(g);
+                        }
+                    };
+                }
+            };
+            gridTable = new javax.swing.JTable(){
+                @Override public Component prepareEditor(TableCellEditor editor, int row, int column) {
+                    Component c = super.prepareEditor(editor, row, column);
+                    JTextField tf = (JTextField)c;
+                    tf.setOpaque(false);
+                    return c;
+                }
+            };
             barcodeField = new javax.swing.JTextField();
             subTotalLabelResult = new javax.swing.JLabel();
             subTotalLabel = new javax.swing.JLabel();
@@ -179,6 +209,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        gridTable.setAutoCreateRowSorter(true);
+        gridTable.setOpaque(false);
+        gridTable.setBackground(Constants.transparent);
         gridTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -210,14 +243,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 barcodeFieldKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                barcodeFieldKeyReleased(evt);
+            }
         });
 
-        subTotalLabelResult.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        subTotalLabelResult.setFont(new java.awt.Font("Courier New", 0, 14));
         subTotalLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         subTotalLabelResult.setFocusable(false);
         subTotalLabelResult.setName("subTotalLabelResult"); // NOI18N
 
-        subTotalLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        subTotalLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         subTotalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         subTotalLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         subTotalLabel.setText("SubTotal:");
@@ -225,7 +261,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         subTotalLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         subTotalLabel.setName("subTotalLabel"); // NOI18N
 
-        discountLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        discountLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         discountLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         discountLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         discountLabel.setText("Descuento:");
@@ -233,17 +269,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         discountLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         discountLabel.setName("discountLabel"); // NOI18N
 
-        discountResult.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        discountResult.setFont(new java.awt.Font("Courier New", 0, 14));
         discountResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         discountResult.setFocusable(false);
         discountResult.setName("discountResult"); // NOI18N
 
-        ivaLabelResult.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        ivaLabelResult.setFont(new java.awt.Font("Courier New", 0, 14));
         ivaLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         ivaLabelResult.setFocusable(false);
         ivaLabelResult.setName("ivaLabelResult"); // NOI18N
 
-        ivaLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        ivaLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         ivaLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         ivaLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         ivaLabel.setText("I.V.A.(" + (Shared.getIva()+"").split("\\.")[0] + "%)");
@@ -251,7 +287,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         ivaLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ivaLabel.setName("ivaLabel"); // NOI18N
 
-        totalLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        totalLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         totalLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         totalLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         totalLabel.setText("Total:");
@@ -259,7 +295,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         totalLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         totalLabel.setName("totalLabel"); // NOI18N
 
-        TotalLabelResult.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        TotalLabelResult.setFont(new java.awt.Font("Courier New", 0, 14));
         TotalLabelResult.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         TotalLabelResult.setFocusable(false);
         TotalLabelResult.setName("TotalLabelResult"); // NOI18N
@@ -271,48 +307,48 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(110, 110, 110)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(totalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(totalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                                 .addGap(10, 10, 10)
                                 .addComponent(TotalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(ivaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ivaLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                                 .addGap(10, 10, 10)
                                 .addComponent(ivaLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(subTotalLabel)
-                                    .addComponent(discountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(subTotalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(discountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE))
                                 .addGap(10, 10, 10)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(subTotalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
                                     .addComponent(discountResult, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)))))
-                    .addComponent(barcodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
+                    .addComponent(barcodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(11, 11, 11)
                 .addComponent(barcodeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(subTotalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
-                    .addComponent(subTotalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(subTotalLabelResult, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(subTotalLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(discountResult, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
-                    .addComponent(discountLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(discountResult, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(discountLabel, javax.swing.GroupLayout.Alignment.LEADING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ivaLabelResult, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
-                    .addComponent(ivaLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(ivaLabelResult, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ivaLabel, javax.swing.GroupLayout.Alignment.LEADING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(totalLabel)
@@ -320,14 +356,16 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jScrollPane1.getViewport().setOpaque(false);
+
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
 
-        descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setName("descriptionLabel"); // NOI18N
 
-        currentPrice.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        currentPrice.setFont(new java.awt.Font("Courier New", 1, 12));
         currentPrice.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         currentPrice.setName("currentPrice"); // NOI18N
 
@@ -367,12 +405,13 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(imagePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(imageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, imagePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE))
         );
 
         jPanel6.setName("jPanel6"); // NOI18N
+        jPanel6.setOpaque(false);
         jPanel6.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jPanel6MouseMoved(evt);
@@ -423,7 +462,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         messageToTheClients.setLayout(messageToTheClientsLayout);
         messageToTheClientsLayout.setHorizontalGroup(
             messageToTheClientsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 347, Short.MAX_VALUE)
+            .addGap(0, 352, Short.MAX_VALUE)
         );
         messageToTheClientsLayout.setVerticalGroup(
             messageToTheClientsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -439,15 +478,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(wallpaperLayout.createSequentialGroup()
-                .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addComponent(messageToTheClients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
-                        .addContainerGap(84, Short.MAX_VALUE)
-                        .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(imagePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(84, 84, 84)
+                .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(messageToTheClients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(83, 83, 83)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(367, 367, 367))
@@ -456,19 +491,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         wallpaperLayout.setVerticalGroup(
             wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
                 .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(478, 478, 478))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(imagePanel, 0, 303, Short.MAX_VALUE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(messageToTheClients, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(imagePanel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(messageToTheClients, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -534,13 +567,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 return;
             }
             gridTable.setRowSelectionInterval(gridTable.getSelectedRow()+1, gridTable.getSelectedRow()+1);
-            updateCurrentItem();
         } else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
             if ( gridTable.getSelectedRow() <= 0 ){
                 return;
             }
             gridTable.setRowSelectionInterval(gridTable.getSelectedRow()-1, gridTable.getSelectedRow()-1);
-            updateCurrentItem();
         }else if ( evt.getKeyCode() == KeyEvent.VK_BACK_SPACE ){
             Object[] options = {"Si",
                     "No"};
@@ -693,11 +724,19 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         deleteCurrent();
     }//GEN-LAST:event_formWindowClosed
 
+    private void barcodeFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_barcodeFieldKeyReleased
+        if ( evt.getKeyCode() == KeyEvent.VK_DOWN ){
+            updateCurrentItem();
+        } else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
+            updateCurrentItem();
+        }
+    }//GEN-LAST:event_barcodeFieldKeyReleased
+
     private void updateCurrentItem(){
         Item i = items.get(gridTable.getSelectedRow());
         descriptionLabel.setText(i.getDescription());
         currentPrice.setText(i.getLastPrice().toString());
-        Shared.loadPhoto(imageLabel, i.getImageAddr(),imagePanel.getWidth()-50,imagePanel.getHeight()-50);
+        Shared.loadPhoto(imageLabel, i.getImageAddr(),imagePanel.getWidth()-27,imagePanel.getHeight()-30);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -922,6 +961,16 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         this.globalDiscount = d;
         updateSubTotal();
         ConnectionDrivers.setGlobalDiscount(actualId, d);
+    }
+
+    private TexturePaint receiptBottom() {
+        BufferedImage bi = null;
+        try{
+            bi = ImageIO.read(getClass().getResource("/totalpos/resources/Factura.jpg"));
+        }catch(java.io.IOException ioe) {
+            assert(false);
+        }
+        return new TexturePaint(bi, new Rectangle(bi.getWidth(),bi.getHeight()));
     }
 
 }

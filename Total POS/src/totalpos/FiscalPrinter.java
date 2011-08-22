@@ -96,9 +96,8 @@ public class FiscalPrinter {
                 if ( b.getValue() != 0 ){
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }
-                if ( item.getDescuento() != null && !item.getDescuento().isEmpty() ){
-                    // TODO Parse discount like expressions;
-                    Double finalDiscount = Double.parseDouble(item.getDescuento().replace(',', '.'));
+                if ( item.getDescuento() != .0 ){
+                    Double finalDiscount = item.getDescuento();
                     if ( finalDiscount > .0 ){
                         printer.SendCmd(a, b, "p-"+Shared.formatDoubleToPrintDiscount(finalDiscount/100.0));
                         if ( b.getValue() != 0 ){

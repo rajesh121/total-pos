@@ -143,6 +143,7 @@
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancelar"/>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="cancelButton" noResource="true"/>
       </Properties>
       <Events>
@@ -152,6 +153,7 @@
     <Component class="javax.swing.JButton" name="acceptButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Aceptar"/>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="acceptButton" noResource="true"/>
       </Properties>
       <Events>
@@ -245,9 +247,6 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="finalMoney" noResource="true"/>
           </Properties>
-          <Events>
-            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="finalMoneyKeyPressed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="percentLabel">
           <Properties>
@@ -267,7 +266,6 @@
             <Property name="name" type="java.lang.String" value="percentField" noResource="true"/>
           </Properties>
           <Events>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="percentFieldFocusLost"/>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="percentFieldKeyPressed"/>
           </Events>
         </Component>
@@ -288,6 +286,7 @@
     <Component class="javax.swing.JButton" name="calculate">
       <Properties>
         <Property name="text" type="java.lang.String" value="Calcular"/>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="calculate" noResource="true"/>
       </Properties>
       <Events>

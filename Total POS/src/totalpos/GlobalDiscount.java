@@ -96,6 +96,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
         });
 
         cancelButton.setText("Cancelar");
+        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,6 +105,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
         });
 
         acceptButton.setText("Aceptar");
+        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -130,11 +132,6 @@ public class GlobalDiscount extends javax.swing.JDialog {
         percentLabel1.setName("percentLabel1"); // NOI18N
 
         finalMoney.setName("finalMoney"); // NOI18N
-        finalMoney.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                finalMoneyKeyPressed(evt);
-            }
-        });
 
         percentLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         percentLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
@@ -143,11 +140,6 @@ public class GlobalDiscount extends javax.swing.JDialog {
         percentLabel.setName("percentLabel"); // NOI18N
 
         percentField.setName("percentField"); // NOI18N
-        percentField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                percentFieldFocusLost(evt);
-            }
-        });
         percentField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 percentFieldKeyPressed(evt);
@@ -194,6 +186,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
         );
 
         calculate.setText("Calcular");
+        calculate.setFocusable(false);
         calculate.setName("calculate"); // NOI18N
         calculate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,22 +282,28 @@ public class GlobalDiscount extends javax.swing.JDialog {
         doIt();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
-    private void finalMoneyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_finalMoneyKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_finalMoneyKeyPressed
-
-    private void percentFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_percentFieldFocusLost
-        
-    }//GEN-LAST:event_percentFieldFocusLost
-
     private void calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateActionPerformed
         try{
-            double p = Double.parseDouble(percentField.getText());
-            if ( subtotal*p/100.0 < 1.0 ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
-                msg.show(this);
+            if ( !percentField.getText().isEmpty() ){
+                double p = Double.parseDouble(percentField.getText().replace(',', '.'));
+                if ( (100-p)*subtotal/100.0 < 1.0 || p < .0){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
+                    msg.show(this);
+                }else{
+                    finalMoney.setText(Constants.df.format((new Price(null,(100-p)*subtotal/100.0)).plusIva().getQuant()));
+                }
+            }else if ( !finalMoney.getText().isEmpty() ){
+                double p = Double.parseDouble(finalMoney.getText().replace(',', '.'));
+                double totalPlusIva = new Price(null, subtotal).plusIva().getQuant();
+                if ( p < 1.0 || p > totalPlusIva){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
+                    msg.show(this);
+                }else{
+                    percentField.setText(Constants.df.format((100.0-(p/totalPlusIva)*100.0)));
+                }
             }else{
-                finalMoney.setText(Constants.df.format((new Price(null,(100-p)*subtotal/100.0)).plusIva().getQuant()));
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe especificar el descuento.");
+                msg.show(this);
             }
         }catch(NumberFormatException ex){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
@@ -344,7 +343,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
             return;
         }
         try{
-            double p = Double.parseDouble(percentField.getText());
+            double p = Double.parseDouble(percentField.getText().replace(',', '.'));
             if ( p >= 100.0 || p < .0){
                 throw new NumberFormatException("");
             }

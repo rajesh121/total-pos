@@ -51,8 +51,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace pref="1062" max="32767" attributes="0"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace pref="916" max="32767" attributes="0"/>
+                  <Component id="numberMinuteLabel" min="-2" pref="48" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="minutesLabel" min="-2" pref="78" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -74,7 +78,11 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="numberMinuteLabel" max="32767" attributes="1"/>
+                      <Component id="minutesLabel" max="32767" attributes="1"/>
+                      <Component id="jPanel3" alignment="0" max="32767" attributes="1"/>
+                  </Group>
                   <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="1">
@@ -235,7 +243,7 @@
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){&#xa;        Component comp = super.prepareRenderer(renderer, row, column);&#xa;        String disc = (String)getValueAt(row, 1);&#xa;        if ( gridTable.getSelectedRow() == row ){&#xa;            if ( !(disc.isEmpty() || disc.trim().equals(&quot;0&quot;)) ){&#xa;                comp.setBackground(Constants.lightGreen);&#xa;            }else{&#xa;                comp.setBackground(Constants.lightBlue);&#xa;            }&#xa;        } else if ( !(disc.isEmpty() || disc.trim().equals(&quot;0&quot;)) ){&#xa;            comp.setBackground(Color.YELLOW);&#xa;        }else{&#xa;            comp.setBackground(Constants.transparent);&#xa;        }&#xa;        return comp;&#xa;    }&#xa;}"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){&#xa;        Component comp = super.prepareRenderer(renderer, row, column);&#xa;        double discD = .0;&#xa;        try{&#xa;            discD = Double.parseDouble((String)getValueAt(row, 1));&#xa;        }catch(Exception ex){&#xa;            ;&#xa;        }&#xa;        if ( gridTable.getSelectedRow() == row ){&#xa;            if ( discD != .0 ){&#xa;                comp.setBackground(Constants.lightGreen);&#xa;            }else{&#xa;                comp.setBackground(Constants.lightBlue);&#xa;            }&#xa;        } else if ( discD != .0 ){&#xa;            comp.setBackground(Color.YELLOW);&#xa;        }else{&#xa;            comp.setBackground(Constants.transparent);&#xa;        }&#xa;        return comp;&#xa;    }&#xa;}"/>
                     <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="gridTable.setAutoCreateRowSorter(true);&#xa;gridTable.setOpaque(false);&#xa;gridTable.setBackground(Constants.transparent); //THIS IS THE TRICK, ISN&apos;T IT? xD"/>
                   </AuxValues>
                 </Component>
@@ -660,6 +668,21 @@
             </DimensionLayout>
           </Layout>
         </Container>
+        <Component class="javax.swing.JLabel" name="minutesLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Courier New" size="12" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Minutos"/>
+            <Property name="name" type="java.lang.String" value="minutesLabel" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="numberMinuteLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel11"/>
+            <Property name="name" type="java.lang.String" value="numberMinuteLabel" noResource="true"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

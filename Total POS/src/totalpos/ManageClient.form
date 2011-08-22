@@ -41,17 +41,21 @@
                                   <Component id="cirifLabel" alignment="0" min="-2" pref="107" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPane1" min="-2" pref="301" max="-2" attributes="0"/>
-                                  <Component id="idField" alignment="0" pref="301" max="32767" attributes="0"/>
-                                  <Component id="nameField" alignment="0" pref="301" max="32767" attributes="0"/>
-                                  <Component id="phoneField" alignment="1" pref="301" max="32767" attributes="0"/>
+                              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="phoneField" alignment="1" pref="287" max="32767" attributes="1"/>
+                                      <Component id="nameField" alignment="1" pref="287" max="32767" attributes="1"/>
+                                      <Component id="idField" alignment="1" pref="287" max="32767" attributes="1"/>
+                                  </Group>
+                                  <Component id="jScrollPane1" min="-2" pref="287" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="26" max="32767" attributes="0"/>
-                              <Component id="modifyClient" min="-2" pref="99" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="modifyClient" pref="107" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="acceptButton" min="-2" pref="82" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -73,6 +77,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cirifLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="idField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -121,7 +126,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="C.I./R.I.F.*"/>
+        <Property name="text" type="java.lang.String" value="C.I./R.I.F."/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="cirifLabel" noResource="true"/>
       </Properties>
@@ -254,6 +259,12 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="modifyClientActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel9">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="*"/>
+        <Property name="name" type="java.lang.String" value="jLabel9" noResource="true"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

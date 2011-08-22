@@ -228,7 +228,7 @@ public class ListTurnsAssigned extends JInternalFrame {
                 if ( n == 0 ){
                     ConnectionDrivers.setAssignOpen(assigns.get(table.getSelectedRow()), true);
                     updateAll();
-                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno cerrado satisfactoriamente");
+                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Turno abierto satisfactoriamente");
                     msg.show(this);
                 }
             } catch (SQLException ex) {

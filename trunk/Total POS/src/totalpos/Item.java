@@ -64,7 +64,7 @@ public class Item {
         this.barcodes = o.getBarcodes();
         this.status = o.isStatus();
         this.imageAddr = o.getImageAddr();
-        this.descuento = o.getDescuento();
+        this.descuento = o.getDescuento()+"";
     }
 
     public List<String> getBarcodes() {
@@ -142,8 +142,12 @@ public class Item {
         return ans;
     }
 
-    public String getDescuento() {
-        return descuento;
+    public Double getDescuento() {
+        try{
+            return Double.parseDouble(descuento.replace(',', '.'));
+        }catch (Exception ex){
+            return .0;
+        }
     }
 
 }

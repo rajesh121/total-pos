@@ -55,7 +55,7 @@ public class ManageItem extends JInternalFrame {
         model.setRowCount(0);
 
         for (Item item : items) {
-            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),new Price(null, item.getLastPrice().getQuant()).toString(),item.getLastPrice().plusIva().toString(),item.getDescuento()};
+            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),new Price(null, item.getLastPrice().getQuant()).toString(),item.getLastPrice().plusIva().toString(),item.getDescuento()+""};
             model.addRow(s);
         }
         

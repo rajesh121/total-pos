@@ -32,7 +32,7 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public final class MainRetailWindows extends javax.swing.JFrame {
 
@@ -59,6 +59,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             user = u;
             printer = new FiscalPrinter();
             this.assign = assign;
+            numberMinuteLabel.setVisible(false);
+            minutesLabel.setVisible(false);
             if ( !ConnectionDrivers.isAllowed(u.getPerfil(), "retail") ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Esta usuario no tiene permisos para utilizar el punto de venta.");
                 msb.show(null);
@@ -162,14 +164,19 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         gridTable = new javax.swing.JTable(){
             @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
                 Component comp = super.prepareRenderer(renderer, row, column);
-                String disc = (String)getValueAt(row, 1);
+                double discD = .0;
+                try{
+                    discD = Double.parseDouble((String)getValueAt(row, 1));
+                }catch(Exception ex){
+                    ;
+                }
                 if ( gridTable.getSelectedRow() == row ){
-                    if ( !(disc.isEmpty() || disc.trim().equals("0")) ){
+                    if ( discD != .0 ){
                         comp.setBackground(Constants.lightGreen);
                     }else{
                         comp.setBackground(Constants.lightBlue);
                     }
-                } else if ( !(disc.isEmpty() || disc.trim().equals("0")) ){
+                } else if ( discD != .0 ){
                     comp.setBackground(Color.YELLOW);
                 }else{
                     comp.setBackground(Constants.transparent);
@@ -204,6 +211,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jPanel3 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/fecha-y-hora.jpg")).getImage()));
         whatTimeIsIt = new javax.swing.JLabel();
         messageToTheClients = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-mensajes-al-cajero.jpg")).getImage()));
+        minutesLabel = new javax.swing.JLabel();
+        numberMinuteLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
@@ -559,12 +568,23 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             .addGap(0, 76, Short.MAX_VALUE)
         );
 
+        minutesLabel.setFont(new java.awt.Font("Courier New", 0, 12));
+        minutesLabel.setText("Minutos");
+        minutesLabel.setName("minutesLabel"); // NOI18N
+
+        numberMinuteLabel.setText("jLabel11");
+        numberMinuteLabel.setName("numberMinuteLabel"); // NOI18N
+
         javax.swing.GroupLayout wallpaperLayout = new javax.swing.GroupLayout(wallpaper);
         wallpaper.setLayout(wallpaperLayout);
         wallpaperLayout.setHorizontalGroup(
             wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(wallpaperLayout.createSequentialGroup()
-                .addContainerGap(1062, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
+                .addContainerGap(916, Short.MAX_VALUE)
+                .addComponent(numberMinuteLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(minutesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(wallpaperLayout.createSequentialGroup()
@@ -582,7 +602,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(numberMinuteLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(minutesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(7, 7, 7)
                 .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
@@ -870,6 +893,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel messageToTheClients;
+    private javax.swing.JLabel minutesLabel;
+    private javax.swing.JLabel numberMinuteLabel;
     private javax.swing.JLabel subTotalLabel;
     private javax.swing.JLabel subTotalLabelResult;
     private javax.swing.JLabel totalLabel;
@@ -896,7 +921,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ConnectionDrivers.addItem2Receipt(actualId, get);
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
-            String[] s = {get.getDescription(), get.getDescuento(), get.getLastPrice().toString(), get.getLastPrice().getIva().toString(), get.getLastPrice().plusIva().toString()};
+            String[] s = {get.getDescription(), get.getDescuento()+"", get.getLastPrice().toString(), get.getLastPrice().getIva().toString(), get.getLastPrice().plusIva().toString()};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
             items.add(get);
@@ -922,8 +947,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public void updateSubTotal() {
         double subT = .0 , ivaT = .0 , total = .0 , subTwithoutD = .0;
         for (Item item : items) {
-            subTwithoutD += item.getLastPrice().getQuant();
-            subT += Shared.round( item.getLastPrice().getQuant()*(1.0-globalDiscount) , 2 );
+            subTwithoutD += item.getLastPrice().withDiscount(item.getDescuento()).getQuant();
+            subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant()*(1.0-globalDiscount) , 2 );
         }
 
         subTotalLabelResult.setText(Constants.df.format(subTwithoutD) + " Bsf");
@@ -1032,7 +1057,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
             for (Item item : r.getItems()) {
-                String[] s = {item.getDescription(), item.getDescuento(), item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
+                String[] s = {item.getDescription(), item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
                 model.addRow(s);
                 items.add(item);
             }

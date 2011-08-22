@@ -1,11 +1,10 @@
 package totalpos;
 
-import java.text.DecimalFormat;
 import java.util.Date;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class Price {
     private Date date;
@@ -51,6 +50,13 @@ public class Price {
         return new Price(
                 getDate(),
                 getQuant()*(Double.valueOf(Shared.getConfig().get("iva"))));
+    }
+
+    public Price withDiscount(Double p){
+        // TODO Parse discount like expressions;
+        return new Price(
+                getDate(),
+                getQuant()*(100.0-p)/100.0);
     }
 
 }

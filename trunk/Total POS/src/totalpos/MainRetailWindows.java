@@ -794,6 +794,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         } else if ( evt.getKeyCode() == KeyEvent.VK_F5 ){
             try {
                 if ( !items.isEmpty() ){
+                    /*
                     printer.printerSerial = null;
                     if (!checkPrinter()) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
@@ -809,7 +810,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     }
                     ConnectionDrivers.setPritingHour(actualId);
                     ConnectionDrivers.finishReceipt(actualId);
-                    updateAll();
+                    updateAll();*/
+                    SpecifyPaymentForm sfpf = new SpecifyPaymentForm(this, true, subtotal);
+                    Shared.centerFrame(sfpf);
+                    sfpf.setVisible(true);
                 }
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error al imprimir!",ex);

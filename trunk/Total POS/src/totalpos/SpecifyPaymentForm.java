@@ -36,6 +36,8 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Formas de Pago");
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         jLabel1.setText("Formas de Pago");
@@ -127,7 +129,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
                     .addComponent(jLabel5)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         pack();

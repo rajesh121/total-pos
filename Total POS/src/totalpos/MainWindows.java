@@ -9,7 +9,6 @@ package totalpos;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -206,6 +205,12 @@ public class MainWindows extends javax.swing.JFrame {
                 }
             } else if ( ed.getFuncion().equals("listTurnsAssigned") ) {
                 ListTurnsAssigned lta = new ListTurnsAssigned();
+                if( lta.isOk ){
+                    mdiPanel.add(lta);
+                    lta.setVisible(true);
+                }
+            } else if ( ed.getFuncion().equals("managePOSBank") ) {
+                ManageBank lta = new ManageBank();
                 if( lta.isOk ){
                     mdiPanel.add(lta);
                     lta.setVisible(true);

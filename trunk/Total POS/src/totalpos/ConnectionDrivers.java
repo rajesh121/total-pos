@@ -1263,4 +1263,52 @@ public class ConnectionDrivers {
         c.close();
         return ans;
     }
+
+    static void deleteAllBPos() throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from punto_de_venta_de_banco");
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    static void createBPOS(DefaultTableModel model) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String id = (String) model.getValueAt(i, 0) ;
+            String description = (String) model.getValueAt(i, 1);
+            String lot = (String) model.getValueAt(i, 2);
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into punto_de_venta_de_banco ( id, descripcion, lote ) values ( ? , ? , ? )");
+            stmt.setString(1, id);
+            stmt.setString(2, description);
+            stmt.setString(3, lot);
+            stmt.executeUpdate();
+        }
+
+        c.close();
+    }
+
+    static List<BankPOS> listBPos() throws SQLException {
+        List<BankPOS> ans = new ArrayList<BankPOS>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select id , descripcion, lote from punto_de_venta_de_banco");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new BankPOS(
+                        rs.getString("id"),
+                        rs.getString("descripcion"),
+                        rs.getString("lote")
+                        )
+                    );
+        }
+
+        c.close();
+        rs.close();
+
+        return ans;
+    }
 }

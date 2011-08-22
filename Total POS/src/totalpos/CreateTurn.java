@@ -96,7 +96,7 @@ public class CreateTurn extends JInternalFrame {
         titleLabel.setText("Crear Turno");
         titleLabel.setName("titleLabel"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         jLabel2.setText("Código");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -132,7 +132,7 @@ public class CreateTurn extends JInternalFrame {
         cashLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         cashLabel.setName("cashLabel"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Courier New", 0, 12));
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         jLabel4.setText("Hora Final");
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -253,11 +253,11 @@ public class CreateTurn extends JInternalFrame {
                                             .addComponent(secondInit2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(amOrPm2, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                                            .addComponent(amOrPmEnd2, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))
-                                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)))
-                            .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                            .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE))))
+                                            .addComponent(amOrPm2, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+                                            .addComponent(amOrPmEnd2, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))
+                                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)))
+                            .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                            .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

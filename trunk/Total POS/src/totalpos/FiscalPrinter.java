@@ -243,5 +243,69 @@ public class FiscalPrinter {
     public String getLastFiscalNumber(){
         return lastReceipt;
     }
+
+    public void printCreditNote(List<Item> items, String ticketId, String myId, User u ) throws Exception{
+        isOk = false;
+        IntByReference a = new IntByReference();
+        IntByReference b = new IntByReference();
+        printer.OpenFpctrl("COM1");
+
+        List<String> buffer = new ArrayList<String>();
+
+        if ( !items.isEmpty() ){
+            int line = 1;
+            buffer.add("i0" + ( line++ ) + "Correlativo: " + myId);
+            buffer.add("i0" + ( line++ ) + "Factura: " + ticketId);
+            buffer.add("i0" + ( line++ ) + "Usuario: " + u.getNombre());
+
+            for (String bu : buffer) {
+                printer.SendCmd(a, b, bu);
+                if ( b.getValue() != 0 ){
+                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                }
+            }
+
+            for (Item item : items) {
+                printer.SendCmd(a, b, "d1" + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
+                        "00001000" + item.getDescription().substring(0, Math.min(item.getDescription().length(), 38)));
+                if ( b.getValue() != 0 ){
+                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                }
+                if ( item.getDescuento() != .0 ){
+                    Double finalDiscount = item.getDescuento();
+                    if ( finalDiscount > .0 ){
+                        printer.SendCmd(a, b, "p-"+Shared.formatDoubleToPrintDiscount(finalDiscount/100.0));
+                        if ( b.getValue() != 0 ){
+                            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                        }
+                    }
+                }
+            }
+            printer.SendCmd(a, b, "3");
+            if ( b.getValue() != 0 ){
+                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            }
+            printer.SendCmd(a, b, "f01000000000000");
+        }
+
+        printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
+        if ( b.getValue() != 0 ){
+            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+        }
+
+        File file = new File(Constants.tmpFileName);
+
+        Scanner sc = new Scanner(file);
+
+        boolean ansT = sc.hasNext();
+        assert(ansT);
+        String s = sc.next().substring(21, 29);
+
+        lastReceipt = s;
+        sc.close();
+        file.delete();
+        printer.CloseFpctrl();
+        isOk = true;
+    }
     
 }

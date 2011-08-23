@@ -1329,4 +1329,106 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static void createCreditNote(String myId, String idReceipt, String user, Assign assign, List<Item> items) throws SQLException, Exception{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        double subT = .0 , ivaT = .0 , total = .0 ;
+        for (Item item : items) {
+            subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant(), 2 );
+        }
+        ivaT = new Price(null, subT).getIva().getQuant();
+        total = subT + ivaT;
+
+        PreparedStatement stmt = c.prepareStatement("insert into nota_de_credito"
+                + " ( codigo_interno, codigo_factura, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , identificador_turno , identificador_pos) "
+                + "values ( ?, ? , 'Pedido' , now() , ? , ?, ? , ? , ? , ? , ?)");
+        stmt.setString(1, myId);
+        stmt.setString(2, idReceipt);
+        stmt.setDouble(3, subT);
+        stmt.setDouble(4, total);
+        stmt.setDouble(5, ivaT);
+        stmt.setString(6, user);
+        stmt.setInt(7, items.size());
+        stmt.setString(8, assign.getTurn());
+        stmt.setString(9, assign.getPos());
+        stmt.executeUpdate();
+
+        c.close();
+
+        for (Item item : items) {
+            addItem2CreditNote(myId, item);
+        }
+    }
+
+    protected static int lastCreditNoteToday() throws SQLException, Exception{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        Statement stmt = c.createStatement();
+        ResultSet rs = stmt.executeQuery(
+                "select count(*) from nota_de_credito "
+                + "where datediff(now(),fecha_creacion) = 0");
+
+        boolean ok = rs.next();
+        assert(ok);
+        int ans = rs.getInt(1);
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    public static Receipt getReceiptToDev(String id) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select * from factura where codigo_interno = ? and estado='Facturada'");
+        stmt.setString(1, id);
+        ResultSet rs = stmt.executeQuery();
+        boolean ok = rs.next();
+        
+        c.close();
+        rs.close();
+
+        if (!ok ) return null;
+        
+        List<Item> l = listItems(id);
+        return new Receipt(id, "Facturada",null, null, null, null, null, null, null, null, null, null, null, null, l, null);
+    }
+
+    protected static void addItem2CreditNote(String receiptId, Item item) throws SQLException, Exception{
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into nota_de_credito_contiene"
+                + " ( codigo_interno_nota_de_credito, codigo_de_articulo ) "
+                + "values ( ? , ? )");
+        stmt.setString(1, receiptId);
+        stmt.setString(2, item.getCode());
+        stmt.executeUpdate();
+
+        changeItemStock(item.getCode(), 1);
+
+        double withoutTax = item.getLastPrice().getQuant();
+        double subT = .0;// = accumulatedInReceipt(receiptId) + withoutTax;
+        stmt = c.prepareStatement("update nota_de_credito "
+                + "set total_sin_iva = " + (subT) +
+                " , total_con_iva =" + (new Price(null,subT)).plusIva().getQuant() +
+                " , iva = " + (new Price(null,subT)).getIva().getQuant() +
+                " , cantidad_de_articulos = cantidad_de_articulos + 1 "
+                + "where codigo_interno = ? ");
+        stmt.setString(1, receiptId);
+        stmt.executeUpdate();
+
+        c.close();
+
+    }
+
+    public static void changeLot( String idBpos , String newLot) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update punto_de_venta_de_banco "
+                + "set lote = ? where id = ? ");
+                
+        stmt.setString(1, newLot);
+        stmt.setString(2, idBpos);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
 }

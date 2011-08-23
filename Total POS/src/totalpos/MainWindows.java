@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class MainWindows extends javax.swing.JFrame {
 
@@ -215,6 +215,8 @@ public class MainWindows extends javax.swing.JFrame {
                     mdiPanel.add(lta);
                     lta.setVisible(true);
                 }
+            } else if ( ed.getFuncion().equals("exit") ) {
+                logout();
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);

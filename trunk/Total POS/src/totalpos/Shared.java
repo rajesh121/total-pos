@@ -255,7 +255,7 @@ public class Shared {
         return df.format(d).replaceAll(",", "");
     }
 
-    public static String formatDoubleToExtractMoney(Double d){
+    public static String formatDoubleToSpecifyMoneyInPrinter(Double d){
         DecimalFormat df = new DecimalFormat("0000000000.00");
         return df.format(d).replaceAll(",", "");
     }

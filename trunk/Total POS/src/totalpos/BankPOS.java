@@ -7,12 +7,12 @@ package totalpos;
 public class BankPOS {
     private String id;
     private String descripcion;
-    private String lotes;
+    private String lot;
 
-    public BankPOS(String id, String descripcion, String lotes) {
+    public BankPOS(String id, String descripcion, String lot) {
         this.id = id;
         this.descripcion = descripcion;
-        this.lotes = lotes;
+        this.lot = lot;
     }
 
     public String getDescripcion() {
@@ -23,8 +23,8 @@ public class BankPOS {
         return id;
     }
 
-    public String getLotes() {
-        return lotes;
+    public String getLot() {
+        return lot;
     }
 
 }

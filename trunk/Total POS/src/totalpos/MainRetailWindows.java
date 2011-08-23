@@ -40,7 +40,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     protected int quant = 1;
     private List<Item> items;
     public String actualId;
-    FiscalPrinter printer;
+    public FiscalPrinter printer;
     public boolean isOk = false;
     public boolean closing = false;
     public Double globalDiscount = .0;
@@ -794,24 +794,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         } else if ( evt.getKeyCode() == KeyEvent.VK_F5 ){
             try {
                 if ( !items.isEmpty() ){
-                    /*
-                    printer.printerSerial = null;
-                    if (!checkPrinter()) {
-                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
-                        msb.show(null);
-                        this.dispose();
-                        Shared.reload();
-                        return;
-                    }
-                    printer.printTicket(items, client, globalDiscount, actualId, user);
-                    ConnectionDrivers.setFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber());
-                    if ( client != null ){
-                        ConnectionDrivers.setClient(client,actualId);
-                    }
-                    ConnectionDrivers.setPritingHour(actualId);
-                    ConnectionDrivers.finishReceipt(actualId);
-                    updateAll();*/
-                    SpecifyPaymentForm sfpf = new SpecifyPaymentForm(this, true, subtotal);
+                    SpecifyPaymentForm sfpf = new SpecifyPaymentForm(this, true, subtotal, actualId);
                     Shared.centerFrame(sfpf);
                     sfpf.setVisible(true);
                 }
@@ -825,17 +808,27 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ExtractMoney em = new ExtractMoney(this, true, printer);
             Shared.centerFrame(em);
             em.setVisible(true);
-        } /*else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
-            try {
-                printer.reportExtraction();
-            } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error al imprimir!",ex);
-                msb.show(null);
-                this.dispose();
-                Shared.reload();
-            }
-        }*/
+        }
     }//GEN-LAST:event_barcodeFieldKeyPressed
+
+    public void print(List<PayForm> l) throws SQLException, FileNotFoundException, Exception{
+        printer.printerSerial = null;
+        if (!checkPrinter()) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
+            msb.show(null);
+            this.dispose();
+            Shared.reload();
+            return;
+        }
+        printer.printTicket(items, client, globalDiscount, actualId, user , l);
+        ConnectionDrivers.setFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber());
+        if ( client != null ){
+            ConnectionDrivers.setClient(client,actualId);
+        }
+        ConnectionDrivers.setPritingHour(actualId);
+        ConnectionDrivers.finishReceipt(actualId);
+        updateAll();
+    }
 
     private void jPanel6MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseMoved
         Shared.getScreenSaver().actioned();

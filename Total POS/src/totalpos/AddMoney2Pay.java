@@ -8,14 +8,21 @@ package totalpos;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class AddMoney2Pay extends javax.swing.JDialog {
 
+    private String reason;
+    SpecifyPaymentForm myParent;
+
     /** Creates new form AddMoney2Pay */
-    public AddMoney2Pay(java.awt.Frame parent, boolean modal) {
+    public AddMoney2Pay(SpecifyPaymentForm parent, boolean modal , String reasonI) {
         super(parent, modal);
         initComponents();
+        reason = reasonI;
+        myParent = parent;
+        acceptButton.setMnemonic('A');
+        cancelButton.setMnemonic('C');
     }
 
     /** This method is called from within the constructor to
@@ -47,9 +54,19 @@ public class AddMoney2Pay extends javax.swing.JDialog {
 
         cancelButton.setText("Cancelar");
         cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         acceptButton.setText("Aceptar");
         acceptButton.setName("acceptButton"); // NOI18N
+        acceptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -88,6 +105,28 @@ public class AddMoney2Pay extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        Double d = .0;
+        try{
+            d = Double.parseDouble(moneyField.getText().replace(',', '.'));
+        }catch ( NumberFormatException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto");
+            msb.show(this);
+            return;
+        }
+        if ( d < 0 ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto");
+            msb.show(this);
+            return;
+        }
+        myParent.add(reason,d);
+        this.dispose();
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;

@@ -1311,4 +1311,22 @@ public class ConnectionDrivers {
 
         return ans;
     }
+
+    public static void savePayForm(List<PayForm> lpf) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        for (PayForm payForm : lpf) {
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into forma_de_pago ( codigo_interno_factura, tipo, codigo_punto_de_venta_de_banco , lote , monto) "
+                + "values ( ? , ? , ? , ? , ? )");
+            stmt.setString(1, payForm.getReceiptId());
+            stmt.setString(2, payForm.getFormWay());
+            stmt.setString(3, payForm.getbPos());
+            stmt.setString(4, payForm.getLot());
+            stmt.setDouble(5, payForm.getQuant());
+            stmt.executeUpdate();
+        }
+
+        c.close();
+    }
+
 }

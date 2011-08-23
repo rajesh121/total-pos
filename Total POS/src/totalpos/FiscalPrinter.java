@@ -56,7 +56,7 @@ public class FiscalPrinter {
         return getSerial().equals(serial);
     }
 
-    public void printTicket(List<Item> items , Client client, Double globalDiscount, String ticketId, User u) throws Exception{
+    public void printTicket(List<Item> items , Client client, Double globalDiscount, String ticketId, User u , List<PayForm> pfs) throws Exception{
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -117,11 +117,26 @@ public class FiscalPrinter {
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }
             }
-            printer.SendCmd(a, b, "101");
-            if ( b.getValue() != 0 ){
-                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            for (PayForm pf : pfs) {
+                //TODO Put it in the configuracion database.
+                /**
+                 * Put it in the configuracion file.
+                 */
+                String cmd = "01";
+                if ( pf.getFormWay().equals("Efectivo") ){
+                    cmd = "01";
+                }else if ( pf.getFormWay().equals("Nota de Credito") ){
+                    cmd = "02";
+                }else if ( pf.getFormWay().equals("Credito") ){
+                    cmd = "09";
+                }else if ( pf.getFormWay().equals("Debito") ){
+                    cmd = "10";
+                }
+                printer.SendCmd(a, b, "2" + cmd + Shared.formatDoubleToSpecifyMoneyInPrinter(pf.getQuant()));
+                if ( b.getValue() != 0 ){
+                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                }
             }
-            
         }
 
         printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);

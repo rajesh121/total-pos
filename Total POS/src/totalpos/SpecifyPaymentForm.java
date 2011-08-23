@@ -7,6 +7,10 @@
 package totalpos;
 
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,19 +20,33 @@ import javax.swing.table.DefaultTableModel;
 public class SpecifyPaymentForm extends javax.swing.JDialog {
 
     public Price total;
+    private List<PayForm> payForms = new ArrayList<PayForm>();
+    private String receiptID;
+    private MainRetailWindows myParent;
 
     /** Creates new form SpecifyPaymentForm */
-    SpecifyPaymentForm(MainRetailWindows aThis, boolean b, double subtotal) {
+    SpecifyPaymentForm(MainRetailWindows aThis, boolean b, double subtotal, String receipt) {
         super(aThis, b);
         initComponents();
         total = new Price(null, subtotal).plusIva();
+        receiptID = receipt;
+        myParent = aThis;
+
+        payForms.add(new PayForm(receipt, "Efectivo", "", "", total.getQuant()));
+        updateAll();
+        table.requestFocus();
+    }
+
+    private void updateAll(){
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        String[] s = {"Efectivo",Constants.df.format(total.getQuant()),null,null};
-        model.addRow(s);
-        table.setRowSelectionInterval(0, 0);
-
-        table.requestFocus();
+        for (PayForm payForm : payForms) {
+            String[] s = {payForm.getFormWay(),Constants.df.format(payForm.getQuant()),payForm.getbPos(),payForm.getLot()};
+            model.addRow(s);
+        }
+        if ( payForms.size() > 0 ){
+            table.setRowSelectionInterval(table.getRowCount()-1, table.getRowCount()-1);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -193,10 +211,64 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_A ){
+        if ( evt.getKeyCode() == KeyEvent.VK_A || evt.getKeyCode() == KeyEvent.VK_ESCAPE){
             this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_F12 ){
+            payForms.remove(table.getSelectedRow());
+            updateAll();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_N ){
+            AddMoney2Pay am2p = new AddMoney2Pay(this, true, "Nota de Credito");
+            Shared.centerFrame(am2p);
+            am2p.setVisible(true);
+        } else if ( evt.getKeyCode() == KeyEvent.VK_E ){
+            AddMoney2Pay am2p = new AddMoney2Pay(this, true, "Efectivo");
+            Shared.centerFrame(am2p);
+            am2p.setVisible(true);
+        } else if ( evt.getKeyCode() == KeyEvent.VK_C ){
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, "Credito");
+            if ( ac2p.isOk ){
+                Shared.centerFrame(ac2p);
+                ac2p.setVisible(true);
+            }
+        } else if ( evt.getKeyCode() == KeyEvent.VK_D ){
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, "Debito");
+            if ( ac2p.isOk ){
+                Shared.centerFrame(ac2p);
+                ac2p.setVisible(true);
+            }
+        } else if (  evt.getKeyCode() == KeyEvent.VK_O ){
+            try {
+                ConnectionDrivers.savePayForm(payForms);
+                myParent.print(payForms);
+                this.dispose();
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error en la base de datos!",ex);
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+            } catch (FileNotFoundException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al imprimir!",ex);
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+            } catch (Exception ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al imprimir!",ex);
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+            }
         }
     }//GEN-LAST:event_tableKeyPressed
+
+    public void add(String reason , Double money){
+        payForms.add(new PayForm(receiptID, reason, "" , "", money));
+        updateAll();
+    }
+
+    public void add(String reason , Double money, BankPOS bpos){
+        payForms.add(new PayForm(receiptID, reason, bpos.getId() , bpos.getLot(), money));
+        updateAll();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

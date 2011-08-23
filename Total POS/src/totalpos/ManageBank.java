@@ -42,7 +42,7 @@ public class ManageBank extends JInternalFrame {
         model.setRowCount(0);
         bpos = ConnectionDrivers.listBPos();
         for (BankPOS bankPOS : bpos) {
-            String[] s = {bankPOS.getId(), bankPOS.getDescripcion(), bankPOS.getLotes()};
+            String[] s = {bankPOS.getId(), bankPOS.getDescripcion(), bankPOS.getLot()};
             model.addRow(s);
         }
     }

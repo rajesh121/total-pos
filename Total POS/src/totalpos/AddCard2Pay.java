@@ -9,6 +9,9 @@ package totalpos;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -31,10 +34,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
             acceptButton.setMnemonic('A');
             cancelButton.setMnemonic('C');
             modifyLot.setMnemonic('M');
-            bpos = ConnectionDrivers.listBPos();
-            for (BankPOS bankPOS : bpos) {
-                bposCombo.add(bankPOS.getId() + " - " + bankPOS.getLot() );
-            }
+            updateAll();
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error en la base de datos.",ex);
@@ -72,6 +72,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         jLabel1.setName("jLabel1"); // NOI18N
 
         acceptButton.setText("Aceptar");
+        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -80,6 +81,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         });
 
         cancelButton.setText("Cancelar");
+        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -95,6 +97,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         bposCombo.setName("bposCombo"); // NOI18N
 
         modifyLot.setText("Cambiar Lote");
+        modifyLot.setFocusable(false);
         modifyLot.setName("modifyLot"); // NOI18N
         modifyLot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,6 +154,14 @@ public class AddCard2Pay extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void updateAll() throws SQLException{
+        bposCombo.removeAll();
+        bpos = ConnectionDrivers.listBPos();
+        for (BankPOS bankPOS : bpos) {
+            bposCombo.add(bankPOS.getId() + " - " + bankPOS.getLot() );
+        }
+    }
+
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
         Double d = .0;
         try{
@@ -174,7 +185,19 @@ public class AddCard2Pay extends javax.swing.JDialog {
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void modifyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyLotActionPerformed
-        // TODO Change Lot:
+        String id = JOptionPane.showInputDialog("Nuevo lote");
+        if ( id != null && !id.isEmpty() ){
+            try {
+                BankPOS bp = bpos.get(bposCombo.getSelectedIndex());
+                ConnectionDrivers.changeLot(bp.getId(), id);
+                updateAll();
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
+        }
     }//GEN-LAST:event_modifyLotActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -808,6 +810,26 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ExtractMoney em = new ExtractMoney(this, true, printer);
             Shared.centerFrame(em);
             em.setVisible(true);
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F1 ){
+            String id = JOptionPane.showInputDialog("Correlativo de Factura");
+            if ( id != null ){
+                try {
+                    Receipt r = ConnectionDrivers.getReceiptToDev(id);
+                    if (r == null) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La factura no existe!");
+                        msb.show(null);
+                    } else {
+                        CreditNoteForm cnf = new CreditNoteForm(this, true, r);
+                        Shared.centerFrame(cnf);
+                        cnf.setVisible(true);
+                    }
+                } catch (SQLException ex) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos",ex);
+                    msb.show(null);
+                    this.dispose();
+                    Shared.reload();
+                }
+            }
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
@@ -1107,4 +1129,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         return new TexturePaint(bi, new Rectangle(bi.getWidth(),bi.getHeight()));
     }
 
+    public Assign getAssign() {
+        return assign;
+    }
 }

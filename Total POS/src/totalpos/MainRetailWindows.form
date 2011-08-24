@@ -196,8 +196,9 @@
                 <Component class="javax.swing.JTable" name="gridTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="5" rowCount="4">
+                      <Table columnCount="6" rowCount="4">
                         <Column editable="false" title="Descripci&#xf3;n" type="java.lang.Object"/>
+                        <Column editable="false" title="Cantidad" type="java.lang.Object"/>
                         <Column editable="false" title="Descuento" type="java.lang.Object"/>
                         <Column editable="false" title="Precio" type="java.lang.Object"/>
                         <Column editable="false" title="Iva" type="java.lang.Object"/>
@@ -207,6 +208,11 @@
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0">
                         <Column maxWidth="-1" minWidth="-1" prefWidth="300" resizable="true">
+                          <Title/>
+                          <Editor/>
+                          <Renderer/>
+                        </Column>
+                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
@@ -243,7 +249,7 @@
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){&#xa;        Component comp = super.prepareRenderer(renderer, row, column);&#xa;        double discD = .0;&#xa;        try{&#xa;            discD = Double.parseDouble((String)getValueAt(row, 1));&#xa;        }catch(Exception ex){&#xa;            ;&#xa;        }&#xa;        if ( gridTable.getSelectedRow() == row ){&#xa;            if ( discD != .0 ){&#xa;                comp.setBackground(Constants.lightGreen);&#xa;            }else{&#xa;                comp.setBackground(Constants.lightBlue);&#xa;            }&#xa;        } else if ( discD != .0 ){&#xa;            comp.setBackground(Color.YELLOW);&#xa;        }else{&#xa;            comp.setBackground(Constants.transparent);&#xa;        }&#xa;        return comp;&#xa;    }&#xa;}"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){&#xa;        Component comp = super.prepareRenderer(renderer, row, column);&#xa;        double discD = .0;&#xa;        try{&#xa;            discD = Double.parseDouble((String)getValueAt(row, 2));&#xa;        }catch(Exception ex){&#xa;            ;&#xa;        }&#xa;        if ( gridTable.getSelectedRow() == row ){&#xa;            if ( discD != .0 ){&#xa;                comp.setBackground(Constants.lightGreen);&#xa;            }else{&#xa;                comp.setBackground(Constants.lightBlue);&#xa;            }&#xa;        } else if ( discD != .0 ){&#xa;            comp.setBackground(Color.YELLOW);&#xa;        }else{&#xa;            comp.setBackground(Constants.transparent);&#xa;        }&#xa;        return comp;&#xa;    }&#xa;}"/>
                     <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="gridTable.setAutoCreateRowSorter(true);&#xa;gridTable.setOpaque(false);&#xa;gridTable.setBackground(Constants.transparent); //THIS IS THE TRICK, ISN&apos;T IT? xD"/>
                   </AuxValues>
                 </Component>

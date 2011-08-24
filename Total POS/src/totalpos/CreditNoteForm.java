@@ -41,7 +41,8 @@ public class CreditNoteForm extends javax.swing.JDialog {
             actualId = receipt.getInternId();
             model = (DefaultTableModel) table.getModel();
 
-            for (Item item : receipt.getItems()) {
+            for (Item2Receipt item2r : receipt.getItems()) {
+                Item item = item2r.getItem();
                 Object[] s = {false,item.getDescription(), item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
                 model.addRow(s);
             }
@@ -209,7 +210,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
             List<Item> items = new ArrayList<Item>();
             for (int i = 0; i < table.getRowCount(); ++i) {
                 if ((Boolean) table.getValueAt(i, 0)) {
-                    items.add(receipt.getItems().get(i));
+                    items.add(receipt.getItems().get(i).getItem());
                 }
             }
             if (items.isEmpty()) {

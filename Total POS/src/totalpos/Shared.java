@@ -265,6 +265,11 @@ public class Shared {
         return df.format(d*100.0).replaceAll(",", "");
     }
 
+    public static String formatQuantToPrint(Double d){
+        DecimalFormat df = new DecimalFormat("00000.000");
+        return df.format(d).replaceAll(",", "");
+    }
+
     public static Double getIva(){
         try{
             return Double.parseDouble(getConfig("iva"))*100.0;

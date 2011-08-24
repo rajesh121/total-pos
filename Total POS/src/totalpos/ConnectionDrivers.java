@@ -588,6 +588,13 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    /**
+     * Deprecated
+     * Now turns are associated to pos.
+     * @param username
+     * @return
+     * @throws SQLException
+     */
     private static boolean existTurnOpenFor(String username) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement(" select * from turno "
@@ -746,10 +753,10 @@ public class ConnectionDrivers {
 
     protected static int lastReceiptToday() throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery(
-                "select count(*) from factura "
-                + "where datediff(now(),fecha_creacion) = 0");
+        PreparedStatement stmt = c.prepareStatement("select count(*) from factura "
+                + "where datediff(now(),fecha_creacion) = 0 and identificador_pos = ? ");
+        stmt.setString(1, Constants.myId);
+        ResultSet rs = stmt.executeQuery();
 
         boolean ok = rs.next();
         assert(ok);

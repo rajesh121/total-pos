@@ -81,7 +81,7 @@ public class FiscalPrinter {
                 buffer.add("i0" + (line++) + "Cliente: Contado");
             }
             buffer.add("i0" + ( line++ ) + "Correlativo: " + ticketId);
-            buffer.add("i0" + ( line++ ) + "Vendedor: " + u.getNombre());
+            buffer.add("i0" + ( line++ ) + "Caja: " + Constants.myId);
 
             for (String bu : buffer) {
                 printer.SendCmd(a, b, bu);

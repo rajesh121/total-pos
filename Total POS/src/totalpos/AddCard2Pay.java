@@ -185,10 +185,10 @@ public class AddCard2Pay extends javax.swing.JDialog {
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void modifyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyLotActionPerformed
-        String id = JOptionPane.showInputDialog("Nuevo lote");
+        BankPOS bp = bpos.get(bposCombo.getSelectedIndex());
+        String id = JOptionPane.showInputDialog(this, "Nuevo Lote", bp.getLot());
         if ( id != null && !id.isEmpty() ){
             try {
-                BankPOS bp = bpos.get(bposCombo.getSelectedIndex());
                 ConnectionDrivers.changeLot(bp.getId(), id);
                 updateAll();
             } catch (SQLException ex) {

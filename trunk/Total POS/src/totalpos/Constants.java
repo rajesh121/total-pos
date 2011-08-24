@@ -46,4 +46,6 @@ public class Constants {
     public static final Color transparent = new Color(0, true);
     public static final Color lightBlue = new Color(150,150,255);
     public static final Color lightGreen = new Color(150,255,150);
+
+    public static final Double minimumCash = 150.0;
 }

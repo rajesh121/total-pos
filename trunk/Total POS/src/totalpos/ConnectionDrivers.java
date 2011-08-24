@@ -1489,4 +1489,52 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static Double getCashToday(String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select dinero_efectivo "
+                + "from dia_operativo where datediff(now(),fecha) = 0 and codigo_punto_de_venta = ? ");
+        stmt.setString(1, Constants.myId );
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ans = rs.next();
+
+        if ( !ans ){
+            c.close();
+            rs.close();
+            return -1.0;
+        }
+
+        Double doubl = rs.getDouble("dinero_efectivo");
+
+        c.close();
+        rs.close();
+
+        return doubl;
+    }
+
+    public static void setCash(Double money, String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo "
+                + "set dinero_efectivo = ? where codigo_punto_de_venta = ? ");
+
+        stmt.setDouble(1, money);
+        stmt.setString(2, Constants.myId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    public static void newCash(Double money, String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito "
+                + " , dinero_efectivo , dinero_tarjeta_debito ) values ( )");
+
+        stmt.setDouble(1, money);
+        stmt.setString(2, Constants.myId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
 }

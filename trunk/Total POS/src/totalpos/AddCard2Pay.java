@@ -169,7 +169,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
             msb.show(this);
             return;
         }
-        if ( d < 0 ){
+        if ( d <= .0 ){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto");
             msb.show(this);
             return;

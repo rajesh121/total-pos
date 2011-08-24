@@ -947,7 +947,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
     private void addItem(Item get) {
         try {
-            ConnectionDrivers.addItem2Receipt(actualId, get);
+            ConnectionDrivers.addItem2Receipt(actualId, get, quant);
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
             String[] s = {get.getDescription(), quant+"", get.getDescuento()+"", get.getLastPrice().toString(), get.getLastPrice().getIva().toString(), get.getLastPrice().plusIva().toString()};

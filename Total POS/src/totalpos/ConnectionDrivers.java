@@ -698,14 +698,15 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static void addItem2Receipt(String receiptId, Item item) throws SQLException, Exception{
+    protected static void addItem2Receipt(String receiptId, Item item, int quant) throws SQLException, Exception{
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura_contiene"
-                + " ( codigo_interno_factura, codigo_de_articulo ) "
-                + "values ( ? , ? )");
+                + " ( codigo_interno_factura, codigo_de_articulo, cantidad) "
+                + "values ( ? , ? , ? )");
         stmt.setString(1, receiptId);
         stmt.setString(2, item.getCode());
+        stmt.setInt(3, quant);
         stmt.executeUpdate();
 
         changeItemStock(item.getCode(), -1);

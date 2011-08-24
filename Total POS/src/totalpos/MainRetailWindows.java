@@ -69,14 +69,33 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 return;
             }
 
-            //createPhotoLabel();
             /*StartSplash ss = new StartSplash();
             ss.changeStatus("Verificando Impresora", 30);
             Shared.centerFrame(ss);
             ss.setVisible(true);*/
             updateAll();
 
-            //ConnectionDrivers.updateReportZ(printer.getZ());
+            ConnectionDrivers.updateReportZ(printer.getZ());
+            
+            Double currentMoney = ConnectionDrivers.getCashToday(Constants.myId);
+            while ( currentMoney == -1.0 ){
+                String cc = JOptionPane.showInputDialog(getParent(),
+                        "Monto Inicial de caja", Constants.df.format(Constants.minimumCash));
+
+                try{
+                    currentMoney = Double.parseDouble(cc.replace(',', '.'));
+                    if ( currentMoney < 150.0 ){
+                        throw new NumberFormatException();
+                    }else{
+                        ConnectionDrivers.setCash(currentMoney, Constants.myId);
+                    }
+                }catch ( NumberFormatException ex){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
+                            "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(Constants.minimumCash) + " Bsf");
+                    msb.show(null);
+                    currentMoney = -1.0;
+                }
+            }
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);

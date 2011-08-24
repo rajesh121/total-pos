@@ -54,15 +54,10 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cancelButton" min="-2" pref="85" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="nameField" alignment="1" pref="275" max="32767" attributes="1"/>
-                                  <Component id="idField" alignment="1" pref="275" max="32767" attributes="1"/>
-                                  <Component id="phoneField" alignment="1" pref="275" max="32767" attributes="1"/>
-                                  <Component id="jScrollPane1" alignment="1" pref="275" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
+                          <Component id="nameField" alignment="1" pref="275" max="32767" attributes="1"/>
+                          <Component id="idField" alignment="1" pref="275" max="32767" attributes="1"/>
+                          <Component id="phoneField" alignment="1" pref="275" max="32767" attributes="1"/>
+                          <Component id="jScrollPane1" alignment="1" pref="275" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -128,7 +123,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="C.I./R.I.F."/>
+        <Property name="text" type="java.lang.String" value="R.I.F."/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="cirifLabel" noResource="true"/>
       </Properties>

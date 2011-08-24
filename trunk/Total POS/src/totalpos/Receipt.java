@@ -22,10 +22,15 @@ public class Receipt {
     private String zReportId;
     private String userCodeId;
     private Integer numberItems;
-    private List<Item> items;
+    private List<Item2Receipt> items;
     private String turn;
 
-    public Receipt(String internId, String status, Date creationDate, Date printingDate, String clientId, Double totalWithoutIva, Double totalWithIva, Double globalDiscount, Double iva, String fiscalPrinter, String fiscalNumber, String zReportId, String userCodeId, Integer numberItems, List<Item> items, String turn) {
+    public Receipt(String internId, String status, Date creationDate,
+            Date printingDate, String clientId, Double totalWithoutIva,
+            Double totalWithIva, Double globalDiscount, Double iva,
+            String fiscalPrinter, String fiscalNumber, String zReportId,
+            String userCodeId, Integer numberItems, List<Item2Receipt> items,
+            String turn) {
         this.internId = internId;
         this.status = status;
         this.creationDate = creationDate;
@@ -68,7 +73,7 @@ public class Receipt {
         return internId;
     }
 
-    public List<Item> getItems() {
+    public List<Item2Receipt> getItems() {
         return items;
     }
 

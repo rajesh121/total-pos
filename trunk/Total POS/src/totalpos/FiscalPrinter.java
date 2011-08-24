@@ -56,7 +56,7 @@ public class FiscalPrinter {
         return getSerial().equals(serial);
     }
 
-    public void printTicket(List<Item> items , Client client, Double globalDiscount, String ticketId, User u , List<PayForm> pfs) throws Exception{
+    public void printTicket(List<Item2Receipt> items , Client client, Double globalDiscount, String ticketId, User u , List<PayForm> pfs) throws Exception{
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -90,9 +90,10 @@ public class FiscalPrinter {
                 }
             }
 
-            for (Item item : items) {
+            for (Item2Receipt item2r : items) {
+                Item item = item2r.getItem();
                 printer.SendCmd(a, b, "!" + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
-                        "00001000" + item.getDescription().substring(0, Math.min(item.getDescription().length(), 38)));
+                        Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 38)));
                 if ( b.getValue() != 0 ){
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }

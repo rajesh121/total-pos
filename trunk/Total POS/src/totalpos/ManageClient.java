@@ -378,5 +378,5 @@ public class ManageClient extends javax.swing.JDialog {
         parent.setClient(myClient.getId().isEmpty()?null:myClient);
         this.dispose();
     }
-
+    
 }

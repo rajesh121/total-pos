@@ -22,8 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -40,7 +38,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
     private User user;
     protected int quant = 1;
-    private List<Item> items;
+    private List<Item2Receipt> items;
     public String actualId;
     public FiscalPrinter printer;
     public boolean isOk = false;
@@ -114,18 +112,19 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         subTotalLabelResult.setText("0.00 Bsf");
         discountLabel.setVisible(false);
         discountResult.setVisible(false);
-        items = new ArrayList<Item>();
+        items = new ArrayList<Item2Receipt>();
         imageLabel.setVisible(false);
         globalDiscount = .0;
+        quant = 1;
 
-        updateTable();
+        cleanTable();
 
         actualId = nextId();
         ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
         setClient(null);
     }
 
-    protected void updateTable(){
+    protected void cleanTable(){
         DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
         model.setRowCount(0);
     }
@@ -168,7 +167,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 Component comp = super.prepareRenderer(renderer, row, column);
                 double discD = .0;
                 try{
-                    discD = Double.parseDouble((String)getValueAt(row, 1));
+                    discD = Double.parseDouble((String)getValueAt(row, 2));
                 }catch(Exception ex){
                     ;
                 }
@@ -238,17 +237,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         gridTable.setBackground(Constants.transparent); //THIS IS THE TRICK, ISN'T IT? xD
         gridTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Descripción", "Descuento", "Precio", "Iva", "Total"
+                "Descripción", "Cantidad", "Descuento", "Precio", "Iva", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -649,6 +648,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     cleanForNewItem();
                     return;
                 }
+                //TODO FIX IT!!!!!!
                 assert( itemC.size() >= 1 );
                 if ( itemC.get(0).isStatus() ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo bloqueado. No puede ser facturado!");
@@ -810,8 +810,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ExtractMoney em = new ExtractMoney(this, true, printer);
             Shared.centerFrame(em);
             em.setVisible(true);
-        } else if ( evt.getKeyCode() == KeyEvent.VK_F1 ){
-            String id = JOptionPane.showInputDialog("Correlativo de Factura");
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F3 ){
+            String id = JOptionPane.showInputDialog(this, "Nota de crédito", "");
             if ( id != null ){
                 try {
                     Receipt r = ConnectionDrivers.getReceiptToDev(id);
@@ -828,6 +828,16 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     msb.show(null);
                     this.dispose();
                     Shared.reload();
+                }
+            }
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F1 ){
+            String nn = JOptionPane.showInputDialog(this, "Cambiar cantidad de artículos a agregar.", "");
+            if ( nn != null ){
+                try{
+                    quant = Integer.parseInt(nn);
+                }catch( NumberFormatException ex ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Número incorrecto.",ex);
+                    msb.show(null);
                 }
             }
         }
@@ -879,7 +889,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_barcodeFieldKeyReleased
 
     private void updateCurrentItem(){
-        Item i = items.get(gridTable.getSelectedRow());
+        Item i = items.get(gridTable.getSelectedRow()).getItem();
         descriptionLabel.setText(i.getDescription());
         currentPrice.setText(i.getLastPrice().toString());
         Shared.loadPhoto(imageLabel, i.getImageAddr(),imagePanel.getWidth()-27,imagePanel.getHeight()-30);
@@ -940,10 +950,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ConnectionDrivers.addItem2Receipt(actualId, get);
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
-            String[] s = {get.getDescription(), get.getDescuento()+"", get.getLastPrice().toString(), get.getLastPrice().getIva().toString(), get.getLastPrice().plusIva().toString()};
+            String[] s = {get.getDescription(), quant+"", get.getDescuento()+"", get.getLastPrice().toString(), get.getLastPrice().getIva().toString(), get.getLastPrice().plusIva().toString()};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
-            items.add(get);
+            items.add(new Item2Receipt(get, quant));
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
             msb.show(this);
@@ -965,9 +975,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
     public void updateSubTotal() {
         double subT = .0 , ivaT = .0 , total = .0 , subTwithoutD = .0;
-        for (Item item : items) {
-            subTwithoutD += item.getLastPrice().withDiscount(item.getDescuento()).getQuant();
-            subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant()*(1.0-globalDiscount) , 2 );
+        for (Item2Receipt item2r : items) {
+            Item item = item2r.getItem();
+            subTwithoutD += item.getLastPrice().withDiscount(item.getDescuento()).getQuant()*item2r.getQuant();
+            subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant()*(1.0-globalDiscount) , 2 )*item2r.getQuant();
         }
 
         subTotalLabelResult.setText(Constants.df.format(subTwithoutD) + " Bsf");
@@ -1015,7 +1026,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private void deleteItem() {
         if ( gridTable.getSelectedRow() != -1){
             try {
-                ConnectionDrivers.deleteItem2Receipt(actualId, items.get(gridTable.getSelectedRow()));
+                ConnectionDrivers.deleteItem2Receipt(actualId, items.get(gridTable.getSelectedRow()).getItem());
 
                 items.remove(gridTable.getSelectedRow());
                 DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
@@ -1075,10 +1086,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             actualId = r.getInternId();
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
-            for (Item item : r.getItems()) {
-                String[] s = {item.getDescription(), item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
+            for (Item2Receipt item2r : r.getItems()) {
+                Item item = item2r.getItem();
+                String[] s = {item.getDescription(), item2r.getQuant()+"", item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
                 model.addRow(s);
-                items.add(item);
+                items.add(item2r);
             }
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
             updateCurrentItem();

@@ -9,13 +9,11 @@ package totalpos;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class AddCard2Pay extends javax.swing.JDialog {
 

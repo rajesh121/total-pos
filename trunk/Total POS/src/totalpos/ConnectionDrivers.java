@@ -1006,6 +1006,46 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static List<Item2Receipt> listItems2Receipt(String receiptID) throws SQLException{
+        List<Item2Receipt> ans = new ArrayList<Item2Receipt>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento , fc.cantidad "
+                + "from articulo a , factura_contiene fc where fc.codigo_interno_factura = ? and fc.codigo_de_articulo = a.codigo");
+        stmt.setString(1, receiptID);
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(new Item2Receipt(
+                        new Item(
+                            rs.getString("codigo"),
+                            rs.getString("descripcion"),
+                            rs.getDate("fecha_registro"),
+                            rs.getString("marca"),
+                            rs.getString("sector"),
+                            rs.getString("codigo_sublinea"),
+                            rs.getString("codigo_de_barras"),
+                            rs.getString("modelo"),
+                            rs.getString("unidad_venta"),
+                            rs.getString("unidad_compra"),
+                            rs.getInt("existencia_actual"),
+                            listPrices(rs.getString("codigo")),
+                            listCosts(rs.getString("codigo")),
+                            listBarcodes(rs.getString("codigo")),
+                            rs.getBoolean("bloqueado"),
+                            rs.getString("imagen"),
+                            rs.getString("descuento")
+                        ),
+                        rs.getInt("cantidad"))
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
     protected static List<Receipt> listIdleReceiptToday() throws SQLException{
         List<Receipt> ans = new ArrayList<Receipt>();
 
@@ -1035,7 +1075,7 @@ public class ConnectionDrivers {
                             rs.getString("numero_reporte_z"),
                             rs.getString("codigo_de_usuario"),
                             rs.getInt("cantidad_de_articulos"),
-                            listItems(rs.getString("codigo_interno")),
+                            listItems2Receipt(rs.getString("codigo_interno")),
                             rs.getString("identificador_turno")
                         )
                     );
@@ -1404,7 +1444,7 @@ public class ConnectionDrivers {
 
         if (!ok ) return null;
         
-        List<Item> l = listItems(id);
+        List<Item2Receipt> l = listItems2Receipt(id);
         return new Receipt(id, "Facturada",null, null, null, null, null, null, null, null, null, null, null, null, l, null);
     }
 

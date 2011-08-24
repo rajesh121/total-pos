@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -42,11 +43,10 @@ public class MainWindows extends javax.swing.JFrame {
     public MainWindows(User user) {
         initComponents();
 
-        mdiPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        mdiPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         mdiPanel.setFocusable(true);
         mdiPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                
                 mdiPanelMouseMoved(evt);
             }
 

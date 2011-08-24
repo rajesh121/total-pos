@@ -9,6 +9,8 @@ package totalpos;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -206,6 +208,9 @@ public class ListTurnsAssigned extends JInternalFrame {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
                 msg.show(this);
                 Shared.reload();
+            } catch (Exception ex) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, ex.getMessage());
+                msg.show(this);
             }
         }else{
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar una asignación.");
@@ -235,6 +240,9 @@ public class ListTurnsAssigned extends JInternalFrame {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
                 msg.show(this);
                 Shared.reload();
+            } catch (Exception ex) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, ex.getMessage());
+                msg.show(this);
             }
         }else{
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar una asignación.");

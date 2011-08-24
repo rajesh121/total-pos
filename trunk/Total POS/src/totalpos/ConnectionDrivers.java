@@ -875,7 +875,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    private static boolean assignIsOk(Assign a) throws SQLException{
+    private static boolean isOverlapping(Assign a) throws SQLException{
         List<Assign> l = listAssignsTurnPosToday();
         Turn newTurn = Shared.getTurn(listTurns(), a.getTurn());
         for (Assign assign : l) {
@@ -885,9 +885,13 @@ public class ConnectionDrivers {
                     (a.getTurn().equals(assign.getTurn()) ||
                         ( (t.getInicio().before(newTurn.getFin()) && newTurn.getInicio().before(t.getFin())) ||
                             (newTurn.getInicio().before(t.getFin()) && t.getInicio().before(newTurn.getFin())) ) )){
-                return false;
+                return true;
             }
         }
+        return false;
+    }
+
+    private static boolean isExpired(Assign a) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         Turn t = Shared.getTurn(listTurns(), a.getTurn());
 
@@ -898,8 +902,11 @@ public class ConnectionDrivers {
         ans = rs.getTime(1).before(t.getFin());
 
         c.close();
+        return !ans;
+    }
 
-        return ans;
+    private static boolean assignIsOk(Assign a) throws SQLException{
+        return !isOverlapping(a) && !isExpired(a);
     }
 
     protected static List<Assign> listAssignsTurnPosRightNow() throws SQLException{
@@ -1128,7 +1135,10 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void setAssignOpen(Assign a, boolean isOpen) throws SQLException {
+    public static void setAssignOpen(Assign a, boolean isOpen) throws SQLException, Exception {
+        if ( isExpired(a) ){
+            throw new Exception("No se puede modificar una asignación expirada");
+        }
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update asigna set abierto = ? where identificador_turno = ? and identificador_pos = ? and datediff( fecha, ? ) = 0");
         stmt.setInt(1, isOpen?1:0);

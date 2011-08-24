@@ -22,7 +22,7 @@ public class ManageClient extends javax.swing.JDialog {
     private boolean modified = false;
 
     /** Creates new form ManageClient */
-    public ManageClient(Frame parent, boolean modal) {
+    public ManageClient(Frame parent, boolean modal, Client c) {
         super(parent, modal);
         initComponents();
         this.parent = (MainRetailWindows) parent;
@@ -30,6 +30,12 @@ public class ManageClient extends javax.swing.JDialog {
         modifyClient.setMnemonic('M');
         cancelButton.setMnemonic('C');
         acceptButton.setMnemonic('A');
+        if ( c != null ){
+            searchIt(c.getId());
+            if ( found ){
+                idField.setText(c.getId());
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -67,7 +73,7 @@ public class ManageClient extends javax.swing.JDialog {
 
         cirifLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         cirifLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        cirifLabel.setText("C.I./R.I.F.");
+        cirifLabel.setText("R.I.F.");
         cirifLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         cirifLabel.setName("cirifLabel"); // NOI18N
 
@@ -190,13 +196,10 @@ public class ManageClient extends javax.swing.JDialog {
                                 .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nameField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                                    .addComponent(idField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                                    .addComponent(phoneField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE))))
+                            .addComponent(nameField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                            .addComponent(idField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                            .addComponent(phoneField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -238,9 +241,9 @@ public class ManageClient extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void idFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idFieldFocusLost
+    private void searchIt(String clientId){
         try {
-            List<Client> clients = ConnectionDrivers.listClients(idField.getText());
+            List<Client> clients = ConnectionDrivers.listClients(clientId);
             if ( clients.isEmpty() ){
                 nameField.setText("");
                 phoneField.setText("");
@@ -249,6 +252,7 @@ public class ManageClient extends javax.swing.JDialog {
                 phoneField.setEditable(true);
                 addressField.setEditable(true);
                 modifyClient.setVisible(false);
+                found = false;
             }else if ( clients.size() == 1 ){
                 Client c = clients.get(0);
                 nameField.setText(c.getName());
@@ -262,6 +266,7 @@ public class ManageClient extends javax.swing.JDialog {
             }else{
                 // It shouldn't reach this line.
                 // There are 2 clients with the same RIF.
+                found = false;
                 assert( false );
             }
         } catch (SQLException ex) {
@@ -270,6 +275,10 @@ public class ManageClient extends javax.swing.JDialog {
             this.dispose();
             Shared.reload();
         }
+    }
+
+    private void idFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idFieldFocusLost
+        searchIt(idField.getText());
     }//GEN-LAST:event_idFieldFocusLost
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
@@ -332,12 +341,22 @@ public class ManageClient extends javax.swing.JDialog {
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
+    private boolean validateRif(){
+        if ( !idField.getText().matches("([VGJ][0-9]*)") || idField.getText().length() != 10){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Rif inválido.");
+            msb.show(this);
+            idField.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
     private void doIt() {
         Shared.getScreenSaver().actioned();
 
-        if ( !idField.getText().matches("([VEJ][0-9]*)") ){
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La cédula o rif inválido.");
-            msb.show(this);
+        if ( ! validateRif() ){
+            idField.setSelectionStart(0);
+            idField.setSelectionEnd(idField.getText().length());
             idField.requestFocus();
             return;
         }

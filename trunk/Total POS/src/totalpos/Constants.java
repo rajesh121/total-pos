@@ -35,6 +35,7 @@ public class Constants {
     public static final boolean isPos = true;
 
     public static int secondToCheckTurn = 30;
+    public static int secondToUpdateCountdown = 5;
 
     /**
      * TODO: This must be in the local database!!!

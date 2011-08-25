@@ -1,6 +1,7 @@
 package totalpos;
 
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,12 +25,11 @@ public class UpdateClock extends Thread{
 
     @Override
     public void run(){
-        int checkTurn = 1;
+        int checking = 1;
         while(Shared.getUser() != null ){
-            ++checkTurn;
-            checkTurn %= Constants.secondToCheckTurn;
+            ++checking;
 
-            if ( checkTurn == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+            if ( checking % Constants.secondToCheckTurn == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
                 try {
                     List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                     boolean toContinue = false;
@@ -44,6 +44,24 @@ public class UpdateClock extends Thread{
                         msg.show(null);
                         Shared.reload();
                         break;
+                    }
+                } catch (SQLException ex) {
+                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos");
+                    msg.show(null);
+                    Shared.reload();
+                    break;
+                }
+            }
+
+            if ( checking % Constants.secondToUpdateCountdown == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+                try {
+                    List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
+                    for (Assign assign : as) {
+                        if (assign.getPos().equals(Constants.myId) && assign.isOpen()) {
+                            Turn cur = Shared.getTurn(ConnectionDrivers.listTurns(), assign.getTurn());
+                            Time diff = ConnectionDrivers.getDiff( cur.getFin() );
+                            break; // for performance ...  =D!
+                        }
                     }
                 } catch (SQLException ex) {
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos");

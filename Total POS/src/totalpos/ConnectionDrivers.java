@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -1595,5 +1596,19 @@ public class ConnectionDrivers {
         stmt.executeUpdate();
 
         c.close();
+    }
+
+    public static Time getDiff(Time t) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select timediff( curtime(), ? )");
+        stmt.setTime(1, t);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+
+        Time ans = rs.getTime(1);
+
+        c.close();
+        rs.close();
+        return ans;
     }
 }

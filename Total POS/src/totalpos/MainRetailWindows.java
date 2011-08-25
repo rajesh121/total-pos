@@ -856,7 +856,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     if (r == null) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La factura no existe!");
                         msb.show(null);
-                    } else {
+                    } else if ( r.getGlobalDiscount() != .0 ) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La factura tiene descuento global. No puede ser devuelta!");
+                        msb.show(null);
+                    }else {
                         CreditNoteForm cnf = new CreditNoteForm(this, true, r);
                         Shared.centerFrame(cnf);
                         cnf.setVisible(true);

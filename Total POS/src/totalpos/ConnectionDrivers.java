@@ -1451,7 +1451,7 @@ public class ConnectionDrivers {
     public static Receipt getReceiptToDev(String id) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo_interno , estado , fecha_creacion , codigo_de_cliente , total_con_iva ,"
-                + "impresora , numero_fiscal , numero_reporte_z "
+                + "impresora , numero_fiscal , numero_reporte_z , descuento_global"
                 + " from factura where codigo_interno = ? and estado='Facturada'");
         stmt.setString(1, id);
         ResultSet rs = stmt.executeQuery();
@@ -1460,7 +1460,7 @@ public class ConnectionDrivers {
         Receipt ans = null;
         if ( ok ){
             ans = new Receipt(id, "Facturada",rs.getTimestamp("fecha_creacion"), null, rs.getString("codigo_de_cliente")
-                    , null, rs.getDouble("total_con_iva"), null, null, rs.getString("impresora"),
+                    , null, rs.getDouble("total_con_iva"), rs.getDouble("descuento_global"), null, rs.getString("impresora"),
                     rs.getString("numero_fiscal"), rs.getString("numero_reporte_z"),
                     null, null, listItems2Receipt(id), null);
         }

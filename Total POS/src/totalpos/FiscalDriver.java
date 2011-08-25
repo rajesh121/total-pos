@@ -5,7 +5,7 @@ import com.sun.jna.ptr.IntByReference;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public interface FiscalDriver extends Library{
 

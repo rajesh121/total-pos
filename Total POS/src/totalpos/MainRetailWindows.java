@@ -851,15 +851,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F1 ){
-            String nn = JOptionPane.showInputDialog(this, "Cambiar cantidad de artículos a agregar.", "");
-            if ( nn != null ){
-                try{
-                    quant = Integer.parseInt(nn);
-                }catch( NumberFormatException ex ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Número incorrecto.",ex);
-                    msb.show(null);
-                }
-            }
+            ChangeQuantItems cqi = new ChangeQuantItems(this, true);
+            Shared.centerFrame(cqi);
+            cqi.setVisible(true);
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 

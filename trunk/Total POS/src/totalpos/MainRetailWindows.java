@@ -229,6 +229,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
         jPanel3 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/fecha-y-hora.jpg")).getImage()));
         whatTimeIsIt = new javax.swing.JLabel();
         messageToTheClients = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-mensajes-al-cajero.jpg")).getImage()));
@@ -478,7 +480,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel3.setText("F5 / Pagar");
+        jLabel3.setText("F5 / Cobrar");
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel3.setName("jLabel3"); // NOI18N
 
@@ -512,6 +514,16 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel9.setName("jLabel9"); // NOI18N
 
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel10.setText("F6 / Extraer Dinero");
+        jLabel10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel10.setName("jLabel10"); // NOI18N
+
+        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel11.setText("F3 Nota de Crédito");
+        jLabel11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel11.setName("jLabel11"); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -535,7 +547,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel9)
-                .addContainerGap(247, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -550,7 +566,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(jLabel7)
                     .addComponent(jLabel8)
-                    .addComponent(jLabel9))
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel11))
                 .addContainerGap())
         );
 
@@ -922,6 +940,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel ivaLabel;
     private javax.swing.JLabel ivaLabelResult;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

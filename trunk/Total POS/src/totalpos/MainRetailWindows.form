@@ -496,7 +496,11 @@
                       <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="247" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="25" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -514,6 +518,8 @@
                           <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -546,7 +552,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="F5 / Pagar"/>
+                <Property name="text" type="java.lang.String" value="F5 / Cobrar"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
               </Properties>
@@ -609,6 +615,26 @@
                 <Property name="text" type="java.lang.String" value="F12 / Ver  espera"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="name" type="java.lang.String" value="jLabel9" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel10">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="F6 / Extraer Dinero"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="jLabel10" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel11">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="F3 Nota de Cr&#xe9;dito"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="jLabel11" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>

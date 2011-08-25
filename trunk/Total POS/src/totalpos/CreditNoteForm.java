@@ -12,8 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -37,7 +35,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
             internIdField.setText(receipt.getInternId());
             fiscalNumberField.setText(receipt.getFiscalNumber());
             fiscalPrinterField.setText(receipt.getFiscalPrinter());
-            totalField.setText(receipt.getTotalWithIva() + "");
+            totalField.setText(Constants.df.format(receipt.getTotalWithIva()));
             zReportField.setText(receipt.getzReportId());
             dateField.setText(Constants.sdfDateHour.format(receipt.getCreationDate()));
             List<Client> l = ConnectionDrivers.listClients(receipt.getClientId());

@@ -1,6 +1,6 @@
 package totalpos;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -10,8 +10,8 @@ import java.util.List;
 public class Receipt {
     private String internId;
     private String status;
-    private Date creationDate;
-    private Date printingDate;
+    private Timestamp creationDate;
+    private Timestamp printingDate;
     private String clientId;
     private Double totalWithoutIva;
     private Double totalWithIva;
@@ -25,8 +25,8 @@ public class Receipt {
     private List<Item2Receipt> items;
     private String turn;
 
-    public Receipt(String internId, String status, Date creationDate,
-            Date printingDate, String clientId, Double totalWithoutIva,
+    public Receipt(String internId, String status, Timestamp creationDate,
+            Timestamp printingDate, String clientId, Double totalWithoutIva,
             Double totalWithIva, Double globalDiscount, Double iva,
             String fiscalPrinter, String fiscalNumber, String zReportId,
             String userCodeId, Integer numberItems, List<Item2Receipt> items,
@@ -53,7 +53,7 @@ public class Receipt {
         return clientId;
     }
 
-    public Date getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
@@ -85,7 +85,7 @@ public class Receipt {
         return numberItems;
     }
 
-    public Date getPrintingDate() {
+    public Timestamp getPrintingDate() {
         return printingDate;
     }
 

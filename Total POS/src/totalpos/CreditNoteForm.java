@@ -25,7 +25,11 @@ public class CreditNoteForm extends javax.swing.JDialog {
     private MainRetailWindows myParent;
     public boolean isOk = false;
 
-    /** Creates new form CreditNoteForm */
+    /** Creates new form CreditNoteForm
+     * @param parent
+     * @param modal
+     * @param r 
+     */
     public CreditNoteForm(MainRetailWindows parent, boolean modal, Receipt r) {
         super(parent, modal);
         initComponents();
@@ -123,20 +127,20 @@ public class CreditNoteForm extends javax.swing.JDialog {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Devolver", "Descripción", "Descuento", "Precio", "IVA", "Total"
+                "Devolver", "Cantidad", "Descripción", "Descuento", "Precio", "IVA", "Total"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, true, false
+                true, true, false, false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -178,21 +182,21 @@ public class CreditNoteForm extends javax.swing.JDialog {
         jPanel1.setFocusable(false);
         jPanel1.setName("jPanel1"); // NOI18N
 
-        codeLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        codeLabel.setFont(new java.awt.Font("Courier New", 1, 12));
         codeLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         codeLabel.setText("Código");
         codeLabel.setFocusable(false);
         codeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         codeLabel.setName("codeLabel"); // NOI18N
 
-        nameLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        nameLabel.setFont(new java.awt.Font("Courier New", 1, 12));
         nameLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         nameLabel.setText("Nombre");
         nameLabel.setFocusable(false);
         nameLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nameLabel.setName("nameLabel"); // NOI18N
 
-        phoneLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        phoneLabel.setFont(new java.awt.Font("Courier New", 1, 12));
         phoneLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         phoneLabel.setText("Teléfono");
         phoneLabel.setFocusable(false);
@@ -214,7 +218,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
         clientPhoneField.setFocusable(false);
         clientPhoneField.setName("clientPhoneField"); // NOI18N
 
-        descriptionLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Courier New", 1, 12));
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 3x.jpg"))); // NOI18N
         descriptionLabel.setText("Dirección");
@@ -226,7 +230,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
 
         clientDescriptionField.setColumns(20);
         clientDescriptionField.setEditable(false);
-        clientDescriptionField.setRows(5);
+        clientDescriptionField.setRows(2);
         clientDescriptionField.setFocusable(false);
         clientDescriptionField.setName("clientDescriptionField"); // NOI18N
         clientDescription.setViewportView(clientDescriptionField);
@@ -276,7 +280,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
         jPanel2.setFocusable(false);
         jPanel2.setName("jPanel2"); // NOI18N
 
-        internCode.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        internCode.setFont(new java.awt.Font("Courier New", 1, 12));
         internCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         internCode.setText("Correlativo");
         internCode.setFocusable(false);
@@ -288,7 +292,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
         internIdField.setFocusable(false);
         internIdField.setName("internIdField"); // NOI18N
 
-        fiscalPrinter.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        fiscalPrinter.setFont(new java.awt.Font("Courier New", 1, 12));
         fiscalPrinter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         fiscalPrinter.setText("Impresora");
         fiscalPrinter.setFocusable(false);
@@ -300,7 +304,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
         fiscalPrinterField.setFocusable(false);
         fiscalPrinterField.setName("fiscalPrinterField"); // NOI18N
 
-        fiscalNumber.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        fiscalNumber.setFont(new java.awt.Font("Courier New", 1, 12));
         fiscalNumber.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         fiscalNumber.setText("Nro Fiscal");
         fiscalNumber.setFocusable(false);
@@ -317,14 +321,14 @@ public class CreditNoteForm extends javax.swing.JDialog {
         zReportField.setFocusable(false);
         zReportField.setName("zReportField"); // NOI18N
 
-        zReport.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        zReport.setFont(new java.awt.Font("Courier New", 1, 12));
         zReport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         zReport.setText("Reporte Z");
         zReport.setFocusable(false);
         zReport.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         zReport.setName("zReport"); // NOI18N
 
-        dateLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        dateLabel.setFont(new java.awt.Font("Courier New", 1, 12));
         dateLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         dateLabel.setText("Momento");
         dateLabel.setFocusable(false);
@@ -336,7 +340,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
         dateField.setFocusable(false);
         dateField.setName("dateField"); // NOI18N
 
-        zReport1.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        zReport1.setFont(new java.awt.Font("Courier New", 1, 12));
         zReport1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         zReport1.setText("Total");
         zReport1.setFocusable(false);
@@ -389,7 +393,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
                             .addComponent(internIdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(fiscalPrinter))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(26, 26, 26)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -397,8 +401,9 @@ public class CreditNoteForm extends javax.swing.JDialog {
                                         .addComponent(dateLabel)
                                         .addComponent(dateField, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(zReport1)))
-                            .addComponent(fiscalNumber)
-                            .addComponent(fiscalNumberField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(fiscalNumber)
+                                .addComponent(fiscalNumberField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(fiscalPrinterField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -530,6 +535,12 @@ public class CreditNoteForm extends javax.swing.JDialog {
             if (items.isEmpty()) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar al menos un (1) artículo para devolver.");
                 msb.show(this);
+                return;
+            }
+            myParent.printer.printerSerial = null;
+            if (!myParent.printer.checkPrinter()) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
+                msb.show(null);
                 return;
             }
             actualId = nextId();

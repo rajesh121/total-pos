@@ -876,14 +876,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
     public void print(List<PayForm> l) throws SQLException, FileNotFoundException, Exception{
-        printer.printerSerial = null;
-        if (!checkPrinter()) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
-            msb.show(null);
-            this.dispose();
-            Shared.reload();
-            return;
-        }
         printer.printTicket(items, client, globalDiscount, actualId, user , l);
         ConnectionDrivers.setFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber());
         if ( client != null ){
@@ -1130,11 +1122,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             updateCurrentItem();
             updateSubTotal();
         }
-    }
-
-    private boolean checkPrinter() throws SQLException, FileNotFoundException, Exception {
-        String p = ConnectionDrivers.getMyPrinter();
-        return printer.isTheSame(p);
     }
 
     public void deleteCurrent(){

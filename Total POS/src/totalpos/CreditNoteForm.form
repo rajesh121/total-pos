@@ -84,8 +84,9 @@
         <Component class="javax.swing.JTable" name="table">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="6" rowCount="4">
+              <Table columnCount="7" rowCount="4">
                 <Column editable="true" title="Devolver" type="java.lang.Boolean"/>
+                <Column editable="true" title="Cantidad" type="java.lang.Object"/>
                 <Column editable="false" title="Descripci&#xf3;n" type="java.lang.Object"/>
                 <Column editable="false" title="Descuento" type="java.lang.Object"/>
                 <Column editable="false" title="Precio" type="java.lang.Object"/>
@@ -96,6 +97,11 @@
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="20" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
@@ -290,7 +296,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="descriptionLabel">
           <Properties>
-            <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Courier New" size="12" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
@@ -317,7 +323,7 @@
               <Properties>
                 <Property name="columns" type="int" value="20"/>
                 <Property name="editable" type="boolean" value="false"/>
-                <Property name="rows" type="int" value="5"/>
+                <Property name="rows" type="int" value="2"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="clientDescriptionField" noResource="true"/>
               </Properties>
@@ -383,7 +389,7 @@
                               <Component id="fiscalPrinter" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -394,8 +400,10 @@
                                       <Component id="zReport1" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <Component id="fiscalNumber" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="fiscalNumberField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="fiscalNumber" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="fiscalNumberField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">

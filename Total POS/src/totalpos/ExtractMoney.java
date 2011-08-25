@@ -104,6 +104,7 @@ public class ExtractMoney extends javax.swing.JDialog {
         });
 
         cancelButton.setText("Cancelar");
+        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -112,6 +113,7 @@ public class ExtractMoney extends javax.swing.JDialog {
         });
 
         acceptButton.setText("Aceptar");
+        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -219,6 +221,8 @@ public class ExtractMoney extends javax.swing.JDialog {
     private void moneyFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moneyFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
+        }if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            doIt();
         }
 }//GEN-LAST:event_moneyFieldKeyPressed
 
@@ -266,10 +270,10 @@ public class ExtractMoney extends javax.swing.JDialog {
         try{
             double p = Double.parseDouble(moneyField.getText());
 
-            //TODO check if you are trying to extract more money than you have.
-            /* ( p >= 100.0 || p < .0){
+            double curMoney = ConnectionDrivers.getCashToday(Constants.myId);
+            if ( p >= curMoney || p <= 1.0){
                 throw new NumberFormatException("");
-            }*/
+            }
 
             if ( !ConnectionDrivers.existsUser(idField.getText().trim()) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
@@ -291,9 +295,8 @@ public class ExtractMoney extends javax.swing.JDialog {
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "extractMoney") ){
                 Shared.userInsertedPasswordOk(idField.getText());
 
+                ConnectionDrivers.setCash(curMoney-p, Constants.myId);
                 printer.extractMoney(u, idField.getText(), p);
-                //TODO Change money from point of sale.
-                // 
 
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Operación existosa!");
                 msg.show(this);

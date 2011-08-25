@@ -291,6 +291,13 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");
                     msb.show(null);
                 }else{
+                    myParent.printer.printerSerial = null;
+                    if (!myParent.printer.checkPrinter()) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
+                        msb.show(null);
+                        return;
+                    }
+                    
                     myParent.print(payForms);
                     add("Cambio",change);
                     ConnectionDrivers.savePayForm(payForms);

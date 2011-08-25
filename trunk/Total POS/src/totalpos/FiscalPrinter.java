@@ -3,6 +3,8 @@ package totalpos;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,6 +22,11 @@ public class FiscalPrinter {
 
     public FiscalPrinter() {
         printer = (FiscalDriver) Native.loadLibrary("tfhkaif", FiscalDriver.class);;
+    }
+
+     public boolean checkPrinter() throws SQLException, FileNotFoundException, Exception {
+        String p = ConnectionDrivers.getMyPrinter();
+        return isTheSame(p);
     }
 
     private void calculateSerial() throws Exception{

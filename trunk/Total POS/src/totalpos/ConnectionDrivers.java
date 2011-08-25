@@ -1529,10 +1529,10 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito "
-                + " , dinero_efectivo , dinero_tarjeta_debito ) values ( )");
+                + ", dinero_efectivo , dinero_tarjeta_debito ) values ( curdate() , ? , .0 , ? , .0 )");
 
-        stmt.setDouble(1, money);
-        stmt.setString(2, Constants.myId);
+        stmt.setDouble(2, money);
+        stmt.setString(1, Constants.myId);
         stmt.executeUpdate();
 
         c.close();

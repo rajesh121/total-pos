@@ -75,7 +75,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ss.setVisible(true);*/
             updateAll();
 
-            ConnectionDrivers.updateReportZ(printer.getZ());
+            //TODO Uncomment this.
+            //ConnectionDrivers.updateReportZ(printer.getZ());
             
             Double currentMoney = ConnectionDrivers.getCashToday(Constants.myId);
             while ( currentMoney == -1.0 ){
@@ -87,7 +88,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     if ( currentMoney < 150.0 ){
                         throw new NumberFormatException();
                     }else{
-                        ConnectionDrivers.setCash(currentMoney, Constants.myId);
+                        ConnectionDrivers.newCash(currentMoney, Constants.myId);
                     }
                 }catch ( NumberFormatException ex){
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,

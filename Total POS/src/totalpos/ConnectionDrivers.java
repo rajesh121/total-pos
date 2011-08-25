@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -670,7 +670,7 @@ public class ConnectionDrivers {
     protected static void createReceipt(String id, String user , Assign assign) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura"
-                + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , codigo_cliente , identificador_turno , identificador_pos) "
+                + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , codigo_de_cliente , identificador_turno , identificador_pos) "
                 + "values ( ? , 'Pedido' , now() , 0, 0, 0 , ? , 0 , \"Contado\", ? , ?)");
         stmt.setString(1, id);
         stmt.setString(2, user);
@@ -1064,8 +1064,8 @@ public class ConnectionDrivers {
                     new Receipt(
                             rs.getString("codigo_interno"),
                             rs.getString("estado"),
-                            rs.getDate("fecha_creacion"),
-                            rs.getDate("fecha_impresion"),
+                            rs.getTimestamp("fecha_creacion"),
+                            rs.getTimestamp("fecha_impresion"),
                             rs.getString("codigo_de_cliente"),
                             rs.getDouble("total_sin_iva"),
                             rs.getDouble("total_con_iva"),
@@ -1103,7 +1103,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo , nombre, direccion, telefono "
                 + "from cliente "
-                + "where codigo like ? ");
+                + "where codigo = ? ");
         stmt.setString(1, id );
         ResultSet rs = stmt.executeQuery();
 
@@ -1390,7 +1390,7 @@ public class ConnectionDrivers {
                 addCredit(payForm.getQuant(), Constants.myId);
             }else if ( payForm.getFormWay().equals("Cambio") ){
                 addCash(-1*payForm.getQuant(), Constants.myId);
-            }else if ( payForm.getFormWay().equals("Nota") ){
+            }else if ( payForm.getFormWay().equals("Nota de Credito") ){
                 //Nothing to do! 
                 ;
             } else {
@@ -1450,18 +1450,23 @@ public class ConnectionDrivers {
 
     public static Receipt getReceiptToDev(String id) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select * from factura where codigo_interno = ? and estado='Facturada'");
+        PreparedStatement stmt = c.prepareStatement("select codigo_interno , estado , fecha_creacion , codigo_de_cliente , total_con_iva ,"
+                + "impresora , numero_fiscal , numero_reporte_z "
+                + " from factura where codigo_interno = ? and estado='Facturada'");
         stmt.setString(1, id);
         ResultSet rs = stmt.executeQuery();
         boolean ok = rs.next();
-        
+
+        Receipt ans = null;
+        if ( ok ){
+            ans = new Receipt(id, "Facturada",rs.getTimestamp("fecha_creacion"), null, rs.getString("codigo_de_cliente")
+                    , null, rs.getDouble("total_con_iva"), null, null, rs.getString("impresora"),
+                    rs.getString("numero_fiscal"), rs.getString("numero_reporte_z"),
+                    null, null, listItems2Receipt(id), null);
+        }
         c.close();
         rs.close();
-
-        if (!ok ) return null;
-        
-        List<Item2Receipt> l = listItems2Receipt(id);
-        return new Receipt(id, "Facturada",null, null, null, null, null, null, null, null, null, null, null, null, l, null);
+        return ans;
     }
 
     protected static void addItem2CreditNote(String receiptId, Item item) throws SQLException, Exception{

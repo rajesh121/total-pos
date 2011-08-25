@@ -26,10 +26,10 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jScrollPane1" alignment="0" pref="619" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="625" max="32767" attributes="0"/>
                   <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
                   <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jLabel1" alignment="0" pref="619" max="32767" attributes="0"/>
+                  <Component id="jLabel1" alignment="0" pref="625" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="acceptButton" min="-2" pref="92" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -50,7 +50,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="176" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="169" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -141,6 +141,7 @@
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancelar"/>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="cancelButton" noResource="true"/>
       </Properties>
       <Events>
@@ -150,6 +151,7 @@
     <Component class="javax.swing.JButton" name="acceptButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Aceptar"/>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="acceptButton" noResource="true"/>
       </Properties>
       <Events>
@@ -163,6 +165,7 @@
             <TitledBorder title="Cliente"/>
           </Border>
         </Property>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="jPanel1" noResource="true"/>
       </Properties>
 
@@ -178,9 +181,9 @@
                   </Group>
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="clientPhoneField" pref="169" max="32767" attributes="0"/>
-                      <Component id="clientNameField" pref="169" max="32767" attributes="0"/>
-                      <Component id="clientIDField" alignment="1" pref="169" max="32767" attributes="0"/>
+                      <Component id="clientPhoneField" pref="175" max="32767" attributes="0"/>
+                      <Component id="clientNameField" pref="175" max="32767" attributes="0"/>
+                      <Component id="clientIDField" alignment="1" pref="175" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -228,6 +231,7 @@
               <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
             </Property>
             <Property name="text" type="java.lang.String" value="C&#xf3;digo"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="codeLabel" noResource="true"/>
           </Properties>
@@ -241,6 +245,7 @@
               <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Nombre"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="nameLabel" noResource="true"/>
           </Properties>
@@ -254,6 +259,7 @@
               <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Tel&#xe9;fono"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="phoneLabel" noResource="true"/>
           </Properties>
@@ -262,6 +268,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="jTextField1"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="clientIDField" noResource="true"/>
           </Properties>
         </Component>
@@ -269,6 +276,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="jTextField2"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="clientNameField" noResource="true"/>
           </Properties>
         </Component>
@@ -276,6 +284,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="jTextField3"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="clientPhoneField" noResource="true"/>
           </Properties>
         </Component>
@@ -288,7 +297,8 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/totalpos/resources/Etiquetas 3x.jpg"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Descripci&#xf3;n"/>
+            <Property name="text" type="java.lang.String" value="Direcci&#xf3;n"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="descriptionLabel" noResource="true"/>
           </Properties>
@@ -308,6 +318,7 @@
                 <Property name="columns" type="int" value="20"/>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="rows" type="int" value="5"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="clientDescriptionField" noResource="true"/>
               </Properties>
             </Component>
@@ -322,6 +333,7 @@
             <TitledBorder title="Datos de Factura"/>
           </Border>
         </Property>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="jPanel2" noResource="true"/>
       </Properties>
 
@@ -329,46 +341,73 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="fiscalNumber" pref="105" max="32767" attributes="1"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="fiscalNumberField" pref="169" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="zReport" pref="105" max="32767" attributes="1"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="fiscalNumber" max="32767" attributes="3"/>
+                          <Component id="internCode" alignment="0" max="32767" attributes="3"/>
                       </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="internCode" pref="105" max="32767" attributes="1"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="internIdField" pref="169" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="fiscalPrinter" pref="105" max="32767" attributes="1"/>
-                      </Group>
+                      <Component id="dateLabel" alignment="0" min="-2" pref="105" max="-2" attributes="2"/>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="fiscalPrinterField" pref="202" max="32767" attributes="2"/>
-                      <Component id="zReportField" alignment="0" pref="202" max="32767" attributes="2"/>
+                      <Component id="internIdField" linkSize="1" min="-2" pref="170" max="-2" attributes="0"/>
+                      <Component id="fiscalNumberField" linkSize="1" min="-2" pref="170" max="-2" attributes="0"/>
+                      <Component id="dateField" linkSize="1" min="-2" pref="173" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="fiscalPrinter" max="32767" attributes="1"/>
+                          <Component id="zReport1" alignment="0" max="32767" attributes="1"/>
+                      </Group>
+                      <Component id="zReport" max="32767" attributes="1"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="totalField" pref="204" max="32767" attributes="2"/>
+                      <Component id="fiscalPrinterField" alignment="0" pref="204" max="32767" attributes="2"/>
+                      <Component id="zReportField" alignment="0" pref="204" max="32767" attributes="2"/>
                   </Group>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="internCode" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="internIdField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="fiscalPrinter" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="fiscalPrinterField" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="fiscalNumber" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="fiscalNumberField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="zReport" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="zReportField" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="internCode" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="internIdField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="fiscalPrinter" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="dateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="dateField" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="zReport1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Component id="fiscalNumber" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="fiscalNumberField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="fiscalPrinterField" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="zReportField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="zReport" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="totalField" min="-2" max="-2" attributes="1"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -385,6 +424,7 @@
               <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Correlativo"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="internCode" noResource="true"/>
           </Properties>
@@ -393,6 +433,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="jTextField1"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="internIdField" noResource="true"/>
           </Properties>
         </Component>
@@ -405,6 +446,7 @@
               <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Impresora"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="fiscalPrinter" noResource="true"/>
           </Properties>
@@ -413,6 +455,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="jTextField1"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="fiscalPrinterField" noResource="true"/>
           </Properties>
         </Component>
@@ -425,6 +468,7 @@
               <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Nro Fiscal"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="fiscalNumber" noResource="true"/>
           </Properties>
@@ -433,6 +477,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="jTextField1"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="fiscalNumberField" noResource="true"/>
           </Properties>
         </Component>
@@ -440,6 +485,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="jTextField1"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="zReportField" noResource="true"/>
           </Properties>
         </Component>
@@ -452,8 +498,53 @@
               <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Reporte Z"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="zReport" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="dateLabel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Courier New" size="12" style="1"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Momento"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="name" type="java.lang.String" value="dateLabel" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="dateField">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="jTextField1"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="name" type="java.lang.String" value="dateField" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="zReport1">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Courier New" size="12" style="1"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Total"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="name" type="java.lang.String" value="zReport1" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="totalField">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="jTextField1"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="name" type="java.lang.String" value="totalField" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

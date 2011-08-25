@@ -1382,6 +1382,21 @@ public class ConnectionDrivers {
             stmt.setString(4, payForm.getLot());
             stmt.setDouble(5, payForm.getQuant());
             stmt.executeUpdate();
+            if ( payForm.getFormWay().equals("Efectivo") ){
+                addCash(payForm.getQuant(), Constants.myId);
+            }else if ( payForm.getFormWay().equals("Debito") ){
+                addDebit(payForm.getQuant(), Constants.myId);
+            }else if ( payForm.getFormWay().equals("Credito") ){
+                addCredit(payForm.getQuant(), Constants.myId);
+            }else if ( payForm.getFormWay().equals("Cambio") ){
+                addCash(-1*payForm.getQuant(), Constants.myId);
+            }else if ( payForm.getFormWay().equals("Nota") ){
+                //Nothing to do! 
+                ;
+            } else {
+                // This should not happend
+                assert(false);
+            }
         }
 
         c.close();
@@ -1517,6 +1532,45 @@ public class ConnectionDrivers {
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
                 + "set dinero_efectivo = ? where codigo_punto_de_venta = ? ");
+
+        stmt.setDouble(1, money);
+        stmt.setString(2, Constants.myId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    public static void addCash(Double money, String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo "
+                + "set dinero_efectivo = dinero_efectivo + ? where codigo_punto_de_venta = ? ");
+
+        stmt.setDouble(1, money);
+        stmt.setString(2, Constants.myId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    public static void addCredit(Double money, String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo "
+                + "set dinero_tarjeta_credito = dinero_tarjeta_credito + ? where codigo_punto_de_venta = ? ");
+
+        stmt.setDouble(1, money);
+        stmt.setString(2, Constants.myId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    public static void addDebit(Double money, String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo "
+                + "set dinero_tarjeta_debito = dinero_tarjeta_debito + ? where codigo_punto_de_venta = ? ");
 
         stmt.setDouble(1, money);
         stmt.setString(2, Constants.myId);

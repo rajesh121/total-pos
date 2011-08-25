@@ -245,7 +245,6 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         try{
             int p = Integer.parseInt(quantField.getText());
 
-            //TODO check if you are trying to extract more money than you have.
             if ( p < 1 ){
                 throw new NumberFormatException("");
             }

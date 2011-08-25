@@ -291,8 +291,9 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");
                     msb.show(null);
                 }else{
-                    ConnectionDrivers.savePayForm(payForms);
                     myParent.print(payForms);
+                    add("Cambio",change);
+                    ConnectionDrivers.savePayForm(payForms);
                     this.dispose();
                 }
             } catch (SQLException ex) {

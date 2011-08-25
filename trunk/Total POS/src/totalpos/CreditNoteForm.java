@@ -64,11 +64,30 @@ public class CreditNoteForm extends javax.swing.JDialog {
         table = new javax.swing.JTable();
         cancelButton = new javax.swing.JButton();
         acceptButton = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        codeLabel = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JLabel();
+        phoneLabel = new javax.swing.JLabel();
+        clientIDField = new javax.swing.JTextField();
+        clientNameField = new javax.swing.JTextField();
+        clientPhoneField = new javax.swing.JTextField();
+        descriptionLabel = new javax.swing.JLabel();
+        clientDescription = new javax.swing.JScrollPane();
+        clientDescriptionField = new javax.swing.JTextArea();
+        jPanel2 = new javax.swing.JPanel();
+        internCode = new javax.swing.JLabel();
+        internIdField = new javax.swing.JTextField();
+        fiscalPrinter = new javax.swing.JLabel();
+        fiscalPrinterField = new javax.swing.JTextField();
+        fiscalNumber = new javax.swing.JLabel();
+        fiscalNumberField = new javax.swing.JTextField();
+        zReportField = new javax.swing.JTextField();
+        zReport = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Nota de C");
+        setTitle("Nota de Crédito");
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel1.setText("Crear Nota de Crédito");
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -125,6 +144,179 @@ public class CreditNoteForm extends javax.swing.JDialog {
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Cliente"));
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        codeLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        codeLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        codeLabel.setText("Código");
+        codeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        codeLabel.setName("codeLabel"); // NOI18N
+
+        nameLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        nameLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        nameLabel.setText("Nombre");
+        nameLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        nameLabel.setName("nameLabel"); // NOI18N
+
+        phoneLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        phoneLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        phoneLabel.setText("Teléfono");
+        phoneLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        phoneLabel.setName("phoneLabel"); // NOI18N
+
+        clientIDField.setEditable(false);
+        clientIDField.setText("jTextField1");
+        clientIDField.setName("clientIDField"); // NOI18N
+
+        clientNameField.setEditable(false);
+        clientNameField.setText("jTextField2");
+        clientNameField.setName("clientNameField"); // NOI18N
+
+        clientPhoneField.setEditable(false);
+        clientPhoneField.setText("jTextField3");
+        clientPhoneField.setName("clientPhoneField"); // NOI18N
+
+        descriptionLabel.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        descriptionLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 3x.jpg"))); // NOI18N
+        descriptionLabel.setText("Descripción");
+        descriptionLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        descriptionLabel.setName("descriptionLabel"); // NOI18N
+
+        clientDescription.setName("clientDescription"); // NOI18N
+
+        clientDescriptionField.setColumns(20);
+        clientDescriptionField.setEditable(false);
+        clientDescriptionField.setRows(5);
+        clientDescriptionField.setName("clientDescriptionField"); // NOI18N
+        clientDescription.setViewportView(clientDescriptionField);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(phoneLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(codeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 74, Short.MAX_VALUE))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(clientPhoneField, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                    .addComponent(clientNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                    .addComponent(clientIDField, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(clientDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(codeLabel)
+                    .addComponent(clientIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(descriptionLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nameLabel)
+                            .addComponent(clientNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(phoneLabel)
+                            .addComponent(clientPhoneField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(clientDescription, 0, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos de Factura"));
+        jPanel2.setName("jPanel2"); // NOI18N
+
+        internCode.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        internCode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        internCode.setText("Correlativo");
+        internCode.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        internCode.setName("internCode"); // NOI18N
+
+        internIdField.setEditable(false);
+        internIdField.setText("jTextField1");
+        internIdField.setName("internIdField"); // NOI18N
+
+        fiscalPrinter.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        fiscalPrinter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        fiscalPrinter.setText("Impresora");
+        fiscalPrinter.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        fiscalPrinter.setName("fiscalPrinter"); // NOI18N
+
+        fiscalPrinterField.setEditable(false);
+        fiscalPrinterField.setText("jTextField1");
+        fiscalPrinterField.setName("fiscalPrinterField"); // NOI18N
+
+        fiscalNumber.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        fiscalNumber.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        fiscalNumber.setText("Nro Fiscal");
+        fiscalNumber.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        fiscalNumber.setName("fiscalNumber"); // NOI18N
+
+        fiscalNumberField.setEditable(false);
+        fiscalNumberField.setText("jTextField1");
+        fiscalNumberField.setName("fiscalNumberField"); // NOI18N
+
+        zReportField.setEditable(false);
+        zReportField.setText("jTextField1");
+        zReportField.setName("zReportField"); // NOI18N
+
+        zReport.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        zReport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        zReport.setText("Reporte Z");
+        zReport.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        zReport.setName("zReport"); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(fiscalNumber, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fiscalNumberField, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(zReport, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(internCode, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(internIdField, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fiscalPrinter, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fiscalPrinterField, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                    .addComponent(zReportField, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(internCode)
+                    .addComponent(internIdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fiscalPrinter)
+                    .addComponent(fiscalPrinterField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fiscalNumber)
+                    .addComponent(fiscalNumberField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(zReport)
+                    .addComponent(zReportField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -132,8 +324,10 @@ public class CreditNoteForm extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -146,7 +340,11 @@ public class CreditNoteForm extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -199,9 +397,28 @@ public class CreditNoteForm extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JScrollPane clientDescription;
+    private javax.swing.JTextArea clientDescriptionField;
+    private javax.swing.JTextField clientIDField;
+    private javax.swing.JTextField clientNameField;
+    private javax.swing.JTextField clientPhoneField;
+    private javax.swing.JLabel codeLabel;
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JLabel fiscalNumber;
+    private javax.swing.JTextField fiscalNumberField;
+    private javax.swing.JLabel fiscalPrinter;
+    private javax.swing.JTextField fiscalPrinterField;
+    private javax.swing.JLabel internCode;
+    private javax.swing.JTextField internIdField;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JLabel phoneLabel;
     private javax.swing.JTable table;
+    private javax.swing.JLabel zReport;
+    private javax.swing.JTextField zReportField;
     // End of variables declaration//GEN-END:variables
 
     private void doIt() {

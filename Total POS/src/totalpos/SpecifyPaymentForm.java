@@ -325,7 +325,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
 
     private void what2DoWithReceipt(){
         Object[] options = {"Cancelarla","Poner en espera"};
-        int n = JOptionPane.showOptionDialog(this,"Error al imprimir, por favor, indique que hacer con la factura.",
+        int n = JOptionPane.showOptionDialog(this,"Error al imprimir. Por favor comuníquese con el encargado. Indique que hacer con la factura.",
                 Constants.appName,
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,

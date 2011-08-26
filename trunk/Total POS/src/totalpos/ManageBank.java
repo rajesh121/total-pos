@@ -60,8 +60,13 @@ public class ManageBank extends JInternalFrame {
         renderer.setToolTipText("Click para ver las opciones");
         kbposColumn.setCellRenderer(renderer);
 
-        
-
+        comboBox = new JComboBox();
+        for (PointOfSale pos : ConnectionDrivers.listPOS()) {
+           comboBox.addItem(pos.getId());
+        }
+        kbposColumn = bposTable.getColumnModel().getColumn(3);
+        kbposColumn.setCellEditor(new DefaultCellEditor(comboBox));
+        kbposColumn.setCellRenderer(renderer);
     }
 
     /** This method is called from within the constructor to

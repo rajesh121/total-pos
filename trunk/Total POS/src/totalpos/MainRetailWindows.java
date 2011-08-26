@@ -607,7 +607,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             .addGap(0, 76, Short.MAX_VALUE)
         );
 
-        minutesLabel.setFont(new java.awt.Font("Courier New", 0, 12));
+        minutesLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         minutesLabel.setText("Minutos");
         minutesLabel.setName("minutesLabel"); // NOI18N
 
@@ -852,7 +852,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             String id = JOptionPane.showInputDialog(this, "Nota de crédito", "");
             if ( id != null ){
                 try {
-                    Receipt r = ConnectionDrivers.getReceiptToDev(id);
+                    Receipt r = ConnectionDrivers.getReceiptToDev(id.substring(0, 12));
                     if (r == null) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La factura no existe!");
                         msb.show(null);
@@ -951,8 +951,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel messageToTheClients;
-    private javax.swing.JLabel minutesLabel;
-    private javax.swing.JLabel numberMinuteLabel;
+    public javax.swing.JLabel minutesLabel;
+    public javax.swing.JLabel numberMinuteLabel;
     private javax.swing.JLabel subTotalLabel;
     private javax.swing.JLabel subTotalLabelResult;
     private javax.swing.JLabel totalLabel;
@@ -1034,7 +1034,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             int rightNow = ConnectionDrivers.lastReceiptToday();
 
             Date d = ConnectionDrivers.getDate();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
             return sdf.format(d)+ Constants.myId + String.format("%04d", rightNow);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);

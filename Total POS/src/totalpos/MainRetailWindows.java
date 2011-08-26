@@ -103,17 +103,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             msb.show(null);
             this.dispose();
             Shared.reload();
-        } catch (FileNotFoundException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas en la comunicación con la impresora. Por favor comuníquese con el encargado",ex);
-            msb.show(null);
-            this.dispose();
-            Shared.reload();
-        } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas en la comunicación con la impresora. Por favor comuníquese con el encargado",ex);
-            msb.show(null);
-            this.dispose();
-            Shared.reload();
-        } 
+        }
     }
 
     public User getUser() {
@@ -124,7 +114,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         this.user = user;
     }
 
-    protected void updateAll() throws SQLException, FileNotFoundException, Exception{
+    protected void updateAll() throws SQLException{
         descriptionLabel.setText("Bievenido a Mundo Total");
         currentPrice.setText("");
         ivaLabelResult.setText("0.00 Bsf");
@@ -746,13 +736,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 if ( items.isEmpty() ){
                     try{
                         updateAll();
-                    } catch (FileNotFoundException ex) {
-                        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-                        msb.show(this);
-                        this.dispose();
-                        Shared.reload();
-                    }
-                    catch (SQLException ex) {
+                    } catch (SQLException ex) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
                         msb.show(this);
                         this.dispose();
@@ -799,11 +783,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             toWait();
             try{
                 updateAll();
-            } catch (FileNotFoundException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-                msb.show(this);
-                this.dispose();
-                Shared.reload();
             } catch (SQLException ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
                 msb.show(this);
@@ -833,17 +812,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             Shared.centerFrame(gd);
             gd.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_F5 ){
-            try {
-                if ( !items.isEmpty() ){
-                    SpecifyPaymentForm sfpf = new SpecifyPaymentForm(this, true, subtotal, actualId);
-                    Shared.centerFrame(sfpf);
-                    sfpf.setVisible(true);
-                }
-            } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error al imprimir! Por favor comuníquese con el encargado",ex);
-                msb.show(null);
-                this.dispose();
-                Shared.reload();
+            if ( !items.isEmpty() ){
+                SpecifyPaymentForm sfpf = new SpecifyPaymentForm(this, true, subtotal, actualId);
+                Shared.centerFrame(sfpf);
+                sfpf.setVisible(true);
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F6 ){
             ExtractMoney em = new ExtractMoney(this, true, printer);
@@ -1096,7 +1068,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         }
     }
 
-    private void toWait() {
+    public void toWait() {
         try {
             if ( !items.isEmpty() ){
                 ConnectionDrivers.putToIdle(actualId);

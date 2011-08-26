@@ -240,7 +240,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static boolean isAllowed(String profile, String id) throws SQLException, Exception{
+    protected static boolean isAllowed(String profile, String id) throws SQLException{
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select n.id "

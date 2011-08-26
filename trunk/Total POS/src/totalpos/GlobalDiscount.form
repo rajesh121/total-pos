@@ -247,6 +247,9 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="finalMoney" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="finalMoneyKeyPressed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="percentLabel">
           <Properties>

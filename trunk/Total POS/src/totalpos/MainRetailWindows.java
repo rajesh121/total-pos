@@ -857,6 +857,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ChangeQuantItems cqi = new ChangeQuantItems(this, true);
             Shared.centerFrame(cqi);
             cqi.setVisible(true);
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F4 ){
+            ReportZ rz = new ReportZ(this, true, "X");
+            Shared.centerFrame(rz);
+            rz.setVisible(true);
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
+            ReportZ rz = new ReportZ(this, true, "X");
+            Shared.centerFrame(rz);
+            rz.setVisible(true);
         }
     }//GEN-LAST:event_barcodeFieldKeyPressed
 

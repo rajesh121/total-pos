@@ -1,6 +1,5 @@
 package totalpos;
 
-import java.sql.Timestamp;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;

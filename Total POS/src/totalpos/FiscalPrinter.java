@@ -256,7 +256,7 @@ public class FiscalPrinter {
         return lastReceipt;
     }
 
-    public void printCreditNote(List<Item> items, String ticketId, String myId, User u ) throws Exception{
+    public void printCreditNote(List<Item2Receipt> items, String ticketId, String myId, User u ) throws Exception{
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -277,9 +277,10 @@ public class FiscalPrinter {
                 }
             }
 
-            for (Item item : items) {
+            for (Item2Receipt item2r : items) {
+                Item item = item2r.getItem();
                 printer.SendCmd(a, b, "d1" + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
-                        "00001000" + item.getDescription().substring(0, Math.min(item.getDescription().length(), 38)));
+                        Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 38)));
                 if ( b.getValue() != 0 ){
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }

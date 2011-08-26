@@ -1015,7 +1015,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
-                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento , fc.cantidad "
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento , fc.cantidad , fc.devuelto "
                 + "from articulo a , factura_contiene fc where fc.codigo_interno_factura = ? and fc.codigo_de_articulo = a.codigo");
         stmt.setString(1, receiptID);
         ResultSet rs = stmt.executeQuery();
@@ -1041,7 +1041,8 @@ public class ConnectionDrivers {
                             rs.getString("imagen"),
                             rs.getString("descuento")
                         ),
-                        rs.getInt("cantidad"))
+                        rs.getInt("cantidad"),
+                        rs.getInt("devuelto"))
                     );
         }
         c.close();
@@ -1440,10 +1441,11 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void createCreditNote(String myId, String idReceipt, String user, Assign assign, List<Item> items) throws SQLException, Exception{
+    public static void createCreditNote(String myId, String idReceipt, String user, Assign assign, List<Item2Receipt> items) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         double subT = .0 , ivaT = .0 , total = .0 ;
-        for (Item item : items) {
+        for (Item2Receipt item2r : items) {
+            Item item = item2r.getItem();
             subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant(), 2 );
         }
         ivaT = new Price(null, subT).getIva().getQuant();
@@ -1465,8 +1467,9 @@ public class ConnectionDrivers {
 
         c.close();
 
-        for (Item item : items) {
-            addItem2CreditNote(myId, item);
+        for (Item2Receipt item2r : items) {
+            addItem2CreditNote(myId, item2r);
+            deleteItemFromReceipt(item2r,idReceipt);
         }
     }
 
@@ -1507,19 +1510,20 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static void addItem2CreditNote(String receiptId, Item item) throws SQLException, Exception{
+    protected static void addItem2CreditNote(String receiptId, Item2Receipt item) throws SQLException, Exception{
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into nota_de_credito_contiene"
-                + " ( codigo_interno_nota_de_credito, codigo_de_articulo ) "
-                + "values ( ? , ? )");
+                + " ( codigo_interno_nota_de_credito, codigo_de_articulo , cantidad, devuelto) "
+                + "values ( ? , ? , ? , 0 )");
         stmt.setString(1, receiptId);
-        stmt.setString(2, item.getCode());
+        stmt.setString(2, item.getItem().getCode());
+        stmt.setInt(3, item.getQuant());
         stmt.executeUpdate();
 
-        changeItemStock(item.getCode(), 1);
+        changeItemStock(item.getItem().getCode(), 1);
 
-        double withoutTax = item.getLastPrice().getQuant();
+        double withoutTax = item.getItem().getLastPrice().getQuant();
         double subT = .0;// = accumulatedInReceipt(receiptId) + withoutTax;
         stmt = c.prepareStatement("update nota_de_credito "
                 + "set total_sin_iva = " + (subT) +
@@ -1648,5 +1652,15 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
         return ans;
+    }
+
+    private static void deleteItemFromReceipt(Item2Receipt item2r, String receiptId) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update factura_contiene set devuelto = devuelto + ? "
+                + "where codigo_interno_factura = ? and cantidad > devuelto and  codigo_de_articulo = ? limit 1");
+        stmt.setString(2, receiptId);
+        stmt.setInt(1, item2r.getQuant());
+        stmt.setString(3, item2r.getItem().getCode());
+        stmt.executeUpdate();
     }
 }

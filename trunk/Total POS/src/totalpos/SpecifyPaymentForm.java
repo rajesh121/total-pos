@@ -11,6 +11,9 @@ import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -309,18 +312,38 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
                 this.dispose();
                 Shared.reload();
             } catch (FileNotFoundException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al imprimir! Por favor comuníquese con el encargado",ex);
-                msb.show(null);
+                what2DoWithReceipt();
                 this.dispose();
                 Shared.reload();
             } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al imprimir! Por favor comuníquese con el encargado",ex);
-                msb.show(null);
+                what2DoWithReceipt();
                 this.dispose();
                 Shared.reload();
             }
         }
     }//GEN-LAST:event_tableKeyPressed
+
+    private void what2DoWithReceipt(){
+        Object[] options = {"Cancelarla","Poner en espera"};
+        int n = JOptionPane.showOptionDialog(this,"Error al imprimir, por favor, indique que hacer con la factura.",
+                Constants.appName,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+        if ( n == 0 ){
+            myParent.deleteCurrent();
+        }else if ( n == 1 ){
+            try {
+                myParent.toWait();
+                myParent.updateAll();
+            } catch (SQLException ex1) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex1);
+                msb.show(null);
+            }
+        }
+    }
 
     public void add(String reason , Double money){
         payForms.add(new PayForm(receiptID, reason, "" , "", money));

@@ -1,7 +1,9 @@
 package totalpos;
 
+import java.sql.Timestamp;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -60,10 +62,22 @@ public class UpdateClock extends Thread{
                         if (assign.getPos().equals(Constants.myId) && assign.isOpen()) {
                             Turn cur = Shared.getTurn(ConnectionDrivers.listTurns(), assign.getTurn());
                             Time diff = ConnectionDrivers.getDiff( cur.getFin() );
+                            int leaving = (diff.getMinutes()+diff.getHours()*60);
+                            if ( leaving < 5 ){
+                                MainRetailWindows mrw = (MainRetailWindows) Shared.getMyMainWindows();
+                                mrw.minutesLabel.setVisible(true);
+                                mrw.numberMinuteLabel.setText(leaving+"");
+                                mrw.numberMinuteLabel.setVisible(true);
+                            }
                             break; // for performance ...  =D!
                         }
                     }
                 } catch (SQLException ex) {
+                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos");
+                    msg.show(null);
+                    Shared.reload();
+                    break;
+                } catch (ParseException ex){
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos");
                     msg.show(null);
                     Shared.reload();

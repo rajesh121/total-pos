@@ -8,9 +8,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -1598,15 +1600,16 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static Time getDiff(Time t) throws SQLException{
+    public static Time getDiff(Time t) throws SQLException, ParseException{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select timediff( curtime(), ? )");
+        PreparedStatement stmt = c.prepareStatement("select convert(timediff( curtime(), ? ),char)");
         stmt.setTime(1, t);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-
-        Time ans = rs.getTime(1);
-
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        String ansS = rs.getString(1);
+        ansS = ansS.substring(1);
+        Time ans = new Time(sdf.parse(ansS).getTime());
         c.close();
         rs.close();
         return ans;

@@ -119,6 +119,11 @@ public class FiscalPrinter {
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
 
+            printer.SendCmd(a, b, "y" + ticketId);// + Shared.formatDoubleToPrintDiscount(globalDiscount));
+            if ( b.getValue() != 0 ){
+                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            }
+
             if ( globalDiscount != null && globalDiscount > 0 ){
                 printer.SendCmd(a, b, "p-" + Shared.formatDoubleToPrintDiscount(globalDiscount));
                 if ( b.getValue() != 0 ){
@@ -146,7 +151,6 @@ public class FiscalPrinter {
                 }
             }
         }
-
         printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
         if ( b.getValue() != 0 ){
             throw new Exception(Shared.getErrMapping().get(b.getValue()));

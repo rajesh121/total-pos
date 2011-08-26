@@ -55,7 +55,7 @@ public class ManageItem extends JInternalFrame {
         model.setRowCount(0);
 
         for (Item item : items) {
-            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),new Price(null, item.getLastPrice().getQuant()).toString(),item.getLastPrice().plusIva().toString(),item.getDescuento()+""};
+            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),new Price(null, item.getLastPrice().getQuant()).toString(),item.getLastPrice().plusIva().toString(),item.getDescuento()+"",item.getCurrentStock()+""};
             model.addRow(s);
         }
         
@@ -359,17 +359,17 @@ public class ManageItem extends JInternalFrame {
         itemTable.setFont(new java.awt.Font("Courier New", 0, 11));
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Sin Iva", "Precio Actual", "Descuento"
+                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Sin Iva", "Precio Actual", "Descuento", "Existencia"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -403,11 +403,6 @@ public class ManageItem extends JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(itemTable);
-        itemTable.getColumnModel().getColumn(2).setHeaderValue("Marca");
-        itemTable.getColumnModel().getColumn(3).setHeaderValue("Sector");
-        itemTable.getColumnModel().getColumn(4).setHeaderValue("Modelo");
-        itemTable.getColumnModel().getColumn(5).setHeaderValue("Precio Sin Iva");
-        itemTable.getColumnModel().getColumn(7).setHeaderValue("Descuento");
 
         addSticker.setText("Agregar a las etiquetas");
         addSticker.setName("addSticker"); // NOI18N
@@ -616,23 +611,28 @@ public class ManageItem extends JInternalFrame {
         if ( itemTable.getSelectedRow() != -1 ){
 
             if ( items.get(itemTable.getSelectedRow()).getLastPrice().getQuant() > .0 ){
-                String n = JOptionPane.showInputDialog("Cantidad");
-                if ( n != null ){
-                    try{
-                        int nn = Integer.parseInt(n);
+                if ( items.get(itemTable.getSelectedRow()).getCurrentStock() <=0 ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se puede imprimir etiquetas de un producto sin existencia.");
+                    msb.show(this);
+                }else{
+                    String n = JOptionPane.showInputDialog("Cantidad");
+                    if ( n != null ){
+                        try{
+                            int nn = Integer.parseInt(n);
 
-                        if ( nn < 0 ){
-                            throw new NumberFormatException();
+                            if ( nn < 0 ){
+                                throw new NumberFormatException();
+                            }
+
+                            Item i = items.get(itemTable.getSelectedRow());
+
+                            toPrint.add(i);
+                            quantToPrint.add(nn);
+                            updateToPrint();
+                        }catch ( NumberFormatException ex){
+                            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Formato del número incorrecto", ex);
+                            msg.show(this);
                         }
-
-                        Item i = items.get(itemTable.getSelectedRow());
-
-                        toPrint.add(i);
-                        quantToPrint.add(nn);
-                        updateToPrint();
-                    }catch ( NumberFormatException ex){
-                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Formato del número incorrecto", ex);
-                        msg.show(this);
                     }
                 }
             }else{

@@ -309,12 +309,12 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
                 this.dispose();
                 Shared.reload();
             } catch (FileNotFoundException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al imprimir!",ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al imprimir! Por favor comuníquese con el encargado",ex);
                 msb.show(null);
                 this.dispose();
                 Shared.reload();
             } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al imprimir!",ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al imprimir! Por favor comuníquese con el encargado",ex);
                 msb.show(null);
                 this.dispose();
                 Shared.reload();

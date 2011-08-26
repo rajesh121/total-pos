@@ -104,12 +104,12 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             this.dispose();
             Shared.reload();
         } catch (FileNotFoundException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas en la comunicación con la impresora.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas en la comunicación con la impresora. Por favor comuníquese con el encargado",ex);
             msb.show(null);
             this.dispose();
             Shared.reload();
         } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas en la comunicación con la impresora.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas en la comunicación con la impresora. Por favor comuníquese con el encargado",ex);
             msb.show(null);
             this.dispose();
             Shared.reload();
@@ -840,7 +840,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     sfpf.setVisible(true);
                 }
             } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error al imprimir!",ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error al imprimir! Por favor comuníquese con el encargado",ex);
                 msb.show(null);
                 this.dispose();
                 Shared.reload();

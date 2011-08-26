@@ -1663,4 +1663,27 @@ public class ConnectionDrivers {
         stmt.setString(3, item2r.getItem().getCode());
         stmt.executeUpdate();
     }
+
+    public static List<Expense> listExpensesToday() throws SQLException {
+        List<Expense> ans = new ArrayList<Expense>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select concepto , monto "
+                + "where datediff(now(),fecha) = 0 ");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Expense(
+                        rs.getString("concepto"),
+                        rs.getDouble("monto")
+                        )
+                    );
+        }
+
+        c.close();
+        rs.close();
+
+        return ans;
+    }
 }

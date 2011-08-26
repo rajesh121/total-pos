@@ -71,7 +71,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
 
             for (Item2Receipt item2r : receipt.getItems()) {
                 Item item = item2r.getItem();
-                Object[] s = {false,item.getDescription(), item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
+                Object[] s = {"0",item2r.getQuant(),item2r.getAntiQuant(),item.getDescription(), item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
                 model.addRow(s);
             }
             table.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
@@ -127,20 +127,20 @@ public class CreditNoteForm extends javax.swing.JDialog {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Devolver", "Cantidad", "Descripción", "Descuento", "Precio", "IVA", "Total"
+                "Devolver", "Cantidad", "Devuelto", "Descripción", "Descuento", "Precio", "IVA", "Total"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, true, false, false, false, true, false
+                true, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -158,7 +158,6 @@ public class CreditNoteForm extends javax.swing.JDialog {
             }
         });
         jScrollPane1.setViewportView(table);
-        table.getColumnModel().getColumn(0).setPreferredWidth(20);
 
         cancelButton.setText("Cancelar");
         cancelButton.setFocusable(false);
@@ -170,7 +169,6 @@ public class CreditNoteForm extends javax.swing.JDialog {
         });
 
         acceptButton.setText("Aceptar");
-        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -463,7 +461,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
 
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
+            //doIt();
         } else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }
@@ -526,10 +524,22 @@ public class CreditNoteForm extends javax.swing.JDialog {
     private void doIt() {
 
         try {
-            List<Item> items = new ArrayList<Item>();
+            List<Item2Receipt> items = new ArrayList<Item2Receipt>();
             for (int i = 0; i < table.getRowCount(); ++i) {
-                if ((Boolean) table.getValueAt(i, 0)) {
-                    items.add(receipt.getItems().get(i).getItem());
+                try{
+                    int antiquant = (Integer)table.getValueAt(i, 0);
+                    int antiQuantComplement = (Integer)table.getValueAt(i, 1);
+                    int antiQuantComplementDone = (Integer)table.getValueAt(i, 2);
+                    if ( antiquant > antiQuantComplement - antiQuantComplementDone ){
+                        throw new NumberFormatException();
+                    }
+                    if ( antiquant > 0 ) {
+                        items.add(new Item2Receipt(receipt.getItems().get(i).getItem(),antiquant,0));
+                    }
+                }catch ( NumberFormatException ex){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Cantidad inválida! Item " + (i+1) + "!");
+                    msb.show(this);
+                    return;
                 }
             }
             if (items.isEmpty()) {

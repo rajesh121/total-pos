@@ -964,7 +964,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             String[] s = {get.getDescription(), quant+"", get.getDescuento()+"", get.getLastPrice().toString(), get.getLastPrice().getIva().toString(), get.getLastPrice().plusIva().toString()};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
-            items.add(new Item2Receipt(get, quant));
+            items.add(new Item2Receipt(get, quant,0));
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
             msb.show(this);

@@ -132,6 +132,11 @@ public class GlobalDiscount extends javax.swing.JDialog {
         percentLabel1.setName("percentLabel1"); // NOI18N
 
         finalMoney.setName("finalMoney"); // NOI18N
+        finalMoney.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                finalMoneyKeyPressed(evt);
+            }
+        });
 
         percentLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         percentLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
@@ -275,6 +280,8 @@ public class GlobalDiscount extends javax.swing.JDialog {
             this.dispose();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             doIt();
+        }else{
+            calculate();
         }
     }//GEN-LAST:event_percentFieldKeyPressed
 
@@ -283,6 +290,14 @@ public class GlobalDiscount extends javax.swing.JDialog {
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void calculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateActionPerformed
+        calculate();
+    }//GEN-LAST:event_calculateActionPerformed
+
+    private void finalMoneyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_finalMoneyKeyPressed
+        calculate();
+    }//GEN-LAST:event_finalMoneyKeyPressed
+
+    private void calculate(){
         try{
             if ( !percentField.getText().isEmpty() ){
                 double p = Double.parseDouble(percentField.getText().replace(',', '.'));
@@ -309,7 +324,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
             msg.show(this);
         }
-    }//GEN-LAST:event_calculateActionPerformed
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;

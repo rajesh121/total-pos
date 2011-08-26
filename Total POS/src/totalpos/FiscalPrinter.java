@@ -320,5 +320,15 @@ public class FiscalPrinter {
         printer.CloseFpctrl();
         isOk = true;
     }
+
+    void report(String r){
+        isOk = false;
+        IntByReference a = new IntByReference();
+        IntByReference b = new IntByReference();
+        printer.OpenFpctrl("COM1");
+        printer.SendCmd(a, b, "I0"+r);
+        printer.CloseFpctrl();
+        isOk = true;
+    }
     
 }

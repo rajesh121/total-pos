@@ -49,4 +49,5 @@ public class Constants {
     public static final Color lightGreen = new Color(150,255,150);
 
     public static final Double minimumCash = 150.0;
+    public static final String[] kindOfBPOS={"Debito","Credito","Ambas"};
 }

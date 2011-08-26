@@ -11,8 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -42,9 +46,22 @@ public class ManageBank extends JInternalFrame {
         model.setRowCount(0);
         bpos = ConnectionDrivers.listBPos();
         for (BankPOS bankPOS : bpos) {
-            String[] s = {bankPOS.getId(), bankPOS.getDescripcion(), bankPOS.getLot()};
+            String[] s = {bankPOS.getId(), bankPOS.getDescripcion(), bankPOS.getLot(), bankPOS.getPosId() , bankPOS.getKind()};
             model.addRow(s);
         }
+        JComboBox comboBox = new JComboBox();
+        for (String kbpos : Constants.kindOfBPOS) {
+           comboBox.addItem(kbpos);
+        }
+        TableColumn kbposColumn = bposTable.getColumnModel().getColumn(4);
+        kbposColumn.setCellEditor(new DefaultCellEditor(comboBox));
+        DefaultTableCellRenderer renderer =
+                new DefaultTableCellRenderer();
+        renderer.setToolTipText("Click para ver las opciones");
+        kbposColumn.setCellRenderer(renderer);
+
+        
+
     }
 
     /** This method is called from within the constructor to
@@ -94,13 +111,13 @@ public class ManageBank extends JInternalFrame {
 
         bposTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Descripción", "Lote"
+                "ID", "Descripción", "Lote", "Caja", "Tipo"
             }
         ));
         bposTable.setName("bposTable"); // NOI18N
@@ -132,12 +149,12 @@ public class ManageBank extends JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                    .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, 0, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                        .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

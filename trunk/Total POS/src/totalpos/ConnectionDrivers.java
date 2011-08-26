@@ -1339,11 +1339,15 @@ public class ConnectionDrivers {
             String id = (String) model.getValueAt(i, 0) ;
             String description = (String) model.getValueAt(i, 1);
             String lot = (String) model.getValueAt(i, 2);
+            String posId = (String) model.getValueAt(i, 3);
+            String kindbpos = (String) model.getValueAt(i, 4);
             PreparedStatement stmt = c.prepareStatement(
-                "insert into punto_de_venta_de_banco ( id, descripcion, lote ) values ( ? , ? , ? )");
+                "insert into punto_de_venta_de_banco ( id, descripcion, lote , identificador_pos, tipo) values ( ? , ? , ? , ? , ? )");
             stmt.setString(1, id);
             stmt.setString(2, description);
             stmt.setString(3, lot);
+            stmt.setString(4, posId);
+            stmt.setString(5, kindbpos);
             stmt.executeUpdate();
         }
 
@@ -1354,7 +1358,7 @@ public class ConnectionDrivers {
         List<BankPOS> ans = new ArrayList<BankPOS>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select id , descripcion, lote from punto_de_venta_de_banco");
+        PreparedStatement stmt = c.prepareStatement("select id , descripcion, lote, identificador_pos , tipo from punto_de_venta_de_banco");
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -1362,7 +1366,38 @@ public class ConnectionDrivers {
                     new BankPOS(
                         rs.getString("id"),
                         rs.getString("descripcion"),
-                        rs.getString("lote")
+                        rs.getString("lote"),
+                        rs.getString("identificador_pos"),
+                        rs.getString("tipo")
+                        )
+                    );
+        }
+
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    static List<BankPOS> listBPos(String pos, String kindbpos) throws SQLException {
+        List<BankPOS> ans = new ArrayList<BankPOS>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select id , descripcion, lote, identificador_pos , tipo from punto_de_venta_de_banco "
+                + "where identificador_pos = ? and ( tipo = ?  or tipo = ? ) ");
+        stmt.setString(1, Constants.myId);
+        stmt.setString(2, kindbpos);
+        stmt.setString(3, Constants.kindOfBPOS[Constants.kindOfBPOS.length-1]);
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new BankPOS(
+                        rs.getString("id"),
+                        rs.getString("descripcion"),
+                        rs.getString("lote"),
+                        rs.getString("identificador_pos"),
+                        rs.getString("tipo")
                         )
                     );
         }

@@ -45,7 +45,7 @@ public class ReportZ extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Report Z");
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Imprimir Reporte");
         titleLabel.setName("titleLabel"); // NOI18N
 
@@ -56,6 +56,11 @@ public class ReportZ extends javax.swing.JDialog {
         jLabel2.setName("jLabel2"); // NOI18N
 
         userField.setName("userField"); // NOI18N
+        userField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                userFieldKeyPressed(evt);
+            }
+        });
 
         passwordField.setName("passwordField"); // NOI18N
         passwordField.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -104,8 +109,16 @@ public class ReportZ extends javax.swing.JDialog {
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             doIt();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
         }
     }//GEN-LAST:event_passwordFieldKeyPressed
+
+    private void userFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_userFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_userFieldKeyPressed
 
     private void doIt(){
         if ( userField.getText().isEmpty() ){

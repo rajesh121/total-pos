@@ -12,9 +12,7 @@ import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -23,7 +21,6 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.column.ColumnBuilders;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 import net.sf.dynamicreports.report.exception.DRException;
@@ -45,7 +42,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
     private String sql = null;
     private String fileAddr = "";
     public boolean isOk = false;
-    JasperReportBuilder jrb = report();
+    JasperReportBuilder jrb;
     JRDataSource jrds;
     JasperViewer jv;
     public boolean empty = false;
@@ -206,6 +203,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
 
     private void doIt(){
         try {
+            jrb = report();
             for (Parameter parameter : parameters) {
                 //TODO Check the syntaxis.
                 if (parameter.getTextField().getText().isEmpty()) {

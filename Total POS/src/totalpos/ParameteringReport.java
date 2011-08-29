@@ -6,10 +6,29 @@
 
 package totalpos;
 
+import java.awt.GridLayout;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilders;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import static net.sf.dynamicreports.report.builder.DynamicReports.*;
+import net.sf.dynamicreports.report.exception.DRException;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -18,16 +37,81 @@ import java.util.TreeSet;
 public class ParameteringReport extends javax.swing.JInternalFrame {
 
     private String title = null;
-    private Map<String, String> columns = new HashMap<String, String>();
-    private Map<String, String> parameters = new HashMap<String, String>();
+    private List<Column> columns = new ArrayList<Column>();
+    private List<Parameter> parameters = new ArrayList<Parameter>();
     private Set<String> subtotals = new TreeSet<String>();
     private String groupBy = null;
     private boolean showNumbers = true;
     private String sql = null;
+    private String fileAddr = "";
+    public boolean isOk = false;
+    JasperReportBuilder jrb = report();
+    JRDataSource jrds;
+    JasperViewer jv;
+    public boolean empty = false;
 
     /** Creates new form ParameteringReport */
-    public ParameteringReport() {
-        initComponents();
+    public ParameteringReport(File f) {
+        try {
+            initComponents();
+            fileAddr = f.getPath();
+            parseFile();
+            creatingParametersFields();
+            isOk = true;
+            if ( parameters.isEmpty() ){
+                titleLabel.setText("No hay parámetros para especificar");
+                empty = true;
+                doIt();
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ParameteringReport.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void parseFile() throws FileNotFoundException{
+        Scanner sc = new Scanner(new File(fileAddr));
+        int curLine = 1;
+        while (sc.hasNextLine()){
+            String line = sc.nextLine();
+            String[] tokens = line.split("==");
+            if ( tokens.length != 2 ){
+                System.err.println("Err parsing line " + curLine);
+                continue;
+            }
+            if ( tokens[0].equals("Title") ){
+                title = tokens[1];
+            }else if ( tokens[0].equals("Columns") ){
+                String[] subtoks = tokens[1].split("\\|");
+                for (String subsubtok : subtoks) {
+                    String[] comp = subsubtok.split("\\,");
+                    if ( comp.length != 3 ){
+                        System.err.println("Err parsing component \"" + subsubtok + "\"");
+                        continue;
+                    }
+                    columns.add(new Column(comp[1], comp[0], comp[2]));
+                }
+            }else if ( tokens[0].equals("ShowNumbers") ){
+                showNumbers = tokens[1].equals("True");
+            }else if ( tokens[0].equals("Parameters") ){
+                String[] subtoks = tokens[1].split("\\|");
+                for (String subsubtok : subtoks) {
+                    String[] comp = subsubtok.split("\\,");
+                    if ( comp.length != 3 ){
+                        System.err.println("Err parsing component \"" + subsubtok + "\"");
+                        continue;
+                    }
+                    parameters.add(new Parameter(comp[2], comp[0], comp[1],null,null));
+                }
+            }else if ( tokens[0].equals("SQL") ){
+                sql = tokens[1];
+            }else if ( tokens[0].equals("GroupBy") ){
+                groupBy = tokens[1];
+            }else if ( tokens[0].equals("WithSubtotal") ){
+                String[] subtok = tokens[1].split(",");
+                subtotals.addAll(Arrays.asList(subtok));
+            }
+            ++curLine;
+        }
     }
 
     /** This method is called from within the constructor to
@@ -46,8 +130,10 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
+        setResizable(true);
         setTitle("Especifique los parametros");
 
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         titleLabel.setText("Especifique los parametros");
         titleLabel.setName("titleLabel"); // NOI18N
 
@@ -61,14 +147,26 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 340, Short.MAX_VALUE)
+            .addGap(0, 344, Short.MAX_VALUE)
         );
 
         cancelButton.setText("Cancelar");
+        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         acceptButton.setText("Aceptar");
+        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
+        acceptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -102,6 +200,50 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void doIt(){
+        try {
+            for (Parameter parameter : parameters) {
+                //TODO Check the syntaxis.
+                if (parameter.getTextField().getText().isEmpty()) {
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se pueden dejar parámetros vacíos.");
+                    msg.show(this);
+                    return;
+                }
+            }
+            jrb = jrb.addColumn(createColumns(columns));
+            jrb = jrb.setDataSource(ConnectionDrivers.createDataSource(parameters, sql, columns));
+            if ( title != null ){
+                jrb = jrb.addTitle(cmp.text(title));
+            }
+            if ( showNumbers ){
+                jrb = jrb.pageFooter(cmp.pageXofY());
+            }
+            jrb = jrb.highlightDetailEvenRows();
+            jv = new JasperViewer(jrb.toJasperPrint(), false);
+            jv.setVisible(true);
+        } catch (DRException ex) {
+            Logger.getLogger(ParameteringReport.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ParameteringReport.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        doIt();
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private TextColumnBuilder[] createColumns(List<Column> lc){
+        TextColumnBuilder[] ans = new TextColumnBuilder[lc.size()];
+        for (int i = 0; i < lc.size(); i++) {
+            Column column = lc.get(i);
+            ans[i] = col.column(column.getFieldName(), column.getName(), type.stringType());
+        }
+        return ans;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
@@ -110,4 +252,16 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
+    private void creatingParametersFields() {
+        mainPanel.setLayout(new GridLayout(parameters.size(), 2));
+        for (Parameter name : parameters) {
+            JLabel label = new JLabel(name.getFormName());
+            JTextField textField = new JTextField();
+            mainPanel.add(label);
+            mainPanel.add(textField);
+            name.setLabel(label);
+            name.setTextField(textField);
+        }
+        setSize(450, 150+parameters.size()*20);
+    }
 }

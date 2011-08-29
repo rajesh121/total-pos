@@ -52,7 +52,8 @@ public class MainWindows extends javax.swing.JFrame {
 
             private void mdiPanelMouseMoved(MouseEvent evt) {
                 Shared.getScreenSaver().actioned();
-                mdiPanel.requestFocus();
+                //TODO FIX IT!
+                //mdiPanel.requestFocus();
             }
         });
         mdiPanel.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -215,6 +216,10 @@ public class MainWindows extends javax.swing.JFrame {
                     mdiPanel.add(lta);
                     lta.setVisible(true);
                 }
+            } else if ( ed.getFuncion().equals("listReports") ) {
+                ReportsForm rf = new ReportsForm();
+                mdiPanel.add(rf);
+                rf.setVisible(true);
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
             } else if (ed.getFuncion().isEmpty()) {

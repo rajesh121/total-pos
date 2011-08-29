@@ -2,6 +2,7 @@ package totalpos;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
+import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRDataSource;
 
 /**
  *
@@ -1685,5 +1687,35 @@ public class ConnectionDrivers {
         rs.close();
 
         return ans;
+    }
+
+    static JRDataSource createDataSource(List<Parameter> parameters, String sql, List<Column> columns) throws SQLException {
+        String[] columnsArray = new String[columns.size()];
+        for (int i = 0; i < columns.size(); i++) {
+            Column c = columns.get(i);
+            columnsArray[i] = c.getName();
+        }
+        DataSource dataSource = new DataSource(columnsArray);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement(sql);
+        for (int i = 0; i < parameters.size(); i++) {
+            Parameter p = parameters.get(i);
+            stmt.setString(i+1, p.getTextField().getText());
+        }
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            String[] toAdd = new String[columns.size()];
+            for (int i = 0; i < columnsArray.length; i++) {
+                toAdd[i] = rs.getString(columnsArray[i]);
+            }
+            dataSource.add(toAdd);
+        }
+
+        c.close();
+        rs.close();
+
+        return dataSource;
     }
 }

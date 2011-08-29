@@ -48,8 +48,8 @@
                       </Group>
                       <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="passwordField" pref="286" max="32767" attributes="0"/>
-                          <Component id="userField" alignment="0" pref="286" max="32767" attributes="0"/>
+                          <Component id="passwordField" pref="288" max="32767" attributes="0"/>
+                          <Component id="userField" alignment="0" pref="288" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -198,8 +198,8 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="percentField" pref="247" max="32767" attributes="0"/>
-                      <Component id="finalMoney" alignment="1" pref="247" max="32767" attributes="0"/>
+                      <Component id="percentField" pref="253" max="32767" attributes="0"/>
+                      <Component id="finalMoney" alignment="1" pref="253" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -249,6 +249,7 @@
           </Properties>
           <Events>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="finalMoneyKeyPressed"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="finalMoneyKeyReleased"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="percentLabel">
@@ -270,6 +271,7 @@
           </Properties>
           <Events>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="percentFieldKeyPressed"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="percentFieldKeyReleased"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="percentLabelxD1">

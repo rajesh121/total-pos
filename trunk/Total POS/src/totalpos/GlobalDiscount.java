@@ -136,6 +136,9 @@ public class GlobalDiscount extends javax.swing.JDialog {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 finalMoneyKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                finalMoneyKeyReleased(evt);
+            }
         });
 
         percentLabel.setFont(new java.awt.Font("Courier New", 0, 12));
@@ -148,6 +151,9 @@ public class GlobalDiscount extends javax.swing.JDialog {
         percentField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 percentFieldKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                percentFieldKeyReleased(evt);
             }
         });
 
@@ -167,8 +173,8 @@ public class GlobalDiscount extends javax.swing.JDialog {
                     .addComponent(percentLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(percentField, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
-                    .addComponent(finalMoney, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+                    .addComponent(percentField, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                    .addComponent(finalMoney, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(percentLabelxD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -226,8 +232,8 @@ public class GlobalDiscount extends javax.swing.JDialog {
                             .addComponent(jLabel2))
                         .addGap(4, 4, 4)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                            .addComponent(userField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE))))
+                            .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                            .addComponent(userField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -276,16 +282,11 @@ public class GlobalDiscount extends javax.swing.JDialog {
     }//GEN-LAST:event_passwordFieldKeyPressed
 
     private void percentFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_percentFieldKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            this.dispose();
-        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
-        }else{
-            calculate();
-        }
+        
     }//GEN-LAST:event_percentFieldKeyPressed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        calculate();
         doIt();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
@@ -294,8 +295,29 @@ public class GlobalDiscount extends javax.swing.JDialog {
     }//GEN-LAST:event_calculateActionPerformed
 
     private void finalMoneyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_finalMoneyKeyPressed
-        calculate();
+        
     }//GEN-LAST:event_finalMoneyKeyPressed
+
+    private void percentFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_percentFieldKeyReleased
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            doIt();
+        }else if ( evt.getKeyCode() >= KeyEvent.VK_0 && evt.getKeyCode() <= KeyEvent.VK_9 ) {
+            calculate();
+        }
+    }//GEN-LAST:event_percentFieldKeyReleased
+
+    private void finalMoneyKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_finalMoneyKeyReleased
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            doIt();
+        }else if ( evt.getKeyCode() >= KeyEvent.VK_0 && evt.getKeyCode() <= KeyEvent.VK_9 ) {
+            percentField.setText("");
+            calculate();
+        }
+    }//GEN-LAST:event_finalMoneyKeyReleased
 
     private void calculate(){
         try{

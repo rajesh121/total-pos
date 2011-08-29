@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +23,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.view.JasperViewer;
@@ -36,7 +39,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
     private String title = null;
     private List<Column> columns = new ArrayList<Column>();
     private List<Parameter> parameters = new ArrayList<Parameter>();
-    private Set<String> subtotals = new TreeSet<String>();
+    private List<String> subtotals = new ArrayList<String>();
     private String groupBy = null;
     private boolean showNumbers = true;
     private String sql = null;
@@ -204,6 +207,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
     private void doIt(){
         try {
             jrb = report();
+            jrb = jrb.setColumnTitleStyle(Constants.columnTitleStyle);
             for (Parameter parameter : parameters) {
                 //TODO Check the syntaxis.
                 if (parameter.getTextField().getText().isEmpty()) {
@@ -215,13 +219,25 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
             jrb = jrb.addColumn(createColumns(columns));
             jrb = jrb.setDataSource(ConnectionDrivers.createDataSource(parameters, sql, columns));
             if ( title != null ){
-                jrb = jrb.addTitle(cmp.text(title));
+                jrb = jrb.addTitle(cmp.horizontalList().add(
+                        cmp.text(title).setStyle(Constants.titleStyle).setHorizontalAlignment(HorizontalAlignment.LEFT))
+                        .newRow()
+                        .add(cmp.filler().setStyle(stl.style().setTopBorder(stl.pen2Point())).setFixedHeight(10)));
             }
             if ( showNumbers ){
                 jrb = jrb.pageFooter(cmp.pageXofY());
             }
+            if ( !subtotals.isEmpty() ){
+                //TODO FINISH IT!
+                /*AggregationSubtotalBuilder[] semiSubTotal = new AggregationSubtotalBuilder[subtotals.size()];
+                for (int i = 0 ; i < subtotals.size() ; i++ ) {
+                    semiSubTotal[i] = sbt.sum(Column[]);
+                }
+                jrb = jrb.subtotalsAtFirstGroupFooter(semiSubTotal);*/
+            }
             jrb = jrb.highlightDetailEvenRows();
             jv = new JasperViewer(jrb.toJasperPrint(), false);
+            jv.setTitle(Constants.appName);
             jv.setVisible(true);
         } catch (DRException ex) {
             Logger.getLogger(ParameteringReport.class.getName()).log(Level.SEVERE, null, ex);

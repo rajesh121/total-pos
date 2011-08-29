@@ -220,6 +220,10 @@ public class MainWindows extends javax.swing.JFrame {
                 ReportsForm rf = new ReportsForm();
                 mdiPanel.add(rf);
                 rf.setVisible(true);
+            } else if ( ed.getFuncion().equals("expenses") ) {
+                AddExpenses ae = new AddExpenses();
+                mdiPanel.add(ae);
+                ae.setVisible(true);
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
             } else if (ed.getFuncion().isEmpty()) {

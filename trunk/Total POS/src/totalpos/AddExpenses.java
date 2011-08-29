@@ -8,6 +8,10 @@ package totalpos;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -17,10 +21,27 @@ import javax.swing.table.DefaultTableModel;
 public class AddExpenses extends javax.swing.JInternalFrame {
 
     List<Expense> expenses;
+    public boolean isOk = false;
 
     /** Creates new form AddExpenses */
     public AddExpenses() {
-        initComponents();
+        try {
+            initComponents();
+            updateAll();
+            isOk = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(AddExpenses.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void updateAll() throws SQLException{
+        expenses = ConnectionDrivers.listExpensesToday();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        for (Expense e : expenses) {
+            String[] s = {e.getConcept(),Constants.df.format(e.getQuant())};
+            model.addRow(s);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -40,13 +61,25 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         table = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
+        setClosable(true);
+        setIconifiable(true);
         setTitle("Gastos");
 
         acceptButton.setText("Guardar");
         acceptButton.setName("acceptButton"); // NOI18N
+        acceptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acceptButtonActionPerformed(evt);
+            }
+        });
 
         cancelButton.setText("Cancelar");
         cancelButton.setName("cancelButton"); // NOI18N
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         addButton.setText("Agregar");
         addButton.setName("addButton"); // NOI18N
@@ -58,6 +91,11 @@ public class AddExpenses extends javax.swing.JInternalFrame {
 
         deleteButton.setText("Eliminar");
         deleteButton.setName("deleteButton"); // NOI18N
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -75,7 +113,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         table.setName("table"); // NOI18N
         jScrollPane1.setViewportView(table);
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel1.setText("Gastos de hoy");
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -86,7 +124,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -95,7 +133,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
                         .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -122,12 +160,50 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         model.setNumRows(model.getRowCount()+1);
     }//GEN-LAST:event_addButtonActionPerformed
 
-    private void updateAll() throws SQLException{
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        int n = table.getSelectedRow();
+        if ( n != -1 ){
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            model.removeRow(n);
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar un gasto!");
+            msg.show(this);
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0);
-        expenses = ConnectionDrivers.listExpensesToday();
-        
-    }
+        for (int i = 0; i < model.getRowCount(); i++) {
+            try{
+                if ( model.getValueAt(i, 0) == null || model.getValueAt(i, 1) == null ||
+                        ((String)model.getValueAt(i, 0)).isEmpty() || ((String)model.getValueAt(i, 1)).isEmpty()){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios. No pueden haber puntos de ventas con campos vacíos.");
+                    msg.show(this);
+                    return;
+                }
+                Double.parseDouble((String) model.getValueAt(i, 1));
+            }catch (NumberFormatException ex){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido. Debe corregirse!");
+                msg.show(this);
+                return;
+            }
+        }
+        try {
+            ConnectionDrivers.deleteAllExpensesToday();
+            ConnectionDrivers.createExpensesToday(model);
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
+            msg.show(this);
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
+    }//GEN-LAST:event_acceptButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;

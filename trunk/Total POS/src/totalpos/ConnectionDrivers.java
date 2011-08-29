@@ -1670,7 +1670,7 @@ public class ConnectionDrivers {
         List<Expense> ans = new ArrayList<Expense>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select concepto , monto "
+        PreparedStatement stmt = c.prepareStatement("select concepto , monto from gasto "
                 + "where datediff(now(),fecha) = 0 ");
         ResultSet rs = stmt.executeQuery();
 
@@ -1687,6 +1687,28 @@ public class ConnectionDrivers {
         rs.close();
 
         return ans;
+    }
+
+    public static void deleteAllExpensesToday() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from gasto where datediff(now(),fecha) = 0 ");
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    public static void createExpensesToday(DefaultTableModel model) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String concept = (String) model.getValueAt(i, 0) ;
+            Double quant = Double.parseDouble((String) model.getValueAt(i, 1));
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into gasto ( fecha, concepto, monto) values ( now() , ? , ? )");
+            stmt.setString(1, concept);
+            stmt.setDouble(2, quant);
+            stmt.executeUpdate();
+        }
+        c.close();
     }
 
     static JRDataSource createDataSource(List<Parameter> parameters, String sql, List<Column> columns) throws SQLException {

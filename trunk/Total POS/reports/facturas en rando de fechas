@@ -1,7 +1,7 @@
 Title==Facturas en rango de fechas
-Columns==Correlativo,codigo_interno,String|Fecha,fecha_impresion,String|Fecha Creacion,fecha_creacion,String|Nro Fiscal,numero_fiscal,String
+Columns==Correlativo,codigo_interno,String|Fecha Creacion,fecha_creacion,String|Nro Fiscal,numero_fiscal,String|Total,total_con_iva,String
 ShowNumbers==True
-Parameters==Estado,,String|Fecha Inicial (YYYY-MM-DD),,String|Fecha Final (YYYY-MM-DD),,String
-SQL==select codigo_interno , fecha_impresion , fecha_creacion, numero_fiscal from factura where estado = ? and ? < fecha_creacion and fecha_creacion < ?
+Parameters==Fecha Inicial (YYYY-MM-DD),,String|Fecha Final (YYYY-MM-DD),,String
+SQL==select codigo_interno , fecha_creacion, numero_fiscal, total_con_iva from factura where estado = 'Facturada' and ? < fecha_creacion and fecha_creacion < ?
 GroupBy==Nombre de Columna
-WithSubtotal==Nombre de Columna,Nombre de Columna
+WithSubtotal==total_con_iva

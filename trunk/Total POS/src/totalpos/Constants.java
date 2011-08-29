@@ -1,9 +1,13 @@
 package totalpos;
 
+import net.sf.dynamicreports.report.constant.VerticalAlignment;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import java.awt.Color;
 import java.awt.Font;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
 /**
  *
@@ -32,7 +36,7 @@ public class Constants {
     public static SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
     public static DecimalFormat df = new DecimalFormat("#.00");
 
-    public static final boolean isPos = true;
+    public static final boolean isPos = false;
 
     public static int secondToCheckTurn = 30;
     public static int secondToUpdateCountdown = 2;
@@ -52,4 +56,14 @@ public class Constants {
     public static final String[] kindOfBPOS={"Debito","Credito","Ambas"};
 
     public static final String reportFolder = "./reports";
+    public static final StyleBuilder boldStyle = stl.style().bold();
+    public static final StyleBuilder boldCenteredStyle = stl.style(boldStyle)
+	                                    .setHorizontalAlignment(HorizontalAlignment.CENTER);
+    public static final StyleBuilder columnTitleStyle  = stl.style(boldCenteredStyle)
+	                                    .setBorder(stl.pen1Point())
+	                                    .setBackgroundColor(Color.LIGHT_GRAY);
+
+    public static final StyleBuilder titleStyle = stl.style(boldCenteredStyle)
+                             .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                             .setFontSize(15); 
 }

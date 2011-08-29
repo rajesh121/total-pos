@@ -32,7 +32,7 @@ public class Constants {
     public static SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
     public static DecimalFormat df = new DecimalFormat("#.00");
 
-    public static final boolean isPos = true;
+    public static final boolean isPos = false;
 
     public static int secondToCheckTurn = 30;
     public static int secondToUpdateCountdown = 2;
@@ -50,4 +50,6 @@ public class Constants {
 
     public static final Double minimumCash = 150.0;
     public static final String[] kindOfBPOS={"Debito","Credito","Ambas"};
+
+    public static final String reportFolder = "./reports";
 }

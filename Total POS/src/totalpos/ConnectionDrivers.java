@@ -1746,4 +1746,55 @@ public class ConnectionDrivers {
 
         return dataSource;
     }
+
+    public static List<Deposit> listDepositsToday() throws SQLException {
+        List<Deposit> ans = new ArrayList<Deposit>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select banco, planilla, cataporte, monto from deposito "
+                + "where datediff(now(),fecha) = 0 ");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Deposit(
+                        rs.getString("banco"),
+                        rs.getString("planilla"),
+                        rs.getString("cataporte"),
+                        rs.getDouble("monto")
+                        )
+                    );
+        }
+        
+        c.close();
+        rs.close();
+        
+        return ans;
+    }
+
+    public static void deleteAllDepositsToday() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from deposito where datediff(now(),fecha) = 0 ");
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    public static void createDepositsToday(DefaultTableModel model) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String bank = (String) model.getValueAt(i, 0) ;
+            Double quant = Double.parseDouble(((String) model.getValueAt(i, 3)).replace(',', '.'));
+            String formId = (String) model.getValueAt(i, 1) ;
+            String cataport = (String) model.getValueAt(i, 2) ;
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into deposito ( fecha, banco, planilla, cataporte, monto ) values ( now() , ? , ? , ? , ? )");
+            stmt.setString(1, bank);
+            stmt.setString(2, formId);
+            stmt.setString(3, cataport);
+            stmt.setDouble(4, quant);
+            stmt.executeUpdate();
+        }
+        c.close();
+    }
 }

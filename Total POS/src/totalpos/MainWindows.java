@@ -224,6 +224,10 @@ public class MainWindows extends javax.swing.JFrame {
                 AddExpenses ae = new AddExpenses();
                 mdiPanel.add(ae);
                 ae.setVisible(true);
+            } else if ( ed.getFuncion().equals("manageDeposit") ) {
+                ManageDeposits md = new ManageDeposits();
+                mdiPanel.add(md);
+                md.setVisible(true);
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
             } else if (ed.getFuncion().isEmpty()) {

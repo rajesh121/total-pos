@@ -8,10 +8,6 @@ package totalpos;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -30,7 +26,10 @@ public class AddExpenses extends javax.swing.JInternalFrame {
             updateAll();
             isOk = true;
         } catch (SQLException ex) {
-            Logger.getLogger(AddExpenses.class.getName()).log(Level.SEVERE, null, ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
         }
     }
 
@@ -66,6 +65,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         setTitle("Gastos");
 
         acceptButton.setText("Guardar");
+        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -73,7 +73,8 @@ public class AddExpenses extends javax.swing.JInternalFrame {
             }
         });
 
-        cancelButton.setText("Cancelar");
+        cancelButton.setText("Cerrar");
+        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -82,6 +83,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         });
 
         addButton.setText("Agregar");
+        addButton.setFocusable(false);
         addButton.setName("addButton"); // NOI18N
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,6 +92,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         });
 
         deleteButton.setText("Eliminar");
+        deleteButton.setFocusable(false);
         deleteButton.setName("deleteButton"); // NOI18N
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -132,7 +135,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE))
                 .addContainerGap())
         );

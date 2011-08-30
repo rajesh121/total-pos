@@ -1433,8 +1433,7 @@ public class ConnectionDrivers {
             }else if ( payForm.getFormWay().equals("Cambio") ){
                 addCash(-1*payForm.getQuant(), Constants.myId);
             }else if ( payForm.getFormWay().equals("Nota de Credito") ){
-                //Nothing to do! 
-                ;
+                addCreditNote(payForm.getQuant(), Constants.myId);
             } else {
                 // This should not happend
                 assert(false);
@@ -1608,6 +1607,19 @@ public class ConnectionDrivers {
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
                 + "set dinero_tarjeta_credito = dinero_tarjeta_credito + ? where codigo_punto_de_venta = ? ");
+
+        stmt.setDouble(1, money);
+        stmt.setString(2, Constants.myId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    public static void addCreditNote(Double money, String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo "
+                + "set nota_de_credito = nota_de_credito + ? where codigo_punto_de_venta = ? ");
 
         stmt.setDouble(1, money);
         stmt.setString(2, Constants.myId);
@@ -1797,4 +1809,46 @@ public class ConnectionDrivers {
         }
         c.close();
     }
+
+    public static void listFormWayXPosToday(DefaultTableModel ans) throws SQLException{
+        ans.setRowCount(0);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_punto_de_venta "
+                + ", dinero_tarjeta_credito , dinero_efectivo, dinero_tarjeta_debito, "
+                + "nota_de_credito from dia_operativo where datediff(fecha,now()) = 0");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            String[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("dinero_tarjeta_credito")
+                    ,rs.getString("dinero_efectivo"),rs.getString("dinero_tarjeta_debito"),
+                    rs.getString("nota_de_credito")};
+            ans.addRow(s);
+        }
+
+        c.close();
+        rs.close();
+
+    }
+
+    public static void listFiscalZ(DefaultTableModel ans) throws SQLException{
+        ans.setRowCount(0);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select do.codigo_punto_de_venta , pos.impresora , "
+                + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito+ do.nota_de_credito as facturado "
+                + "from dia_operativo as do , punto_de_venta as pos where datediff(fecha,now())=0 and do.codigo_punto_de_venta "
+                + "= pos.identificador");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            String[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
+                    ,rs.getString("facturado"),rs.getString("facturado")};
+            ans.addRow(s);
+        }
+
+        c.close();
+        rs.close();
+    }
+
 }

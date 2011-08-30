@@ -6,26 +6,25 @@
 
 package totalpos;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.view.JasperViewer;
@@ -37,9 +36,10 @@ import net.sf.jasperreports.view.JasperViewer;
 public class ParameteringReport extends javax.swing.JInternalFrame {
 
     private String title = null;
-    private List<Column> columns = new ArrayList<Column>();
+    private List<TextColumnBuilder> columns = new ArrayList<TextColumnBuilder>();
+    private List<Column> columnsTD = new ArrayList<Column>();
     private List<Parameter> parameters = new ArrayList<Parameter>();
-    private List<String> subtotals = new ArrayList<String>();
+    private List<TextColumnBuilder> subtotals = new ArrayList<TextColumnBuilder>();
     private String groupBy = null;
     private boolean showNumbers = true;
     private String sql = null;
@@ -84,11 +84,22 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
                 String[] subtoks = tokens[1].split("\\|");
                 for (String subsubtok : subtoks) {
                     String[] comp = subsubtok.split("\\,");
-                    if ( comp.length != 3 ){
+                    if ( comp.length != 3 && comp.length != 4 && comp.length != 5){
                         System.err.println("Err parsing component \"" + subsubtok + "\"");
                         continue;
                     }
-                    columns.add(new Column(comp[1], comp[0], comp[2]));
+                    Column nc = new Column(comp[1], comp[0], comp[2]);
+                    DRIDataType dridt = type.stringType();
+                    if ( comp[2].equals("bigDecimalType") ){
+                        dridt = type.bigDecimalType();
+                    }
+                    TextColumnBuilder tcb = col.column(nc.getFieldName(), nc.getName(), dridt);
+                    columnsTD.add(nc);
+                    //TODO Just read String
+                    columns.add(tcb);
+                    if ( comp.length >= 4 && comp[3].equals("1")){
+                        subtotals.add(tcb);
+                    }
                 }
             }else if ( tokens[0].equals("ShowNumbers") ){
                 showNumbers = tokens[1].equals("True");
@@ -106,9 +117,6 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
                 sql = tokens[1];
             }else if ( tokens[0].equals("GroupBy") ){
                 groupBy = tokens[1];
-            }else if ( tokens[0].equals("WithSubtotal") ){
-                String[] subtok = tokens[1].split(",");
-                subtotals.addAll(Arrays.asList(subtok));
             }
             ++curLine;
         }
@@ -133,7 +141,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Especifique los parametros");
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Especifique los parametros");
         titleLabel.setName("titleLabel"); // NOI18N
 
@@ -147,7 +155,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 344, Short.MAX_VALUE)
+            .addGap(0, 357, Short.MAX_VALUE)
         );
 
         cancelButton.setText("Cancelar");
@@ -217,7 +225,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
                 }
             }
             jrb = jrb.addColumn(createColumns(columns));
-            jrb = jrb.setDataSource(ConnectionDrivers.createDataSource(parameters, sql, columns));
+            jrb = jrb.setDataSource(ConnectionDrivers.createDataSource(parameters, sql, columnsTD));
             if ( title != null ){
                 jrb = jrb.addTitle(cmp.horizontalList().add(
                         cmp.text(title).setStyle(Constants.titleStyle).setHorizontalAlignment(HorizontalAlignment.LEFT))
@@ -228,12 +236,10 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
                 jrb = jrb.pageFooter(cmp.pageXofY());
             }
             if ( !subtotals.isEmpty() ){
-                //TODO FINISH IT!
-                /*AggregationSubtotalBuilder[] semiSubTotal = new AggregationSubtotalBuilder[subtotals.size()];
                 for (int i = 0 ; i < subtotals.size() ; i++ ) {
-                    semiSubTotal[i] = sbt.sum(Column[]);
+                    jrb = jrb.subtotalsAtSummary((AggregationSubtotalBuilder<BigDecimal>)sbt.sum((TextColumnBuilder<BigDecimal>)subtotals.get(i)).setLabel("Total"));
                 }
-                jrb = jrb.subtotalsAtFirstGroupFooter(semiSubTotal);*/
+                //jrb = jrb.subtotalsAtFirstGroupFooter(semiSubTotal);
             }
             jrb = jrb.highlightDetailEvenRows();
             jv = new JasperViewer(jrb.toJasperPrint(), false);
@@ -250,11 +256,10 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
         doIt();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
-    private TextColumnBuilder[] createColumns(List<Column> lc){
+    private TextColumnBuilder[] createColumns(List<TextColumnBuilder> lc){
         TextColumnBuilder[] ans = new TextColumnBuilder[lc.size()];
         for (int i = 0; i < lc.size(); i++) {
-            Column column = lc.get(i);
-            ans[i] = col.column(column.getFieldName(), column.getName(), type.stringType());
+            ans[i] = lc.get(i);
         }
         return ans;
     }
@@ -276,6 +281,6 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
             name.setLabel(label);
             name.setTextField(textField);
         }
-        setSize(450, 150+parameters.size()*20);
+        setSize(450, 130+parameters.size()*22);
     }
 }

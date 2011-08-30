@@ -3,6 +3,7 @@ package totalpos;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
 import java.lang.reflect.Constructor;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -1728,9 +1729,14 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
-            String[] toAdd = new String[columns.size()];
+            Object[] toAdd = new Object[columns.size()];
             for (int i = 0; i < columnsArray.length; i++) {
-                toAdd[i] = rs.getString(columnsArray[i]);
+                if ( columns.get(i).getMyClass().equals("bigDecimalType") ){
+                    toAdd[i] = new BigDecimal(rs.getDouble(columnsArray[i]));
+                }else{
+                    toAdd[i] = rs.getString(columnsArray[i]);
+                }
+                
             }
             dataSource.add(toAdd);
         }

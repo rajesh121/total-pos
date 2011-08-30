@@ -228,6 +228,10 @@ public class MainWindows extends javax.swing.JFrame {
                 ManageDeposits md = new ManageDeposits();
                 mdiPanel.add(md);
                 md.setVisible(true);
+            } else if ( ed.getFuncion().equals("closingDay") ) {
+                ClosingDay cd = new ClosingDay();
+                mdiPanel.add(cd);
+                cd.setVisible(true);
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
             } else if (ed.getFuncion().isEmpty()) {
@@ -250,7 +254,6 @@ public class MainWindows extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        esc2exit = new javax.swing.JLabel();
         whatTimeIsIt = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
 
@@ -283,16 +286,6 @@ public class MainWindows extends javax.swing.JFrame {
             }
         });
 
-        esc2exit.setFont(new java.awt.Font("Courier New", 0, 11));
-        esc2exit.setText("ESC = Salir.");
-        esc2exit.setFocusable(false);
-        esc2exit.setName("esc2exit"); // NOI18N
-        esc2exit.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                esc2exitKeyPressed(evt);
-            }
-        });
-
         whatTimeIsIt.setFocusable(false);
         whatTimeIsIt.setName("whatTimeIsIt"); // NOI18N
 
@@ -300,19 +293,13 @@ public class MainWindows extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(esc2exit)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 497, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(591, Short.MAX_VALUE)
                 .addComponent(whatTimeIsIt, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(esc2exit)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(whatTimeIsIt, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -358,12 +345,6 @@ public class MainWindows extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jPanel1KeyPressed
 
-    private void esc2exitKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_esc2exitKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            logout();
-        }
-    }//GEN-LAST:event_esc2exitKeyPressed
-
     private void logout(){
 
         Object[] options = {"Si","No"};
@@ -388,7 +369,6 @@ public class MainWindows extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel esc2exit;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuBar menuBar;
     public javax.swing.JLabel whatTimeIsIt;

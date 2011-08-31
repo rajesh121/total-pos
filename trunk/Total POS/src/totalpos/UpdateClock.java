@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class UpdateClock extends Thread{
 
@@ -64,9 +64,12 @@ public class UpdateClock extends Thread{
                             int leaving = (diff.getMinutes()+diff.getHours()*60);
                             if ( leaving < 5 ){
                                 MainRetailWindows mrw = (MainRetailWindows) Shared.getMyMainWindows();
-                                mrw.minutesLabel.setVisible(true);
-                                mrw.numberMinuteLabel.setText(leaving+"");
-                                mrw.numberMinuteLabel.setVisible(true);
+                                if ( leaving > 0 ){
+                                    mrw.yourTurnIsFinishingLabel.setText("Su turno se va a vencer en " + leaving + " minuto" + (leaving>1?"s":"") + ".");
+                                }else{
+                                    mrw.yourTurnIsFinishingLabel.setText("Su turno se va a vencer en pocos segundos.");
+                                }
+                                mrw.yourTurnIsFinishingLabel.setVisible(true);
                             }
                             break; // for performance ...  =D!
                         }

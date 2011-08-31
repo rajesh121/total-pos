@@ -31,6 +31,8 @@
                   <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
                   <Component id="jLabel1" alignment="0" pref="625" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
+                      <Component id="reverseALLButton" min="-2" pref="130" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="acceptButton" min="-2" pref="92" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cancelButton" min="-2" pref="95" max="-2" attributes="0"/>
@@ -55,6 +57,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="acceptButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="reverseALLButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -163,6 +166,7 @@
     <Component class="javax.swing.JButton" name="acceptButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Aceptar"/>
+        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="acceptButton" noResource="true"/>
       </Properties>
       <Events>
@@ -192,9 +196,9 @@
                   </Group>
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="clientPhoneField" pref="175" max="32767" attributes="0"/>
-                      <Component id="clientNameField" pref="175" max="32767" attributes="0"/>
-                      <Component id="clientIDField" alignment="1" pref="175" max="32767" attributes="0"/>
+                      <Component id="clientPhoneField" pref="179" max="32767" attributes="0"/>
+                      <Component id="clientNameField" pref="179" max="32767" attributes="0"/>
+                      <Component id="clientIDField" alignment="1" pref="179" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -372,13 +376,13 @@
                           <Component id="fiscalPrinter" max="32767" attributes="1"/>
                           <Component id="zReport1" alignment="0" max="32767" attributes="1"/>
                       </Group>
-                      <Component id="zReport" max="32767" attributes="1"/>
+                      <Component id="zReport" pref="107" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="totalField" pref="204" max="32767" attributes="2"/>
-                      <Component id="fiscalPrinterField" alignment="0" pref="204" max="32767" attributes="2"/>
-                      <Component id="zReportField" alignment="0" pref="204" max="32767" attributes="2"/>
+                      <Component id="totalField" pref="206" max="32767" attributes="2"/>
+                      <Component id="fiscalPrinterField" alignment="0" pref="206" max="32767" attributes="2"/>
+                      <Component id="zReportField" alignment="0" pref="206" max="32767" attributes="2"/>
                   </Group>
               </Group>
           </Group>
@@ -562,5 +566,15 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="reverseALLButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Devolver todo"/>
+        <Property name="focusable" type="boolean" value="false"/>
+        <Property name="name" type="java.lang.String" value="reverseALLButton" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reverseALLButtonActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

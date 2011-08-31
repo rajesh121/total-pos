@@ -59,8 +59,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             user = u;
             printer = new FiscalPrinter();
             this.assign = assign;
-            numberMinuteLabel.setVisible(false);
-            minutesLabel.setVisible(false);
+            yourTurnIsFinishingLabel.setVisible(false);
             if ( !ConnectionDrivers.isAllowed(u.getPerfil(), "retail") ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Esta usuario no tiene permisos para utilizar el punto de venta.");
                 msb.show(null);
@@ -84,6 +83,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         "Monto Inicial de caja", Constants.df.format(Constants.minimumCash));
 
                 try{
+                    if ( cc == null || cc.isEmpty() ){
+                        throw new NumberFormatException();
+                    }
                     currentMoney = Double.parseDouble(cc.replace(',', '.'));
                     if ( currentMoney < 150.0 ){
                         throw new NumberFormatException();
@@ -129,6 +131,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
         cleanTable();
 
+        List<Receipt> idleReceipts = ConnectionDrivers.listIdleReceiptToday();
+        if ( idleReceipts.isEmpty() ){
+            msg2user.setVisible(false);
+        }else if ( idleReceipts.size() == 1 ) {
+            msg2user.setText("Tiene 1 pedido en espera.");
+        }else{
+            msg2user.setText("Tiene " + idleReceipts.size() + " pedidos en espera.");
+        }
         actualId = nextId();
         ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
         setClient(null);
@@ -221,11 +231,13 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
         jPanel3 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/fecha-y-hora.jpg")).getImage()));
         whatTimeIsIt = new javax.swing.JLabel();
         messageToTheClients = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-mensajes-al-cajero.jpg")).getImage()));
-        minutesLabel = new javax.swing.JLabel();
-        numberMinuteLabel = new javax.swing.JLabel();
+        msg2user = new javax.swing.JLabel();
+        msg2user2 = new javax.swing.JLabel();
+        yourTurnIsFinishingLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
@@ -394,7 +406,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
         jScrollPane1.getViewport().setOpaque(false);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
 
         descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 12));
@@ -514,6 +525,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jLabel11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel11.setName("jLabel11"); // NOI18N
 
+        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel12.setText("F7 / Reporte X");
+        jLabel12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel12.setName("jLabel12"); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -522,8 +538,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(190, 190, 190)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
@@ -533,7 +550,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel8)
@@ -543,25 +562,26 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel11)))
-                .addContainerGap(565, Short.MAX_VALUE))
+                .addContainerGap(381, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
+                    .addComponent(jLabel6)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel9)
+                    .addComponent(jLabel11)
                     .addComponent(jLabel10)
-                    .addComponent(jLabel11)))
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel12)))
         );
 
         jPanel3.setName("jPanel3"); // NOI18N
@@ -588,34 +608,50 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         messageToTheClients.setFocusable(false);
         messageToTheClients.setName("messageToTheClients"); // NOI18N
 
+        msg2user.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        msg2user.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        msg2user.setText("Acá van los mensajes xD");
+        msg2user.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        msg2user.setName("msg2user"); // NOI18N
+
+        msg2user2.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        msg2user2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        msg2user2.setText("Sonríale al cliente así =D");
+        msg2user2.setName("msg2user2"); // NOI18N
+
         javax.swing.GroupLayout messageToTheClientsLayout = new javax.swing.GroupLayout(messageToTheClients);
         messageToTheClients.setLayout(messageToTheClientsLayout);
         messageToTheClientsLayout.setHorizontalGroup(
             messageToTheClientsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 337, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, messageToTheClientsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(messageToTheClientsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(msg2user2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                    .addComponent(msg2user, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
+                .addContainerGap())
         );
         messageToTheClientsLayout.setVerticalGroup(
             messageToTheClientsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 76, Short.MAX_VALUE)
+            .addGroup(messageToTheClientsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(msg2user)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(msg2user2)
+                .addContainerGap())
         );
 
-        minutesLabel.setFont(new java.awt.Font("Courier New", 0, 12));
-        minutesLabel.setText("Minutos");
-        minutesLabel.setName("minutesLabel"); // NOI18N
-
-        numberMinuteLabel.setText("jLabel11");
-        numberMinuteLabel.setName("numberMinuteLabel"); // NOI18N
+        yourTurnIsFinishingLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        yourTurnIsFinishingLabel.setText("Acá va lo del turno!! =D");
+        yourTurnIsFinishingLabel.setName("yourTurnIsFinishingLabel"); // NOI18N
 
         javax.swing.GroupLayout wallpaperLayout = new javax.swing.GroupLayout(wallpaper);
         wallpaper.setLayout(wallpaperLayout);
         wallpaperLayout.setHorizontalGroup(
             wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
-                .addContainerGap(913, Short.MAX_VALUE)
-                .addComponent(numberMinuteLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(minutesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 441, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(wallpaperLayout.createSequentialGroup()
@@ -633,11 +669,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(minutesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(numberMinuteLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(7, 7, 7)
                 .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
@@ -929,6 +963,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -943,17 +978,23 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel messageToTheClients;
-    public javax.swing.JLabel minutesLabel;
-    public javax.swing.JLabel numberMinuteLabel;
+    private javax.swing.JLabel msg2user;
+    private javax.swing.JLabel msg2user2;
     private javax.swing.JLabel subTotalLabel;
     private javax.swing.JLabel subTotalLabelResult;
     private javax.swing.JLabel totalLabel;
     private javax.swing.JPanel wallpaper;
     public javax.swing.JLabel whatTimeIsIt;
+    public javax.swing.JLabel yourTurnIsFinishingLabel;
     // End of variables declaration//GEN-END:variables
 
     private void logout(){
-        if ( JOptionPane.showConfirmDialog( (Shared.getMyMainWindows()) , "¿Está seguro que desea cerrar sesión?") == 0 ){
+        String msg = "Se procederá a cerrar sesión";
+        if ( !items.isEmpty() ){
+            msg = " El pedido que está cargado será ANULADO!";
+        }
+        msg += " ¿Está seguro que desea continuar?";
+        if ( JOptionPane.showConfirmDialog( (Shared.getMyMainWindows()) , msg) == 0 ){
             deleteCurrent();
             Login l = new Login();
             Shared.centerFrame(l);

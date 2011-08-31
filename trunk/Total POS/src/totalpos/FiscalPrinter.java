@@ -267,7 +267,7 @@ public class FiscalPrinter {
         if ( !items.isEmpty() ){
             int line = 1;
 
-            if ( client != null && !client.getId().isEmpty() ){
+            if ( client != null && !client.getId().isEmpty() && !client.getId().equals("Contado") ){
                 buffer.add("i0" + ( line++ ) + "RIF: " + client.getId());
                 if ( !client.getName().trim().isEmpty() ) {
                     buffer.add("i0" + (line++) + "Nombre: " + client.getName());

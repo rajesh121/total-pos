@@ -62,6 +62,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
                 empty = true;
                 doIt();
             }
+            titleLabel.setText(title);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ParameteringReport.class.getName()).log(Level.SEVERE, null, ex);
         }

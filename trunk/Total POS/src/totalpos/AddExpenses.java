@@ -188,7 +188,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
                     msg.show(this);
                     return;
                 }
-                Double.parseDouble((String) model.getValueAt(i, 1));
+                Double.parseDouble(((String) model.getValueAt(i, 1)).replace(',', '.'));
             }catch (NumberFormatException ex){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido. Debe corregirse!");
                 msg.show(this);

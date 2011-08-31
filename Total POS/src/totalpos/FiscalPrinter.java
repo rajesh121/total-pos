@@ -330,5 +330,9 @@ public class FiscalPrinter {
         printer.CloseFpctrl();
         isOk = true;
     }
+
+    public void forceClose(){
+        printer.CloseFpctrl();
+    }
     
 }

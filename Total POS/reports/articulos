@@ -1,7 +1,6 @@
 Title==Cantidad de articulos
 Columns==Existencia Actual,existencia_actual,String|Descripcion,descripcion,String
 ShowNumbers==True
-Parameters==codigo,codigo,String
-SQL==Select existencia_actual , descripcion from articulo where codigo = ?
+SQL==Select existencia_actual , descripcion from articulo order by existencia_actual desc
 GroupBy==Nombre de Columna
 WithSubtotal==Nombre de Columna,Nombre de Columna

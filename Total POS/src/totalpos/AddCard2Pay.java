@@ -168,10 +168,23 @@ public class AddCard2Pay extends javax.swing.JDialog {
             msb.show(this);
             return;
         }
-        if ( d <= .0 ){
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto");
+        Double minimun = .0;
+        try{
+            minimun = Double.parseDouble(Shared.getConfig(reason));
+        }catch( NumberFormatException ex ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error en la configuración del monto mínimo para tarjetas de tipo: "
+                    + reason + ". Se asume mínimo 1 Bsf");
+            msb.show(this);
+            minimun = 1.0;
+        }
+        if ( d <= minimun ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser al menos " + minimun + " Bsf.");
             msb.show(this);
             return;
+        }
+        if ( bposCombo.getSelectedIndex() == -1 ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el punto de venta!");
+            msb.show(this);
         }
         myParent.add(reason,d,bpos.get(bposCombo.getSelectedIndex()));
         this.dispose();

@@ -24,6 +24,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
     private String actualId;
     private MainRetailWindows myParent;
     public boolean isOk = false;
+    public boolean alreadyDone = false;
 
     /** Creates new form CreditNoteForm
      * @param parent
@@ -51,7 +52,14 @@ public class CreditNoteForm extends javax.swing.JDialog {
             clientDescriptionField.setText(c.getAddress());
             clientNameField.setText(c.getName());
             clientPhoneField.setText(c.getPhone());
+            acceptButton.setMnemonic('A');
+            cancelButton.setMnemonic('C');
+            reverseALLButton.setMnemonic('D');
             updateAll();
+            if ( alreadyDone ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_NOTICE, "Esta factura ha sido devuelta anteriormente!");
+                msb.show(this);
+            }
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
@@ -71,6 +79,9 @@ public class CreditNoteForm extends javax.swing.JDialog {
 
             for (Item2Receipt item2r : receipt.getItems()) {
                 Item item = item2r.getItem();
+                if ( item2r.getAntiQuant() != 0 ){
+                    alreadyDone = true;
+                }
                 Object[] s = {"0",item2r.getQuant(),item2r.getAntiQuant(),item.getDescription(), item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
                 model.addRow(s);
             }
@@ -115,6 +126,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
         dateField = new javax.swing.JTextField();
         zReport1 = new javax.swing.JLabel();
         totalField = new javax.swing.JTextField();
+        reverseALLButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nota de Crédito");
@@ -169,6 +181,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
         });
 
         acceptButton.setText("Aceptar");
+        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -245,9 +258,9 @@ public class CreditNoteForm extends javax.swing.JDialog {
                     .addComponent(codeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 74, Short.MAX_VALUE))
                 .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(clientPhoneField, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                    .addComponent(clientNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                    .addComponent(clientIDField, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE))
+                    .addComponent(clientPhoneField, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                    .addComponent(clientNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                    .addComponent(clientIDField, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -371,12 +384,12 @@ public class CreditNoteForm extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(fiscalPrinter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(zReport1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(zReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(zReport, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(totalField, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
-                    .addComponent(fiscalPrinterField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
-                    .addComponent(zReportField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)))
+                    .addComponent(totalField, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                    .addComponent(fiscalPrinterField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                    .addComponent(zReportField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {dateField, fiscalNumberField, internIdField});
@@ -413,6 +426,15 @@ public class CreditNoteForm extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        reverseALLButton.setText("Devolver todo");
+        reverseALLButton.setFocusable(false);
+        reverseALLButton.setName("reverseALLButton"); // NOI18N
+        reverseALLButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reverseALLButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -425,6 +447,8 @@ public class CreditNoteForm extends javax.swing.JDialog {
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(reverseALLButton, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -444,7 +468,8 @@ public class CreditNoteForm extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
-                    .addComponent(acceptButton))
+                    .addComponent(acceptButton)
+                    .addComponent(reverseALLButton))
                 .addContainerGap())
         );
 
@@ -466,6 +491,20 @@ public class CreditNoteForm extends javax.swing.JDialog {
             this.dispose();
         }
     }//GEN-LAST:event_tableKeyPressed
+
+    private void reverseALLButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reverseALLButtonActionPerformed
+        for (int i = 0; i < table.getRowCount(); ++i) {
+            try{
+                int antiQuantComplement = Integer.parseInt((String)(table.getValueAt(i, 1)+""));
+                int antiQuantComplementDone = Integer.parseInt((table.getValueAt(i, 2)+""));
+                table.setValueAt((antiQuantComplement-antiQuantComplementDone)+"", i, 0);
+            }catch ( NumberFormatException ex){
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Cantidad inválida! Item " + (i+1) + "!");
+                msb.show(this);
+                return;
+            }
+        }
+    }//GEN-LAST:event_reverseALLButtonActionPerformed
 
     private String nextId(){
         try {
@@ -514,6 +553,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JLabel phoneLabel;
+    private javax.swing.JButton reverseALLButton;
     private javax.swing.JTable table;
     private javax.swing.JTextField totalField;
     private javax.swing.JLabel zReport;
@@ -527,11 +567,14 @@ public class CreditNoteForm extends javax.swing.JDialog {
             List<Item2Receipt> items = new ArrayList<Item2Receipt>();
             for (int i = 0; i < table.getRowCount(); ++i) {
                 try{
-                    int antiquant = (Integer)table.getValueAt(i, 0);
-                    int antiQuantComplement = (Integer)table.getValueAt(i, 1);
-                    int antiQuantComplementDone = (Integer)table.getValueAt(i, 2);
+                    // This part was a little annoying :-o!
+                    int antiquant = Integer.parseInt(((String)(table.getValueAt(i, 0)+"")));
+                    int antiQuantComplement = Integer.parseInt((String)(table.getValueAt(i, 1)+""));
+                    int antiQuantComplementDone = Integer.parseInt((table.getValueAt(i, 2)+""));
                     if ( antiquant > antiQuantComplement - antiQuantComplementDone ){
-                        throw new NumberFormatException();
+                        MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar máximo " + antiquant +" artículos en el item " + (i+1) + "!");
+                        msb.show(this);
+                        return;
                     }
                     if ( antiquant > 0 ) {
                         items.add(new Item2Receipt(receipt.getItems().get(i).getItem(),antiquant,0));

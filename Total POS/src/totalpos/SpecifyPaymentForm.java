@@ -312,36 +312,27 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
                 this.dispose();
                 Shared.reload();
             } catch (FileNotFoundException ex) {
-                what2DoWithReceipt();
+                what2DoWithReceipt("No se pudo leer el número fiscal");
                 this.dispose();
-                Shared.reload();
+                myParent.printer.forceClose();
             } catch (Exception ex) {
-                what2DoWithReceipt();
+                what2DoWithReceipt(ex.getMessage());
                 this.dispose();
-                Shared.reload();
+                myParent.printer.forceClose();
             }
         }
     }//GEN-LAST:event_tableKeyPressed
 
-    private void what2DoWithReceipt(){
-        Object[] options = {"Cancelarla","Poner en espera"};
-        int n = JOptionPane.showOptionDialog(this,"Error al imprimir. Por favor comuníquese con el encargado. Indique que hacer con la factura.",
-                Constants.appName,
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[1]);
-        if ( n == 0 ){
-            myParent.deleteCurrent();
-        }else if ( n == 1 ){
-            try {
-                myParent.toWait();
-                myParent.updateAll();
-            } catch (SQLException ex1) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex1);
-                msb.show(null);
-            }
+    private void what2DoWithReceipt(String msg){
+        try{
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas al imprimir.\nCausa: " + msg + ".");
+            msb.show(null);
+
+            myParent.toWait();
+            myParent.updateAll();
+        } catch (SQLException ex1) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex1);
+            msb.show(null);
         }
     }
 

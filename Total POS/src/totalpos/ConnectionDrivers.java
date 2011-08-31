@@ -1644,8 +1644,8 @@ public class ConnectionDrivers {
     public static void newCash(Double money, String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito "
-                + ", dinero_efectivo , dinero_tarjeta_debito ) values ( curdate() , ? , .0 , ? , .0 )");
+        PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito , nota_de_credito "
+                + ", dinero_efectivo , dinero_tarjeta_debito ) values ( curdate() , ? , .0 , ? , .0 , 0)");
 
         stmt.setDouble(2, money);
         stmt.setString(1, Constants.myId);

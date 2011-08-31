@@ -256,7 +256,7 @@ public class FiscalPrinter {
         return lastReceipt;
     }
 
-    public void printCreditNote(List<Item2Receipt> items, String ticketId, String myId, User u ) throws Exception{
+    public void printCreditNote(List<Item2Receipt> items, String ticketId, String myId, User u , Client client) throws Exception{
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -266,9 +266,24 @@ public class FiscalPrinter {
 
         if ( !items.isEmpty() ){
             int line = 1;
+
+            if ( client != null && !client.getId().isEmpty() ){
+                buffer.add("i0" + ( line++ ) + "RIF: " + client.getId());
+                if ( !client.getName().trim().isEmpty() ) {
+                    buffer.add("i0" + (line++) + "Nombre: " + client.getName());
+                }
+                if ( !client.getPhone().trim().isEmpty() ) {
+                    buffer.add("i0" + (line++) + "Telefono: " + client.getPhone());
+                }
+                if ( !client.getAddress().trim().isEmpty() ) {
+                    buffer.add("i0" + (line++) + "Direccion: " + client.getAddress());
+                }
+            }else{
+                buffer.add("i0" + (line++) + "Cliente: Contado");
+            }
             buffer.add("i0" + ( line++ ) + "Correlativo: " + myId);
             buffer.add("i0" + ( line++ ) + "Factura: " + ticketId);
-            buffer.add("i0" + ( line++ ) + "Usuario: " + u.getNombre());
+            buffer.add("i0" + ( line++ ) + "Caja: " + Constants.myId);
 
             for (String bu : buffer) {
                 printer.SendCmd(a, b, bu);

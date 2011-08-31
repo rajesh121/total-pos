@@ -858,7 +858,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             gd.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_F5 ){
             if ( !items.isEmpty() ){
-                SpecifyPaymentForm sfpf = new SpecifyPaymentForm(this, true, subtotal, actualId);
+                SpecifyPaymentForm sfpf = new SpecifyPaymentForm(this, true, subtotal*(1.0-globalDiscount), actualId);
                 Shared.centerFrame(sfpf);
                 sfpf.setVisible(true);
             }

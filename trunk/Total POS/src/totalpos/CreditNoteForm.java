@@ -25,6 +25,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
     private MainRetailWindows myParent;
     public boolean isOk = false;
     public boolean alreadyDone = false;
+    Client client = null;
 
     /** Creates new form CreditNoteForm
      * @param parent
@@ -47,7 +48,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
 
             // Client MUST be registred
             assert( l.size() >= 1);
-            Client c = l.get(0);
+            Client c = client = l.get(0);
             clientIDField.setText(c.getId());
             clientDescriptionField.setText(c.getAddress());
             clientNameField.setText(c.getName());
@@ -598,7 +599,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
             }
             actualId = nextId();
             ConnectionDrivers.createCreditNote(actualId, receipt.getInternId(), myParent.getUser().getLogin(), myParent.getAssign(), items);
-            myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser());
+            myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client);
             this.dispose();
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);

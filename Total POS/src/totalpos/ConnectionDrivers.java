@@ -1714,7 +1714,7 @@ public class ConnectionDrivers {
 
         for (int i = 0; i < model.getRowCount(); i++) {
             String concept = (String) model.getValueAt(i, 0) ;
-            Double quant = Double.parseDouble((String) model.getValueAt(i, 1));
+            Double quant = Double.parseDouble(((String) model.getValueAt(i, 1)).replace(',', '.'));
             PreparedStatement stmt = c.prepareStatement(
                 "insert into gasto ( fecha, concepto, monto) values ( now() , ? , ? )");
             stmt.setString(1, concept);

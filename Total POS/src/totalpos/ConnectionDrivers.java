@@ -717,7 +717,7 @@ public class ConnectionDrivers {
 
         changeItemStock(item.getCode(), -1);
 
-        double withoutTax = item.getLastPrice().getQuant();
+        double withoutTax = item.getLastPrice().getQuant()*quant;
         double subT = accumulatedInReceipt(receiptId) + withoutTax;
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = " + (subT) +

@@ -7,6 +7,8 @@
 package totalpos;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -138,7 +141,6 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setIconifiable(true);
-        setResizable(true);
         setTitle("Especifique los parametros");
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
@@ -275,8 +277,19 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
         mainPanel.setLayout(new GridLayout(parameters.size(), 2));
         for (Parameter name : parameters) {
             JLabel label = new JLabel(name.getFormName());
-            JTextField textField = new JTextField();
+            final JTextField textField = new JTextField();
             mainPanel.add(label);
+            if ( name.getType().equals("Date") ){
+                textField.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        ChooseDate cal = new ChooseDate(Constants.appName,textField);
+                        ((MainWindows)Shared.getMyMainWindows()).mdiPanel.add(cal);
+                        cal.setVisible(true);
+                    }
+                });
+                textField.setEditable(false);
+            }
             mainPanel.add(textField);
             name.setLabel(label);
             name.setTextField(textField);

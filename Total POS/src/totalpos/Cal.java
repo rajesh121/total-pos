@@ -1,4 +1,5 @@
 package totalpos;
+
 /*
  * Copyright (c) Ian F. Darwin, http://www.darwinsys.com/, 1996-2002.
  * All rights reserved. Software written by Ian F. Darwin and others.
@@ -37,8 +38,6 @@ package totalpos;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,8 +47,9 @@ import java.util.GregorianCalendar;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * Bean to display a month calendar in a JPanel. Only works for the Western
@@ -89,15 +89,20 @@ public class Cal extends JPanel {
   /** The year choice */
   private JComboBox yearChoice;
 
+  private JTextField field;
+
+  private JInternalFrame parent;
+
   /**
    * Construct a Cal, starting with today.
    */
-  Cal() {
-    super();
+  Cal(JTextField finish, JInternalFrame myParent) {
     setYYMMDD(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH));
     buildGUI();
     recompute();
+    field = finish;
+    parent = myParent;
   }
 
   /**
@@ -119,8 +124,8 @@ public class Cal extends JPanel {
     dd = today;
   }
 
-  String[] months = { "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December" };
+  String[] months = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" };
 
   /** Build the GUI. Assumes that setYYMMDD has been called. */
   private void buildGUI() {
@@ -155,6 +160,7 @@ public class Cal extends JPanel {
       yearChoice.addItem(Integer.toString(i));
     yearChoice.setSelectedItem(Integer.toString(yy));
     yearChoice.addActionListener(new ActionListener() {
+            @Override
       public void actionPerformed(ActionEvent ae) {
         int i = yearChoice.getSelectedIndex();
         if (i >= 0) {
@@ -171,12 +177,12 @@ public class Cal extends JPanel {
     bp.setLayout(new GridLayout(7, 7));
     labs = new JButton[6][7]; // first row is days
 
-    bp.add(b0 = new JButton("S"));
+    bp.add(b0 = new JButton("D"));
+    bp.add(new JButton("L"));
     bp.add(new JButton("M"));
-    bp.add(new JButton("T"));
-    bp.add(new JButton("W"));
-    bp.add(new JButton("R"));
-    bp.add(new JButton("F"));
+    bp.add(new JButton("M"));
+    bp.add(new JButton("J"));
+    bp.add(new JButton("V"));
     bp.add(new JButton("S"));
 
     ActionListener dateSetter = new ActionListener() {
@@ -189,15 +195,19 @@ public class Cal extends JPanel {
           // fire some kind of DateChanged event here.
           // Also, build a similar daySetter for day-of-week btns.
         }
+
+        field.setText(yy + "-" + Constants.df2int.format(mm+1) + "-" + Constants.df2int.format(dd) );
+        parent.dispose();
       }
     };
 
     // Construct all the buttons, and add them.
-    for (int i = 0; i < 6; i++)
-      for (int j = 0; j < 7; j++) {
-        bp.add(labs[i][j] = new JButton(""));
-        labs[i][j].addActionListener(dateSetter);
-      }
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 7; j++) {
+            bp.add(labs[i][j] = new JButton(""));
+            labs[i][j].addActionListener(dateSetter);
+        }
+    }
 
     add(BorderLayout.SOUTH, bp);
   }
@@ -238,7 +248,7 @@ public class Cal extends JPanel {
     }
 
     // 7 days/week * up to 6 rows
-    for (int i = leadGap + 1 + daysInMonth; i < 6 * 7; i++) {
+    for (int i = leadGap + daysInMonth; i < 6 * 7; i++) {
       labs[(i) / 7][(i) % 7].setText("");
     }
 
@@ -302,21 +312,5 @@ public class Cal extends JPanel {
     square.setBackground(Color.red);
     square.repaint();
     activeDay = newDay;
-  }
-
-  /** For testing, a main program */
-  public static void main(String[] av) {
-    JFrame f = new JFrame("Cal");
-    Container c = f.getContentPane();
-    c.setLayout(new FlowLayout());
-
-    // for this test driver, hardcode 1995/02/10.
-    //c.add(new Cal(1995, 2 - 1, 10));
-
-    // and beside it, the current month.
-    c.add(new Cal());
-
-    f.pack();
-    f.setVisible(true);
   }
 }

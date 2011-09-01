@@ -185,6 +185,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         if ( bposCombo.getSelectedIndex() == -1 ){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el punto de venta!");
             msb.show(this);
+            return;
         }
         myParent.add(reason,d,bpos.get(bposCombo.getSelectedIndex()));
         this.dispose();
@@ -195,6 +196,11 @@ public class AddCard2Pay extends javax.swing.JDialog {
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void modifyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyLotActionPerformed
+        if ( bposCombo.getSelectedIndex() == -1 ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el punto de venta!");
+            msb.show(this);
+            return;
+        }
         BankPOS bp = bpos.get(bposCombo.getSelectedIndex());
         String id = JOptionPane.showInputDialog(this, "Nuevo Lote", bp.getLot());
         if ( id != null && !id.isEmpty() ){

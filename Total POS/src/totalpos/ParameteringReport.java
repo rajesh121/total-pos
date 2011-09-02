@@ -119,6 +119,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
             }else if ( tokens[0].equals("SQL") ){
                 sql = tokens[1];
             }else if ( tokens[0].equals("GroupBy") ){
+                //TODO Decide what to do here
                 groupBy = tokens[1];
             }
             ++curLine;

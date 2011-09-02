@@ -98,6 +98,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         fiscalZ = new javax.swing.JTable();
+        updateFiscalNumberslButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         depositTable = new javax.swing.JTable();
@@ -154,25 +155,18 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
         fiscalZ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Caja", "Serial", "Zeta Fiscal", "Facturado", "Actualizado", "Por actualizar"
+                "Caja", "Serial", "Zeta Fiscal", "Facturado", "Actualizado"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
-            };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, true
+                false, false, false, false, false
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -188,7 +182,14 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         });
         jScrollPane6.setViewportView(fiscalZ);
         fiscalZ.getColumnModel().getColumn(0).setPreferredWidth(40);
-        fiscalZ.getColumnModel().getColumn(5).setPreferredWidth(50);
+
+        updateFiscalNumberslButton.setText("Actualizar todos");
+        updateFiscalNumberslButton.setName("updateFiscalNumberslButton"); // NOI18N
+        updateFiscalNumberslButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateFiscalNumberslButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -196,13 +197,17 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateFiscalNumberslButton, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(updateFiscalNumberslButton)
                 .addContainerGap())
         );
 
@@ -462,12 +467,12 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jPanel7.setName("jPanel7"); // NOI18N
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel1.setText("Declarado Tarjetas");
+        jLabel1.setText("Declarado Tarj");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.setName("jLabel1"); // NOI18N
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel2.setText("Declarado Efectivo");
+        jLabel2.setText("Declarado Efec");
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
@@ -782,6 +787,14 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_formWayxPosesFocusGained
 
+    private void updateFiscalNumberslButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateFiscalNumberslButtonActionPerformed
+        try {
+            ConnectionDrivers.markToUpdateFiscalNumbersToday();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_updateFiscalNumberslButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ExpenseTable;
     private javax.swing.JTable bankTable;
@@ -826,6 +839,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     private javax.swing.JTextField totalCashField;
     private javax.swing.JTextField totalDeclaredField;
     private javax.swing.JTextField totalTotalField;
+    private javax.swing.JButton updateFiscalNumberslButton;
     // End of variables declaration//GEN-END:variables
 
 }

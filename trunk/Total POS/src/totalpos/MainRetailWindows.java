@@ -141,6 +141,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         }
         actualId = nextId();
         ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
+        if ( ConnectionDrivers.isNeededtoUpdate() ){
+            printer.updateValues();
+        }
         setClient(null);
     }
 

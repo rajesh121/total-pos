@@ -37,7 +37,7 @@ public class Constants {
     public static DecimalFormat df = new DecimalFormat("#.00");
     public static DecimalFormat df2int = new DecimalFormat("#00.###");
 
-    public static final boolean isPos = true;
+    public static final boolean isPos = false;
 
     public static int secondToCheckTurn = 30;
     public static int secondToUpdateCountdown = 2;

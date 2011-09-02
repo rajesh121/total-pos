@@ -55,7 +55,7 @@ public class ManageDeposits extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("Depósitos");
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel1.setText("Depósitos");
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -73,6 +73,7 @@ public class ManageDeposits extends javax.swing.JInternalFrame {
             }
         ));
         table.setName("table"); // NOI18N
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         table.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(table);
 

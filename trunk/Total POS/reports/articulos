@@ -1,6 +1,5 @@
-Title==Cantidad de articulos
+Title==Cantidad de articulos 2
 Columns==Existencia Actual,existencia_actual,String|Descripcion,descripcion,String
 ShowNumbers==True
+Parameters==
 SQL==Select existencia_actual , descripcion from articulo order by existencia_actual desc
-GroupBy==Nombre de Columna
-WithSubtotal==Nombre de Columna,Nombre de Columna

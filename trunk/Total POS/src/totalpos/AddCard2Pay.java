@@ -177,7 +177,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
             msb.show(this);
             minimun = 1.0;
         }
-        if ( d <= minimun ){
+        if ( d < minimun ){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser al menos " + minimun + " Bsf.");
             msb.show(this);
             return;

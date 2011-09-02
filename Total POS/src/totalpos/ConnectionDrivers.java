@@ -1416,13 +1416,14 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         for (PayForm payForm : lpf) {
             PreparedStatement stmt = c.prepareStatement(
-                "insert into forma_de_pago ( codigo_interno_factura, tipo, codigo_punto_de_venta_de_banco , lote , monto) "
-                + "values ( ? , ? , ? , ? , ? )");
+                "insert into forma_de_pago ( fecha, codigo_interno_factura, tipo, codigo_punto_de_venta_de_banco , lote , monto, codigo_punto_de_venta) "
+                + "values ( now(), ? , ? , ? , ? , ? , ?)");
             stmt.setString(1, payForm.getReceiptId());
             stmt.setString(2, payForm.getFormWay());
             stmt.setString(3, payForm.getbPos());
             stmt.setString(4, payForm.getLot());
             stmt.setDouble(5, payForm.getQuant());
+            stmt.setString(6, Constants.myId);
             stmt.executeUpdate();
             if ( payForm.getFormWay().equals("Efectivo") ){
                 addCash(payForm.getQuant(), Constants.myId);
@@ -1644,8 +1645,8 @@ public class ConnectionDrivers {
     public static void newCash(Double money, String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito , nota_de_credito "
-                + ", dinero_efectivo , dinero_tarjeta_debito ) values ( curdate() , ? , .0 , ? , .0 , 0)");
+        PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito "
+                + ", dinero_efectivo , dinero_tarjeta_debito , nota_de_credito ) values ( curdate() , ? , .0 , ? , .0 , 0)");
 
         stmt.setDouble(2, money);
         stmt.setString(1, Constants.myId);
@@ -1849,6 +1850,88 @@ public class ConnectionDrivers {
 
         c.close();
         rs.close();
+    }
+
+    static void listFormWayXPosesDetailToday(DefaultTableModel ans) throws SQLException {
+        ans.setRowCount(0);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_punto_de_venta,tipo,sum(monto) "
+                + "as monto from forma_de_pago where datediff(curdate(),fecha)=0 "
+                + "group by codigo_punto_de_venta , tipo");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            String[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("tipo"),rs.getString("monto")};
+            ans.addRow(s);
+        }
+
+        c.close();
+        rs.close();
+    }
+
+    static void listBankTable(DefaultTableModel ans) throws SQLException {
+        ans.setRowCount(0);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select b.descripcion , a.lote,"
+                + "a.tipo , sum(monto) as monto from forma_de_pago a,"
+                + "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and "
+                + "datediff(curdate(),fecha)=0 group by a.codigo_punto_de_venta_de_banco");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            String[] s = {rs.getString("descripcion"),rs.getString("lote"),rs.getString("tipo"),rs.getString("monto")};
+            ans.addRow(s);
+        }
+
+        c.close();
+        rs.close();
+    }
+
+    static Double getTotalCardsToday() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto "
+                + "from forma_de_pago a, punto_de_venta_de_banco b "
+                + "where a.codigo_punto_de_venta_de_banco = b.id and datediff(curdate(),fecha)=0");
+        ResultSet rs = stmt.executeQuery();
+        
+        boolean ok = rs.next();
+        assert(ok);
+        Double ans = rs.getDouble("monto");
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static Double getTotalCashToday() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto "
+                + "from forma_de_pago where datediff(curdate(),fecha)=0 and tipo='Efectivo'");
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        Double ans = rs.getDouble("monto");
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static Double getExpensesToday() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select monto from gasto where datediff(curdate(),fecha)=0");
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        Double ans = rs.getDouble("monto");
+
+        c.close();
+        rs.close();
+        return ans;
     }
 
 }

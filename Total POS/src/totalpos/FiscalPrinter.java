@@ -349,5 +349,13 @@ public class FiscalPrinter {
     public void forceClose(){
         printer.CloseFpctrl();
     }
+
+    void updateValues() {
+        printer.OpenFpctrl("COM1");
+        IntByReference a = new IntByReference();
+        IntByReference b = new IntByReference();
+        printer.UploadStatusCmd(a, b, "S4", Constants.tmpFileName);
+        printer.CloseFpctrl();
+    }
     
 }

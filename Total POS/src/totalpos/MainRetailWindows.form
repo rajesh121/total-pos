@@ -729,7 +729,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="msg2user">
               <Properties>
-                <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Courier New" size="12" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
@@ -740,7 +740,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="msg2user2">
               <Properties>
-                <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Courier New" size="12" style="1"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
@@ -752,7 +752,7 @@
         </Container>
         <Component class="javax.swing.JLabel" name="yourTurnIsFinishingLabel">
           <Properties>
-            <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Courier New" size="18" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Ac&#xe1; va lo del turno!! =D"/>

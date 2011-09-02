@@ -1934,4 +1934,27 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    static void markToUpdateFiscalNumbersToday() throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores=1 "
+                + "where reporteZ = 0 and datediff(curdate(),fecha)=0");
+        stmt.executeUpdate();
+    }
+
+    static boolean isNeededtoUpdate() throws SQLException {
+        boolean ans ;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select actualizar_valores from dia_operativo where datediff(curdate(),fecha)=0 and codigo_punto_de_venta= ? ");
+        stmt.setString(1, Constants.myId);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        ans = (rs.getInt("actualizar_valores") == 1);
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
 }

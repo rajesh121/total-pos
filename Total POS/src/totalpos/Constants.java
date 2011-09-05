@@ -51,7 +51,7 @@ public class Constants {
     public static SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
     public static SimpleDateFormat sdfDay2DB = new SimpleDateFormat("yyyy-MM-dd");
     public static SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
-    public static DecimalFormat df = new DecimalFormat("#.00");
+    public static DecimalFormat df = new DecimalFormat("#0.00");
     public static DecimalFormat df2int = new DecimalFormat("#00.###");
 
     public static final boolean isPos = true;

@@ -190,7 +190,7 @@ public class ManageDeposits extends javax.swing.JInternalFrame {
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
         } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos.",ex);
             msb.show(this);
             this.dispose();
             Shared.reload();

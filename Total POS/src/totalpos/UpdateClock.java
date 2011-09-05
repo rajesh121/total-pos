@@ -30,7 +30,7 @@ public class UpdateClock extends Thread{
         while(Shared.getUser() != null ){
             ++checking;
 
-            if ( checking % Constants.secondToCheckTurn == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+            if ( !Shared.isOffline && checking % Constants.secondsToCheckTurn == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
                 try {
                     List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                     boolean toContinue = false;
@@ -54,7 +54,7 @@ public class UpdateClock extends Thread{
                 }
             }
 
-            if ( checking % Constants.secondToUpdateCountdown == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+            if ( !Shared.isOffline && checking % Constants.secondsToUpdateCountdown == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
                 try {
                     List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                     for (Assign assign : as) {
@@ -85,6 +85,19 @@ public class UpdateClock extends Thread{
                     Shared.reload();
                     break;
                 }
+            }
+
+            if ( !Shared.isOffline && checking % Constants.secondsToUpdateMirror == 0 ){
+                if ( !Shared.isOffline ){
+                    try {
+                        for (String table : Constants.tablesToMirrorAtDay) {
+                            ConnectionDrivers.mirrorTable(table);
+                        }
+                    } catch (Exception ex) {
+                        // non-reachable!!
+                    }
+                }
+
             }
 
             if ( Calendar.getInstance().getTimeInMillis() - lastOperationTime > Long.valueOf(Shared.getConfig("idleTime"))){

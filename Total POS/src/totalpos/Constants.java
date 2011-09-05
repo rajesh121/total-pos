@@ -36,6 +36,11 @@ public class Constants {
     public static final String mirrordbUser = "root";
     public static final String mirrordbPassword = "123456789";
 
+    public static String[] tablesToMirrorAtBegin = {"articulo","usuario","codigo_de_barras","costo",
+        "precio","tipo_de_usuario","tipo_de_usuario_puede","asigna","configuracion","nodo","punto_de_venta","cliente"};
+    public static String[] tablesToMirrorAtDay = {"articulo","precio"};
+    public static String[] tablesToCleanMirror = {"factura","factura_contiene","nota_de_credito","nota_de_credito_contiene"};
+
     public static final String wrongPasswordMsg = "Contraseña errónea.";
     public static final String userLocked = "El usuario ha sido bloqueado.";
     public static final String dataRepeated = "Esta intentando ingresar valores repetidos";
@@ -44,14 +49,16 @@ public class Constants {
 
     public static SimpleDateFormat sdfHour = new SimpleDateFormat("h:mm a");
     public static SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
+    public static SimpleDateFormat sdfDay2DB = new SimpleDateFormat("yyyy-MM-dd");
     public static SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
     public static DecimalFormat df = new DecimalFormat("#.00");
     public static DecimalFormat df2int = new DecimalFormat("#00.###");
 
     public static final boolean isPos = true;
 
-    public static int secondToCheckTurn = 30;
-    public static int secondToUpdateCountdown = 2;
+    public static int secondsToCheckTurn = 30;
+    public static int secondsToUpdateCountdown = 10;
+    public static int secondsToUpdateMirror = 15;
 
     /**
      * TODO: This must be in the local database!!!

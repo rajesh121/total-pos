@@ -2,7 +2,6 @@ package totalpos;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
-import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,10 +12,12 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JRDataSource;
 
@@ -26,7 +27,9 @@ import net.sf.jasperreports.engine.JRDataSource;
  */
 public class ConnectionDrivers {
 
-    protected static ComboPooledDataSource cpds ;    
+    protected static ComboPooledDataSource cpds ;
+    protected static ComboPooledDataSource cpdsMirror; // Just to mirror
+    protected static boolean mirrorConnected = false;
 
     /** Crea la piscina de conexiones.
      * 
@@ -51,6 +54,26 @@ public class ConnectionDrivers {
             return false;
         }
         
+    }
+
+    protected static boolean reinitializeOffline(){
+        try {
+            cpds = new ComboPooledDataSource();
+            cpds.setDriverClass("com.mysql.jdbc.Driver");
+            String sT = "jdbc:mysql://" + Constants.mirrorDbHost + "/" +
+                            Constants.mirrorDbName;
+            cpds.setJdbcUrl(sT);
+            cpds.setUser(Constants.mirrordbUser);
+            cpds.setPassword(Constants.mirrordbPassword);
+
+            return true;
+
+        } catch (PropertyVetoException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "No se encontró el driver.",ex);
+            msb.show(Main.splash);
+            return false;
+        }
+
     }
 
     /** Indica si una contraseña y usuario con correctos.
@@ -413,21 +436,16 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void initializeConfig(){
-        try {
-            Shared.getConfig().clear();
-            Connection c = ConnectionDrivers.cpds.getConnection();
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("select `Key` , `Value` from configuracion");
-            while (rs.next()) {
-                Shared.getConfig().put(rs.getString("Key"), rs.getString("Value"));
-            }
-            c.close();
-            rs.close();
-        } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Problemas con la base de datos.", ex);
-            msb.show(Shared.getMyMainWindows());
+    protected static void initializeConfig() throws SQLException{
+        Shared.getConfig().clear();
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        Statement stmt = c.createStatement();
+        ResultSet rs = stmt.executeQuery("select `Key` , `Value` from configuracion");
+        while (rs.next()) {
+            Shared.getConfig().put(rs.getString("Key"), rs.getString("Value"));
         }
+        c.close();
+        rs.close();
     }
 
     protected static void saveConfig(String k, String v) throws SQLException {
@@ -1959,6 +1977,146 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
         return ans;
+    }
+
+    // WARNING!! NON-ESCAPED STRING
+    static void mirrorTable(String tableName) throws SQLException, PropertyVetoException{
+
+        if ( !Constants.isPos ){
+            // Admin has no mirror
+            return;
+        }
+
+        if ( !mirrorConnected ){ // just once =D
+            cpdsMirror = new ComboPooledDataSource();
+            cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
+            String sT = "jdbc:mysql://" + Constants.mirrorDbHost + "/" + Constants.mirrorDbName;
+            cpdsMirror.setJdbcUrl(sT);
+            cpdsMirror.setUser(Constants.mirrordbUser);
+            cpdsMirror.setPassword(Constants.mirrordbPassword);
+            mirrorConnected = true;
+        }
+
+        Connection a = ConnectionDrivers.cpds.getConnection(); // This is updated
+        Connection b = ConnectionDrivers.cpdsMirror.getConnection(); // This is outdated.
+
+        PreparedStatement stmtB = b.prepareStatement("delete from " + tableName); // Good bye old data.
+
+        stmtB.executeUpdate();
+
+        PreparedStatement stmtA = a.prepareStatement("select * from "+ tableName); // Getting the new data.
+        ResultSet rsA = stmtA.executeQuery();
+        ResultSetMetaData rsMetaDataA = rsA.getMetaData();
+
+        while( rsA.next() ){
+            String sql = "insert into " + tableName + " values ( ";
+            for (int i = 0; i < rsMetaDataA.getColumnCount()-1; i++) {
+                sql += "?,";
+            }
+            sql += "?)";
+
+            PreparedStatement stmtNewB = b.prepareStatement(sql);
+
+            for (int i = 0; i < rsMetaDataA.getColumnCount(); i++) {
+                stmtNewB.setString(i+1, rsA.getString(i+1));
+            }
+
+            stmtNewB.executeUpdate();
+        }
+
+        rsA.close();
+        a.close();
+        b.close();
+
+    }
+
+    static void updateStock() throws PropertyVetoException, SQLException{
+        if ( !Constants.isPos ){
+            // Admin has no mirror
+            return;
+        }
+
+        if ( !mirrorConnected ){ // just once =D
+            cpdsMirror = new ComboPooledDataSource();
+            cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
+            String sT = "jdbc:mysql://" + Constants.mirrorDbHost + "/" + Constants.mirrorDbName;
+            cpdsMirror.setJdbcUrl(sT);
+            cpdsMirror.setUser(Constants.mirrordbUser);
+            cpdsMirror.setPassword(Constants.mirrordbPassword);
+            mirrorConnected = true;
+        }
+
+        Connection b = ConnectionDrivers.cpds.getConnection();
+        Connection a = ConnectionDrivers.cpdsMirror.getConnection();
+
+
+        PreparedStatement stmtA = a.prepareStatement("select codigo_de_articulo,cantidad-devuelto as cantidad "
+                + "from factura_contiene where cantidad-devuelto != 0");
+        ResultSet rsA = stmtA.executeQuery();
+
+        while( rsA.next() ){
+            
+            PreparedStatement stmtNewB = b.prepareStatement("update articulo set existencia_actual = existencia_actual - ? where codigo = ?");
+
+            stmtNewB.setInt(1, rsA.getInt("cantidad"));
+            stmtNewB.setString(2, rsA.getString("codigo_de_articulo"));
+
+            stmtNewB.executeUpdate();
+        }
+        
+        rsA.close();
+        a.close();
+        b.close();
+    }
+
+    static void cleanMirror(String tableName) throws PropertyVetoException, SQLException{
+        if ( !Constants.isPos ){
+            // Admin has no mirror
+            return;
+        }
+
+        if ( !mirrorConnected ){ // just once =D
+            cpdsMirror = new ComboPooledDataSource();
+            cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
+            String sT = "jdbc:mysql://" + Constants.mirrorDbHost + "/" + Constants.mirrorDbName;
+            cpdsMirror.setJdbcUrl(sT);
+            cpdsMirror.setUser(Constants.mirrordbUser);
+            cpdsMirror.setPassword(Constants.mirrordbPassword);
+            mirrorConnected = true;
+        }
+
+        Connection b = ConnectionDrivers.cpds.getConnection();
+        Connection a = ConnectionDrivers.cpdsMirror.getConnection();
+
+
+        PreparedStatement stmtA = a.prepareStatement("select * from "+ tableName);
+        ResultSet rsA = stmtA.executeQuery();
+        ResultSetMetaData rsMetaDataA = rsA.getMetaData();
+
+        while( rsA.next() ){
+            String sql = "insert into " + tableName + " values (";
+            for (int i = 0; i < rsMetaDataA.getColumnCount()-1; i++) {
+                sql += "?,";
+            }
+            sql += "?)";
+
+            PreparedStatement stmtNewB = b.prepareStatement(sql);
+
+            for (int i = 0; i < rsMetaDataA.getColumnCount(); i++) {
+                stmtNewB.setString(i+1, rsA.getString(i+1));
+            }
+
+            stmtNewB.executeUpdate();
+        }
+
+
+        PreparedStatement stmtA2 = a.prepareStatement("delete from " + tableName);
+
+        stmtA2.executeUpdate();
+
+        rsA.close();
+        a.close();
+        b.close();
     }
 
 }

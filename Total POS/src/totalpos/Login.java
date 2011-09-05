@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -151,11 +152,16 @@ public class Login extends JFrame {
                         break; // for performance ...  =D!
                     }
                 }
-                if ( !toContinue ){
+
+                // Don't check assignments when you're offline
+                if ( !toContinue && !Shared.isOffline ){
                     MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No hay asignación para esta caja el día de hoy.");
                     msg.show(this);
                     passwordText.setEnabled(true);
                     return;
+                }else if ( Shared.isOffline ){
+                    //TODO What day should I choose
+                    a = new Assign("offline", Constants.myId, java.sql.Date.valueOf(Constants.sdfDay2DB.format(Calendar.getInstance().getTime())), true);
                 }
 
                 uc.start(); //Start the screensaver xDD

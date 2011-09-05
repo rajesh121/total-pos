@@ -1949,8 +1949,12 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         boolean ok = rs.next();
-        assert(ok);
-        ans = (rs.getInt("actualizar_valores") == 1);
+        if ( ok ){
+            ans = (rs.getInt("actualizar_valores") == 1);
+        }else{
+            // I am JUST opening the pos.
+            ans = false;
+        }
 
         c.close();
         rs.close();

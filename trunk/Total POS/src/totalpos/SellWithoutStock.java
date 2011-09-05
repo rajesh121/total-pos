@@ -16,11 +16,16 @@ import java.sql.SQLException;
 public class SellWithoutStock extends javax.swing.JDialog {
 
     public boolean authorized = false;
+    private String message = "";
+    private String operationName;
 
     /** Creates new form SellWithoutStock */
-    public SellWithoutStock(java.awt.Frame parent, boolean modal) {
+    public SellWithoutStock(java.awt.Frame parent, boolean modal, String title , String operationName) {
         super(parent, modal);
         initComponents();
+        this.operationName = operationName;
+        message = title;
+        this.setTitle(title);
     }
 
     /** This method is called from within the constructor to
@@ -122,12 +127,12 @@ public class SellWithoutStock extends javax.swing.JDialog {
             ConnectionDrivers.login(idField.getText(), passwordField.getPassword());
 
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), idField.getText());
-            if ( ConnectionDrivers.isAllowed(u.getPerfil(), "sellWithoutStock") ){
+            if ( ConnectionDrivers.isAllowed(u.getPerfil(), operationName) ){
                 Shared.userInsertedPasswordOk(idField.getText());
                 authorized = true;
                 this.dispose();
             }else{
-                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para vender sin existencia.");
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para " + message);
                 msg.show(this);
             }
         } catch (SQLException ex) {

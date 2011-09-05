@@ -313,6 +313,12 @@ public class FiscalPrinter {
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
+
+            printer.SendCmd(a, b, "y" + ticketId);// + Shared.formatDoubleToPrintDiscount(globalDiscount));
+            if ( b.getValue() != 0 ){
+                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            }
+
             printer.SendCmd(a, b, "f01000000000000");
         }
 

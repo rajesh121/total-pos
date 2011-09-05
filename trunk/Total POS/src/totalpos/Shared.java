@@ -27,6 +27,7 @@ public class Shared {
     private static User user;
     private static UpdateClock screenSaver;
     private static TreeMap<Integer, String> errMapping = new TreeMap<Integer, String>();
+    protected static boolean isOffline = false;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");

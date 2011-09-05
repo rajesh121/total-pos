@@ -1,5 +1,5 @@
 Title==Facturas
 Columns==Correlativo,codigo_interno,String|Fecha,fecha_impresion,String|Fecha Creacion,fecha_creacion,String|Nro Fiscal,numero_fiscal,String
-ShowNumbers==False
+ShowNumbers==True
 Parameters==Estado,estado,String
 SQL==select codigo_interno , fecha_impresion , fecha_creacion, numero_fiscal from factura where estado = ?

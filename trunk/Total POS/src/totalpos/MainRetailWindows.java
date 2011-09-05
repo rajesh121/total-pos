@@ -732,7 +732,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         cleanForNewItem();
                         return;
                     }else{
-                        SellWithoutStock sws = new SellWithoutStock(this, true);
+                        SellWithoutStock sws = new SellWithoutStock(this, true, "Vender sin existencia.","sellWithoutStock");
                         Shared.centerFrame(sws);
                         sws.setVisible(true);
                         if ( !sws.authorized ){
@@ -1071,7 +1071,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
             Date d = ConnectionDrivers.getDate();
             SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
-            return sdf.format(d)+ Constants.myId + String.format("%04d", rightNow);
+            return sdf.format(d)+ Constants.myId + String.format((Shared.isOffline?"9%03d":"%04d"), rightNow);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(this);

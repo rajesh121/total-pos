@@ -55,6 +55,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public MainRetailWindows(User u, Assign assign) {
         try {
             initComponents();
+            System.out.println(this.getWidth());
+            if ( this.getWidth() < 1100 ){
+                descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 9));
+            }
             this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
             user = u;
             printer = new FiscalPrinter();
@@ -140,6 +144,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             msg2user.setText("Tiene " + idleReceipts.size() + " pedidos en espera.");
         }
         List<Receipt> uncompletedReceipts = ConnectionDrivers.listUncompletedReceiptToday();
+        
         if ( uncompletedReceipts.isEmpty() ){
             actualId = nextId();
             ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);

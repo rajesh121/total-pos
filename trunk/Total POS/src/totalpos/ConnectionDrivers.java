@@ -1125,8 +1125,7 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
-            ans.add(
-                    new Receipt(
+            Receipt r = new Receipt(
                             rs.getString("codigo_interno"),
                             rs.getString("estado"),
                             rs.getTimestamp("fecha_creacion"),
@@ -1143,8 +1142,10 @@ public class ConnectionDrivers {
                             rs.getInt("cantidad_de_articulos"),
                             listItems2Receipt(rs.getString("codigo_interno")),
                             rs.getString("identificador_turno")
-                        )
-                    );
+                        );
+            if ( !r.getItems().isEmpty() ){
+                ans.add(r);
+            }
         }
         c.close();
         rs.close();
@@ -1984,9 +1985,11 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         boolean ok = rs.next();
-        assert(ok);
-        Double ans = rs.getDouble("monto");
-
+        Double ans = .0;
+        if ( ok ){
+            ans = rs.getDouble("monto");
+        }
+        
         c.close();
         rs.close();
         return ans;

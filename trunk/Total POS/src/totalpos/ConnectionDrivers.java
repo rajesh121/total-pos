@@ -16,8 +16,6 @@ import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JRDataSource;
 
@@ -1875,14 +1873,13 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo_punto_de_venta "
-                + ", dinero_tarjeta_credito , dinero_efectivo, dinero_tarjeta_debito, "
+                + ", dinero_efectivo, dinero_tarjeta_credito + dinero_tarjeta_debito as dinero_tarjeta , "
                 + "nota_de_credito from dia_operativo where datediff(fecha,now()) = 0");
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
-            String[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("dinero_tarjeta_credito")
-                    ,rs.getString("dinero_efectivo"),rs.getString("dinero_tarjeta_debito"),
-                    rs.getString("nota_de_credito")};
+            String[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("dinero_efectivo")
+                    ,rs.getString("dinero_tarjeta"),rs.getString("nota_de_credito")};
             ans.addRow(s);
         }
 
@@ -1896,14 +1893,15 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select do.codigo_punto_de_venta , pos.impresora , "
-                + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito+ do.nota_de_credito as facturado "
+                + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito+ do.nota_de_credito as facturado, "
+                + "dinero_efectivo_impresora+dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora as facturado_impresora "
                 + "from dia_operativo as do , punto_de_venta as pos where datediff(fecha,now())=0 and do.codigo_punto_de_venta "
                 + "= pos.identificador");
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
             String[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
-                    ,rs.getString("facturado"),rs.getString("facturado")};
+                    ,rs.getString("facturado"),rs.getString("facturado_impresora")};
             ans.addRow(s);
         }
 
@@ -2020,6 +2018,19 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
         return ans;
+    }
+
+    static void updateFiscalNumbers(Double cash, Double cn, Double debit, Double credit) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores = 0 , dinero_efectivo_impresora = ? , "
+                + "dinero_tarjeta_credito_impresora = ? , dinero_tarjeta_debito_impresora = ? , nota_de_credito_impresora = ? where "
+                + "datediff(curdate(),fecha)=0 and codigo_punto_de_venta= ? ");
+        stmt.setDouble(1, cash);
+        stmt.setDouble(2, credit);
+        stmt.setDouble(3, cn);
+        stmt.setDouble(4, debit);
+        stmt.setString(5, Constants.myId);
+        stmt.executeUpdate();
     }
 
     // WARNING!! NON-ESCAPED STRING

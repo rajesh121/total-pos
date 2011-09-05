@@ -80,9 +80,10 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         totalCardsField.setText(Constants.df.format(totalInCard = ConnectionDrivers.getTotalCardsToday()));
         totalCashField.setText(Constants.df.format(totalInCash = ConnectionDrivers.getTotalCashToday()));
         totalTotalField.setText(Constants.df.format(totalInCard + totalInCash));
-        totalDeclaredField.setText(Constants.df.format(totalInCard + totalInCash));
         expensesTodayField.setText(Constants.df.format(totalExpenses = ConnectionDrivers.getExpensesToday()));
-        expensesMinusDeclaredField.setText(Constants.df.format(totalInCard + totalInCash - totalExpenses));
+        totalDeclaredField.setText(Constants.df.format(totalInCard + totalInCash - totalExpenses));
+        expensesMinusDeclaredField.setText(Constants.df.format(totalInCard + totalInCash));
+        netValue.setText(Constants.df.format( totalInCard + totalInCash - ( totalInCard + totalInCash - totalExpenses ) - (totalExpenses)));
     }
 
     /** This method is called from within the constructor to
@@ -130,7 +131,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        netValue = new javax.swing.JTextField();
         jTextField8 = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -370,17 +371,17 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
         formWayxPoses.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Cajero", "Nombre", "Tarjeta Crédito", "Tarjeta Débito", "NC"
+                "Cajero", "Efectivo", "Tarjeta", "NC"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -531,9 +532,9 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel8.setName("jLabel8"); // NOI18N
 
-        jTextField7.setText("Falta");
-        jTextField7.setFocusable(false);
-        jTextField7.setName("jTextField7"); // NOI18N
+        netValue.setText("Falta");
+        netValue.setFocusable(false);
+        netValue.setName("netValue"); // NOI18N
 
         jTextField8.setText("Falta");
         jTextField8.setFocusable(false);
@@ -622,7 +623,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(netValue, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -673,7 +674,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(netValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -831,9 +832,9 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
+    private javax.swing.JTextField netValue;
     private javax.swing.JTable payWayxPosTable;
     private javax.swing.JTextField totalCardsField;
     private javax.swing.JTextField totalCashField;

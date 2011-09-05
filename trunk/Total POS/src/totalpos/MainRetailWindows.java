@@ -139,12 +139,19 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         }else{
             msg2user.setText("Tiene " + idleReceipts.size() + " pedidos en espera.");
         }
-        actualId = nextId();
-        ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
-        if ( ConnectionDrivers.isNeededtoUpdate() ){
-            printer.updateValues();
+        List<Receipt> uncompletedReceipts = ConnectionDrivers.listUncompletedReceiptToday();
+        if ( uncompletedReceipts.isEmpty() ){
+            actualId = nextId();
+            ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
+            if ( ConnectionDrivers.isNeededtoUpdate() ){
+                printer.updateValues();
+            }
+            setClient(null);
+        }else{
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Existe un pedido pendiente!");
+            msb.show(this);
+            loadThisReceipt(uncompletedReceipts.get(0));
         }
-        setClient(null);
     }
 
     protected void cleanTable(){

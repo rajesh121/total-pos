@@ -1112,6 +1112,46 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static List<Receipt> listUncompletedReceiptToday() throws SQLException{
+        List<Receipt> ans = new ArrayList<Receipt>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
+                + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
+                + "descuento_global, iva, impresora, numero_fiscal, "
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno "
+                + "from factura where estado='Pedido' and datediff(fecha_creacion,now()) = 0");
+
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Receipt(
+                            rs.getString("codigo_interno"),
+                            rs.getString("estado"),
+                            rs.getTimestamp("fecha_creacion"),
+                            rs.getTimestamp("fecha_impresion"),
+                            rs.getString("codigo_de_cliente"),
+                            rs.getDouble("total_sin_iva"),
+                            rs.getDouble("total_con_iva"),
+                            rs.getDouble("descuento_global"),
+                            rs.getDouble("iva"),
+                            rs.getString("impresora"),
+                            rs.getString("numero_fiscal"),
+                            rs.getString("numero_reporte_z"),
+                            rs.getString("codigo_de_usuario"),
+                            rs.getInt("cantidad_de_articulos"),
+                            listItems2Receipt(rs.getString("codigo_interno")),
+                            rs.getString("identificador_turno")
+                        )
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
     protected static String getMyPrinter() throws SQLException{
         List<PointOfSale> poses = listPointOfSales(true);
         for (PointOfSale pointOfSale : poses) {

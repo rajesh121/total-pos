@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -55,7 +57,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public MainRetailWindows(User u, Assign assign) {
         try {
             initComponents();
-            System.out.println(this.getWidth());
             if ( this.getWidth() < 1100 ){
                 descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 9));
             }
@@ -149,7 +150,13 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             actualId = nextId();
             ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
             if ( ConnectionDrivers.isNeededtoUpdate() ){
-                printer.updateValues();
+                try {
+                    printer.updateValues();
+                } catch (Exception ex) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al obtener las ventas de la impresora fiscal",ex);
+                    msb.show(this);
+                    printer.forceClose();
+                }
             }
             setClient(null);
         }else{

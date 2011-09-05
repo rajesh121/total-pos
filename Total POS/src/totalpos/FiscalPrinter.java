@@ -356,11 +356,29 @@ public class FiscalPrinter {
         printer.CloseFpctrl();
     }
 
-    void updateValues() {
+    void updateValues() throws Exception {
         printer.OpenFpctrl("COM1");
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
         printer.UploadStatusCmd(a, b, "S4", Constants.tmpFileName);
+        if ( b.getValue() != 0 ){
+            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+        }
+
+        File file = new File(Constants.tmpFileName);
+
+        Scanner sc = new Scanner(file);
+
+        boolean ansT = sc.hasNext();
+        assert(ansT);
+
+        String line = sc.next();
+        System.out.println("Linea = " + line.substring(2, 2+10));
+        Double cash = Double.parseDouble(line.substring(2+10*0, 2+10*1))/100.0;
+        Double cn = Double.parseDouble(line.substring(2+10*1, 2+10*2))/100.0;
+        Double credit = Double.parseDouble(line.substring(2+10*8, 2+10*9))/100.0;
+        Double debit = Double.parseDouble(line.substring(2+10*9, 2+10*10))/100.0;
+        ConnectionDrivers.updateFiscalNumbers(cash, cn, debit, credit);
         printer.CloseFpctrl();
     }
     

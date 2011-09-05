@@ -341,29 +341,16 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
                 this.dispose();
                 Shared.reload();
             } catch (FileNotFoundException ex) {
-                what2DoWithReceipt("No se pudo leer el número fiscal");
+                Shared.what2DoWithReceipt(myParent, "No se pudo leer el número fiscal");
                 this.dispose();
                 myParent.printer.forceClose();
             } catch (Exception ex) {
-                what2DoWithReceipt(ex.getMessage());
+                Shared.what2DoWithReceipt(myParent , ex.getMessage());
                 this.dispose();
                 myParent.printer.forceClose();
             }
         }
     }//GEN-LAST:event_tableKeyPressed
-
-    private void what2DoWithReceipt(String msg){
-        try{
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas al imprimir.\nCausa: " + msg + ".");
-            msb.show(null);
-
-            myParent.toWait();
-            myParent.updateAll();
-        } catch (SQLException ex1) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex1);
-            msb.show(null);
-        }
-    }
 
     public void add(String reason , Double money){
         payForms.add(new PayForm(receiptID, reason, "" , "", money));

@@ -279,4 +279,17 @@ public class Shared {
         }
     }
 
+    public static void what2DoWithReceipt(MainRetailWindows myParent , String msg){
+        try{
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas al imprimir.\nCausa: " + msg + ".");
+            msb.show(null);
+
+            myParent.toWait();
+            myParent.updateAll();
+        } catch (SQLException ex1) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex1);
+            msb.show(null);
+        }
+    }
+
 }

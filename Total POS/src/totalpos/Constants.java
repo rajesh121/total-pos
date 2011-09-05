@@ -19,11 +19,22 @@ public class Constants {
 
     public static final int numberConnection = 5;
 
+    /**
+     * TODO: This must be in a configuration file.
+     */
     public static final String dbHost = "localhost";
     public static final String dbName = "gt99";
     public static final String dbUser = "root";
     public static final String dbPassword = "123456789";
     public static final String defaultUser = "Invitado";
+
+
+    public static final String mirrorDbHost = "localhost";
+    //is This redundant??
+
+    public static final String mirrorDbName = "gt99mirror";
+    public static final String mirrordbUser = "root";
+    public static final String mirrordbPassword = "123456789";
 
     public static final String wrongPasswordMsg = "Contraseña errónea.";
     public static final String userLocked = "El usuario ha sido bloqueado.";
@@ -37,7 +48,7 @@ public class Constants {
     public static DecimalFormat df = new DecimalFormat("#.00");
     public static DecimalFormat df2int = new DecimalFormat("#00.###");
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
     public static int secondToCheckTurn = 30;
     public static int secondToUpdateCountdown = 2;

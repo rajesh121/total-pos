@@ -156,17 +156,17 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
         fiscalZ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Caja", "Serial", "Zeta Fiscal", "Facturado", "Actualizado"
+                "Caja", "Serial", "Dinero Caja", "Zeta Fiscal"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -184,7 +184,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jScrollPane6.setViewportView(fiscalZ);
         fiscalZ.getColumnModel().getColumn(0).setPreferredWidth(40);
 
-        updateFiscalNumberslButton.setText("Actualizar todos");
+        updateFiscalNumberslButton.setText("Actualizar Zeta Fiscal de todos");
         updateFiscalNumberslButton.setName("updateFiscalNumberslButton"); // NOI18N
         updateFiscalNumberslButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

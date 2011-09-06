@@ -2173,4 +2173,27 @@ public class ConnectionDrivers {
         b.close();
     }
 
+    static void setEnableSellWithoutStock(String i) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = ? where `Key` = 'sellWithoutStock'");
+        stmt.setString(1, i);
+        stmt.executeUpdate();
+    }
+
+    static boolean getEnableSellWithoutStock() throws SQLException {
+        boolean ans = false;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select `Value` from configuracion where `Key` = 'sellWithoutStock'");
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = (rs.getString("Value").equals("1"));
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
 }

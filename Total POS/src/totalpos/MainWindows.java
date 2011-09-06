@@ -232,6 +232,12 @@ public class MainWindows extends javax.swing.JFrame {
                 ClosingDay cd = new ClosingDay();
                 mdiPanel.add(cd);
                 cd.setVisible(true);
+            } else if ( ed.getFuncion().equals("sellWithoutStockAd") ) {
+                EnableSellsWithoutStock esws = new EnableSellsWithoutStock();
+                if ( esws.isOk ){
+                    mdiPanel.add(esws);
+                    esws.setVisible(true);
+                }
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
             } else if (ed.getFuncion().isEmpty()) {

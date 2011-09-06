@@ -29,6 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -49,6 +50,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private Client client = null;
     private Assign assign;
     public double subtotal;
+    public boolean finishedFP = false;
 
     /** Creates new form MainRetailWindows
      * @param u
@@ -57,12 +59,21 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public MainRetailWindows(User u, Assign assign) {
         try {
             initComponents();
+            Shared.setMyMainWindows(this);
             if ( this.getWidth() < 1100 ){
                 descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 9));
             }
             this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
             user = u;
-            printer = new FiscalPrinter();
+            try{
+                printer = new FiscalPrinter();
+            }catch( Exception ex ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se pudo cargar el controlador de la impresora. No se puede continuar",ex);
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+                return;
+            }
             this.assign = assign;
             yourTurnIsFinishingLabel.setVisible(false);
             if ( !ConnectionDrivers.isAllowed(u.getPerfil(), "retail") ){
@@ -73,12 +84,58 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 return;
             }
 
-            /*StartSplash ss = new StartSplash();
-            ss.changeStatus("Verificando Impresora", 30);
-            Shared.centerFrame(ss);
-            ss.setVisible(true);*/
-            updateAll();
 
+            /*Thread t = new Thread(new Runnable() {
+
+                @Override*/
+                //public void run() {
+                    try {
+                        //((MainRetailWindows)Shared.getMyMainWindows()).finishedFP = false;
+                        ConnectionDrivers.updateReportZ(printer.getZ());
+                        //((MainRetailWindows)Shared.getMyMainWindows()).finishedFP = true;
+                    } catch (Exception ex) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error en la comunicación con la impresora.",ex);
+                        msb.show(null);
+                        this.dispose();
+                        Shared.reload();
+                        printer.forceClose();
+                        return;
+                    }/*
+                }
+            });*/
+
+            //t.start();
+
+            /*try {
+                Shared.SharedSS = new StartSplash();
+                Shared.SharedSS.changeStatus("Verificando Impresora", 0);
+                Shared.centerFrame(Shared.SharedSS);
+                Shared.SharedSS.setVisible(true);
+                for (int i = 0; i < 10; i++) {
+                    Thread.sleep(1000);
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Shared.SharedSS.changeStatus("Verificando Impresora", 10);
+                        }
+                    });
+                    
+                }
+                Shared.SharedSS.dispose();
+                if ( !finishedFP ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora ha tomado mucho tiempo en responder. Se ha detenido el proceso.");
+                    msb.show(null);
+                    this.dispose();
+                    Shared.reload();
+                    return;
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MainRetailWindows.class.getName()).log(Level.SEVERE, null, ex);
+            }*/
+
+            updateAll();
+            
             //TODO Uncomment this.
             //ConnectionDrivers.updateReportZ(printer.getZ());
             
@@ -107,6 +164,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+            msb.show(null);
+            this.dispose();
+            Shared.reload();
+        } catch (Exception ex){
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido",ex);
             msb.show(null);
             this.dispose();
             Shared.reload();

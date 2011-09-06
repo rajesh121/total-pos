@@ -54,7 +54,7 @@ public class Constants {
     public static DecimalFormat df = new DecimalFormat("#0.00");
     public static DecimalFormat df2int = new DecimalFormat("#00.###");
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
     public static int secondsToCheckTurn = 30;
     public static int secondsToUpdateCountdown = 10;
@@ -63,7 +63,7 @@ public class Constants {
     /**
      * TODO: This must be in the local database!!!
      */
-    public static String myId = "02";
+    public static String myId = "01";
     public static String tmpFileName = "tmp.data";
 
     public static Font font = new Font("Courier New", 0, 12);

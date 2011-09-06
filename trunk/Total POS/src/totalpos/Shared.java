@@ -28,6 +28,7 @@ public class Shared {
     private static UpdateClock screenSaver;
     private static TreeMap<Integer, String> errMapping = new TreeMap<Integer, String>();
     protected static boolean isOffline = false;
+    protected static StartSplash SharedSS;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -274,7 +275,7 @@ public class Shared {
     public static Double getIva(){
         try{
             return Double.parseDouble(getConfig("iva"))*100.0;
-        }catch (NumberFormatException nfs){
+        }catch (NumberFormatException nfe){
             return .0;
         }
     }

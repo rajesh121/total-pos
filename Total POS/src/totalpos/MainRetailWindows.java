@@ -22,14 +22,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -156,7 +153,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     }
                 }catch ( NumberFormatException ex){
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
-                            "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(Constants.minimumCash) + " Bsf");
+                            "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(Constants.minimumCash) + " Bs");
                     msb.show(null);
                     currentMoney = -1.0;
                 }
@@ -186,9 +183,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     protected void updateAll() throws SQLException{
         descriptionLabel.setText("Bievenido a Mundo Total");
         currentPrice.setText("");
-        ivaLabelResult.setText("0.00 Bsf");
-        TotalLabelResult.setText("0.00 Bsf");
-        subTotalLabelResult.setText("0.00 Bsf");
+        ivaLabelResult.setText("0.00 Bs");
+        TotalLabelResult.setText("0.00 Bs");
+        subTotalLabelResult.setText("0.00 Bs");
         discountLabel.setVisible(false);
         discountResult.setVisible(false);
         items = new ArrayList<Item2Receipt>();
@@ -1127,11 +1124,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant()*(1.0-globalDiscount) , 2 )*item2r.getQuant();
         }
 
-        subTotalLabelResult.setText(Constants.df.format(subTwithoutD) + " Bsf");
+        subTotalLabelResult.setText(Constants.df.format(subTwithoutD) + " Bs");
         if ( !globalDiscount.equals(.0) ){
             discountLabel.setText("Desc (" + Constants.df.format(globalDiscount*100.0) + "%):");
             discountLabel.setVisible(true);
-            discountResult.setText(Constants.df.format(subT) + " Bsf");
+            discountResult.setText(Constants.df.format(subT) + " Bs");
             discountResult.setVisible(true);
         }else{
             discountLabel.setVisible(false);
@@ -1142,8 +1139,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         ivaT = new Price(null, subT).getIva().getQuant();
         total = subT + ivaT;
 
-        ivaLabelResult.setText(Constants.df.format(ivaT) + " Bsf");
-        TotalLabelResult.setText(Constants.df.format(total) + " Bsf");
+        ivaLabelResult.setText(Constants.df.format(ivaT) + " Bs");
+        TotalLabelResult.setText(Constants.df.format(total) + " Bs");
     }
 
     private String nextId(){

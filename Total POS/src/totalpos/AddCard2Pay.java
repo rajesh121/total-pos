@@ -173,12 +173,12 @@ public class AddCard2Pay extends javax.swing.JDialog {
             minimun = Double.parseDouble(Shared.getConfig(reason));
         }catch( NumberFormatException ex ){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error en la configuración del monto mínimo para tarjetas de tipo: "
-                    + reason + ". Se asume mínimo 1 Bsf");
+                    + reason + ". Se asume mínimo 1 Bs");
             msb.show(this);
             minimun = 1.0;
         }
         if ( d < minimun ){
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser al menos " + minimun + " Bsf.");
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser al menos " + minimun + " Bs.");
             msb.show(this);
             return;
         }

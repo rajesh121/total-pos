@@ -82,7 +82,7 @@ public class Sticker {
                 header[0] + pixA[0] + "," + pixB[0] + ",0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + pixA[1] + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
                 "A" + pixA[2] + ",40,0,4,1,2,N,\""+ price +"\"\n"+
-                "A" + pixA[3] + ",45,0,4,1,1,N,\"Bsf.\"\n"+
+                "A" + pixA[3] + ",45,0,4,1,1,N,\"Bs.\"\n"+
                 //"A" + separations[4] + ",80,0,3,1,1,N,\""+mark+"\"\n"+
                 "A" + pixA[5] + ",100,0,1,1,1,N,\""+description+"\"\n"+
                 "A" + pixA[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
@@ -93,7 +93,7 @@ public class Sticker {
                 "A" + (offset+pixA[0]) +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + (offset+pixA[1]) + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
                 "A" + (offset+pixA[2]) + ",40,0,4,1,2,N,\""+price +"\"\n"+
-                "A" + (offset+pixA[3]) + ",45,0,4,1,1,N,\"Bsf.\"\n"+
+                "A" + (offset+pixA[3]) + ",45,0,4,1,1,N,\"Bs.\"\n"+
                 //"A" + (offset+separations[4]) + ",80,0,3,1,1,N,\""+mark+"\"\n"+
                 "A" + (offset+pixA[5]) + ",100,0,1,1,1,N,\""+description+"\"\n"+
                 "A" + (offset+pixA[6]) + ",115,0,1,1,1,N,\""+description2+"\"\n"+
@@ -139,7 +139,7 @@ public class Sticker {
                 header[0] + pixA[0] + "," + pixB[0] + ",0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + pixA[1] + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
                 "A" + pixA[2] + ",40,0,4,1,2,N,\""+ price +"\"\n"+
-                "A" + pixA[3] + ",45,0,4,1,1,N,\"Bsf.\"\n"+
+                "A" + pixA[3] + ",45,0,4,1,1,N,\"Bs.\"\n"+
                 //"A" + separations[4] + ",80,0,3,1,1,N,\""+mark+"\"\n"+
                 "A" + pixA[5] + ",100,0,1,1,1,N,\""+description+"\"\n"+
                 "A" + pixA[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
@@ -204,7 +204,7 @@ public class Sticker {
                 header[0] + pixA[0] + "," + pixB[0] + ",0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + pixA[1] + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
                 "A" + pixA[2] + ",40,0,4,1,2,N,\""+ price +"\"\n"+
-                "A" + pixA[3] + ",45,0,4,1,1,N,\"Bsf.\"\n"+
+                "A" + pixA[3] + ",45,0,4,1,1,N,\"Bs.\"\n"+
                 //"A" + separations[4] + ",80,0,3,1,1,N,\""+mark+"\"\n"+
                 "A" + pixA[5] + ",100,0,1,1,1,N,\""+description+"\"\n"+
                 "A" + pixA[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
@@ -215,7 +215,7 @@ public class Sticker {
                 "A" + (offset+pixA[0]) +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + (offset+pixA[1]) + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
                 "A" + (offset+pixA[2]) + ",40,0,4,1,2,N,\""+priceB +"\"\n"+
-                "A" + (offset+pixA[3]) + ",45,0,4,1,1,N,\"Bsf.\"\n"+
+                "A" + (offset+pixA[3]) + ",45,0,4,1,1,N,\"Bs.\"\n"+
                 //"A" + (offset+separations[4]) + ",80,0,3,1,1,N,\""+mark+"\"\n"+
                 "A" + (offset+pixA[5]) + ",100,0,1,1,1,N,\""+descriptionB+"\"\n"+
                 "A" + (offset+pixA[6]) + ",115,0,1,1,1,N,\""+description2B+"\"\n"+

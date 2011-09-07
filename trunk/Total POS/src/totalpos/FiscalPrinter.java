@@ -21,7 +21,7 @@ public class FiscalPrinter {
     private String lastReceipt = null;
 
     public FiscalPrinter() {
-        printer = (FiscalDriver) Native.loadLibrary("tfhkaif", FiscalDriver.class);;
+        printer = (FiscalDriver) Native.loadLibrary("tfhkaif", FiscalDriver.class);
     }
 
      public boolean checkPrinter() throws SQLException, FileNotFoundException, Exception {

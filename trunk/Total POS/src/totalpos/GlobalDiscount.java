@@ -157,7 +157,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
             }
         });
 
-        percentLabelxD1.setText("Bsf");
+        percentLabelxD1.setText("Bs");
         percentLabelxD1.setName("percentLabelxD1"); // NOI18N
 
         percentLabelxD.setText("%");
@@ -173,8 +173,8 @@ public class GlobalDiscount extends javax.swing.JDialog {
                     .addComponent(percentLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(percentField, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
-                    .addComponent(finalMoney, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
+                    .addComponent(percentField, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                    .addComponent(finalMoney, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(percentLabelxD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

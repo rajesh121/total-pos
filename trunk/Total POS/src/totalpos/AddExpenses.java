@@ -8,7 +8,14 @@ package totalpos;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -37,6 +44,24 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         expenses = ConnectionDrivers.listExpensesToday();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
+
+        String ex = Shared.getConfig("expenses");
+        String allConcepts = ex.substring(1, ex.length()-1);
+        Scanner sc = new Scanner(allConcepts);
+        sc.useDelimiter("\\}\\{");
+
+        JComboBox jcb = new JComboBox();
+        while(sc.hasNext()){
+            jcb.addItem(sc.next());
+        }
+        
+        DefaultTableCellRenderer renderer =
+                new DefaultTableCellRenderer();
+        renderer.setToolTipText("Click para ver las opciones");
+        TableColumn conceptColumn = table.getColumnModel().getColumn(0);
+        conceptColumn.setCellRenderer(renderer);
+        conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
+
         for (Expense e : expenses) {
             String[] s = {e.getConcept(),Constants.df.format(e.getQuant())};
             model.addRow(s);

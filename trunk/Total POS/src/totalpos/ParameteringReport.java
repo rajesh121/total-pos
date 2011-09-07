@@ -7,8 +7,6 @@
 package totalpos;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -26,6 +23,8 @@ import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.PageOrientation;
+import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -218,6 +217,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
     private void doIt(){
         try {
             jrb = report();
+            jrb = jrb.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE);
             jrb = jrb.setColumnTitleStyle(Constants.columnTitleStyle);
             for (Parameter parameter : parameters) {
                 //TODO Check the syntaxis.

@@ -238,6 +238,12 @@ public class MainWindows extends javax.swing.JFrame {
                     mdiPanel.add(esws);
                     esws.setVisible(true);
                 }
+            } else if ( ed.getFuncion().equals("manageMsg") ) {
+                ChooseMessage esws = new ChooseMessage();
+                if ( esws.isOk ){
+                    mdiPanel.add(esws);
+                    esws.setVisible(true);
+                }
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
             } else if (ed.getFuncion().isEmpty()) {

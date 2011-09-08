@@ -46,7 +46,7 @@ public class SellWithoutStock extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Vender sin existencia");
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 1, 14));
         jLabel1.setText("Para realizar esta acción se necesita autorización");
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -64,6 +64,11 @@ public class SellWithoutStock extends javax.swing.JDialog {
         });
 
         idField.setName("idField"); // NOI18N
+        idField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                idFieldKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -105,8 +110,16 @@ public class SellWithoutStock extends javax.swing.JDialog {
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             doIt();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
         }
     }//GEN-LAST:event_passwordFieldKeyPressed
+
+    private void idFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_idFieldKeyPressed
 
     private void doIt(){
         try{

@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRDataSource;
 
 /**
@@ -2194,6 +2195,32 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
         return ans;
+    }
+
+    static List<String> getListMsg2Pos() throws SQLException {
+        List<String> ans = new ArrayList<String>();
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select `mensaje` from mensaje");
+        ResultSet rs = stmt.executeQuery();
+        boolean ok = rs.next();
+        if ( ok ){
+            ans.add(rs.getString("mensaje"));
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static void deleteAllMsgs() throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from mensaje");
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    static void createMsgs(TableModel model) {
+        
     }
 
 }

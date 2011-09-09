@@ -23,19 +23,20 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel1" alignment="0" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="titleLabel" alignment="0" pref="471" max="32767" attributes="0"/>
+                  <Component id="jLabel1" alignment="0" pref="471" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="passwordLabel" alignment="1" max="32767" attributes="1"/>
-                          <Component id="userLabel" alignment="1" pref="104" max="32767" attributes="1"/>
+                          <Component id="userLabel" alignment="1" min="-2" pref="104" max="-2" attributes="1"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="passwordField" pref="286" max="32767" attributes="0"/>
-                          <Component id="idField" alignment="0" pref="286" max="32767" attributes="0"/>
+                          <Component id="passwordField" pref="357" max="32767" attributes="0"/>
+                          <Component id="idField" alignment="0" pref="357" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -45,7 +46,9 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="titleLabel" pref="29" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -58,7 +61,7 @@
                   <Component id="passwordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="passwordField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="15" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -100,6 +103,15 @@
       <Events>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="idFieldKeyPressed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="titleLabel">
+      <Properties>
+        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Courier New" size="18" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Ac&#xe1; va el t&#xed;tulo"/>
+        <Property name="name" type="java.lang.String" value="titleLabel" noResource="true"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

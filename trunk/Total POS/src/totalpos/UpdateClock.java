@@ -27,8 +27,33 @@ public class UpdateClock extends Thread{
     @Override
     public void run(){
         int checking = 1;
+
+        // This delay might some an unknown problem. =(
+        try {
+            Thread.currentThread().sleep(10000);
+        } catch (InterruptedException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problema desconocido",ex);
+            msb.show(null);
+            Shared.reload();
+        }
+
         while(Shared.getUser() != null ){
             ++checking;
+
+            if ( !Shared.isOffline && checking % Constants.secondsToChangeMsg2Pos == 0
+                    && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+                MainRetailWindows m = (MainRetailWindows) Shared.getMyMainWindows();
+
+                if ( m.msg2pos == null ) break; //little patch. List has not been loaded yet!
+
+                m.setMsgIndex( (m.getMsgIndex()+1) % m.msg2pos.size());
+                m.updateMsg();
+            }
+
+            if ( !Shared.isOffline && checking % Constants.secondsToShiftMsg == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+                MainRetailWindows m = (MainRetailWindows) Shared.getMyMainWindows();
+                m.increaseShiftValue();
+            }
 
             if ( !Shared.isOffline && checking % Constants.secondsToCheckTurn == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
                 try {
@@ -75,12 +100,12 @@ public class UpdateClock extends Thread{
                         }
                     }
                 } catch (SQLException ex) {
-                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos");
+                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos",ex);
                     msg.show(null);
                     Shared.reload();
                     break;
                 } catch (ParseException ex){
-                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos");
+                    MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos",ex);
                     msg.show(null);
                     Shared.reload();
                     break;
@@ -94,7 +119,10 @@ public class UpdateClock extends Thread{
                             ConnectionDrivers.mirrorTable(table);
                         }
                     } catch (Exception ex) {
-                        // non-reachable!!
+                        MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos");
+                        msg.show(null);
+                        Shared.reload();
+                        break;
                     }
                 }
 

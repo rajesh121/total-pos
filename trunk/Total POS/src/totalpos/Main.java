@@ -1,6 +1,9 @@
 package totalpos;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -15,6 +18,23 @@ public class Main {
         splash = new StartSplash();
         Shared.centerFrame(splash);
         splash.setVisible(true);
+        splash.changeStatus("Leyendo archivo de configuración...", 10);
+        
+        try {
+            Shared.loadFileConfig();
+        } catch (FileNotFoundException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al leer el archivo de configuración. No se puede continuar",ex);
+            msb.show(splash);
+            System.exit(0);
+        }
+        splash.changeStatus("Verificando variables básicas...", 20);
+        for (String var : Constants.var2check) {
+            if ( Shared.getFileConfig(var) == null ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La variable " + var + " es obligatoria. No se puede continuar");
+                msb.show(splash);
+                System.exit(0);
+            }
+        }
         
         splash.changeStatus("Conectado a base de datos...", 30);
         ConnectionDrivers.initialize();

@@ -39,7 +39,7 @@ public class ConnectionDrivers {
         try {
             cpds = new ComboPooledDataSource();
             cpds.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Constants.dbHost + "/" +
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("Server") + "/" +
                             Constants.dbName;
             cpds.setJdbcUrl(sT);
             cpds.setUser(Constants.dbUser);
@@ -59,7 +59,7 @@ public class ConnectionDrivers {
         try {
             cpds = new ComboPooledDataSource();
             cpds.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Constants.mirrorDbHost + "/" +
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" +
                             Constants.mirrorDbName;
             cpds.setJdbcUrl(sT);
             cpds.setUser(Constants.mirrordbUser);
@@ -780,7 +780,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select count(*) from factura "
                 + "where datediff(now(),fecha_creacion) = 0 and identificador_pos = ? ");
-        stmt.setString(1, Constants.myId);
+        stmt.setString(1, Shared.getFileConfig("myId"));
         ResultSet rs = stmt.executeQuery();
 
         boolean ok = rs.next();
@@ -1156,7 +1156,7 @@ public class ConnectionDrivers {
     protected static String getMyPrinter() throws SQLException{
         List<PointOfSale> poses = listPointOfSales(true);
         for (PointOfSale pointOfSale : poses) {
-            if ( pointOfSale.getId().equals(Constants.myId) ){
+            if ( pointOfSale.getId().equals(Shared.getFileConfig("myId")) ){
                 return pointOfSale.getPrinter();
             }
         }
@@ -1317,7 +1317,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set reporte_z = ? where identificador = ? ");
         stmt.setString(1, z);
-        stmt.setString(2, Constants.myId);
+        stmt.setString(2, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
 
         c.close();
@@ -1448,7 +1448,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select id , descripcion, lote, identificador_pos , tipo from punto_de_venta_de_banco "
                 + "where identificador_pos = ? and ( tipo = ?  or tipo = ? ) ");
-        stmt.setString(1, Constants.myId);
+        stmt.setString(1, Shared.getFileConfig("myId"));
         stmt.setString(2, kindbpos);
         stmt.setString(3, Constants.kindOfBPOS[Constants.kindOfBPOS.length-1]);
         ResultSet rs = stmt.executeQuery();
@@ -1482,18 +1482,18 @@ public class ConnectionDrivers {
             stmt.setString(3, payForm.getbPos());
             stmt.setString(4, payForm.getLot());
             stmt.setDouble(5, payForm.getQuant());
-            stmt.setString(6, Constants.myId);
+            stmt.setString(6, Shared.getFileConfig("myId"));
             stmt.executeUpdate();
             if ( payForm.getFormWay().equals("Efectivo") ){
-                addCash(payForm.getQuant(), Constants.myId);
+                addCash(payForm.getQuant(), Shared.getFileConfig("myId"));
             }else if ( payForm.getFormWay().equals("Debito") ){
-                addDebit(payForm.getQuant(), Constants.myId);
+                addDebit(payForm.getQuant(), Shared.getFileConfig("myId"));
             }else if ( payForm.getFormWay().equals("Credito") ){
-                addCredit(payForm.getQuant(), Constants.myId);
+                addCredit(payForm.getQuant(), Shared.getFileConfig("myId"));
             }else if ( payForm.getFormWay().equals("Cambio") ){
-                addCash(-1*payForm.getQuant(), Constants.myId);
+                addCash(-1*payForm.getQuant(), Shared.getFileConfig("myId"));
             }else if ( payForm.getFormWay().equals("Nota de Credito") ){
-                addCreditNote(payForm.getQuant(), Constants.myId);
+                addCreditNote(payForm.getQuant(), Shared.getFileConfig("myId"));
             } else {
                 // This should not happend
                 assert(false);
@@ -1617,7 +1617,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select dinero_efectivo "
                 + "from dia_operativo where datediff(now(),fecha) = 0 and codigo_punto_de_venta = ? ");
-        stmt.setString(1, Constants.myId );
+        stmt.setString(1, Shared.getFileConfig("myId") );
         ResultSet rs = stmt.executeQuery();
 
         boolean ans = rs.next();
@@ -1643,7 +1643,7 @@ public class ConnectionDrivers {
                 + "set dinero_efectivo = ? where codigo_punto_de_venta = ? ");
 
         stmt.setDouble(1, money);
-        stmt.setString(2, Constants.myId);
+        stmt.setString(2, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
 
         c.close();
@@ -1656,7 +1656,7 @@ public class ConnectionDrivers {
                 + "set dinero_efectivo = dinero_efectivo + ? where codigo_punto_de_venta = ? ");
 
         stmt.setDouble(1, money);
-        stmt.setString(2, Constants.myId);
+        stmt.setString(2, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
 
         c.close();
@@ -1669,7 +1669,7 @@ public class ConnectionDrivers {
                 + "set dinero_tarjeta_credito = dinero_tarjeta_credito + ? where codigo_punto_de_venta = ? ");
 
         stmt.setDouble(1, money);
-        stmt.setString(2, Constants.myId);
+        stmt.setString(2, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
 
         c.close();
@@ -1682,7 +1682,7 @@ public class ConnectionDrivers {
                 + "set nota_de_credito = nota_de_credito + ? where codigo_punto_de_venta = ? ");
 
         stmt.setDouble(1, money);
-        stmt.setString(2, Constants.myId);
+        stmt.setString(2, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
 
         c.close();
@@ -1695,7 +1695,7 @@ public class ConnectionDrivers {
                 + "set dinero_tarjeta_debito = dinero_tarjeta_debito + ? where codigo_punto_de_venta = ? ");
 
         stmt.setDouble(1, money);
-        stmt.setString(2, Constants.myId);
+        stmt.setString(2, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
 
         c.close();
@@ -1708,7 +1708,7 @@ public class ConnectionDrivers {
                 + ", dinero_efectivo , dinero_tarjeta_debito , nota_de_credito ) values ( curdate() , ? , .0 , ? , .0 , 0)");
 
         stmt.setDouble(2, money);
-        stmt.setString(1, Constants.myId);
+        stmt.setString(1, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
 
         c.close();
@@ -2006,7 +2006,7 @@ public class ConnectionDrivers {
         boolean ans ;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select actualizar_valores from dia_operativo where datediff(curdate(),fecha)=0 and codigo_punto_de_venta= ? ");
-        stmt.setString(1, Constants.myId);
+        stmt.setString(1, Shared.getFileConfig("myId"));
         ResultSet rs = stmt.executeQuery();
 
         boolean ok = rs.next();
@@ -2031,7 +2031,7 @@ public class ConnectionDrivers {
         stmt.setDouble(2, credit);
         stmt.setDouble(3, cn);
         stmt.setDouble(4, debit);
-        stmt.setString(5, Constants.myId);
+        stmt.setString(5, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
     }
 
@@ -2046,7 +2046,7 @@ public class ConnectionDrivers {
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Constants.mirrorDbHost + "/" + Constants.mirrorDbName;
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Constants.mirrorDbName;
             cpdsMirror.setJdbcUrl(sT);
             cpdsMirror.setUser(Constants.mirrordbUser);
             cpdsMirror.setPassword(Constants.mirrordbPassword);
@@ -2095,7 +2095,7 @@ public class ConnectionDrivers {
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Constants.mirrorDbHost + "/" + Constants.mirrorDbName;
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Constants.mirrorDbName;
             cpdsMirror.setJdbcUrl(sT);
             cpdsMirror.setUser(Constants.mirrordbUser);
             cpdsMirror.setPassword(Constants.mirrordbPassword);
@@ -2134,7 +2134,7 @@ public class ConnectionDrivers {
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Constants.mirrorDbHost + "/" + Constants.mirrorDbName;
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Constants.mirrorDbName;
             cpdsMirror.setJdbcUrl(sT);
             cpdsMirror.setUser(Constants.mirrordbUser);
             cpdsMirror.setPassword(Constants.mirrordbPassword);

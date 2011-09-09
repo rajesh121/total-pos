@@ -146,7 +146,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             //TODO Uncomment this.
             //ConnectionDrivers.updateReportZ(printer.getZ());
             
-            Double currentMoney = ConnectionDrivers.getCashToday(Constants.myId);
+            Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
             while ( currentMoney == -1.0 ){
                 String cc = JOptionPane.showInputDialog(getParent(),
                         "Monto Inicial de caja", Constants.df.format(Constants.minimumCash));
@@ -159,7 +159,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     if ( currentMoney < 150.0 ){
                         throw new NumberFormatException();
                     }else{
-                        ConnectionDrivers.newCash(currentMoney, Constants.myId);
+                        ConnectionDrivers.newCash(currentMoney, Shared.getFileConfig("myId"));
                     }
                 }catch ( NumberFormatException ex){
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
@@ -1192,7 +1192,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
             Date d = ConnectionDrivers.getDate();
             SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
-            return sdf.format(d)+ Constants.myId + String.format((Shared.isOffline?"9%03d":"%04d"), rightNow);
+            return sdf.format(d)+ Shared.getFileConfig("myId") + String.format((Shared.isOffline?"9%03d":"%04d"), rightNow);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(this);

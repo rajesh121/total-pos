@@ -153,7 +153,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
 
     private void updateAll() throws SQLException{
         bposCombo.removeAll();
-        bpos = ConnectionDrivers.listBPos(Constants.myId, reason);
+        bpos = ConnectionDrivers.listBPos(Shared.getFileConfig("myId"), reason);
         for (BankPOS bankPOS : bpos) {
             bposCombo.add(bankPOS.getId() + " - " + bankPOS.getLot() );
         }

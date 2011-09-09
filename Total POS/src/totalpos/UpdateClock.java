@@ -60,7 +60,7 @@ public class UpdateClock extends Thread{
                     List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                     boolean toContinue = false;
                     for (Assign assign : as) {
-                        if (assign.getPos().equals(Constants.myId) && assign.isOpen()) {
+                        if (assign.getPos().equals(Shared.getFileConfig("myId")) && assign.isOpen()) {
                             toContinue = true;
                             break; // for performance ...  =D!
                         }
@@ -83,7 +83,7 @@ public class UpdateClock extends Thread{
                 try {
                     List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                     for (Assign assign : as) {
-                        if (assign.getPos().equals(Constants.myId) && assign.isOpen()) {
+                        if (assign.getPos().equals(Shared.getFileConfig("myId")) && assign.isOpen()) {
                             Turn cur = Shared.getTurn(ConnectionDrivers.listTurns(), assign.getTurn());
                             Time diff = ConnectionDrivers.getDiff( cur.getFin() );
                             int leaving = (diff.getMinutes()+diff.getHours()*60);

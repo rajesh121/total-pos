@@ -4,9 +4,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Scanner;
 import java.util.TreeMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -22,6 +25,7 @@ import javax.swing.JLabel;
 public class Shared {
 
     private static TreeMap<String,String> config = new TreeMap<String, String>();
+    private static TreeMap<String,String> fileConfig = new TreeMap<String, String>();
     private static Component myMainWindows = null;
     private static TreeMap<String, Integer> tries = new TreeMap<String, Integer>();
     private static User user;
@@ -142,6 +146,24 @@ public class Shared {
         }
         login.setVisible(true);
         setUser(null);
+    }
+
+    protected static void loadFileConfig() throws FileNotFoundException{
+        Scanner sc = new Scanner(new File("config"));
+        int lineNumber = 1;
+        while(sc.hasNextLine()){
+            String line = sc.nextLine();
+            String[] toks = line.split("==");
+            if ( toks.length != 2 ){
+                throw new FileNotFoundException("Error al leer la línea " + lineNumber);
+            }
+            fileConfig.put(toks[0], toks[1]);
+            ++lineNumber;
+        }
+    }
+
+    public static String getFileConfig(String k){
+        return fileConfig.get(k);
     }
 
     public static String getConfig(String k){

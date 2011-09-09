@@ -146,7 +146,7 @@ public class Login extends JFrame {
 
                 Assign a = null;
                 for (Assign assign : as) {
-                    if ( assign.getPos().equals(Constants.myId) && assign.isOpen() ){
+                    if ( assign.getPos().equals(Shared.getFileConfig("myId")) && assign.isOpen() ){
                         toContinue = true;
                         a = assign;
                         break; // for performance ...  =D!
@@ -161,7 +161,7 @@ public class Login extends JFrame {
                     return;
                 }else if ( Shared.isOffline ){
                     //TODO What day should I choose
-                    a = new Assign("offline", Constants.myId, java.sql.Date.valueOf(Constants.sdfDay2DB.format(Calendar.getInstance().getTime())), true);
+                    a = new Assign("offline", Shared.getFileConfig("myId"), java.sql.Date.valueOf(Constants.sdfDay2DB.format(Calendar.getInstance().getTime())), true);
                 }
 
                 uc.start(); //Start the screensaver xDD

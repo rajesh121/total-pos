@@ -88,7 +88,7 @@ public class FiscalPrinter {
                 buffer.add("i0" + (line++) + "Cliente: Contado");
             }
             buffer.add("i0" + ( line++ ) + "Correlativo: " + ticketId);
-            buffer.add("i0" + ( line++ ) + "Caja: " + Constants.myId);
+            buffer.add("i0" + ( line++ ) + "Caja: " + Shared.getFileConfig("myId"));
 
             for (String bu : buffer) {
                 printer.SendCmd(a, b, bu);
@@ -283,7 +283,7 @@ public class FiscalPrinter {
             }
             buffer.add("i0" + ( line++ ) + "Correlativo: " + myId);
             buffer.add("i0" + ( line++ ) + "Factura: " + ticketId);
-            buffer.add("i0" + ( line++ ) + "Caja: " + Constants.myId);
+            buffer.add("i0" + ( line++ ) + "Caja: " + Shared.getFileConfig("myId"));
 
             for (String bu : buffer) {
                 printer.SendCmd(a, b, bu);

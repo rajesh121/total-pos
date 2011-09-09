@@ -270,7 +270,7 @@ public class ExtractMoney extends javax.swing.JDialog {
         try{
             double p = Double.parseDouble(moneyField.getText());
 
-            double curMoney = ConnectionDrivers.getCashToday(Constants.myId);
+            double curMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
             if ( p >= curMoney || p <= 1.0){
                 throw new NumberFormatException("");
             }
@@ -295,7 +295,7 @@ public class ExtractMoney extends javax.swing.JDialog {
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "extractMoney") ){
                 Shared.userInsertedPasswordOk(idField.getText());
 
-                ConnectionDrivers.setCash(curMoney-p, Constants.myId);
+                ConnectionDrivers.setCash(curMoney-p, Shared.getFileConfig("myId"));
                 printer.extractMoney(u, idField.getText(), p);
 
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Operación existosa!");

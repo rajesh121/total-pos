@@ -522,7 +522,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
 
             Date d = ConnectionDrivers.getDate();
             SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
-            return sdf.format(d) + Constants.myId + String.format(Shared.isOffline?"9%03d":"%04d", rightNow);
+            return sdf.format(d) + Shared.getFileConfig("myId") + String.format(Shared.isOffline?"9%03d":"%04d", rightNow);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(this);

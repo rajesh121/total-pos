@@ -135,12 +135,12 @@ public class Shared {
         Login login = new Login();
         Shared.centerFrame(login);
         login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        login.setVisible(true);
         if ( getMyMainWindows() instanceof MainWindows ){
             ((MainWindows)getMyMainWindows()).dispose();
         }else if ( getMyMainWindows() instanceof MainRetailWindows ) {
             ((MainRetailWindows)getMyMainWindows()).dispose();
         }
+        login.setVisible(true);
         setUser(null);
     }
 
@@ -282,7 +282,10 @@ public class Shared {
 
     public static void what2DoWithReceipt(MainRetailWindows myParent , String msg){
         try{
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas al imprimir.\nCausa: " + msg + ".");
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Hubo un problema con la impresora.\n"
+                    + "Posibles causas: " +
+                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.                       \n"+
+                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora");
             msb.show(null);
 
             myParent.toWait();

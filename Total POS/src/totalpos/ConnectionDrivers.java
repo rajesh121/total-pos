@@ -732,7 +732,7 @@ public class ConnectionDrivers {
         stmt.setInt(3, quant);
         stmt.executeUpdate();
 
-        changeItemStock(item.getCode(), -1);
+        changeItemStock(item.getCode(), -1*quant);
 
         double withoutTax = item.getLastPrice().getQuant()*quant;
         double subT = accumulatedInReceipt(receiptId) + withoutTax;
@@ -749,16 +749,17 @@ public class ConnectionDrivers {
 
     }
 
-    protected static void deleteItem2Receipt(String receiptId, Item item) throws SQLException, Exception{
+    protected static void deleteItem2Receipt(String receiptId, Item item, int quant) throws SQLException, Exception{
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from factura_contiene where"
-                + " codigo_interno_factura = ? and codigo_de_articulo = ? limit 1");
+                + " codigo_interno_factura = ? and codigo_de_articulo = ? and cantidad = ? limit 1");
         stmt.setString(1, receiptId);
         stmt.setString(2, item.getCode());
+        stmt.setInt(3, quant);
         stmt.executeUpdate();
 
-        changeItemStock(item.getCode(), 1);
+        changeItemStock(item.getCode(), 1*quant);
 
         double withoutTax = -1*(item.getLastPrice().getQuant());
         double subT = accumulatedInReceipt(receiptId) - withoutTax;
@@ -2055,13 +2056,13 @@ public class ConnectionDrivers {
         Connection a = ConnectionDrivers.cpds.getConnection(); // This is updated
         Connection b = ConnectionDrivers.cpdsMirror.getConnection(); // This is outdated.
 
-        PreparedStatement stmtB = b.prepareStatement("delete from " + tableName); // Good bye old data.
-
-        stmtB.executeUpdate();
-
         PreparedStatement stmtA = a.prepareStatement("select * from "+ tableName); // Getting the new data.
         ResultSet rsA = stmtA.executeQuery();
         ResultSetMetaData rsMetaDataA = rsA.getMetaData();
+
+        PreparedStatement stmtB = b.prepareStatement("delete from " + tableName); // Good bye old data.
+
+        stmtB.executeUpdate();
 
         while( rsA.next() ){
             String sql = "insert into " + tableName + " values ( ";
@@ -2202,8 +2203,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select `mensaje` from mensaje");
         ResultSet rs = stmt.executeQuery();
-        boolean ok = rs.next();
-        if ( ok ){
+        while( rs.next() ){
             ans.add(rs.getString("mensaje"));
         }
 
@@ -2219,8 +2219,53 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void createMsgs(TableModel model) {
-        
+    static void createMsgs(TableModel model) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String msg = (String) model.getValueAt(i, 0) ;
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into mensaje ( mensaje ) values ( ? )");
+            stmt.setString(1, msg);
+            stmt.executeUpdate();
+        }
+        c.close();
+    }
+
+    static List<SimpleConfig> listConfig() throws SQLException{
+        List<SimpleConfig> ans = new ArrayList<SimpleConfig>();
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select `Key` , `Value` from configuracion");
+        ResultSet rs = stmt.executeQuery();
+        while( rs.next() ){
+            ans.add(new SimpleConfig(rs.getString("Key"),rs.getString("Value")));
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static void deleteAllFrom(String table) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from " + table);
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    static void createConfig(TableModel model) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String key = (String) model.getValueAt(i, 0) ;
+            String value = (String) model.getValueAt(i, 1) ;
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into configuracion ( `Key` , `Value` ) values ( ? , ? )");
+            stmt.setString(1, key);
+            stmt.setString(2, value);
+            stmt.executeUpdate();
+        }
+        c.close();
     }
 
 }

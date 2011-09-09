@@ -79,10 +79,11 @@ public class ChooseMessage extends javax.swing.JInternalFrame {
             }
         });
         msgTable.setName("msgTable"); // NOI18N
+        msgTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(msgTable);
         msgTable.getColumnModel().getColumn(0).setPreferredWidth(130);
 
-        cancelButton.setText("Cancelar");
+        cancelButton.setText("Cerrar");
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,8 +171,30 @@ public class ChooseMessage extends javax.swing.JInternalFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
+
+            boolean showed = false;
+            for (int i = 0 ; i < msgTable.getRowCount() ; i++ ){
+                String s = (String) msgTable.getValueAt(i, 0);
+                if ( s == null || s.length() < 2){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Los mensajes no pueden quedar vacíos!");
+                    msg.show(this);
+                    return;
+                }
+                if ( s.length() > Constants.maximumLenghtMsg2Pos ){
+                    if ( !showed ){
+                        MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Hay mensajes que han sido truncados a " +
+                                Constants.maximumLenghtMsg2Pos+ " carácteres.");
+                        msg.show(this);
+                        showed = true;
+                    }
+                    msgTable.setValueAt(s.substring(0, Constants.maximumLenghtMsg2Pos), i, 0);
+                }
+            }
+
             ConnectionDrivers.deleteAllMsgs();
             ConnectionDrivers.createMsgs(msgTable.getModel());
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
+            msg.show(this);
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos",ex);
             msg.show(this);

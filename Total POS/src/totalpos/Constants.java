@@ -54,11 +54,15 @@ public class Constants {
     public static DecimalFormat df = new DecimalFormat("#0.00");
     public static DecimalFormat df2int = new DecimalFormat("#00.###");
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
-    public static int secondsToCheckTurn = 30;
-    public static int secondsToUpdateCountdown = 10;
-    public static int secondsToUpdateMirror = 15;
+    public static final int secondsToCheckTurn = 30;
+    public static final int secondsToUpdateCountdown = 10;
+    public static final int secondsToUpdateMirror = 60;
+    public static final int secondsToChangeMsg2Pos = 10;
+    public static final int secondsToShiftMsg = 1;
+
+    public static final int maximumLenghtMsg2Pos = 50;
 
     /**
      * TODO: This must be in the local database!!!

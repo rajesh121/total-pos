@@ -48,6 +48,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private Assign assign;
     public double subtotal;
     public boolean finishedFP = false;
+    private int msgIndex = -1;
+    public List<String> msg2pos;
 
     /** Creates new form MainRetailWindows
      * @param u
@@ -56,6 +58,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public MainRetailWindows(User u, Assign assign) {
         try {
             initComponents();
+            offlineLabel.setVisible(Shared.isOffline);
             Shared.setMyMainWindows(this);
             if ( this.getWidth() < 1100 ){
                 descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 9));
@@ -89,9 +92,12 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     try {
                         //((MainRetailWindows)Shared.getMyMainWindows()).finishedFP = false;
                         ConnectionDrivers.updateReportZ(printer.getZ());
-                        //((MainRetailWindows)Shared.getMyMainWindows()).finishedFP = true;
+                        //((MainRetailWindows)Shared.getMyMainWindows()).finishedFP = true;f
                     } catch (Exception ex) {
-                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error en la comunicación con la impresora.",ex);
+                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Hubo un problema con la impresora.\n"
+                    + "Posibles causas: " +
+                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.                       \n"+
+                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora",ex);
                         msb.show(null);
                         this.dispose();
                         Shared.reload();
@@ -130,6 +136,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             } catch (InterruptedException ex) {
                 Logger.getLogger(MainRetailWindows.class.getName()).log(Level.SEVERE, null, ex);
             }*/
+
+            if ( !Shared.isOffline ){
+                msg2pos = ConnectionDrivers.getListMsg2Pos();
+            }
 
             updateAll();
             
@@ -193,14 +203,20 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         globalDiscount = .0;
         quant = 1;
 
+        if ( msgIndex != -1 ){
+            msg2user2.setText(msg2pos.get(msgIndex));
+        }
+
         cleanTable();
 
         List<Receipt> idleReceipts = ConnectionDrivers.listIdleReceiptToday();
         if ( idleReceipts.isEmpty() ){
             msg2user.setVisible(false);
         }else if ( idleReceipts.size() == 1 ) {
+            msg2user.setVisible(true);
             msg2user.setText("Tiene 1 pedido en espera.");
         }else{
+            msg2user.setVisible(true);
             msg2user.setText("Tiene " + idleReceipts.size() + " pedidos en espera.");
         }
         List<Receipt> uncompletedReceipts = ConnectionDrivers.listUncompletedReceiptToday();
@@ -212,7 +228,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 try {
                     printer.updateValues();
                 } catch (Exception ex) {
-                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al obtener las ventas de la impresora fiscal",ex);
+                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al obtener las ventas de la impresora fiscal."
+                    + "Posibles causas: " +
+                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.                       \n"+
+                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora",ex);
                     msb.show(this);
                     printer.forceClose();
                 }
@@ -319,6 +338,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         msg2user = new javax.swing.JLabel();
         msg2user2 = new javax.swing.JLabel();
         yourTurnIsFinishingLabel = new javax.swing.JLabel();
+        offlineLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
@@ -616,10 +636,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(88, 88, 88)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(190, 190, 190)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
@@ -643,7 +662,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel11)))
-                .addContainerGap(381, Short.MAX_VALUE))
+                .addContainerGap(483, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -662,7 +681,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     .addComponent(jLabel9)
                     .addComponent(jLabel8)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel12)))
+                    .addComponent(jLabel12))
+                .addContainerGap())
         );
 
         jPanel3.setName("jPanel3"); // NOI18N
@@ -689,15 +709,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         messageToTheClients.setFocusable(false);
         messageToTheClients.setName("messageToTheClients"); // NOI18N
 
-        msg2user.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        msg2user.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        msg2user.setForeground(new java.awt.Color(255, 0, 0));
         msg2user.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         msg2user.setText("Acá van los mensajes xD");
         msg2user.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         msg2user.setName("msg2user"); // NOI18N
 
-        msg2user2.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        msg2user2.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        msg2user2.setForeground(new java.awt.Color(255, 0, 0));
         msg2user2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        msg2user2.setText("Sonríale al cliente así =D");
+        msg2user2.setText("Sonríale al cliente así =D ");
         msg2user2.setName("msg2user2"); // NOI18N
 
         javax.swing.GroupLayout messageToTheClientsLayout = new javax.swing.GroupLayout(messageToTheClients);
@@ -713,17 +735,23 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         );
         messageToTheClientsLayout.setVerticalGroup(
             messageToTheClientsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(messageToTheClientsLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, messageToTheClientsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(msg2user)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(msg2user2)
+                .addComponent(msg2user, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(msg2user2, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         yourTurnIsFinishingLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        yourTurnIsFinishingLabel.setForeground(new java.awt.Color(255, 0, 0));
         yourTurnIsFinishingLabel.setText("Acá va lo del turno!! =D");
         yourTurnIsFinishingLabel.setName("yourTurnIsFinishingLabel"); // NOI18N
+
+        offlineLabel.setFont(new java.awt.Font("Courier New", 1, 32)); // NOI18N
+        offlineLabel.setForeground(new java.awt.Color(255, 0, 0));
+        offlineLabel.setText("Fuera de línea");
+        offlineLabel.setName("offlineLabel"); // NOI18N
 
         javax.swing.GroupLayout wallpaperLayout = new javax.swing.GroupLayout(wallpaper);
         wallpaper.setLayout(wallpaperLayout);
@@ -731,8 +759,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 441, Short.MAX_VALUE)
+                .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 237, Short.MAX_VALUE)
+                .addComponent(offlineLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(wallpaperLayout.createSequentialGroup()
@@ -752,7 +782,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(offlineLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(7, 7, 7)
                 .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
@@ -803,14 +835,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     return;
                 }
 
-                if ( itemC.get(0).getCurrentStock() <= 0 ){
+                if ( itemC.get(0).getCurrentStock() - quant < 0 ){
                     if ( Shared.getConfig("sellWithoutStock").equals("0") ){
                         MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Este artículo no tiene stock. No se puede agregar.");
                         msb.show(this);
                         cleanForNewItem();
                         return;
                     }else{
-                        SellWithoutStock sws = new SellWithoutStock(this, true, "Vender sin existencia.","sellWithoutStock");
+                        SellWithoutStock sws = new SellWithoutStock(this, true, "Este artículo sin stock.","sellWithoutStock");
                         Shared.centerFrame(sws);
                         sws.setVisible(true);
                         if ( !sws.authorized ){
@@ -1061,6 +1093,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JPanel messageToTheClients;
     private javax.swing.JLabel msg2user;
     private javax.swing.JLabel msg2user2;
+    private javax.swing.JLabel offlineLabel;
     private javax.swing.JLabel subTotalLabel;
     private javax.swing.JLabel subTotalLabelResult;
     private javax.swing.JLabel totalLabel;
@@ -1075,7 +1108,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             msg = " El pedido que está cargado será ANULADO!";
         }
         msg += " ¿Está seguro que desea continuar?";
-        if ( JOptionPane.showConfirmDialog( (Shared.getMyMainWindows()) , msg) == 0 ){
+
+        Object[] options = {"Si","No"};
+        int n = JOptionPane.showOptionDialog(this,msg,
+                Constants.appName,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+
+        if ( n == 0 ){
             deleteCurrent();
             Login l = new Login();
             Shared.centerFrame(l);
@@ -1169,7 +1212,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private void deleteItem() {
         if ( gridTable.getSelectedRow() != -1){
             try {
-                ConnectionDrivers.deleteItem2Receipt(actualId, items.get(gridTable.getSelectedRow()).getItem());
+                ConnectionDrivers.deleteItem2Receipt(actualId, items.get(gridTable.getSelectedRow()).getItem(), items.get(gridTable.getSelectedRow()).getQuant());
 
                 items.remove(gridTable.getSelectedRow());
                 DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
@@ -1249,10 +1292,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 deleteItem();
             }
         } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
+            // Nothing to do... We are fucked.
         }
     }
 
@@ -1283,4 +1323,24 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public Assign getAssign() {
         return assign;
     }
+
+    public int getMsgIndex() {
+        return msgIndex;
+    }
+
+    public void setMsgIndex(int msgIndex) {
+        this.msgIndex = msgIndex;
+    }
+
+    public void increaseShiftValue(){
+        if ( !msg2user2.getText().isEmpty() ){
+            String s = msg2user2.getText();
+            msg2user2.setText(s.substring(s.length()-1) + s.substring(0,s.length()-1));
+        }
+    }
+
+    void updateMsg() {
+        msg2user2.setText(msg2pos.get(msgIndex));
+    }
+
 }

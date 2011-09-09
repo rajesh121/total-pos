@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -103,6 +104,7 @@ public class MainWindows extends javax.swing.JFrame {
         try {
             List<Edge> edges = ConnectionDrivers.listEdgesAllowed(root, Shared.getUser().getPerfil());
 
+            Collections.sort(edges,Collections.reverseOrder());
             for (int i = 0; i < edges.size(); i++) {
 
                 Edge ed = edges.get(i);
@@ -240,6 +242,12 @@ public class MainWindows extends javax.swing.JFrame {
                 }
             } else if ( ed.getFuncion().equals("manageMsg") ) {
                 ChooseMessage esws = new ChooseMessage();
+                if ( esws.isOk ){
+                    mdiPanel.add(esws);
+                    esws.setVisible(true);
+                }
+            } else if ( ed.getFuncion().equals("manageConfig") ) {
+                ConfigurationForm esws = new ConfigurationForm();
                 if ( esws.isOk ){
                     mdiPanel.add(esws);
                     esws.setVisible(true);

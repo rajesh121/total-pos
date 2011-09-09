@@ -25,6 +25,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
     private MainRetailWindows myParent;
     public boolean isOk = false;
     public boolean alreadyDone = false;
+    public boolean totally = true;
     Client client = null;
 
     /** Creates new form CreditNoteForm
@@ -57,8 +58,11 @@ public class CreditNoteForm extends javax.swing.JDialog {
             cancelButton.setMnemonic('C');
             reverseALLButton.setMnemonic('D');
             updateAll();
-            if ( alreadyDone ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_NOTICE, "Esta factura ha sido devuelta anteriormente!");
+            if ( totally ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_NOTICE, "Esta factura ha sido TOTALMENTE devuelta.");
+                msb.show(this);
+            } else if(alreadyDone){
+                MessageBox msb = new MessageBox(MessageBox.SGN_NOTICE, "Esta factura ya tiene devoluciones parciales.");
                 msb.show(this);
             }
             isOk = true;
@@ -83,6 +87,11 @@ public class CreditNoteForm extends javax.swing.JDialog {
                 if ( item2r.getAntiQuant() != 0 ){
                     alreadyDone = true;
                 }
+                
+                if ( item2r.getAntiQuant() != item2r.getQuant() ){
+                    totally = false;
+                }
+
                 Object[] s = {"0",item2r.getQuant(),item2r.getAntiQuant(),item.getDescription(), item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
                 model.addRow(s);
             }
@@ -569,11 +578,18 @@ public class CreditNoteForm extends javax.swing.JDialog {
             for (int i = 0; i < table.getRowCount(); ++i) {
                 try{
                     // This part was a little annoying :-o!
+                    // x2
                     int antiquant = Integer.parseInt(((String)(table.getValueAt(i, 0)+"")));
                     int antiQuantComplement = Integer.parseInt((String)(table.getValueAt(i, 1)+""));
                     int antiQuantComplementDone = Integer.parseInt((table.getValueAt(i, 2)+""));
-                    if ( antiquant > antiQuantComplement - antiQuantComplementDone ){
-                        MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar máximo " + antiquant +" artículos en el item " + (i+1) + "!");
+                    int a = antiQuantComplement - antiQuantComplementDone;
+                    if ( antiquant > a ){
+                        MessageBox msb = null;
+                        if ( a != 0 ){
+                            msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar máximo " + (a) +" artículos en el item " + (i+1) + "!");
+                        }else{
+                            msb = new MessageBox(MessageBox.SGN_CAUTION, "Ese producto ya fue devuelto!");
+                        }
                         msb.show(this);
                         return;
                     }
@@ -600,6 +616,8 @@ public class CreditNoteForm extends javax.swing.JDialog {
             actualId = nextId();
             ConnectionDrivers.createCreditNote(actualId, receipt.getInternId(), myParent.getUser().getLogin(), myParent.getAssign(), items);
             myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client);
+            MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Recuerde no botar la factura ni la nota de crédito, ambas deben ser enviadas a la oficina principal.");
+            msb.show(this);
             this.dispose();
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);
@@ -607,7 +625,10 @@ public class CreditNoteForm extends javax.swing.JDialog {
             myParent.dispose();
             Shared.reload();
         } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas al imprimir",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Hubo un problema con la impresora.\n"
+                    + "Posibles causas: " +
+                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.                       \n"+
+                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora");
             msb.show(this);
             myParent.dispose();
             Shared.reload();

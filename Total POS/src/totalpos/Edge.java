@@ -4,7 +4,7 @@ package totalpos;
  *
  * @author Saul Hidalgo
  */
-public class Edge {
+public class Edge implements Comparable{
     private String id , nombre, predecesor, icono, funcion;
 
     public Edge(String id, String nombre, String predecesor, String funcion) {
@@ -41,4 +41,11 @@ public class Edge {
     public String getPredecesor() {
         return predecesor;
     }
+
+    @Override
+    public int compareTo(Object ob){
+        Edge o = (Edge)ob;
+        return o.getNombre().compareTo(this.getNombre());
+    }
+
 }

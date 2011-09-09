@@ -185,8 +185,7 @@ public class Login extends JFrame {
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);
-            this.dispose();
-            Shared.reload();
+            passwordText.setEnabled(true);
         } catch (Exception ex) {
             passwordText.setEnabled(true);
             String kindErr = "";

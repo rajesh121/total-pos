@@ -6,11 +6,24 @@
 
 package totalpos;
 
+import com.microsoft.schemas._2003._10.serialization.ObjectFactory;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFIIMPFISCALES;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
+import org.tempuri.IsrvEntidades;
+import org.tempuri.IsrvSap;
+import org.tempuri.SrvEntidades;
+import org.tempuri.SrvSap;
 
 /**
  *
@@ -30,7 +43,10 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             initComponents();
             updateAll();
         } catch (SQLException ex) {
-            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+            msg.show(null);
+            this.dispose();
+            Shared.reload();
         }
     }
 
@@ -138,7 +154,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jLabel12 = new javax.swing.JLabel();
         jTextField9 = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        printAndSendButton = new javax.swing.JButton();
 
         jFileChooser1.setName("jFileChooser1"); // NOI18N
 
@@ -566,9 +582,14 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton2.setText("Imprimir y Cerrar");
-        jButton2.setFocusable(false);
-        jButton2.setName("jButton2"); // NOI18N
+        printAndSendButton.setText("Imprimir y Cerrar");
+        printAndSendButton.setFocusable(false);
+        printAndSendButton.setName("printAndSendButton"); // NOI18N
+        printAndSendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printAndSendButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -636,7 +657,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                         .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                        .addComponent(printAndSendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
@@ -689,7 +710,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
-                    .addComponent(jButton2))
+                    .addComponent(printAndSendButton))
                 .addContainerGap())
         );
 
@@ -796,6 +817,10 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_updateFiscalNumberslButtonActionPerformed
 
+    private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
+        
+    }//GEN-LAST:event_printAndSendButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ExpenseTable;
     private javax.swing.JTable bankTable;
@@ -805,7 +830,6 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     private javax.swing.JTextField expensesTodayField;
     private javax.swing.JTable fiscalZ;
     private javax.swing.JTable formWayxPoses;
-    private javax.swing.JButton jButton2;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -836,6 +860,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jTextField9;
     private javax.swing.JTextField netValue;
     private javax.swing.JTable payWayxPosTable;
+    private javax.swing.JButton printAndSendButton;
     private javax.swing.JTextField totalCardsField;
     private javax.swing.JTextField totalCashField;
     private javax.swing.JTextField totalDeclaredField;

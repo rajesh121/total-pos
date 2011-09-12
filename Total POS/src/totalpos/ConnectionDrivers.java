@@ -2086,6 +2086,53 @@ public class ConnectionDrivers {
 
     }
 
+    static void updateMoney() throws PropertyVetoException, SQLException{
+        if ( !Constants.isPos ){
+            // Admin has no mirror
+            return;
+        }
+
+        if ( !mirrorConnected ){ // just once =D
+            cpdsMirror = new ComboPooledDataSource();
+            cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Constants.mirrorDbName;
+            cpdsMirror.setJdbcUrl(sT);
+            cpdsMirror.setUser(Constants.mirrordbUser);
+            cpdsMirror.setPassword(Constants.mirrordbPassword);
+            mirrorConnected = true;
+        }
+
+        Connection b = ConnectionDrivers.cpds.getConnection();
+        Connection a = ConnectionDrivers.cpdsMirror.getConnection();
+
+
+        PreparedStatement stmtA = a.prepareStatement("select dinero_efectivo , dinero_tarjeta_debito , dinero_tarjeta_credito "
+                + "from dia_operativo where datediff(fecha,curdate())=0 and codigo_punto_de_venta = ? ");
+        stmtA.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rsA = stmtA.executeQuery();
+
+        while( rsA.next() ){
+
+            PreparedStatement stmtNewB = b.prepareStatement("update dia_operativo set dinero_efectivo = dinero_efectivo + ? , "
+                    + "dinero_tarjeta_debito = dinero_tarjeta_debito + ? , dinero_tarjeta_credito = dinero_tarjeta_credito + ? where "
+                    + "codigo_punto_de_venta = ? and datediff(fecha,curdate()) = 0");
+
+            stmtNewB.setString(1, rsA.getString("dinero_efectivo"));
+            stmtNewB.setString(2, rsA.getString("dinero_tarjeta_debito"));
+            stmtNewB.setString(3, rsA.getString("dinero_tarjeta_credito"));
+            stmtNewB.setString(4, Shared.getFileConfig("myId"));
+
+            stmtNewB.executeUpdate();
+        }
+
+        stmtA = a.prepareStatement("delete from dia_operativo");
+        stmtA.executeUpdate();
+
+        rsA.close();
+        a.close();
+        b.close();
+    }
+
     static void updateStock() throws PropertyVetoException, SQLException{
         if ( !Constants.isPos ){
             // Admin has no mirror

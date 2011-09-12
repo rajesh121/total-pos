@@ -1,10 +1,20 @@
 package totalpos;
 
+import com.microsoft.schemas._2003._10.serialization.ObjectFactory;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.xml.namespace.QName;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfBNKA;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.BNKA;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
+import org.tempuri.IsrvEntidades;
+import org.tempuri.IsrvSap;
+import org.tempuri.SrvEntidades;
+import org.tempuri.SrvSap;
 
 /**
  *
@@ -15,6 +25,32 @@ public class Main {
     protected static StartSplash splash;
 
     public static void main(String[] args) {
+        /*SrvEntidades se = new SrvEntidades();
+        IsrvEntidades ise = se.getBasicHttpBindingIsrvEntidades();
+        for ( BNKA b : ise.obtenerBancosSap("200").getBNKA() ){
+            Class<String> name = b.getBANKA().getDeclaredType();
+            System.out.println("aa");
+        }*/
+      /*  SrvSap ss = new SrvSap();
+        ss.getBasicHttpBindingIsrvSap();
+        ObjectFactory o = new ObjectFactory();
+
+        ArrayOfZFISCOBRANZA aozfc = new ArrayOfZFISCOBRANZA();
+        ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
+ 
+        ZFISHISTENVIOS zfhe = new ZFISHISTENVIOS();
+
+        zfhe.setMANDT(o.createString("200"));
+        zfhe.setIDTIENDA(o.createString(Shared.getConfig().get("storeName")));
+        zfhe.setMODIFICAR(o.createString("N"));
+        zfhe.setOBSERVACIONES(o.createString("Sin observaciones xD"));
+        zfhe.setTOTALVENTASDIA(new BigDecimal(500));
+        zfhe.setFONDOCAJA(BigDecimal.ZERO);
+        zfhe.setFECHAPROCESADO(o.createString("20120101"));
+
+        //isrvs.sapInsertCobranza(aozfc, aozfdf, zfhe);
+        
+*/
         splash = new StartSplash();
         Shared.centerFrame(splash);
         splash.setVisible(true);
@@ -67,6 +103,7 @@ public class Main {
             try {
                 splash.changeStatus("Sincronizando inventario ...", 60);
                 ConnectionDrivers.updateStock();
+                ConnectionDrivers.updateMoney();
                 for (String table : Constants.tablesToCleanMirror) {
                     splash.changeStatus("Cargando tabla " + table + "...", 65);
                     ConnectionDrivers.cleanMirror(table);
@@ -87,6 +124,6 @@ public class Main {
         login.setVisible(true);
 
         splash.setVisible(false);
-
+        
     }
 }

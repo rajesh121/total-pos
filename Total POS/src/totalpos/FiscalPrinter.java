@@ -322,7 +322,7 @@ public class FiscalPrinter {
             printer.SendCmd(a, b, "f01000000000000");
         }
 
-        printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
+        printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
         if ( b.getValue() != 0 ){
             throw new Exception(Shared.getErrMapping().get(b.getValue()));
         }
@@ -333,7 +333,7 @@ public class FiscalPrinter {
 
         boolean ansT = sc.hasNext();
         assert(ansT);
-        String s = sc.next().substring(21, 29);
+        String s = sc.next().substring(168);
 
         lastReceipt = s;
         sc.close();

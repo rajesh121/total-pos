@@ -42,6 +42,8 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         try {
             initComponents();
             updateAll();
+            MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "El cierre de Caja aún está en desarrollo!!");
+            msg.show(this);
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(null);

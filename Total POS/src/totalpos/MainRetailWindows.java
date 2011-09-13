@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -332,6 +334,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
         jPanel3 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/fecha-y-hora.jpg")).getImage()));
         whatTimeIsIt = new javax.swing.JLabel();
         messageToTheClients = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-mensajes-al-cajero.jpg")).getImage()));
@@ -631,6 +634,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jLabel12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel12.setName("jLabel12"); // NOI18N
 
+        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel13.setText("Fin / Reporte Z");
+        jLabel13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel13.setName("jLabel13"); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -662,11 +670,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel11)))
-                .addContainerGap(483, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel13)
+                .addContainerGap(372, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5)
@@ -681,7 +692,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     .addComponent(jLabel9)
                     .addComponent(jLabel8)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel12))
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel13))
                 .addContainerGap())
         );
 
@@ -709,14 +721,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         messageToTheClients.setFocusable(false);
         messageToTheClients.setName("messageToTheClients"); // NOI18N
 
-        msg2user.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        msg2user.setFont(new java.awt.Font("Courier New", 1, 14));
         msg2user.setForeground(new java.awt.Color(255, 0, 0));
         msg2user.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         msg2user.setText("Acá van los mensajes xD");
         msg2user.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         msg2user.setName("msg2user"); // NOI18N
 
-        msg2user2.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        msg2user2.setFont(new java.awt.Font("Courier New", 1, 14));
         msg2user2.setForeground(new java.awt.Color(255, 0, 0));
         msg2user2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         msg2user2.setText("Sonríale al cliente así =D ");
@@ -743,12 +755,12 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        yourTurnIsFinishingLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        yourTurnIsFinishingLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         yourTurnIsFinishingLabel.setForeground(new java.awt.Color(255, 0, 0));
         yourTurnIsFinishingLabel.setText("Acá va lo del turno!! =D");
         yourTurnIsFinishingLabel.setName("yourTurnIsFinishingLabel"); // NOI18N
 
-        offlineLabel.setFont(new java.awt.Font("Courier New", 1, 32)); // NOI18N
+        offlineLabel.setFont(new java.awt.Font("Courier New", 1, 32));
         offlineLabel.setForeground(new java.awt.Color(255, 0, 0));
         offlineLabel.setText("Fuera de línea");
         offlineLabel.setName("offlineLabel"); // NOI18N
@@ -955,8 +967,25 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         } else if ( evt.getKeyCode() == KeyEvent.VK_F12 ){
             ListIdleReceipts lir = new ListIdleReceipts(this, true);
             if ( lir.isOk ){
-                Shared.centerFrame(lir);
-                lir.setVisible(true);
+                try {
+                    Shared.centerFrame(lir);
+                    lir.setVisible(true);
+                    List<Receipt> idleReceipts = ConnectionDrivers.listIdleReceiptToday();
+                    if (idleReceipts.isEmpty()) {
+                        msg2user.setVisible(false);
+                    } else if (idleReceipts.size() == 1) {
+                        msg2user.setVisible(true);
+                        msg2user.setText("Tiene 1 pedido en espera.");
+                    } else {
+                        msg2user.setVisible(true);
+                        msg2user.setText("Tiene " + idleReceipts.size() + " pedidos en espera.");
+                    }
+                } catch (SQLException ex) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos",ex);
+                    msb.show(null);
+                    this.dispose();
+                    Shared.reload();
+                }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F8 ){
             ManageClient mc = new ManageClient(this, true, client);
@@ -1006,11 +1035,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ChangeQuantItems cqi = new ChangeQuantItems(this, true);
             Shared.centerFrame(cqi);
             cqi.setVisible(true);
-        } /*else if ( evt.getKeyCode() == KeyEvent.VK_F4 ){
+        } else if ( evt.getKeyCode() == KeyEvent.VK_END ){
             ReportZ rz = new ReportZ(this, true, "X");
             Shared.centerFrame(rz);
             rz.setVisible(true);
-        } */else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
+        } else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
             ReportZ rz = new ReportZ(this, true, "X");
             Shared.centerFrame(rz);
             rz.setVisible(true);
@@ -1023,7 +1052,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         if ( client != null ){
             ConnectionDrivers.setClient(client,actualId);
         }
-        ConnectionDrivers.setPritingHour(actualId);
+        ConnectionDrivers.setPritingHour(actualId, "factura");
         ConnectionDrivers.finishReceipt(actualId);
         updateAll();
     }
@@ -1077,6 +1106,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1267,7 +1297,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         }
     }
 
-    public void loadThisReceipt(Receipt r){
+    public void loadThisReceipt(Receipt r) throws SQLException{
         if ( !r.getItems().isEmpty() ){
             actualId = r.getInternId();
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();

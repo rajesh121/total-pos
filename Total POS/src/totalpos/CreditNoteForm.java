@@ -616,6 +616,11 @@ public class CreditNoteForm extends javax.swing.JDialog {
             actualId = nextId();
             ConnectionDrivers.createCreditNote(actualId, receipt.getInternId(), myParent.getUser().getLogin(), myParent.getAssign(), items);
             myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client);
+;
+            ConnectionDrivers.setFiscalDataCN(actualId, myParent.printer.getSerial() , myParent.printer.getZ() , myParent.printer.getLastFiscalNumber());
+            ConnectionDrivers.setPritingHour(actualId, "nota_de_credito");
+
+
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Recuerde no botar la factura ni la nota de crédito, ambas deben ser enviadas a la oficina principal.");
             msb.show(this);
             this.dispose();

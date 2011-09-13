@@ -1336,6 +1336,19 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    static void setFiscalDataCN(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update nota_de_credito set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
+                + "where codigo_interno = ? ");
+        stmt.setString(1, serial);
+        stmt.setString(2, fiscalNumber);
+        stmt.setString(3, z);
+        stmt.setString(4, actualId);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
     public static void finishReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
@@ -1368,9 +1381,9 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void setPritingHour(String actualId) throws SQLException {
+    static void setPritingHour(String actualId, String table) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("update factura set "
+        PreparedStatement stmt = c.prepareStatement("update " + table + " set "
                 + "  fecha_impresion = now() where codigo_interno = ? ");
         stmt.setString(1, actualId);
         stmt.executeUpdate();
@@ -1508,14 +1521,14 @@ public class ConnectionDrivers {
         double subT = .0 , ivaT = .0 , total = .0 ;
         for (Item2Receipt item2r : items) {
             Item item = item2r.getItem();
-            subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant(), 2 );
+            subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant(), 2 )*item2r.getQuant();
         }
         ivaT = new Price(null, subT).getIva().getQuant();
         total = subT + ivaT;
 
         PreparedStatement stmt = c.prepareStatement("insert into nota_de_credito"
                 + " ( codigo_interno, codigo_factura, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , identificador_turno , identificador_pos) "
-                + "values ( ?, ? , 'Pedido' , now() , ? , ?, ? , ? , ? , ? , ?)");
+                + "values ( ?, ? , 'Nota' , now() , ? , ?, ? , ? , ? , ? , ?)");
         stmt.setString(1, myId);
         stmt.setString(2, idReceipt);
         stmt.setDouble(3, subT);
@@ -1583,17 +1596,18 @@ public class ConnectionDrivers {
         stmt.setInt(3, item.getQuant());
         stmt.executeUpdate();
 
-        changeItemStock(item.getItem().getCode(), 1);
+        changeItemStock(item.getItem().getCode(), 1*item.getQuant());
 
         double withoutTax = item.getItem().getLastPrice().getQuant();
         double subT = .0;// = accumulatedInReceipt(receiptId) + withoutTax;
-        stmt = c.prepareStatement("update nota_de_credito "
-                + "set total_sin_iva = " + (subT) +
+        stmt = c.prepareStatement("update nota_de_credito set " +
+                /*+ "set total_sin_iva = " + (subT) +
                 " , total_con_iva =" + (new Price(null,subT)).plusIva().getQuant() +
-                " , iva = " + (new Price(null,subT)).getIva().getQuant() +
-                " , cantidad_de_articulos = cantidad_de_articulos + 1 "
+                " , iva = " + (new Price(null,subT)).getIva().getQuant() +*/
+                " cantidad_de_articulos = cantidad_de_articulos + ? "
                 + "where codigo_interno = ? ");
-        stmt.setString(1, receiptId);
+        stmt.setString(2, receiptId);
+        stmt.setInt(1, item.getQuant());
         stmt.executeUpdate();
 
         c.close();
@@ -1732,10 +1746,11 @@ public class ConnectionDrivers {
     private static void deleteItemFromReceipt(Item2Receipt item2r, String receiptId) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura_contiene set devuelto = devuelto + ? "
-                + "where codigo_interno_factura = ? and cantidad > devuelto and  codigo_de_articulo = ? limit 1");
+                + "where codigo_interno_factura = ? and cantidad >= devuelto + ? and  codigo_de_articulo = ? limit 1");
         stmt.setString(2, receiptId);
         stmt.setInt(1, item2r.getQuant());
-        stmt.setString(3, item2r.getItem().getCode());
+        stmt.setInt(3, item2r.getQuant());
+        stmt.setString(4, item2r.getItem().getCode());
         stmt.executeUpdate();
     }
 

@@ -298,21 +298,21 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
             payForms.remove(table.getSelectedRow());
             updateAll();
         }else if ( evt.getKeyCode() == KeyEvent.VK_N ){
-            AddMoney2Pay am2p = new AddMoney2Pay(this, true, "Nota de Credito");
+            AddMoney2Pay am2p = new AddMoney2Pay(this, true, "Nota de Credito",total);
             Shared.centerFrame(am2p);
             am2p.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_E ){
-            AddMoney2Pay am2p = new AddMoney2Pay(this, true, "Efectivo");
+            AddMoney2Pay am2p = new AddMoney2Pay(this, true, "Efectivo",total);
             Shared.centerFrame(am2p);
             am2p.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_C ){
-            AddCard2Pay ac2p = new AddCard2Pay(this, true, "Credito");
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, "Credito",total);
             if ( ac2p.isOk ){
                 Shared.centerFrame(ac2p);
                 ac2p.setVisible(true);
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_D ){
-            AddCard2Pay ac2p = new AddCard2Pay(this, true, "Debito");
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, "Debito",total);
             if ( ac2p.isOk ){
                 Shared.centerFrame(ac2p);
                 ac2p.setVisible(true);

@@ -305,9 +305,9 @@ public class Shared {
     public static void what2DoWithReceipt(MainRetailWindows myParent , String msg){
         try{
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Hubo un problema con la impresora.\n"
-                    + "Posibles causas: " +
-                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.                       \n"+
-                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora");
+                    + "<html>Posibles causas:<br>" +
+                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.<br>"+
+                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora<br></html>");
             msb.show(null);
 
             myParent.toWait();

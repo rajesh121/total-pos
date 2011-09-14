@@ -831,6 +831,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             return;
         }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             try {
+                if ( barcodeField.getText().isEmpty() ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");
+                    msb.show(this);
+                    return;
+                }
                 List<Item> itemC = ConnectionDrivers.listItems(barcodeField.getText(), "", "", "");
                 if ( itemC.isEmpty() ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo no existe!");
@@ -854,7 +859,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         cleanForNewItem();
                         return;
                     }else{
-                        SellWithoutStock sws = new SellWithoutStock(this, true, "Este artículo sin stock.","sellWithoutStock");
+                        SellWithoutStock sws = new SellWithoutStock(this, true, "Artículo sin stock.","sellWithoutStock");
                         Shared.centerFrame(sws);
                         sws.setVisible(true);
                         if ( !sws.authorized ){

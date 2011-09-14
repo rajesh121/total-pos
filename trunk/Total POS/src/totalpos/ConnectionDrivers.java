@@ -1120,8 +1120,9 @@ public class ConnectionDrivers {
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
                 + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno "
-                + "from factura where estado='Pedido' and datediff(fecha_creacion,now()) = 0");
+                + "from factura where estado='Pedido' and datediff(fecha_creacion,now()) = 0 and identificador_pos = ? ");
 
+        stmt.setString(1, Shared.getFileConfig("myId"));
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -1838,7 +1839,7 @@ public class ConnectionDrivers {
         List<Deposit> ans = new ArrayList<Deposit>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select banco, planilla, cataporte, monto from deposito "
+        PreparedStatement stmt = c.prepareStatement("select banco, numero, monto from deposito "
                 + "where datediff(now(),fecha) = 0 ");
         ResultSet rs = stmt.executeQuery();
 
@@ -1846,8 +1847,7 @@ public class ConnectionDrivers {
             ans.add(
                     new Deposit(
                         rs.getString("banco"),
-                        rs.getString("planilla"),
-                        rs.getString("cataporte"),
+                        rs.getString("numero"),
                         rs.getDouble("monto")
                         )
                     );

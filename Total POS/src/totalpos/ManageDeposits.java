@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class ManageDeposits extends javax.swing.JInternalFrame {
 
@@ -63,13 +63,13 @@ public class ManageDeposits extends javax.swing.JInternalFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Banco", "Planilla", "Cataporte", "Monto"
+                "Banco", "Numero", "Monto"
             }
         ));
         table.setName("table"); // NOI18N
@@ -217,7 +217,7 @@ public class ManageDeposits extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         for (Deposit e : deposits) {
-            String[] s = {e.getBank(),e.getFormId(),e.getCataport(),Constants.df.format(e.getQuant())};
+            String[] s = {e.getBank(),e.getFormId(),Constants.df.format(e.getQuant())};
             model.addRow(s);
         }
     }

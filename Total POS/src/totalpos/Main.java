@@ -6,14 +6,10 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.xml.namespace.QName;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfBNKA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.BNKA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
-import org.tempuri.IsrvEntidades;
 import org.tempuri.IsrvSap;
-import org.tempuri.SrvEntidades;
 import org.tempuri.SrvSap;
 
 /**
@@ -25,13 +21,7 @@ public class Main {
     protected static StartSplash splash;
 
     public static void main(String[] args) {
-        /*SrvEntidades se = new SrvEntidades();
-        IsrvEntidades ise = se.getBasicHttpBindingIsrvEntidades();
-        for ( BNKA b : ise.obtenerBancosSap("200").getBNKA() ){
-            Class<String> name = b.getBANKA().getDeclaredType();
-            System.out.println("aa");
-        }*/
-      /*  SrvSap ss = new SrvSap();
+     /*   SrvSap ss = new SrvSap();
         ss.getBasicHttpBindingIsrvSap();
         ObjectFactory o = new ObjectFactory();
 
@@ -49,8 +39,7 @@ public class Main {
         zfhe.setFECHAPROCESADO(o.createString("20120101"));
 
         //isrvs.sapInsertCobranza(aozfc, aozfdf, zfhe);
-        
-*/
+        */
         splash = new StartSplash();
         Shared.centerFrame(splash);
         splash.setVisible(true);

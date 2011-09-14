@@ -9,22 +9,16 @@ import java.sql.Date;
 public class Deposit {
     private String bank;
     private String formId;
-    private String cataport;
     private Double quant;
 
-    public Deposit(String bank, String formId, String cataport, Double quant) {
+    public Deposit(String bank, String formId, Double quant) {
         this.bank = bank;
         this.formId = formId;
-        this.cataport = cataport;
         this.quant = quant;
     }
 
     public String getBank() {
         return bank;
-    }
-
-    public String getCataport() {
-        return cataport;
     }
 
     public String getFormId() {

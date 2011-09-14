@@ -6,23 +6,26 @@
 
 package totalpos;
 
-import com.microsoft.schemas._2003._10.serialization.ObjectFactory;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFIIMPFISCALES;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
+//import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.Resultado;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISCOBRANZA;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
-import org.tempuri.IsrvEntidades;
 import org.tempuri.IsrvSap;
-import org.tempuri.SrvEntidades;
+//import org.tempuri.ObjectFactory;
 import org.tempuri.SrvSap;
 
 /**
@@ -57,7 +60,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) depositTable.getModel();
         model.setRowCount(0);
         for (Deposit e : deposits) {
-            String[] s = {e.getBank(),e.getFormId(),e.getCataport(),Constants.df.format(e.getQuant())};
+            String[] s = {e.getBank(),e.getFormId(),Constants.df.format(e.getQuant())};
             model.addRow(s);
         }
     }
@@ -237,17 +240,17 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
         depositTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Banco", "Planilla", "Cataporte", "Monto"
+                "Banco", "Numero", "Monto"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -820,7 +823,51 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_updateFiscalNumberslButtonActionPerformed
 
     private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
-        
+        SrvSap ss = new SrvSap();
+        IsrvSap isrvs = ss.getBasicHttpBindingIsrvSap();
+        ObjectFactory of = new ObjectFactory();
+        ZFISHISTENVIOS zfhe = new ZFISHISTENVIOS();
+        ArrayOfZFISCOBRANZA lzfc = new ArrayOfZFISCOBRANZA();
+        ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
+        zfhe.setMANDT(of.createZFISHISTENVIOSMANDT("200"));
+        zfhe.setIDTIENDA(of.createZFISHISTENVIOSIDTIENDA("123"));
+        zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO("20110914"));
+        zfhe.setTOTALVENTASDIA(new BigDecimal("150000"));
+        zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES("Sin Observaciones"));
+        zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
+        zfhe.setFONDOCAJA(BigDecimal.ZERO);
+
+        List<ZFISCOBRANZA> zFISCOBRANZA = lzfc.getZFISCOBRANZA();
+        ZFISCOBRANZA zfc = new ZFISCOBRANZA();
+        zfc.setID(1);
+        zfc.setMANDT(of.createZFISCOBRANZAMANDT("200"));
+        zfc.setFECHA(of.createZFISCOBRANZAFECHA("20110914"));
+        zfc.setWERKS(of.createZFISCOBRANZAWERKS("123"));
+        zfc.setWAERS(of.createZFISCOBRANZAWAERS("VEF"));
+        zfc.setSIMBO(of.createZFISCOBRANZASIMBO("BB312"));
+        zfc.setMPAGO(of.createZFISCOBRANZAMPAGO("4"));
+        zfc.setBPAGO(of.createZFISCOBRANZABPAGO("BB312"));
+        zfc.setLOTE(of.createZFISCOBRANZALOTE("102"));
+        zfc.setMONTO(new BigDecimal(150000));
+        zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
+        zFISCOBRANZA.add(zfc);
+
+        List<ZFISDATAFISCAL> zFISDATAFISCAL = aozfdf.getZFISDATAFISCAL();
+        ZFISDATAFISCAL zfdf = new ZFISDATAFISCAL();
+        zfdf.setMANDT(of.createZFISDATAFISCALMANDT("200"));
+        zfdf.setIDTIENDA(of.createZFISDATAFISCALIDTIENDA("123"));
+        zfdf.setIDIMPFISCAL(of.createZFISDATAFISCALIDIMPFISCAL("Z123456789"));
+        zfdf.setFECHA(of.createZFISDATAFISCALFECHA("20110914"));
+        zfdf.setMONTO(new BigDecimal(150000));
+        zfdf.setNUMREPZ(of.createZFISDATAFISCALNUMREPZ("0656"));
+        zfdf.setULTFACTURA(of.createZFISDATAFISCALULTFACTURA("00123232"));
+        zfdf.setNUMFACD(of.createZFISDATAFISCALNUMFACD("313"));
+        zfdf.setULTNOTACREDITO(of.createZFISDATAFISCALULTNOTACREDITO("00013212"));
+        zfdf.setNUMNCD(of.createZFISDATAFISCALNUMNCD("131"));
+        zFISDATAFISCAL.add(zfdf);
+
+        Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
+        System.out.println(sss.getCodigoError());
     }//GEN-LAST:event_printAndSendButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

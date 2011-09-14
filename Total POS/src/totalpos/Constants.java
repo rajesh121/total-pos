@@ -60,7 +60,7 @@ public class Constants {
 
     public static final int secondsToCheckTurn = 30;
     public static final int secondsToUpdateCountdown = 10;
-    public static final int secondsToUpdateMirror = 60;
+    public static final int secondsToUpdateMirror = 6000;
     public static final int secondsToChangeMsg2Pos = 10;
     public static final int secondsToShiftMsg = 1;
 

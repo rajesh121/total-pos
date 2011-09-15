@@ -335,6 +335,10 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
         }
     }//GEN-LAST:event_tableKeyPressed
 
+    public void close(){
+        workingFrame.setVisible(false);
+    }
+
     public void doIt(){
         try {
             if ( change < 0 ){
@@ -354,15 +358,18 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
                 this.dispose();
             }
         } catch (SQLException ex) {
+            workingFrame.setVisible(false);
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error en la base de datos!",ex);
             msb.show(null);
             this.dispose();
             Shared.reload();
         } catch (FileNotFoundException ex) {
+            workingFrame.setVisible(false);
             Shared.what2DoWithReceipt(myParent, "No se pudo leer el número fiscal");
             this.dispose();
             myParent.printer.forceClose();
         } catch (Exception ex) {
+            workingFrame.setVisible(false);
             Shared.what2DoWithReceipt(myParent , ex.getMessage());
             this.dispose();
             myParent.printer.forceClose();

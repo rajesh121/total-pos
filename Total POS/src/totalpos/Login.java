@@ -215,16 +215,18 @@ public class Login extends JFrame implements Doer{
         
     }
 
+    public void close(){
+        workingFrame.setVisible(false);
+    }
+
     public void doIt(){
         try {
             doItNow();
         } catch (SQLException ex) {
-            workingFrame.setVisible(false);
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(null);
             passwordText.setEnabled(true);
         } catch (Exception ex) {
-            workingFrame.setVisible(false);
             passwordText.setEnabled(true);
             String kindErr = "";
             if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {

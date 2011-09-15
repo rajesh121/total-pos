@@ -13,10 +13,11 @@ import java.sql.SQLException;
  *
  * @author Saúl Hidalgo
  */
-public class ReportZ extends javax.swing.JDialog {
+public class ReportZ extends javax.swing.JDialog implements Doer{
 
     private String kindOfReport;
     MainRetailWindows myParent;
+    private Working workingFrame;
 
     /** Creates new form ReportZ */
     public ReportZ(java.awt.Frame parent, boolean modal, String kind) {
@@ -108,7 +109,14 @@ public class ReportZ extends javax.swing.JDialog {
 
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
+            workingFrame = new Working(this);
+
+            WaitSplash ws = new WaitSplash(this);
+
+            Shared.centerFrame(workingFrame);
+            workingFrame.setVisible(true);
+
+            ws.execute();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }
@@ -120,8 +128,9 @@ public class ReportZ extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_userFieldKeyPressed
 
-    private void doIt(){
+    public void doIt(){
         if ( userField.getText().isEmpty() ){
+            workingFrame.setVisible(false);
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");
             msg.show(this);
             return;
@@ -182,6 +191,10 @@ public class ReportZ extends javax.swing.JDialog {
             }
 
         }
+    }
+
+    public void close(){
+        workingFrame.setVisible(false);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

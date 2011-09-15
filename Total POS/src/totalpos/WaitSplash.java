@@ -24,7 +24,6 @@ public class WaitSplash extends SwingWorker<Void, Integer>{
 
     @Override
     protected void done() {
-        ;
-        // It might be useful in a future =D!
+        w.close();
     }
 }

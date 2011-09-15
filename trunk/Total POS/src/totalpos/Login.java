@@ -9,9 +9,13 @@ package totalpos;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -20,12 +24,15 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 /**
  *
  * @author Saul Hidalgo
  */
-public class Login extends JFrame {
+public class Login extends JFrame implements Doer{
+
+    public Working workingFrame;
 
     /** Creates new form Login */
     public Login() {
@@ -52,6 +59,14 @@ public class Login extends JFrame {
                     .addComponent(passwordText, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(413, Short.MAX_VALUE))
         );
+
+        loginText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+                    passwordText.requestFocus();
+                }
+            }
+        });
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
@@ -105,88 +120,111 @@ public class Login extends JFrame {
 
     }
 
-    private void passwordTextActionPerformed(ActionEvent evt) {
-        try {
-            passwordText.setEnabled(false);
-            if ( !ConnectionDrivers.existsUser(loginText.getText().trim()) ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
-                msg.show(this);
-                passwordText.setEnabled(true);
-                return;
-            }
-
-            if ( ConnectionDrivers.isLocked(loginText.getText().trim()) ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario bloqueado");
-                msg.show(this);
-                passwordText.setEnabled(true);
-                return;
-            }
-            ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
-
-            User u = Shared.giveUser(ConnectionDrivers.listUsers(), loginText.getText());
-            if ( u.getDebeCambiarPassword() ){
-                ChangePassword cp = new ChangePassword(this, true, u);
-                Shared.centerFrame(cp);
-                cp.setVisible(true);
-                if ( !cp.isOk ){
-                    MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Debes cambiar el password. Intenta de nuevo.");
-                    msg.show(this);
-                    passwordText.setEnabled(true);
-                    return;
-                }
-            }
-            Shared.userInsertedPasswordOk(loginText.getText());
-            UpdateClock uc = new UpdateClock();
-            Shared.setScreenSaver(uc);
-
-            if ( Constants.isPos ){
-
-                List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
-                boolean toContinue = false;
-
-                Assign a = null;
-                for (Assign assign : as) {
-                    if ( assign.getPos().equals(Shared.getFileConfig("myId")) && assign.isOpen() ){
-                        toContinue = true;
-                        a = assign;
-                        break; // for performance ...  =D!
-                    }
-                }
-
-                // Don't check assignments when you're offline
-                if ( !toContinue && !Shared.isOffline ){
-                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No hay asignación para esta caja el día de hoy.");
-                    msg.show(this);
-                    passwordText.setEnabled(true);
-                    return;
-                }else if ( Shared.isOffline ){
-                    //TODO What day should I choose
-                    a = new Assign("offline", Shared.getFileConfig("myId"), java.sql.Date.valueOf(Constants.sdfDay2DB.format(Calendar.getInstance().getTime())), true);
-                }
-
-                uc.start(); //Start the screensaver xDD
-                Shared.setUser(u);
-                MainRetailWindows mrw = new MainRetailWindows(u, a);
-                if ( mrw.isOk ){
-                    Shared.setMyMainWindows(mrw);
-                    Shared.centerFrame(mrw);
-                    mrw.setVisible(true);
-                }
-            }else{
-                uc.start(); //Same here
-                Shared.setUser(u);
-                MainWindows mw = new MainWindows(u);
-                Shared.setMyMainWindows(mw);
-                Shared.centerFrame(mw);
-                mw.setVisible(true);
-            }
-            this.setVisible(false);
-            dispose();
-        } catch (SQLException ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+    public void doItNow() throws SQLException, Exception{
+        
+        if ( !ConnectionDrivers.existsUser(loginText.getText().trim()) ){
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
             msg.show(this);
             passwordText.setEnabled(true);
+            return;
+        }
+
+        if ( ConnectionDrivers.isLocked(loginText.getText().trim()) ){
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario bloqueado");
+            msg.show(this);
+            passwordText.setEnabled(true);
+            return;
+        }
+        ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
+
+        User u = Shared.giveUser(ConnectionDrivers.listUsers(), loginText.getText());
+        if ( u.getDebeCambiarPassword() ){
+            //ws.close();
+            ChangePassword cp = new ChangePassword(this, true, u);
+            Shared.centerFrame(cp);
+            cp.setVisible(true);
+            if ( !cp.isOk ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Debes cambiar el password. Intenta de nuevo.");
+                msg.show(this);
+                passwordText.setEnabled(true);
+                return;
+            }
+        }
+        Shared.userInsertedPasswordOk(loginText.getText());
+        UpdateClock uc = new UpdateClock();
+        Shared.setScreenSaver(uc);
+
+        if ( Constants.isPos ){
+
+            List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
+            boolean toContinue = false;
+
+            Assign a = null;
+            for (Assign assign : as) {
+                if ( assign.getPos().equals(Shared.getFileConfig("myId")) && assign.isOpen() ){
+                    toContinue = true;
+                    a = assign;
+                    break; // for performance ...  =D!
+                }
+            }
+
+            // Don't check assignments when you're offline
+            if ( !toContinue && !Shared.isOffline ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No hay asignación para esta caja el día de hoy.");
+                msg.show(this);
+                passwordText.setEnabled(true);
+                return;
+            }else if ( Shared.isOffline ){
+                //TODO What day should I choose
+                a = new Assign("offline", Shared.getFileConfig("myId"), java.sql.Date.valueOf(Constants.sdfDay2DB.format(Calendar.getInstance().getTime())), true);
+            }
+
+            uc.start(); //Start the screensaver xDD
+            Shared.setUser(u);
+            MainRetailWindows mrw = new MainRetailWindows(u, a);
+            if ( mrw.isOk ){
+                Shared.setMyMainWindows(mrw);
+                Shared.centerFrame(mrw);
+                mrw.setVisible(true);
+            }
+            //ws.close();
+        }else{
+            uc.start(); //Same here
+            Shared.setUser(u);
+            MainWindows mw = new MainWindows(u);
+            Shared.setMyMainWindows(mw);
+            Shared.centerFrame(mw);
+            mw.setVisible(true);
+        }
+        this.setVisible(false);
+        dispose();
+    }
+
+    private void passwordTextActionPerformed(ActionEvent evt) {
+
+        workingFrame = new Working(this);
+        
+        WaitSplash ws = new WaitSplash(this);
+
+        Shared.centerFrame(workingFrame);
+        workingFrame.setVisible(true);
+        
+        passwordText.setEnabled(false);
+        
+        ws.execute();
+        
+    }
+
+    public void doIt(){
+        try {
+            doItNow();
+        } catch (SQLException ex) {
+            workingFrame.setVisible(false);
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
+            msg.show(null);
+            passwordText.setEnabled(true);
         } catch (Exception ex) {
+            workingFrame.setVisible(false);
             passwordText.setEnabled(true);
             String kindErr = "";
             if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {
@@ -194,7 +232,7 @@ public class Login extends JFrame {
             }
 
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr);
-            msg.show(this);
+            msg.show(null);
 
             if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
                 try {
@@ -204,14 +242,12 @@ public class Login extends JFrame {
                                 (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
                                 ex1);
                     msg.show(null);
-                    this.dispose();
                     Shared.reload();
                 }
             }
 
         }
-
-    }  
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.

@@ -90,9 +90,9 @@ class StartSplash extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel loadingLabel;
-    private javax.swing.JProgressBar progressBar;
+    public javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusLabel;
-    private javax.swing.JLabel statusLabel2Change;
+    public javax.swing.JLabel statusLabel2Change;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 

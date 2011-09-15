@@ -6,4 +6,5 @@ package totalpos;
  */
 public interface Doer {
     public void doIt();
+    public void close();
 }

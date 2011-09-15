@@ -20,8 +20,9 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Saúl Hidalgo
  */
-public class SpecifyPaymentForm extends javax.swing.JDialog {
+public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
 
+    public Working workingFrame;
     public Price total;
     private List<PayForm> payForms = new ArrayList<PayForm>();
     private String receiptID;
@@ -318,39 +319,55 @@ public class SpecifyPaymentForm extends javax.swing.JDialog {
                 ac2p.setVisible(true);
             }
         } else if (  evt.getKeyCode() == KeyEvent.VK_O ){
-            try {
-                if ( change < 0 ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");
-                    msb.show(null);
-                }else{
-                    myParent.printer.printerSerial = null;
-                    if (!myParent.printer.checkPrinter()) {
-                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
-                        msb.show(null);
-                        return;
-                    }
-                    
-                    myParent.print(payForms);
-                    add("Cambio",change);
-                    ConnectionDrivers.savePayForm(payForms);
-                    this.dispose();
-                }
-            } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error en la base de datos!",ex);
+            if ( change < 0 ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");
                 msb.show(null);
-                this.dispose();
-                Shared.reload();
-            } catch (FileNotFoundException ex) {
-                Shared.what2DoWithReceipt(myParent, "No se pudo leer el número fiscal");
-                this.dispose();
-                myParent.printer.forceClose();
-            } catch (Exception ex) {
-                Shared.what2DoWithReceipt(myParent , ex.getMessage());
-                this.dispose();
-                myParent.printer.forceClose();
+            }else{
+                workingFrame = new Working(this);
+                
+                WaitSplash ws = new WaitSplash(this);
+
+                Shared.centerFrame(workingFrame);
+                workingFrame.setVisible(true);
+
+                ws.execute();
             }
         }
     }//GEN-LAST:event_tableKeyPressed
+
+    public void doIt(){
+        try {
+            if ( change < 0 ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");
+                msb.show(null);
+            }else{
+                myParent.printer.printerSerial = null;
+                if (!myParent.printer.checkPrinter()) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
+                    msb.show(null);
+                    return;
+                }
+
+                myParent.print(payForms);
+                add("Cambio",change);
+                ConnectionDrivers.savePayForm(payForms);
+                this.dispose();
+            }
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error en la base de datos!",ex);
+            msb.show(null);
+            this.dispose();
+            Shared.reload();
+        } catch (FileNotFoundException ex) {
+            Shared.what2DoWithReceipt(myParent, "No se pudo leer el número fiscal");
+            this.dispose();
+            myParent.printer.forceClose();
+        } catch (Exception ex) {
+            Shared.what2DoWithReceipt(myParent , ex.getMessage());
+            this.dispose();
+            myParent.printer.forceClose();
+        }
+    }
 
     public void add(String reason , Double money){
         payForms.add(new PayForm(receiptID, reason, "" , "", money));

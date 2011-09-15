@@ -41,9 +41,9 @@ public class Main {
         //isrvs.sapInsertCobranza(aozfc, aozfdf, zfhe);
         */
         splash = new StartSplash();
+        splash.changeStatus("Leyendo archivo de configuración...", 10);
         Shared.centerFrame(splash);
         splash.setVisible(true);
-        splash.changeStatus("Leyendo archivo de configuración...", 10);
         
         try {
             Shared.loadFileConfig();

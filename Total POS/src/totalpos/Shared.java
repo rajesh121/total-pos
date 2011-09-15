@@ -32,7 +32,6 @@ public class Shared {
     private static UpdateClock screenSaver;
     private static TreeMap<Integer, String> errMapping = new TreeMap<Integer, String>();
     protected static boolean isOffline = false;
-    protected static StartSplash SharedSS;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -304,8 +303,8 @@ public class Shared {
 
     public static void what2DoWithReceipt(MainRetailWindows myParent , String msg){
         try{
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Hubo un problema con la impresora.\n"
-                    + "<html>Posibles causas:<br>" +
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "<html>Hubo un problema con la impresora.<br>"
+                    + "Posibles causas:<br>" +
                     "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.<br>"+
                     "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora<br></html>");
             msb.show(null);

@@ -630,10 +630,7 @@ public class CreditNoteForm extends javax.swing.JDialog {
             myParent.dispose();
             Shared.reload();
         } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "<html>Hubo un problema con la impresora.<br>"
-                    + "Posibles causas:<br>" +
-                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.<br>"+
-                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora<br></html>");
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter);
             msb.show(this);
             myParent.dispose();
             Shared.reload();

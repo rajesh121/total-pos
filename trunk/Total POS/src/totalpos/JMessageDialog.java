@@ -83,9 +83,10 @@ public class JMessageDialog extends javax.swing.JDialog {
                 sb.append(": \n");
                 sb.append(inf.getCause().toString());
             }
-            /*for (StackTraceElement object : ((Exception)inf.getCause()).getStackTrace()) {
+            // TODO HERE
+            for (StackTraceElement object : ((Exception)inf.getCause()).getStackTrace()) {
                 sb.append(object.getMethodName() + " @ " + object.getLineNumber()+ " @ " + object.getFileName() + "\n");
-            }*/
+            }
             myMsg.jtxtException.setText(sb.toString());  
         }       
         myMsg.jtxtException.setCaretPosition(0);            

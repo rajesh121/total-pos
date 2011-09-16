@@ -6,6 +6,8 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
+
 /**
  *
  * @author Saúl Hidalgo
@@ -45,7 +47,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Agregar Forma de Pago");
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel1.setText("Agregar Forma de Pago");
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -53,6 +55,11 @@ public class AddMoney2Pay extends javax.swing.JDialog {
         jLabel2.setName("jLabel2"); // NOI18N
 
         moneyField.setName("moneyField"); // NOI18N
+        moneyField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                moneyFieldKeyPressed(evt);
+            }
+        });
 
         cancelButton.setText("Cancelar");
         cancelButton.setName("cancelButton"); // NOI18N
@@ -109,6 +116,23 @@ public class AddMoney2Pay extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        doIt();
+    }//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void moneyFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moneyFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            doIt();
+        }
+    }//GEN-LAST:event_moneyFieldKeyPressed
+
+    public void doIt(){
         Double d = .0;
         try{
             d = Double.parseDouble(moneyField.getText().replace(',', '.'));
@@ -129,11 +153,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
         }
         myParent.add(reason,d);
         this.dispose();
-    }//GEN-LAST:event_acceptButtonActionPerformed
-
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_cancelButtonActionPerformed
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;

@@ -66,6 +66,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 descriptionLabel.setFont(new java.awt.Font("Courier New", 0, 9));
             }
             this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+
+            posID.setText("Caja #" + Shared.getFileConfig("myId"));
+
             user = u;
             try{
                 printer = new FiscalPrinter();
@@ -86,58 +89,24 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 return;
             }
 
-
-            /*Thread t = new Thread(new Runnable() {
-
-                @Override*/
-                //public void run() {
-                    try {
-                        //((MainRetailWindows)Shared.getMyMainWindows()).finishedFP = false;
-                        ConnectionDrivers.updateReportZ(printer.getZ());
-                        //((MainRetailWindows)Shared.getMyMainWindows()).finishedFP = true;f
-                    } catch (Exception ex) {
-                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "<html>Hubo un problema con la impresora.<br>"
-                    + "Posibles causas:<br>" +
-                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.<br>"+
-                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora<br></html>",ex);
-                        msb.show(null);
-                        this.dispose();
-                        Shared.reload();
-                        printer.forceClose();
-                        return;
-                    }/*
-                }
-            });*/
-
-            //t.start();
-
-            /*try {
-                Shared.SharedSS = new StartSplash();
-                Shared.SharedSS.changeStatus("Verificando Impresora", 0);
-                Shared.centerFrame(Shared.SharedSS);
-                Shared.SharedSS.setVisible(true);
-                for (int i = 0; i < 10; i++) {
-                    Thread.sleep(1000);
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Shared.SharedSS.changeStatus("Verificando Impresora", 10);
-                        }
-                    });
-                    
-                }
-                Shared.SharedSS.dispose();
-                if ( !finishedFP ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora ha tomado mucho tiempo en responder. Se ha detenido el proceso.");
-                    msb.show(null);
-                    this.dispose();
-                    Shared.reload();
-                    return;
-                }
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MainRetailWindows.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            if ( !printer.checkPrinter() ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema.");
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+                return;
+            }
+            
+            try {
+                ConnectionDrivers.updateReportZ(printer.getZ());
+            } catch (Exception ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
+                msb.show(null);
+                this.dispose();
+                Shared.reload();
+                printer.forceClose();
+                return;
+            }
 
             if ( !Shared.isOffline ){
                 msg2pos = ConnectionDrivers.getListMsg2Pos();
@@ -145,11 +114,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
             updateAll();
             
-            //TODO Uncomment this.
-            //ConnectionDrivers.updateReportZ(printer.getZ());
-            
             Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
-            while ( currentMoney == -1.0 ){
+            while ( currentMoney == -1.0 && !Shared.isOffline ){
                 String cc = JOptionPane.showInputDialog(getParent(),
                         "Monto Inicial de caja", Constants.df.format(Constants.minimumCash));
 
@@ -230,12 +196,12 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 try {
                     printer.updateValues();
                 } catch (Exception ex) {
-                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al obtener las ventas de la impresora fiscal."
-                    + "Posibles causas: " +
-                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.                       \n"+
-                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora",ex);
+                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter ,ex);
                     msb.show(this);
                     printer.forceClose();
+                    this.dispose();
+                    Shared.reload();
+                    return;
                 }
             }
             setClient(null);
@@ -342,6 +308,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         msg2user2 = new javax.swing.JLabel();
         yourTurnIsFinishingLabel = new javax.swing.JLabel();
         offlineLabel = new javax.swing.JLabel();
+        posID = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle(Constants.appName);
@@ -485,7 +452,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
+                .addGap(14, 14, 14)
                 .addComponent(barcodeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
@@ -558,7 +525,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, imagePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE))
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE))
         );
 
         jPanel6.setName("jPanel6"); // NOI18N
@@ -755,7 +722,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        yourTurnIsFinishingLabel.setFont(new java.awt.Font("Courier New", 1, 18));
+        yourTurnIsFinishingLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         yourTurnIsFinishingLabel.setForeground(new java.awt.Color(255, 0, 0));
         yourTurnIsFinishingLabel.setText("Acá va lo del turno!! =D");
         yourTurnIsFinishingLabel.setName("yourTurnIsFinishingLabel"); // NOI18N
@@ -765,6 +732,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         offlineLabel.setText("Fuera de línea");
         offlineLabel.setName("offlineLabel"); // NOI18N
 
+        posID.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        posID.setForeground(new java.awt.Color(51, 51, 255));
+        posID.setText("Acá va lo de la caja");
+        posID.setName("posID"); // NOI18N
+
         javax.swing.GroupLayout wallpaperLayout = new javax.swing.GroupLayout(wallpaper);
         wallpaper.setLayout(wallpaperLayout);
         wallpaperLayout.setHorizontalGroup(
@@ -772,7 +744,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 237, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(posID, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(offlineLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -794,10 +768,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(offlineLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(7, 7, 7)
+                    .addComponent(offlineLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(posID, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(yourTurnIsFinishingLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)))
+                .addGap(10, 10, 10)
                 .addGroup(wallpaperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wallpaperLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1129,6 +1104,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel msg2user;
     private javax.swing.JLabel msg2user2;
     private javax.swing.JLabel offlineLabel;
+    private javax.swing.JLabel posID;
     private javax.swing.JLabel subTotalLabel;
     private javax.swing.JLabel subTotalLabelResult;
     private javax.swing.JLabel totalLabel;
@@ -1151,7 +1127,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
-                options[1]);
+                null);
 
         if ( n == 0 ){
             deleteCurrent();

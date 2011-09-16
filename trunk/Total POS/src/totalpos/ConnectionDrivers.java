@@ -14,11 +14,13 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRDataSource;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
 
 /**
  *
@@ -1753,6 +1755,7 @@ public class ConnectionDrivers {
         stmt.setInt(3, item2r.getQuant());
         stmt.setString(4, item2r.getItem().getCode());
         stmt.executeUpdate();
+        c.close();
     }
 
     public static List<Expense> listExpensesToday() throws SQLException {
@@ -1767,7 +1770,8 @@ public class ConnectionDrivers {
             ans.add(
                     new Expense(
                         rs.getString("concepto"),
-                        rs.getDouble("monto")
+                        rs.getDouble("monto"),
+                        rs.getString("descripcion")
                         )
                     );
         }
@@ -1790,11 +1794,13 @@ public class ConnectionDrivers {
 
         for (int i = 0; i < model.getRowCount(); i++) {
             String concept = (String) model.getValueAt(i, 0) ;
+            String description = (String) model.getValueAt(i, 2) ;
             Double quant = Double.parseDouble(((String) model.getValueAt(i, 1)).replace(',', '.'));
             PreparedStatement stmt = c.prepareStatement(
-                "insert into gasto ( fecha, concepto, monto) values ( now() , ? , ? )");
+                "insert into gasto ( fecha, concepto, monto , descripcion ) values ( now() , ? , ? , ? )");
             stmt.setString(1, concept);
             stmt.setDouble(2, quant);
+            stmt.setString(3, description);
             stmt.executeUpdate();
         }
         c.close();
@@ -1948,14 +1954,14 @@ public class ConnectionDrivers {
         ans.setRowCount(0);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select b.descripcion , a.lote,"
+        PreparedStatement stmt = c.prepareStatement("select a.codigo_punto_de_venta_de_banco , b.descripcion , a.lote,"
                 + "a.tipo , sum(monto) as monto from forma_de_pago a,"
                 + "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and "
                 + "datediff(curdate(),fecha)=0 group by a.codigo_punto_de_venta_de_banco");
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
-            String[] s = {rs.getString("descripcion"),rs.getString("lote"),rs.getString("tipo"),rs.getString("monto")};
+            String[] s = {rs.getString("codigo_punto_de_venta_de_banco") , rs.getString("descripcion"),rs.getString("lote"),rs.getString("tipo"),rs.getString("monto")};
             ans.addRow(s);
         }
 
@@ -2015,6 +2021,7 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores=1 "
                 + "where reporteZ = 0 and datediff(curdate(),fecha)=0");
         stmt.executeUpdate();
+        c.close();
     }
 
     static boolean isNeededtoUpdate() throws SQLException {
@@ -2044,10 +2051,11 @@ public class ConnectionDrivers {
                 + "datediff(curdate(),fecha)=0 and codigo_punto_de_venta= ? ");
         stmt.setDouble(1, cash);
         stmt.setDouble(2, credit);
-        stmt.setDouble(3, cn);
-        stmt.setDouble(4, debit);
+        stmt.setDouble(3, debit);
+        stmt.setDouble(4, cn);
         stmt.setString(5, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
+        c.close();
     }
 
     // WARNING!! NON-ESCAPED STRING
@@ -2242,6 +2250,7 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = ? where `Key` = 'sellWithoutStock'");
         stmt.setString(1, i);
         stmt.executeUpdate();
+        c.close();
     }
 
     static boolean getEnableSellWithoutStock() throws SQLException {
@@ -2328,6 +2337,51 @@ public class ConnectionDrivers {
             stmt.executeUpdate();
         }
         c.close();
+    }
+
+    static void updateTotalFromPrinter(Double total, String z, String lReceipt, int quantReceiptsToday, String lastCN, int nNC) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores = 0 , total_ventas = ? , "
+                + "numero_reporte_z = ? , impresora = ? , codigo_ultima_factura = ? , ultima_actualizacion = now() , num_facturas = ? , "
+                + "codigo_ultima_nota_credito = ? , numero_notas_credito = ? "
+                + "where datediff(curdate(),fecha) = 0 and codigo_punto_de_venta = ? ");
+        stmt.setDouble(1, total);
+        stmt.setString(2, z);
+        stmt.setString(3, getMyPrinter());
+        stmt.setString(4, lReceipt);
+        stmt.setInt(5, quantReceiptsToday);
+        stmt.setString(6, lastCN);
+        stmt.setInt(7, nNC);
+        stmt.setString(8, Shared.getFileConfig("myId"));
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    static List<ZFISDATAFISCAL> getOperativeDays() throws SQLException {
+        List<ZFISDATAFISCAL> ans = new ArrayList<ZFISDATAFISCAL>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select total_ventas , impresora , numero_reporte_z ,"
+                + " codigo_ultima_factura, num_facturas, codigo_ultima_nota_credito, numero_notas_credito "
+                + "from dia_operativo where codigo_punto_de_venta = '01' and datediff(fecha,curdate()) = 0");
+        ResultSet rs = stmt.executeQuery();
+        while( rs.next() ){
+            ZFISDATAFISCAL zfdf = new ZFISDATAFISCAL();
+            zfdf.setMANDT(Constants.of.createZFISDATAFISCALMANDT(Constants.mant));
+            zfdf.setIDTIENDA(Constants.of.createZFISDATAFISCALIDTIENDA(Constants.storePrefix+Shared.getConfig("storeName")));
+            zfdf.setIDIMPFISCAL(Constants.of.createZFISDATAFISCALIDIMPFISCAL(rs.getString("impresora")));
+            zfdf.setFECHA(Constants.of.createZFISDATAFISCALFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfdf.setMONTO(new BigDecimal(rs.getString("total_ventas")));
+            zfdf.setNUMREPZ(Constants.of.createZFISDATAFISCALNUMREPZ(rs.getString("numero_reporte_z")));
+            zfdf.setULTFACTURA(Constants.of.createZFISDATAFISCALULTFACTURA(rs.getString("codigo_ultima_factura")));
+            zfdf.setNUMFACD(Constants.of.createZFISDATAFISCALNUMFACD(rs.getString("num_facturas")));
+            zfdf.setULTNOTACREDITO(Constants.of.createZFISDATAFISCALULTNOTACREDITO(rs.getString("codigo_ultima_nota_credito")));
+            zfdf.setNUMNCD(Constants.of.createZFISDATAFISCALNUMNCD(rs.getString("numero_notas_credito")));
+            ans.add(zfdf);
+        }
+        c.close();
+
+        return ans;
     }
 
 }

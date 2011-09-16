@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * Working.java
  *
  * Created on 15-sep-2011, 11:20:06
@@ -18,7 +13,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class Working extends javax.swing.JDialog {
 
@@ -27,14 +22,6 @@ public class Working extends javax.swing.JDialog {
      */
     public Working(Window parent) {
         super(parent);
-        //super(new JFrame(),true);
-        //TODO what about parents?????
-        /*super((parent instanceof JFrame ? (JFrame) : (JDialog))parent);
-        if ( parent instanceof JFrame ){
-            
-        }else if ( parent instanceof JDialog ){
-            super((JDialog)parent);
-        }*/
         initComponents();
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/working.gif")));
         this.setLocationRelativeTo(null);

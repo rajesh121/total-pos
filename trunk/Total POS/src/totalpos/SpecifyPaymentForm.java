@@ -318,10 +318,10 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
                 Shared.centerFrame(ac2p);
                 ac2p.setVisible(true);
             }
-        } else if (  evt.getKeyCode() == KeyEvent.VK_O ){
+        } else if ( evt.getKeyCode() == KeyEvent.VK_O || evt.getKeyCode() == KeyEvent.VK_ENTER){
             if ( change < 0 ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");
-                msb.show(null);
+                msb.show(Shared.getMyMainWindows());
             }else{
                 workingFrame = new Working(this);
                 

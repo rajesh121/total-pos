@@ -374,7 +374,7 @@ public class MainWindows extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
-                options[1]);
+                null);
 
         if ( n == 0 ){
             Login l = new Login();

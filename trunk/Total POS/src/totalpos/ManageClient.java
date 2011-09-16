@@ -113,6 +113,16 @@ public class ManageClient extends javax.swing.JDialog {
 
         nameField.setFont(new java.awt.Font("Courier New", 0, 12));
         nameField.setName("nameField"); // NOI18N
+        nameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameFieldActionPerformed(evt);
+            }
+        });
+        nameField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                nameFieldFocusGained(evt);
+            }
+        });
         nameField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 nameFieldKeyPressed(evt);
@@ -302,7 +312,7 @@ public class ManageClient extends javax.swing.JDialog {
     }
 
     private void idFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idFieldFocusLost
-        searchIt(idField.getText());
+        
     }//GEN-LAST:event_idFieldFocusLost
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
@@ -347,6 +357,16 @@ public class ManageClient extends javax.swing.JDialog {
         nameField.requestFocus();
     }//GEN-LAST:event_modifyClientActionPerformed
 
+    private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nameFieldActionPerformed
+
+    private void nameFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameFieldFocusGained
+        if ( validateRif() ){
+            searchIt(idField.getText());
+        }
+    }//GEN-LAST:event_nameFieldFocusGained
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Nombre;
     private javax.swing.JButton acceptButton;
@@ -369,10 +389,11 @@ public class ManageClient extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private boolean validateRif(){
+        idField.setText(idField.getText().toUpperCase());
         if ( !idField.getText().matches("([VGJ][0-9]*)") || idField.getText().length() != 10){
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Rif inválido.");
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Rif inválido. Se colocará un ejemplo!");
             msb.show(this);
-            idField.requestFocus();
+            idField.setText("J123456789");
             return false;
         }
         return true;

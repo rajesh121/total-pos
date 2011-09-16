@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
 
 /**
  *
@@ -29,6 +30,7 @@ public class Constants {
     public static final String defaultUser = "Invitado";
 
 
+    public static final ObjectFactory of = new ObjectFactory();
     //public static final String mirrorDbHost = "localhost";
     //is This redundant??
 
@@ -48,15 +50,24 @@ public class Constants {
     public static final String dataRepeated = "Esta intentando ingresar valores repetidos";
     public static final String isDataRepeated = "Duplicate entry \'[^\\\']*\' for key \'[^\\\']*\'";
     public static final String duplicatedMsg = "Duplicate entry \'GenericTable\' for key \'Generic Key\'";
+    public static final String errWithPrinter = "<html>Hubo un problema con la impresora.<br>"
+                    + "Posibles causas:<br>" +
+                    "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.<br>"+
+                    "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora<br></html>";
 
     public static final SimpleDateFormat sdfHour = new SimpleDateFormat("h:mm a");
     public static final SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
     public static final SimpleDateFormat sdfDay2DB = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
+    public static final SimpleDateFormat sdfDay2SAP = new SimpleDateFormat("yyyyMMdd");
     public static final DecimalFormat df = new DecimalFormat("#0.00");
+    public static final DecimalFormat df2z = new DecimalFormat("0000");
     public static final DecimalFormat df2int = new DecimalFormat("#00.###");
 
-    public static final boolean isPos = true;
+    public static final String storePrefix = "10";
+    public static final String waerks = "VEF";
+
+    public static final boolean isPos = false;
 
     public static final int secondsToCheckTurn = 30;
     public static final int secondsToUpdateCountdown = 10;
@@ -86,5 +97,8 @@ public class Constants {
 
     public static final StyleBuilder titleStyle = stl.style(boldCenteredStyle)
                              .setVerticalAlignment(VerticalAlignment.MIDDLE)
-                             .setFontSize(15); 
+                             .setFontSize(15);
+
+    public static final String mant = "200";
+    public static final String genericBank = "BGENE";
 }

@@ -154,6 +154,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
 
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), userField.getText());
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "report" + kindOfReport) ){
+                myParent.printer.updateValues();
                 myParent.printer.report(kindOfReport);
             }else{
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para calcular el reporte " + kindOfReport);
@@ -174,7 +175,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
                 kindErr = Constants.wrongPasswordMsg;
             }
 
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr);
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr,ex);
             msg.show(this);
 
             if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){

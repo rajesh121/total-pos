@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     Double totalInCard;
     Double totalInCash;
     Double totalExpenses;
+    private ObjectFactory of = Constants.of;
 
     /** Creates new form ClosingDay */
     public ClosingDay() {
@@ -70,7 +72,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) ExpenseTable.getModel();
         model.setRowCount(0);
         for (Expense e : expenses) {
-            String[] s = {e.getConcept(),Constants.df.format(e.getQuant())};
+            String[] s = {e.getConcept(),Constants.df.format(e.getQuant()),e.getDescription()};
             model.addRow(s);
         }
     }
@@ -160,6 +162,8 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jTextField9 = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
         printAndSendButton = new javax.swing.JButton();
+        noteField = new javax.swing.JTextField();
+        noteLabel = new javax.swing.JLabel();
 
         jFileChooser1.setName("jFileChooser1"); // NOI18N
 
@@ -290,18 +294,25 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
         bankTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Banco", "Lote", "Medio", "Declarado"
+                "Código", "Banco", "Lote", "Medio", "Declarado"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -329,7 +340,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -340,17 +351,17 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
         ExpenseTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Concepto", "Monto"
+                "Concepto", "Monto", "Descripción"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -366,7 +377,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane2.setViewportView(ExpenseTable);
-        ExpenseTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+        ExpenseTable.getColumnModel().getColumn(0).setPreferredWidth(90);
         ExpenseTable.getColumnModel().getColumn(1).setPreferredWidth(10);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -431,7 +442,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -719,13 +730,18 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
+        noteField.setName("noteField"); // NOI18N
+
+        noteLabel.setText("Observaciones:");
+        noteLabel.setName("noteLabel"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -735,7 +751,11 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(noteLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(noteField, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -754,8 +774,14 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(noteField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(noteLabel))))
                 .addContainerGap())
         );
 
@@ -823,51 +849,34 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_updateFiscalNumberslButtonActionPerformed
 
     private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
-        SrvSap ss = new SrvSap();
-        IsrvSap isrvs = ss.getBasicHttpBindingIsrvSap();
-        ObjectFactory of = new ObjectFactory();
-        ZFISHISTENVIOS zfhe = new ZFISHISTENVIOS();
-        ArrayOfZFISCOBRANZA lzfc = new ArrayOfZFISCOBRANZA();
-        ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
-        zfhe.setMANDT(of.createZFISHISTENVIOSMANDT("200"));
-        zfhe.setIDTIENDA(of.createZFISHISTENVIOSIDTIENDA("123"));
-        zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO("20110914"));
-        zfhe.setTOTALVENTASDIA(new BigDecimal("150000"));
-        zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES("Sin Observaciones"));
-        zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
-        zfhe.setFONDOCAJA(BigDecimal.ZERO);
+        try {
+            SrvSap ss = new SrvSap();
+            IsrvSap isrvs = ss.getBasicHttpBindingIsrvSap();
+            ZFISHISTENVIOS zfhe = new ZFISHISTENVIOS();
+            ArrayOfZFISCOBRANZA lzfc = new ArrayOfZFISCOBRANZA();
+            ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
+            zfhe.setMANDT(of.createZFISHISTENVIOSMANDT(Constants.mant));
+            zfhe.setIDTIENDA(of.createZFISHISTENVIOSIDTIENDA(Constants.storePrefix + Shared.getConfig("storeName")));
+            zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfhe.setTOTALVENTASDIA(new BigDecimal(totalInCard + totalInCash));
+            zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES(noteField.getText()));
+            zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
+            zfhe.setFONDOCAJA(BigDecimal.ZERO);
+            fillBanks(lzfc.getZFISCOBRANZA());
+            fillExpenses(lzfc.getZFISCOBRANZA());
+            fillDeposits(lzfc.getZFISCOBRANZA());
+            List<ZFISDATAFISCAL> zFISDATAFISCAL = aozfdf.getZFISDATAFISCAL();
+            for (ZFISDATAFISCAL zfdf : ConnectionDrivers.getOperativeDays()) {
+                zFISDATAFISCAL.add(zfdf);
+            }
+            Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
+            System.out.println(sss.getCodigoError());
 
-        List<ZFISCOBRANZA> zFISCOBRANZA = lzfc.getZFISCOBRANZA();
-        ZFISCOBRANZA zfc = new ZFISCOBRANZA();
-        zfc.setID(1);
-        zfc.setMANDT(of.createZFISCOBRANZAMANDT("200"));
-        zfc.setFECHA(of.createZFISCOBRANZAFECHA("20110914"));
-        zfc.setWERKS(of.createZFISCOBRANZAWERKS("123"));
-        zfc.setWAERS(of.createZFISCOBRANZAWAERS("VEF"));
-        zfc.setSIMBO(of.createZFISCOBRANZASIMBO("BB312"));
-        zfc.setMPAGO(of.createZFISCOBRANZAMPAGO("4"));
-        zfc.setBPAGO(of.createZFISCOBRANZABPAGO("BB312"));
-        zfc.setLOTE(of.createZFISCOBRANZALOTE("102"));
-        zfc.setMONTO(new BigDecimal(150000));
-        zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
-        zFISCOBRANZA.add(zfc);
-
-        List<ZFISDATAFISCAL> zFISDATAFISCAL = aozfdf.getZFISDATAFISCAL();
-        ZFISDATAFISCAL zfdf = new ZFISDATAFISCAL();
-        zfdf.setMANDT(of.createZFISDATAFISCALMANDT("200"));
-        zfdf.setIDTIENDA(of.createZFISDATAFISCALIDTIENDA("123"));
-        zfdf.setIDIMPFISCAL(of.createZFISDATAFISCALIDIMPFISCAL("Z123456789"));
-        zfdf.setFECHA(of.createZFISDATAFISCALFECHA("20110914"));
-        zfdf.setMONTO(new BigDecimal(150000));
-        zfdf.setNUMREPZ(of.createZFISDATAFISCALNUMREPZ("0656"));
-        zfdf.setULTFACTURA(of.createZFISDATAFISCALULTFACTURA("00123232"));
-        zfdf.setNUMFACD(of.createZFISDATAFISCALNUMFACD("313"));
-        zfdf.setULTNOTACREDITO(of.createZFISDATAFISCALULTNOTACREDITO("00013212"));
-        zfdf.setNUMNCD(of.createZFISDATAFISCALNUMNCD("131"));
-        zFISDATAFISCAL.add(zfdf);
-
-        Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
-        System.out.println(sss.getCodigoError());
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Enviado correctamente!!");
+            msg.show(this);
+        } catch (SQLException ex) {
+            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_printAndSendButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -908,6 +917,8 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
     private javax.swing.JTextField netValue;
+    private javax.swing.JTextField noteField;
+    private javax.swing.JLabel noteLabel;
     private javax.swing.JTable payWayxPosTable;
     private javax.swing.JButton printAndSendButton;
     private javax.swing.JTextField totalCardsField;
@@ -917,4 +928,58 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     private javax.swing.JButton updateFiscalNumberslButton;
     // End of variables declaration//GEN-END:variables
 
+    private void fillBanks(List<ZFISCOBRANZA> zFISCOBRANZA) {
+        for ( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
+            ZFISCOBRANZA zfc = new ZFISCOBRANZA();
+            zfc.setID(1);
+            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
+            zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
+            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
+            zfc.setSIMBO(of.createZFISCOBRANZASIMBO((String)bankTable.getValueAt(i, 0)));
+            zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 3).equals("Credito")?"B":"D" ) );
+            zfc.setBPAGO(of.createZFISCOBRANZABPAGO((String)bankTable.getValueAt(i, 0)));
+            zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 2)));
+            zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 4)));
+            zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
+            zFISCOBRANZA.add(zfc);
+        }
+    }
+
+    private void fillExpenses(List<ZFISCOBRANZA> zFISCOBRANZA) {
+        for ( int i = 0 ; i < ExpenseTable.getRowCount() ; i++ ){
+            ZFISCOBRANZA zfc = new ZFISCOBRANZA();
+            zfc.setID(1);
+            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
+            zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
+            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
+            zfc.setSIMBO(of.createZFISCOBRANZASIMBO(Constants.genericBank));
+            String tmp = ExpenseTable.getValueAt(i, 0).toString().split("-")[0];
+            zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( tmp.substring(0, tmp.length() - 1) ) );
+            zfc.setBPAGO(of.createZFISCOBRANZABPAGO(Constants.genericBank));
+            zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
+            zfc.setMONTO(new BigDecimal((String)ExpenseTable.getValueAt(i, 1)));
+            zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT((String)ExpenseTable.getValueAt(i, 2)));
+            zFISCOBRANZA.add(zfc);
+        }
+    }
+
+    private void fillDeposits(List<ZFISCOBRANZA> zFISCOBRANZA) {
+        for ( int i = 0 ; i < depositTable.getRowCount() ; i++ ){
+            ZFISCOBRANZA zfc = new ZFISCOBRANZA();
+            zfc.setID(1);
+            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
+            zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
+            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
+            zfc.setSIMBO(of.createZFISCOBRANZASIMBO((String)depositTable.getValueAt(i, 0)));
+            zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( "E" ) );
+            zfc.setBPAGO(of.createZFISCOBRANZABPAGO((String)depositTable.getValueAt(i, 0)));
+            zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
+            zfc.setMONTO(new BigDecimal((String)depositTable.getValueAt(i, 2)));
+            zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
+            zFISCOBRANZA.add(zfc);
+        }
+    }
 }

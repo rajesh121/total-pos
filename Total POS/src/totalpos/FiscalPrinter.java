@@ -25,8 +25,7 @@ public class FiscalPrinter {
     }
 
      public boolean checkPrinter() throws SQLException, FileNotFoundException, Exception {
-        String p = ConnectionDrivers.getMyPrinter();
-        return isTheSame(p);
+        return isTheSame(ConnectionDrivers.getMyPrinter());
     }
 
     private void calculateSerial() throws Exception{
@@ -51,9 +50,11 @@ public class FiscalPrinter {
 
         ansT = sc.hasNext();
         assert(ansT);
-        String s = sc.next().substring(66, 76);
+        String line = sc.next();
+        
 
-        printerSerial = s;
+        printerSerial = line.substring(66, 76);
+        z = Constants.df2z.format(Integer.parseInt(line.substring(47, 51))+1);
         sc.close();
         file.delete();
         printer.CloseFpctrl();
@@ -177,12 +178,14 @@ public class FiscalPrinter {
         IntByReference b = new IntByReference();
         printer.OpenFpctrl("COM1");
 
-        printer.SendCmd(a, b, "9001" + Shared.formatDoubleToPrint(quant) );
+        // TODO Bug in the printer?? Sometimes It prints 10K instead of Shared.formatDoubleToPrint(quant);
+        /*printer.SendCmd(a, b, "9001" + Shared.formatDoubleToPrint(quant) );
         if ( b.getValue() != 0 ){
             throw new Exception(Shared.getErrMapping().get(b.getValue()));
-        }
+        }*/
 
         List<String> buffer = new ArrayList<String>();
+        buffer.add("800 Retiro de Efectivo  " +  Constants.df.format(quant));
         buffer.add("800 ");
         buffer.add("800                 _______________________");
         buffer.add("800                   Firma del encargado");
@@ -373,12 +376,59 @@ public class FiscalPrinter {
         assert(ansT);
 
         String line = sc.next();
-        System.out.println("Linea = " + line.substring(2, 2+10));
+        //System.out.println("Linea = " + line.substring(2, 2+10));
         Double cash = Double.parseDouble(line.substring(2+10*0, 2+10*1))/100.0;
         Double cn = Double.parseDouble(line.substring(2+10*1, 2+10*2))/100.0;
         Double credit = Double.parseDouble(line.substring(2+10*8, 2+10*9))/100.0;
         Double debit = Double.parseDouble(line.substring(2+10*9, 2+10*10))/100.0;
         ConnectionDrivers.updateFiscalNumbers(cash, cn, debit, credit);
+
+        sc.close();
+        file.delete();
+        printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
+        if ( b.getValue() != 0 ){
+            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+        }
+        file = new File(Constants.tmpFileName);
+        sc = new Scanner(file);
+        line = sc.next();
+        Double total = Double.parseDouble(line.substring(2+10*1,2+10*2))/100.0;
+        String lReceipt = line.substring(2+10*2, 2+10*2+8);
+        int quantReceiptsToday = Integer.parseInt(line.substring(2+10*2+8 , 2+10*2+8+4));
+
+        sc.close();
+        file.delete();
+
+        String pZ = Constants.df2z.format(Integer.parseInt(z) - 1);
+        printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
+        if ( b.getValue() != 0 ){
+            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+        }
+        
+        file = new File(Constants.tmpFileName);
+        sc = new Scanner(file);
+
+        line = sc.next();
+
+        String lastCN = line.substring(168);
+        
+        sc.close();
+        file.delete();
+
+        printer.UploadReportCmd(a, b, "U3A00" + pZ + "00" + z, Constants.tmpFileName);
+        if ( b.getValue() != 0 ){
+            throw new Exception(Shared.getErrMapping().get(b.getValue()));
+        }
+
+        file = new File(Constants.tmpFileName);
+        sc = new Scanner(file);
+
+        line = sc.next();
+
+        String pLastCN = line.substring(168);
+        int nNC = (Integer.parseInt(lastCN)-Integer.parseInt(pLastCN));
+        ConnectionDrivers.updateTotalFromPrinter(total, z ,lReceipt,quantReceiptsToday,lastCN,nNC);
+
         printer.CloseFpctrl();
     }
     

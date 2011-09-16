@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         });
 
         cancelButton.setText("Cancelar");
+        cancelButton.setDefaultCapable(false);
         cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -90,6 +92,11 @@ public class AddCard2Pay extends javax.swing.JDialog {
         });
 
         moneyField.setName("moneyField"); // NOI18N
+        moneyField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                moneyFieldKeyReleased(evt);
+            }
+        });
 
         posLabel.setText("Punto De Venta");
         posLabel.setName("posLabel"); // NOI18N
@@ -97,6 +104,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         bposCombo.setName("bposCombo"); // NOI18N
 
         modifyLot.setText("Cambiar Lote");
+        modifyLot.setDefaultCapable(false);
         modifyLot.setFocusable(false);
         modifyLot.setName("modifyLot"); // NOI18N
         modifyLot.addActionListener(new java.awt.event.ActionListener() {
@@ -162,6 +170,44 @@ public class AddCard2Pay extends javax.swing.JDialog {
     }
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        doIt();
+}//GEN-LAST:event_acceptButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+}//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void modifyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyLotActionPerformed
+        if ( bposCombo.getSelectedIndex() == -1 ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el punto de venta!");
+            msb.show(this);
+            return;
+        }
+        BankPOS bp = bpos.get(bposCombo.getSelectedIndex());
+        String id = JOptionPane.showInputDialog(this, "Nuevo Lote", bp.getLot());
+        if ( id != null && !id.isEmpty() ){
+            try {
+                ConnectionDrivers.changeLot(bp.getId(), id);
+                updateAll();
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
+        }
+    }//GEN-LAST:event_modifyLotActionPerformed
+
+    private void moneyFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moneyFieldKeyReleased
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            doIt();
+        }
+    }//GEN-LAST:event_moneyFieldKeyReleased
+
+    public void doIt(){
         Double d = .0;
         try{
             d = Double.parseDouble(moneyField.getText().replace(',', '.'));
@@ -196,32 +242,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         }
         myParent.add(reason,d,bpos.get(bposCombo.getSelectedIndex()));
         this.dispose();
-}//GEN-LAST:event_acceptButtonActionPerformed
-
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        this.dispose();
-}//GEN-LAST:event_cancelButtonActionPerformed
-
-    private void modifyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyLotActionPerformed
-        if ( bposCombo.getSelectedIndex() == -1 ){
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el punto de venta!");
-            msb.show(this);
-            return;
-        }
-        BankPOS bp = bpos.get(bposCombo.getSelectedIndex());
-        String id = JOptionPane.showInputDialog(this, "Nuevo Lote", bp.getLot());
-        if ( id != null && !id.isEmpty() ){
-            try {
-                ConnectionDrivers.changeLot(bp.getId(), id);
-                updateAll();
-            } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-                msb.show(this);
-                this.dispose();
-                Shared.reload();
-            }
-        }
-    }//GEN-LAST:event_modifyLotActionPerformed
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;

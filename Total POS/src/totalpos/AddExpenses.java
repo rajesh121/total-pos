@@ -63,7 +63,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
 
         for (Expense e : expenses) {
-            String[] s = {e.getConcept(),Constants.df.format(e.getQuant())};
+            String[] s = {e.getConcept(),Constants.df.format(e.getQuant()),e.getDescription()};
             model.addRow(s);
         }
     }
@@ -129,13 +129,13 @@ public class AddExpenses extends javax.swing.JInternalFrame {
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Concepto", "Monto"
+                "Concepto", "Monto", "Descripción"
             }
         ));
         table.setName("table"); // NOI18N
@@ -209,7 +209,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
             try{
                 if ( model.getValueAt(i, 0) == null || model.getValueAt(i, 1) == null ||
                         ((String)model.getValueAt(i, 0)).isEmpty() || ((String)model.getValueAt(i, 1)).isEmpty()){
-                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios. No pueden haber puntos de ventas con campos vacíos.");
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios. No pueden haber gastos con campos vacíos.");
                     msg.show(this);
                     return;
                 }
@@ -218,7 +218,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
                     throw new NumberFormatException();
                 }
             }catch (NumberFormatException ex){
-                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido. Debe corregirse! Debe ser positivo");
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido. Debe ser positivo");
                 msg.show(this);
                 return;
             }

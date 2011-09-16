@@ -245,7 +245,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         try{
             int p = Integer.parseInt(quantField.getText());
 
-            if ( p < 1 ){
+            if ( p < 1 || p > 100 ){
                 throw new NumberFormatException("");
             }
 
@@ -282,7 +282,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);
             msg.show(this);
         } catch ( NumberFormatException ex ){
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "La cantidad es inválida");
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "La cantidad es inválida. Debe ser mayor a uno y menor a 100");
             msg.show(this);
         } catch (Exception ex) {
             String kindErr = "";

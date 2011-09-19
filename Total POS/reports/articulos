@@ -1,5 +1,6 @@
 Title==Cantidad de articulos 2
-Columns==Existencia Actual,existencia_actual,String|Descripcion,descripcion,String
+Columns==Codigo,codigo,String|Existencia Actual,existencia_actual,String|Descripcion,descripcion,String
 ShowNumbers==True
 Parameters==
-SQL==Select existencia_actual , descripcion from articulo order by existencia_actual desc
+SQL==Select codigo, existencia_actual , descripcion from articulo order by existencia_actual desc
+Vertical==False

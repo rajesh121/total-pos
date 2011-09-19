@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Saúl Hidalgo
  */
-public class CreditNoteForm extends javax.swing.JDialog {
+public class CreditNoteForm extends javax.swing.JDialog implements Doer{
 
     private Receipt receipt;
     private String actualId;
@@ -571,7 +571,12 @@ public class CreditNoteForm extends javax.swing.JDialog {
     private javax.swing.JTextField zReportField;
     // End of variables declaration//GEN-END:variables
 
-    private void doIt() {
+    public void close(){
+        // TODO FINISH IT
+    }
+
+    @Override
+    public void doIt() {
 
         try {
             List<Item2Receipt> items = new ArrayList<Item2Receipt>();

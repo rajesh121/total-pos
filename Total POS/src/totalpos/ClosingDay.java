@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,19 +18,23 @@ import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
-//TODO UNCOMMENT THIS
-/*
+
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSCABDEV;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSCABFACT;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSCLIENT;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSPOSDEV;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSPOSFACT;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSVENDFACT;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.Resultado;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISCOBRANZA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSCABDEV;
 import org.tempuri.IsrvSap;
 import org.tempuri.SrvSap;
- * 
- */
 
 /**
  *
@@ -42,7 +47,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     Double totalInCard;
     Double totalInCash;
     Double totalExpenses;
-    //private ObjectFactory of = Constants.of;
+    private ObjectFactory of = Constants.of;
 
     /** Creates new form ClosingDay */
     public ClosingDay() {
@@ -849,10 +854,12 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_updateFiscalNumberslButtonActionPerformed
 
     private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
+        doIt();
+    }//GEN-LAST:event_printAndSendButtonActionPerformed
+
+    public void doIt(){
         new CreateClosingDayReport();
-        
-        //TODO UNCOMMENT THIS
-        /*
+
         try {
             SrvSap ss = new SrvSap();
             IsrvSap isrvs = ss.getBasicHttpBindingIsrvSap();
@@ -878,12 +885,41 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Enviado correctamente!!");
             msg.show(this);
+
+            ArrayOfZSDSCABDEV aozsdscd = new ArrayOfZSDSCABDEV();
+            ArrayOfZSDSVENDFACT aozsdsvf = new ArrayOfZSDSVENDFACT();
+            ArrayOfZSDSCABFACT aozsdscf = new ArrayOfZSDSCABFACT();
+            ArrayOfZSDSPOSDEV aozsdspd = new ArrayOfZSDSPOSDEV();
+            ArrayOfZSDSPOSFACT aozsdspf = new ArrayOfZSDSPOSFACT();
+            ArrayOfZSDSCLIENT aozsdsc = new ArrayOfZSDSCLIENT();
+
+            List<Receipt> receipts = ConnectionDrivers.listOkReceiptsToday();
+            ReceiptSap rs = new ReceiptSap();
+            int previousId = -1;
+            for (Receipt receipt : receipts) {
+                if ( receipt.getFiscalNumber().isEmpty() ){
+                    System.out.println("Error con la factura " + receipt.getInternId());
+                    continue;
+                }
+                if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) && receipt.getClientId().equals("Contado")) ){
+                    rs.add(receipt);
+                }else{
+                    aozsdscd.getZSDSCABDEV().add(rs.getHeader());
+                    aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails());
+                    rs.add(receipt);
+                }
+            }
+            if ( rs.getSize() > 0 ){
+                aozsdscd.getZSDSCABDEV().add(rs.getHeader());
+                aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails());
+            }
+            sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
+            System.out.println(sss.getCodigoError());
+
         } catch (SQLException ex) {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
         }
-         *
-         */
-    }//GEN-LAST:event_printAndSendButtonActionPerformed
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ExpenseTable;
@@ -934,8 +970,6 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     private javax.swing.JButton updateFiscalNumberslButton;
     // End of variables declaration//GEN-END:variables
 
-    //TODO UNCOMMENT THIS
-    /*
     private void fillBanks(List<ZFISCOBRANZA> zFISCOBRANZA) {
         for ( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
@@ -967,7 +1001,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( tmp.substring(0, tmp.length() - 1) ) );
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO(Constants.genericBank));
             zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
-            zfc.setMONTO(new BigDecimal((String)ExpenseTable.getValueAt(i, 1)));
+            zfc.setMONTO(new BigDecimal(((String)ExpenseTable.getValueAt(i, 1)).replace(',', '.')));
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT((String)ExpenseTable.getValueAt(i, 2)));
             zFISCOBRANZA.add(zfc);
         }
@@ -985,11 +1019,9 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( "E" ) );
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO((String)depositTable.getValueAt(i, 0)));
             zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
-            zfc.setMONTO(new BigDecimal((String)depositTable.getValueAt(i, 2)));
+            zfc.setMONTO(new BigDecimal(((String)depositTable.getValueAt(i, 2)).replace(',','.')));
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
             zFISCOBRANZA.add(zfc);
         }
     }
-     * 
-     */
 }

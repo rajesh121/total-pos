@@ -27,4 +27,18 @@ public class Item2Receipt {
         return quant;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Item2Receipt other = (Item2Receipt) obj;
+        if (this.item != other.item && (this.item == null || !this.item.equals(other.item))) {
+            return false;
+        }
+        return true;
+    }
 }

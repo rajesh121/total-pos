@@ -159,6 +159,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     protected void updateAll() throws SQLException{
+
+        //List<Receipt> ll = ConnectionDrivers.listOkReceiptsToday();
+        
+
         descriptionLabel.setText("Bievenido a Mundo Total");
         currentPrice.setText("");
         ivaLabelResult.setText("0.00 Bs");

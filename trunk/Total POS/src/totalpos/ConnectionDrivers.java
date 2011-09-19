@@ -29,8 +29,7 @@ import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRDataSource;
-//TODO UNCOMMENT THIS!
-//import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
+import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
 
 /**
  *
@@ -2085,8 +2084,8 @@ public class ConnectionDrivers {
             out.write(cmd);
             out.close();
 
-            String[] exp = {"chmod"  , "+x" , Constants.rootDir + Constants.scriptName};
-            Runtime.getRuntime().exec(exp);
+            //String[] exp = {"chmod"  , "+x" , Constants.rootDir + Constants.scriptName};
+            //Runtime.getRuntime().exec(exp);
             Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptName);
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
@@ -2483,8 +2482,6 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    // TODO UNCOMMEN THIS
-    /*
     static List<ZFISDATAFISCAL> getOperativeDays() throws SQLException {
         List<ZFISDATAFISCAL> ans = new ArrayList<ZFISDATAFISCAL>();
 
@@ -2510,6 +2507,48 @@ public class ConnectionDrivers {
         c.close();
 
         return ans;
-    }*/
+    }
+
+    protected static List<Receipt> listOkReceiptsToday() throws SQLException{
+        List<Receipt> ans = new ArrayList<Receipt>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
+                + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
+                + "descuento_global, iva, impresora, numero_fiscal, "
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno "
+                + "from factura where estado='Facturada' and datediff(fecha_creacion,now()) = 0 and identificador_pos = ? order by impresora , numero_fiscal ");
+
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            Receipt r = new Receipt(
+                            rs.getString("codigo_interno"),
+                            rs.getString("estado"),
+                            rs.getTimestamp("fecha_creacion"),
+                            rs.getTimestamp("fecha_impresion"),
+                            rs.getString("codigo_de_cliente"),
+                            rs.getDouble("total_sin_iva"),
+                            rs.getDouble("total_con_iva"),
+                            rs.getDouble("descuento_global"),
+                            rs.getDouble("iva"),
+                            rs.getString("impresora"),
+                            rs.getString("numero_fiscal"),
+                            rs.getString("numero_reporte_z"),
+                            rs.getString("codigo_de_usuario"),
+                            rs.getInt("cantidad_de_articulos"),
+                            listItems2Receipt(rs.getString("codigo_interno")),
+                            rs.getString("identificador_turno")
+                        );
+            if ( !r.getItems().isEmpty() ){
+                ans.add(r);
+            }
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
 
 }

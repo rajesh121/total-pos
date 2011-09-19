@@ -150,4 +150,19 @@ public class Item {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Item other = (Item) obj;
+        if ((this.code == null) ? (other.code != null) : !this.code.equals(other.code)) {
+            return false;
+        }
+        return true;
+    }
+
 }

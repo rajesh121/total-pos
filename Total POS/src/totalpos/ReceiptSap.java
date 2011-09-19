@@ -71,6 +71,7 @@ public class ReceiptSap {
         ans.setREPOZ(of.createZSDSCABDEVREPOZ(z));
         ans.setIMPRE(of.createZSDSCABDEVIMPRE(printerId));
         ans.setWAERS(of.createZSDSCABDEVWAERS("VEF"));
+        ans.setWERKS(of.createZSDSCABDEVWERKS(""));
         return ans;
     }
 

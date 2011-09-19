@@ -17,17 +17,19 @@ import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+//TODO UNCOMMENT THIS
+/*
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
-//import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.Resultado;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISCOBRANZA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
 import org.tempuri.IsrvSap;
-//import org.tempuri.ObjectFactory;
 import org.tempuri.SrvSap;
+ * 
+ */
 
 /**
  *
@@ -40,7 +42,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     Double totalInCard;
     Double totalInCash;
     Double totalExpenses;
-    private ObjectFactory of = Constants.of;
+    //private ObjectFactory of = Constants.of;
 
     /** Creates new form ClosingDay */
     public ClosingDay() {
@@ -283,7 +285,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -392,11 +394,10 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Medios de Pago por el Cajero"));
         jPanel6.setName("jPanel6"); // NOI18N
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
@@ -436,13 +437,13 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -472,7 +473,6 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         });
         payWayxPosTable.setName("payWayxPosTable"); // NOI18N
         payWayxPosTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        payWayxPosTable.getTableHeader().setReorderingAllowed(false);
         payWayxPosTable.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 payWayxPosTableFocusGained(evt);
@@ -486,13 +486,13 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -615,11 +615,11 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
@@ -653,7 +653,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                         .addComponent(expensesTodayField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -665,7 +665,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE))
+                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
@@ -673,7 +673,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                         .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(printAndSendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                        .addComponent(printAndSendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
@@ -723,7 +723,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(printAndSendButton))
@@ -849,6 +849,10 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_updateFiscalNumberslButtonActionPerformed
 
     private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
+        new CreateClosingDayReport();
+        
+        //TODO UNCOMMENT THIS
+        /*
         try {
             SrvSap ss = new SrvSap();
             IsrvSap isrvs = ss.getBasicHttpBindingIsrvSap();
@@ -877,6 +881,8 @@ public class ClosingDay extends javax.swing.JInternalFrame {
         } catch (SQLException ex) {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
         }
+         *
+         */
     }//GEN-LAST:event_printAndSendButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -928,6 +934,8 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     private javax.swing.JButton updateFiscalNumberslButton;
     // End of variables declaration//GEN-END:variables
 
+    //TODO UNCOMMENT THIS
+    /*
     private void fillBanks(List<ZFISCOBRANZA> zFISCOBRANZA) {
         for ( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
@@ -982,4 +990,6 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             zFISCOBRANZA.add(zfc);
         }
     }
+     * 
+     */
 }

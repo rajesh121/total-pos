@@ -46,6 +46,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
     private String sql = null;
     private String fileAddr = "";
     public boolean isOk = false;
+    public boolean vertical = false;
     JasperReportBuilder jrb;
     JRDataSource jrds;
     JasperViewer jv;
@@ -105,6 +106,8 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
                 }
             }else if ( tokens[0].equals("ShowNumbers") ){
                 showNumbers = tokens[1].equals("True");
+            }else if ( tokens[0].equals("Vertical") ){
+                vertical = tokens[1].equals("True");
             }else if ( tokens[0].equals("Parameters") ){
                 String[] subtoks = tokens[1].split("\\|");
                 for (String subsubtok : subtoks) {
@@ -217,7 +220,11 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
     private void doIt(){
         try {
             jrb = report();
-            jrb = jrb.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE);
+            if ( vertical ){
+                jrb = jrb.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE);
+            }else{
+                jrb = jrb.setPageFormat(PageType.LETTER, PageOrientation.PORTRAIT);
+            }
             jrb = jrb.setColumnTitleStyle(Constants.columnTitleStyle);
             for (Parameter parameter : parameters) {
                 //TODO Check the syntaxis.
@@ -229,11 +236,12 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
             }
             jrb = jrb.addColumn(createColumns(columns));
             jrb = jrb.setDataSource(ConnectionDrivers.createDataSource(parameters, sql, columnsTD));
-            if ( title != null ){
+            if ( title != null ){/*
                 jrb = jrb.addTitle(cmp.horizontalList().add(
                         cmp.text(title).setStyle(Constants.titleStyle).setHorizontalAlignment(HorizontalAlignment.LEFT))
                         .newRow()
-                        .add(cmp.filler().setStyle(stl.style().setTopBorder(stl.pen2Point())).setFixedHeight(10)));
+                        .add(cmp.filler().setStyle(stl.style().setTopBorder(stl.pen2Point())).setFixedHeight(10)));*/
+                jrb = jrb.title(Templates.createTitleComponent(title));
             }
             if ( showNumbers ){
                 jrb = jrb.pageFooter(cmp.pageXofY());

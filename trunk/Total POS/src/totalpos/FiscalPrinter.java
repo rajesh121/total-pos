@@ -21,7 +21,9 @@ public class FiscalPrinter {
     private String lastReceipt = null;
 
     public FiscalPrinter() {
-        printer = (FiscalDriver) Native.loadLibrary("tfhkaif", FiscalDriver.class);
+        if ( Constants.withFiscalPrinter ){
+            printer = (FiscalDriver) Native.loadLibrary("tfhkaif", FiscalDriver.class);
+        }
     }
 
      public boolean checkPrinter() throws SQLException, FileNotFoundException, Exception {
@@ -29,6 +31,11 @@ public class FiscalPrinter {
     }
 
     private void calculateSerial() throws Exception{
+
+        if ( !Constants.withFiscalPrinter ){
+            return;
+        }
+
         boolean ansT;
         isOk = false;
         IntByReference a = new IntByReference();
@@ -61,10 +68,17 @@ public class FiscalPrinter {
     }
 
     public boolean isTheSame(String serial) throws Exception{
+        if ( !Constants.withFiscalPrinter ){
+            return true;
+        }
         return getSerial().equals(serial);
     }
 
     public void printTicket(List<Item2Receipt> items , Client client, Double globalDiscount, String ticketId, User u , List<PayForm> pfs) throws Exception{
+        if ( !Constants.withFiscalPrinter ){
+            return;
+        }
+        
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -173,6 +187,10 @@ public class FiscalPrinter {
     }
 
     public void extractMoney(User u, String boss, Double quant) throws Exception{
+        if ( !Constants.withFiscalPrinter ){
+            return;
+        }
+
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -205,6 +223,10 @@ public class FiscalPrinter {
     }
 
     public void reportExtraction() throws Exception{
+        if ( !Constants.withFiscalPrinter ){
+            return;
+        }
+
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -220,6 +242,10 @@ public class FiscalPrinter {
     }
 
     public String getZ() throws Exception{
+        if ( !Constants.withFiscalPrinter ){
+            return "";
+        }
+        
         if ( z == null  ){
             isOk = false;
             IntByReference a = new IntByReference();
@@ -249,6 +275,10 @@ public class FiscalPrinter {
     }
 
     public String getSerial() throws Exception{
+        if ( !Constants.withFiscalPrinter ){
+            return "";
+        }
+
         if ( printerSerial == null ){
             calculateSerial();
         }
@@ -256,10 +286,18 @@ public class FiscalPrinter {
     }
 
     public String getLastFiscalNumber(){
+        if ( !Constants.withFiscalPrinter ){
+            return "";
+        }
+
         return lastReceipt;
     }
 
     public void printCreditNote(List<Item2Receipt> items, String ticketId, String myId, User u , Client client) throws Exception{
+        if ( !Constants.withFiscalPrinter ){
+            return;
+        }
+
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -346,6 +384,10 @@ public class FiscalPrinter {
     }
 
     void report(String r){
+        if ( !Constants.withFiscalPrinter ){
+            return;
+        }
+
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
@@ -360,6 +402,10 @@ public class FiscalPrinter {
     }
 
     void updateValues() throws Exception {
+        if ( !Constants.withFiscalPrinter ){
+            return;
+        }
+
         printer.OpenFpctrl("COM1");
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();

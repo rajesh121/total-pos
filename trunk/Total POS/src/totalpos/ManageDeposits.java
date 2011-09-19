@@ -171,13 +171,13 @@ public class ManageDeposits extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             try{
-                for (int j = 0; j < 4; j++) {
+                for (int j = 0; j < 3; j++) {
                     if ( model.getValueAt(i, j) == null || ((String)model.getValueAt(i, j)).isEmpty() ){
                         MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios!");
                         msg.show(this);
                     }
                 }
-                Double.parseDouble(((String) model.getValueAt(i, 3)).replace(',', '.'));
+                Double.parseDouble(((String) model.getValueAt(i, 2)).replace(',', '.'));
             }catch (NumberFormatException ex){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido. Debe corregirse!");
                 msg.show(this);

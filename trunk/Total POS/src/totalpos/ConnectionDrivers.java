@@ -2,6 +2,12 @@ package totalpos;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,13 +20,17 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRDataSource;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
+//TODO UNCOMMENT THIS!
+//import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
 
 /**
  *
@@ -40,6 +50,7 @@ public class ConnectionDrivers {
     protected static boolean initialize(){
         try {
             cpds = new ComboPooledDataSource();
+            cpds.setCheckoutTimeout(Constants.dbTimeout);
             cpds.setDriverClass("com.mysql.jdbc.Driver");
             String sT = "jdbc:mysql://" + Shared.getFileConfig("Server") + "/" +
                             Constants.dbName;
@@ -524,7 +535,7 @@ public class ConnectionDrivers {
                 + "where a.codigo like ? and a.descripcion like ? and a.modelo like ? and "
                 + "((exists  (select * from codigo_de_barras where codigo_de_barras.codigo_de_articulo = a.codigo "
                 + "and codigo_de_barras.codigo_de_barras like ? "
-                + ") ) or a.codigo_de_barras like ? )");
+                + ") ) or a.codigo_de_barras like ? ) limit 100");
         stmt.setString(1, "%" + code + "%");
         stmt.setString(2, "%" + description + "%");
         stmt.setString(3, "%" + model + "%");
@@ -1762,7 +1773,7 @@ public class ConnectionDrivers {
         List<Expense> ans = new ArrayList<Expense>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select concepto , monto from gasto "
+        PreparedStatement stmt = c.prepareStatement("select concepto , monto , descripcion from gasto "
                 + "where datediff(now(),fecha) = 0 ");
         ResultSet rs = stmt.executeQuery();
 
@@ -1877,15 +1888,13 @@ public class ConnectionDrivers {
 
         for (int i = 0; i < model.getRowCount(); i++) {
             String bank = (String) model.getValueAt(i, 0) ;
-            Double quant = Double.parseDouble(((String) model.getValueAt(i, 3)).replace(',', '.'));
+            Double quant = Double.parseDouble(((String) model.getValueAt(i, 2)).replace(',', '.'));
             String formId = (String) model.getValueAt(i, 1) ;
-            String cataport = (String) model.getValueAt(i, 2) ;
             PreparedStatement stmt = c.prepareStatement(
-                "insert into deposito ( fecha, banco, planilla, cataporte, monto ) values ( now() , ? , ? , ? , ? )");
+                "insert into deposito ( fecha, banco, numero, monto ) values ( now() , ? , ? , ? )");
             stmt.setString(1, bank);
             stmt.setString(2, formId);
-            stmt.setString(3, cataport);
-            stmt.setDouble(4, quant);
+            stmt.setDouble(3, quant);
             stmt.executeUpdate();
         }
         c.close();
@@ -2058,8 +2067,42 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    static void mirrorTableFastMode(String tableName){
+        try {
+            if (!Constants.isPos) {
+                // Admin has no mirror
+                return;
+            }
+            String cmd = "mysqldump -u " + Constants.dbUser + " -p"+
+                    Constants.dbPassword + " -h " + Shared.getFileConfig("Server") + " "
+                    + Constants.dbName + " " + tableName + " | mysql -u " + Constants.mirrordbUser
+                    + " -p" + Constants.mirrordbPassword + " " + "-h " + Shared.getFileConfig("ServerMirror")
+                    + " " + Constants.mirrorDbName ;
+            FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptName);
+            BufferedWriter out = new BufferedWriter(fstream);
+
+            //String cmd = " echo \"Hola \" > salida.txt";
+            out.write(cmd);
+            out.close();
+
+            String[] exp = {"chmod"  , "+x" , Constants.rootDir + Constants.scriptName};
+            Runtime.getRuntime().exec(exp);
+            Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptName);
+            InputStream is = process.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            } catch (IOException ex) {
+                Logger.getLogger(ConnectionDrivers.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+
     // WARNING!! NON-ESCAPED STRING
-    static void mirrorTable(String tableName) throws SQLException, PropertyVetoException{
+    static void mirrorTableSlowMode(String tableName) throws SQLException, PropertyVetoException{
 
         if ( !Constants.isPos ){
             // Admin has no mirror
@@ -2079,7 +2122,7 @@ public class ConnectionDrivers {
         Connection a = ConnectionDrivers.cpds.getConnection(); // This is updated
         Connection b = ConnectionDrivers.cpdsMirror.getConnection(); // This is outdated.
 
-        PreparedStatement stmtA = a.prepareStatement("select * from "+ tableName); // Getting the new data.
+        PreparedStatement stmtA = a.prepareStatement("select * from "+ tableName + " limit 5000 "); // Getting the new data.
         ResultSet rsA = stmtA.executeQuery();
         ResultSetMetaData rsMetaDataA = rsA.getMetaData();
 
@@ -2215,20 +2258,20 @@ public class ConnectionDrivers {
         Connection a = ConnectionDrivers.cpdsMirror.getConnection();
 
 
-        PreparedStatement stmtA = a.prepareStatement("select * from "+ tableName);
+        PreparedStatement stmtA = a.prepareStatement("select * from "+ tableName + " where sincronizado = 0 ");
         ResultSet rsA = stmtA.executeQuery();
         ResultSetMetaData rsMetaDataA = rsA.getMetaData();
 
         while( rsA.next() ){
             String sql = "insert into " + tableName + " values (";
-            for (int i = 0; i < rsMetaDataA.getColumnCount()-1; i++) {
+            for (int i = 0; i < rsMetaDataA.getColumnCount()-2; i++) {
                 sql += "?,";
             }
             sql += "?)";
 
             PreparedStatement stmtNewB = b.prepareStatement(sql);
 
-            for (int i = 0; i < rsMetaDataA.getColumnCount(); i++) {
+            for (int i = 0; i < rsMetaDataA.getColumnCount()-1; i++) {
                 stmtNewB.setString(i+1, rsA.getString(i+1));
             }
 
@@ -2236,7 +2279,7 @@ public class ConnectionDrivers {
         }
 
 
-        PreparedStatement stmtA2 = a.prepareStatement("delete from " + tableName);
+        PreparedStatement stmtA2 = a.prepareStatement("update " + tableName + " set sincronizado = 1");
 
         stmtA2.executeUpdate();
 
@@ -2357,6 +2400,91 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    static JRDataSource getExpensesReport() throws SQLException {
+
+        String[] columnsArray = new String[3];
+        for (int i = 0; i < 3 ; i++) {
+            columnsArray[i] = i + "";
+        }
+        DataSource dataSource = new DataSource(columnsArray);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select concepto , monto , descripcion from gasto where datediff(curdate(),fecha)=0");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            Object[] toAdd = new Object[3];
+            toAdd[0] = rs.getString("concepto");
+            toAdd[1] = rs.getString("descripcion");
+            toAdd[2] = new BigDecimal(rs.getDouble("monto"));
+            dataSource.add(toAdd);
+        }
+
+        c.close();
+        rs.close();
+
+        return dataSource;
+    }
+
+    static JRDataSource getIncommingReport() throws SQLException {
+        String[] columnsArray = new String[4];
+        for (int i = 0; i < 4; i++) {
+            columnsArray[i] = i + "";
+        }
+        DataSource dataSource = new DataSource(columnsArray);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select a.tipo , b.descripcion " +
+                ", a.lote , sum(monto) as monto from forma_de_pago a, " +
+                "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and datediff(curdate(),fecha)=0 " +
+                "group by a.codigo_punto_de_venta_de_banco union " +
+                "select 'Efectivo' as tipo , banco as descripcion , " +
+                "numero as lote, monto from deposito where datediff(fecha,curdate())=0");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            Object[] toAdd = new Object[4];
+            toAdd[0] = rs.getString("tipo");
+            toAdd[1] = rs.getString("descripcion");
+            toAdd[2] = rs.getString("lote");
+            toAdd[3] = new BigDecimal(rs.getDouble("monto"));
+            dataSource.add(toAdd);
+        }
+
+        c.close();
+        rs.close();
+
+        return dataSource;
+    }
+
+    static JRDataSource getFiscalInfo() throws SQLException {
+        String[] columnsArray = new String[3];
+        for (int i = 0; i < 3 ; i++) {
+            columnsArray[i] = i + "";
+        }
+        DataSource dataSource = new DataSource(columnsArray);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select impresora, numero_reporte_z , total_ventas " +
+                "from dia_operativo where datediff(fecha,curdate())=0");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            Object[] toAdd = new Object[3];
+            toAdd[0] = rs.getString("impresora");
+            toAdd[1] = rs.getString("numero_reporte_z");
+            toAdd[2] = new BigDecimal(rs.getDouble("total_ventas"));
+            dataSource.add(toAdd);
+        }
+
+        c.close();
+        rs.close();
+
+        return dataSource;
+    }
+
+    // TODO UNCOMMEN THIS
+    /*
     static List<ZFISDATAFISCAL> getOperativeDays() throws SQLException {
         List<ZFISDATAFISCAL> ans = new ArrayList<ZFISDATAFISCAL>();
 
@@ -2382,6 +2510,6 @@ public class ConnectionDrivers {
         c.close();
 
         return ans;
-    }
+    }*/
 
 }

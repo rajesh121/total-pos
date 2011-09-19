@@ -74,7 +74,7 @@ public class Constants {
     public static final String storePrefix = "10";
     public static final String waerks = "VEF";
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
     public static String maximunId = "9999999999999999999999999";
     public static String minimunId = "";

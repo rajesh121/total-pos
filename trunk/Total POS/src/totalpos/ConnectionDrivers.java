@@ -1043,6 +1043,47 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static List<Item2Receipt> listItems2CN(String CNId) throws SQLException{
+        List<Item2Receipt> ans = new ArrayList<Item2Receipt>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento , fc.cantidad , fc.devuelto "
+                + "from articulo a , nota_de_credito_contiene fc where fc.codigo_interno_nota_de_credito = ? and fc.codigo_de_articulo = a.codigo");
+        stmt.setString(1, CNId);
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(new Item2Receipt(
+                        new Item(
+                            rs.getString("codigo"),
+                            rs.getString("descripcion"),
+                            rs.getDate("fecha_registro"),
+                            rs.getString("marca"),
+                            rs.getString("sector"),
+                            rs.getString("codigo_sublinea"),
+                            rs.getString("codigo_de_barras"),
+                            rs.getString("modelo"),
+                            rs.getString("unidad_venta"),
+                            rs.getString("unidad_compra"),
+                            rs.getInt("existencia_actual"),
+                            listPrices(rs.getString("codigo")),
+                            listCosts(rs.getString("codigo")),
+                            listBarcodes(rs.getString("codigo")),
+                            rs.getBoolean("bloqueado"),
+                            rs.getString("imagen"),
+                            rs.getString("descuento")
+                        ),
+                        rs.getInt("cantidad"),
+                        rs.getInt("devuelto"))
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
     protected static List<Item2Receipt> listItems2Receipt(String receiptID) throws SQLException{
         List<Item2Receipt> ans = new ArrayList<Item2Receipt>();
 
@@ -2539,6 +2580,48 @@ public class ConnectionDrivers {
                             rs.getString("codigo_de_usuario"),
                             rs.getInt("cantidad_de_articulos"),
                             listItems2Receipt(rs.getString("codigo_interno")),
+                            rs.getString("identificador_turno")
+                        );
+            if ( !r.getItems().isEmpty() ){
+                ans.add(r);
+            }
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static List<Receipt> listOkCNToday() throws SQLException{
+        List<Receipt> ans = new ArrayList<Receipt>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select nc.codigo_interno, nc.estado, nc.fecha_creacion, "
+                + "nc.fecha_impresion, fac.codigo_de_cliente , nc.total_sin_iva, nc.total_con_iva, "
+                + "nc.iva, nc.impresora, nc.numero_fiscal, "
+                + "nc.numero_reporte_z, nc.codigo_de_usuario, nc.cantidad_de_articulos , nc.identificador_turno "
+                + "from nota_de_credito nc , factura fac where nc.codigo_factura = fac.codigo_interno and nc.estado='Nota' and datediff(nc.fecha_creacion,now()) = 0 and nc.identificador_pos = ? order by nc.impresora , nc.numero_fiscal ");
+
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            Receipt r = new Receipt(
+                            rs.getString("codigo_interno"),
+                            rs.getString("estado"),
+                            rs.getTimestamp("fecha_creacion"),
+                            rs.getTimestamp("fecha_impresion"),
+                            rs.getString("codigo_de_cliente"),
+                            rs.getDouble("total_sin_iva"),
+                            rs.getDouble("total_con_iva"),
+                            .0,
+                            rs.getDouble("iva"),
+                            rs.getString("impresora"),
+                            rs.getString("numero_fiscal"),
+                            rs.getString("numero_reporte_z"),
+                            rs.getString("codigo_de_usuario"),
+                            rs.getInt("cantidad_de_articulos"),
+                            listItems2CN(rs.getString("codigo_interno")),
                             rs.getString("identificador_turno")
                         );
             if ( !r.getItems().isEmpty() ){

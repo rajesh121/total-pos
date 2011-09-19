@@ -1,0 +1,1 @@
+mysqldump -u root -p123456789 -h localhost gt99 cliente | mysql -u root -p123456789 -h localhost gt99mirror

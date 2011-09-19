@@ -8,8 +8,10 @@ import java.awt.Font;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
+//TODO UNCOMMENT THIS
+/*
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
-
+*/
 /**
  *
  * @author Saul Hidalgo.
@@ -30,7 +32,11 @@ public class Constants {
     public static final String defaultUser = "Invitado";
 
 
+    //TODO UNCOMMENT THIS
+    /*
     public static final ObjectFactory of = new ObjectFactory();
+     * 
+     */
     //public static final String mirrorDbHost = "localhost";
     //is This redundant??
 
@@ -44,6 +50,9 @@ public class Constants {
     public static final String[] tablesToCleanMirror = {"factura","factura_contiene","nota_de_credito","nota_de_credito_contiene"};
 
     public static final String[] var2check = {"Server","ServerMirror","myId"};
+
+    public static final String scriptName = "replicate.bat";
+    public static final String rootDir = "./";
 
     public static final String wrongPasswordMsg = "Contraseña errónea.";
     public static final String userLocked = "El usuario ha sido bloqueado.";
@@ -67,15 +76,18 @@ public class Constants {
     public static final String storePrefix = "10";
     public static final String waerks = "VEF";
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
     public static final int secondsToCheckTurn = 30;
     public static final int secondsToUpdateCountdown = 10;
     public static final int secondsToUpdateMirror = 6000;
     public static final int secondsToChangeMsg2Pos = 10;
     public static final int secondsToShiftMsg = 1;
+    public static final int dbTimeout = 60000;
 
     public static final int maximumLenghtMsg2Pos = 50;
+
+    public static final boolean withFiscalPrinter = false;
 
     public static final String tmpFileName = "tmp.data";
 

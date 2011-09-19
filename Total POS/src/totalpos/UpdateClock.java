@@ -116,7 +116,7 @@ public class UpdateClock extends Thread{
                 if ( !Shared.isOffline ){
                     try {
                         for (String table : Constants.tablesToMirrorAtDay) {
-                            ConnectionDrivers.mirrorTable(table);
+                            ConnectionDrivers.mirrorTableFastMode(table);
                         }
                     } catch (Exception ex) {
                         MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos");

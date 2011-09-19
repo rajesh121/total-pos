@@ -1,16 +1,9 @@
 package totalpos;
 
-import com.microsoft.schemas._2003._10.serialization.ObjectFactory;
 import java.io.FileNotFoundException;
-import java.math.BigDecimal;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JFrame;
-import javax.xml.namespace.QName;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
-import org.tempuri.IsrvSap;
-import org.tempuri.SrvSap;
 
 /**
  *
@@ -21,25 +14,6 @@ public class Main {
     protected static StartSplash splash;
 
     public static void main(String[] args) {
-     /*   SrvSap ss = new SrvSap();
-        ss.getBasicHttpBindingIsrvSap();
-        ObjectFactory o = new ObjectFactory();
-
-        ArrayOfZFISCOBRANZA aozfc = new ArrayOfZFISCOBRANZA();
-        ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
- 
-        ZFISHISTENVIOS zfhe = new ZFISHISTENVIOS();
-
-        zfhe.setMANDT(o.createString("200"));
-        zfhe.setIDTIENDA(o.createString(Shared.getConfig().get("storeName")));
-        zfhe.setMODIFICAR(o.createString("N"));
-        zfhe.setOBSERVACIONES(o.createString("Sin observaciones xD"));
-        zfhe.setTOTALVENTASDIA(new BigDecimal(500));
-        zfhe.setFONDOCAJA(BigDecimal.ZERO);
-        zfhe.setFECHAPROCESADO(o.createString("20120101"));
-
-        //isrvs.sapInsertCobranza(aozfc, aozfdf, zfhe);
-        */
         splash = new StartSplash();
         splash.changeStatus("Leyendo archivo de configuración...", 10);
         Shared.centerFrame(splash);
@@ -99,7 +73,7 @@ public class Main {
                 }
                 for (String table : Constants.tablesToMirrorAtBegin) {
                     splash.changeStatus("Replicando tabla " + table + "...", 75);
-                    ConnectionDrivers.mirrorTable(table);
+                    ConnectionDrivers.mirrorTableFastMode(table);
                 }
             } catch (Exception ex) {
                 System.out.println("ex = " + ex.getMessage());

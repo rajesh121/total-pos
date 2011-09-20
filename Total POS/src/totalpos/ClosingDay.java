@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -862,7 +863,6 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_printAndSendButtonActionPerformed
 
     public void doIt(){
-        new CreateClosingDayReport();
 
         try {
             SrvSap ss = new SrvSap();
@@ -886,9 +886,6 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             }
             Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
             System.out.println(sss.getCodigoError());
-
-            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Enviado correctamente!!");
-            msg.show(this);
 
             ArrayOfZSDSCABDEV aozsdscd = new ArrayOfZSDSCABDEV();
             ArrayOfZSDSVENDFACT aozsdsvf = new ArrayOfZSDSVENDFACT();
@@ -925,7 +922,15 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             receipts = ConnectionDrivers.listOkReceiptsToday();
             rs = new ReceiptSap();
             previousId = -1;
+
+            List<String> clients = new LinkedList<String>();
+
             for (Receipt receipt : receipts) {
+
+                if ( !receipt.getClientId().equals("Contado") ){
+                    clients.add(receipt.getClientId());
+                }
+
                 if ( receipt.getFiscalNumber().isEmpty() ){
                     System.out.println("Error con la factura " + receipt.getInternId());
                     continue;
@@ -956,17 +961,26 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
             aozsdsvf.getZSDSVENDFACT().add(zsdsvfi);
 
-            ZSDSCLIENT cli = new ZSDSCLIENT();
-            cli.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
-            cli.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
-            cli.setNAME1(of.createZSDSCLIENTNAME1("Saul Hidalgo"));
-            cli.setKUNNR(of.createZSDSCLIENTKUNNR("J123456780"));
-            cli.setWAERS(of.createZSDSCLIENTWAERS("VEF"));
-            cli.setADRNR(of.createZSDSCLIENTADRNR(""));
-            aozsdsc.getZSDSCLIENT().add(cli);
+            for (String c : clients) {
+                Client clientL = ConnectionDrivers.listClients(c).get(0);
+                ZSDSCLIENT cli = new ZSDSCLIENT();
+                cli.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
+                cli.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+                cli.setNAME1(of.createZSDSCLIENTNAME1(clientL.getName()));
+                cli.setKUNNR(of.createZSDSCLIENTKUNNR(clientL.getId()));
+                cli.setWAERS(of.createZSDSCLIENTWAERS(Constants.waerks));
+                cli.setADRNR(of.createZSDSCLIENTADRNR(clientL.getAddress() + " " + clientL.getPhone()));
+                aozsdsc.getZSDSCLIENT().add(cli);
+            }
+            
             sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
             System.out.println(sss.getCodigoError());
             System.out.println(sss.getMensaje().getValue());
+
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Envío : " + sss.getMensaje().getValue());
+            msg.show(this);
+
+            new CreateClosingDayReport();
 
         } catch (SQLException ex) {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);

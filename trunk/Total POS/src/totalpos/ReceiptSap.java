@@ -50,6 +50,7 @@ public class ReceiptSap {
         }
 
         kind = r.getClientId().equals("Contado")?"1":"2";
+        client = r.getClientId();
         z = r.getzReportId();
         printerId = r.getFiscalPrinter();
     }
@@ -67,12 +68,12 @@ public class ReceiptSap {
         ans.setMANDT(of.createZSDSCABDEVMANDT(Constants.mant));
         ans.setFKDAT(of.createZSDSPOSDEVFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
         ans.setVBELN(of.createZSDSCABDEVVBELN(idF));
-        ans.setZTIPV(of.createZSDSCABDEVZTIPV("1"));
+        ans.setZTIPV(of.createZSDSCABDEVZTIPV(kind));
         ans.setKUNNR(of.createZSDSCABDEVKUNNR(client));
         ans.setRANGO(of.createZSDSCABDEVRANGO(range));
         ans.setREPOZ(of.createZSDSCABDEVREPOZ(z));
         ans.setIMPRE(of.createZSDSCABDEVIMPRE(printerId));
-        ans.setWAERS(of.createZSDSCABDEVWAERS("VEF"));
+        ans.setWAERS(of.createZSDSCABDEVWAERS(Constants.waerks));
         ans.setWERKS(of.createZSDSCABDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
         return ans;
     }
@@ -87,11 +88,11 @@ public class ReceiptSap {
         ans.setFKDAT(of.createZSDSPOSDEVFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
         ans.setVBELN(of.createZSDSCABDEVVBELN(idF));
         ans.setZTIPV(of.createZSDSCABDEVZTIPV("1"));
-        ans.setKUNNR(of.createZSDSCABDEVKUNNR(client));
+        ans.setKUNNR(of.createZSDSCABDEVKUNNR(kind));
         ans.setRANGO(of.createZSDSCABDEVRANGO(range));
         ans.setREPOZ(of.createZSDSCABDEVREPOZ(z));
         ans.setIMPRE(of.createZSDSCABDEVIMPRE(printerId));
-        ans.setWAERS(of.createZSDSCABDEVWAERS("VEF"));
+        ans.setWAERS(of.createZSDSCABDEVWAERS(Constants.waerks));
         ans.setWERKS(of.createZSDSCABDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
         return ans;
     }

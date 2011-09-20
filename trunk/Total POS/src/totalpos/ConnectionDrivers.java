@@ -2634,4 +2634,13 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    static void updateDiscount(String string, String string0) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update articulo set descuento = ? where codigo = ?");
+        stmt.setString(1, string0);
+        stmt.setString(2, string);
+        stmt.executeUpdate();
+        c.close();
+    }
+
 }

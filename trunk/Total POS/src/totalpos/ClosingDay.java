@@ -863,7 +863,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
 
     public void doIt(){
         new CreateClosingDayReport();
-/*
+
         try {
             SrvSap ss = new SrvSap();
             IsrvSap isrvs = ss.getBasicHttpBindingIsrvSap();
@@ -897,6 +897,8 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             ArrayOfZSDSPOSFACT aozsdspf = new ArrayOfZSDSPOSFACT();
             ArrayOfZSDSCLIENT aozsdsc = new ArrayOfZSDSCLIENT();
 
+
+            // CN
             List<Receipt> receipts = ConnectionDrivers.listOkCNToday();
             ReceiptSap rs = new ReceiptSap();
             int previousId = -1;
@@ -910,6 +912,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                 }else{
                     aozsdscd.getZSDSCABDEV().add(rs.getHeader());
                     aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails());
+                    rs = new ReceiptSap();
                     rs.add(receipt);
                 }
                 previousId = Integer.parseInt(receipt.getFiscalNumber());
@@ -919,29 +922,55 @@ public class ClosingDay extends javax.swing.JInternalFrame {
                 aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails());
             }
 
+            receipts = ConnectionDrivers.listOkReceiptsToday();
+            rs = new ReceiptSap();
+            previousId = -1;
+            for (Receipt receipt : receipts) {
+                if ( receipt.getFiscalNumber().isEmpty() ){
+                    System.out.println("Error con la factura " + receipt.getInternId());
+                    continue;
+                }
+                if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) && receipt.getClientId().equals("Contado")) ){
+                    rs.add(receipt);
+                }else{
+                    aozsdscf.getZSDSCABFACT().add(rs.getHeaderF());
+                    aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF());
+                    rs = new ReceiptSap();
+                    rs.add(receipt);
+                }
+                previousId = Integer.parseInt(receipt.getFiscalNumber());
+            }
+            if ( rs.getSize() > 0 ){
+                aozsdscf.getZSDSCABFACT().add(rs.getHeaderF());
+                aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF());
+            }
             
             ZSDSVENDFACT zsdsvfi = new ZSDSVENDFACT();
-            zsdsvfi.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.storePrefix + Shared.getConfig("storeName")));
+            zsdsvfi.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
             zsdsvfi.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
             zsdsvfi.setPARTNNUMB(of.createZSDSVENDFACTPARTNNUMB("999999"));
             zsdsvfi.setPARTNROLE(of.createZSDSVENDFACTPARTNROLE("999999"));
             zsdsvfi.setPOSNR(of.createZSDSVENDFACTPOSNR("000001"));
             zsdsvfi.setVBELN(of.createZSDSVENDFACTVBELN("999999"));
-            zsdsvfi.setWERKS(of.createZSDSVENDFACTWERKS(""));
+            zsdsvfi.setWERKS(of.createZSDSVENDFACTWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
 
             aozsdsvf.getZSDSVENDFACT().add(zsdsvfi);
 
             ZSDSCLIENT cli = new ZSDSCLIENT();
             cli.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
-            cli.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.storePrefix + Shared.getConfig("storeName")));
-            cli.setNAME1(of.createZSDSCLIENTNAME1("J123456789"))
+            cli.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            cli.setNAME1(of.createZSDSCLIENTNAME1("Saul Hidalgo"));
+            cli.setKUNNR(of.createZSDSCLIENTKUNNR("J123456780"));
+            cli.setWAERS(of.createZSDSCLIENTWAERS("VEF"));
+            cli.setADRNR(of.createZSDSCLIENTADRNR(""));
             aozsdsc.getZSDSCLIENT().add(cli);
             sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
             System.out.println(sss.getCodigoError());
+            System.out.println(sss.getMensaje().getValue());
 
         } catch (SQLException ex) {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

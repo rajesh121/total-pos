@@ -112,10 +112,10 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="codigoField" alignment="0" pref="495" max="32767" attributes="0"/>
-                      <Component id="modeloField" alignment="0" pref="495" max="32767" attributes="0"/>
-                      <Component id="descriptionField" alignment="0" pref="495" max="32767" attributes="0"/>
-                      <Component id="barCodeField" alignment="0" pref="495" max="32767" attributes="0"/>
+                      <Component id="codigoField" alignment="0" pref="473" max="32767" attributes="0"/>
+                      <Component id="modeloField" alignment="0" pref="473" max="32767" attributes="0"/>
+                      <Component id="descriptionField" alignment="0" pref="473" max="32767" attributes="0"/>
+                      <Component id="barCodeField" alignment="0" pref="473" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -249,7 +249,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="imageLabel" alignment="1" pref="273" max="32767" attributes="0"/>
+              <Component id="imageLabel" alignment="1" pref="297" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -285,11 +285,13 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane2" alignment="1" pref="253" max="32767" attributes="1"/>
+                      <Component id="jScrollPane2" alignment="1" pref="277" max="32767" attributes="1"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="deleteAll" min="-2" max="-2" attributes="0"/>
+                          <Component id="deleteAll" min="-2" pref="103" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="printLabels" pref="146" max="32767" attributes="0"/>
+                          <Component id="deleteItem" pref="75" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="printLabels" min="-2" pref="87" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -304,6 +306,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="printLabels" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="deleteAll" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="deleteItem" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -313,7 +316,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="printLabels">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Imprimir etiquetas"/>
+            <Property name="text" type="java.lang.String" value="Imprimir"/>
             <Property name="name" type="java.lang.String" value="printLabels" noResource="true"/>
           </Properties>
           <Events>
@@ -340,9 +343,10 @@
                     <Column editable="false" title="C&#xf3;digo" type="java.lang.Object"/>
                     <Column editable="false" title="Descripci&#xf3;n" type="java.lang.Object"/>
                     <Column editable="false" title="Precio Actual" type="java.lang.Object"/>
-                    <Column editable="true" title="Cantidad Etiquetas" type="java.lang.Object"/>
+                    <Column editable="true" title="Cantidad Etiquetas" type="java.lang.Integer"/>
                   </Table>
                 </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Puede cambiar la cantidad editando el campo"/>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                   <TableColumnModel selectionModel="0">
                     <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
@@ -392,10 +396,21 @@
         <Component class="javax.swing.JButton" name="deleteAll">
           <Properties>
             <Property name="text" type="java.lang.String" value="Eliminar Todas"/>
+            <Property name="toolTipText" type="java.lang.String" value="Elimina todas las etiquetas"/>
             <Property name="name" type="java.lang.String" value="deleteAll" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteAllActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="deleteItem">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Borrar"/>
+            <Property name="toolTipText" type="java.lang.String" value="Borra la etiqueta seleccionada"/>
+            <Property name="name" type="java.lang.String" value="deleteItem" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteItemActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
@@ -416,7 +431,7 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jScrollPane1" alignment="0" pref="715" max="32767" attributes="1"/>
+                      <Component id="jScrollPane1" alignment="0" pref="693" max="32767" attributes="1"/>
                       <Component id="addSticker" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>

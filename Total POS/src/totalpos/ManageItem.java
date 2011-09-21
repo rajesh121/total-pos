@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,12 +19,13 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author shidalgo
  */
-public class ManageItem extends JInternalFrame {
+public class ManageItem extends JInternalFrame implements Doer {
 
     private List<Item> items;
     private List<Item> toPrint = new ArrayList<Item>();
     private List<Integer> quantToPrint = new ArrayList<Integer>();
     public boolean isOk = false;
+    public Working workingFrame;
 
     /** Creates new form ManageItem */
     public ManageItem() {
@@ -89,6 +91,7 @@ public class ManageItem extends JInternalFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         stickerTable = new javax.swing.JTable();
         deleteAll = new javax.swing.JButton();
+        deleteItem = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         itemTable = new javax.swing.JTable();
@@ -188,10 +191,10 @@ public class ManageItem extends JInternalFrame {
                     .addComponent(codigoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(codigoField, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
-                    .addComponent(modeloField, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
-                    .addComponent(descriptionField, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
-                    .addComponent(barCodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE))
+                    .addComponent(codigoField, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                    .addComponent(modeloField, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                    .addComponent(descriptionField, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                    .addComponent(barCodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE))
                 .addContainerGap())
         );
         filterPanelLayout.setVerticalGroup(
@@ -231,7 +234,7 @@ public class ManageItem extends JInternalFrame {
         imagePanel.setLayout(imagePanelLayout);
         imagePanelLayout.setHorizontalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(imageLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+            .addComponent(imageLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,7 +244,7 @@ public class ManageItem extends JInternalFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Etiquetas"));
         jPanel2.setName("jPanel2"); // NOI18N
 
-        printLabels.setText("Imprimir etiquetas");
+        printLabels.setText("Imprimir");
         printLabels.setName("printLabels"); // NOI18N
         printLabels.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,7 +254,7 @@ public class ManageItem extends JInternalFrame {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11));
+        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         stickerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -263,14 +266,22 @@ public class ManageItem extends JInternalFrame {
                 "Código", "Descripción", "Precio Actual", "Cantidad Etiquetas"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, false, false, true
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        stickerTable.setToolTipText("Puede cambiar la cantidad editando el campo");
         stickerTable.setName("stickerTable"); // NOI18N
         stickerTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         stickerTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -319,10 +330,20 @@ public class ManageItem extends JInternalFrame {
         jScrollPane2.setViewportView(stickerTable);
 
         deleteAll.setText("Eliminar Todas");
+        deleteAll.setToolTipText("Elimina todas las etiquetas");
         deleteAll.setName("deleteAll"); // NOI18N
         deleteAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteAllActionPerformed(evt);
+            }
+        });
+
+        deleteItem.setText("Borrar");
+        deleteItem.setToolTipText("Borra la etiqueta seleccionada");
+        deleteItem.setName("deleteItem"); // NOI18N
+        deleteItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteItemActionPerformed(evt);
             }
         });
 
@@ -333,11 +354,13 @@ public class ManageItem extends JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(deleteAll)
+                        .addComponent(deleteAll, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(printLabels, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)))
+                        .addComponent(deleteItem, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(printLabels, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -347,7 +370,8 @@ public class ManageItem extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(printLabels)
-                    .addComponent(deleteAll))
+                    .addComponent(deleteAll)
+                    .addComponent(deleteItem))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -419,7 +443,7 @@ public class ManageItem extends JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 693, Short.MAX_VALUE)
                     .addComponent(addSticker))
                 .addContainerGap())
         );
@@ -525,37 +549,14 @@ public class ManageItem extends JInternalFrame {
     }//GEN-LAST:event_itemTableMouseReleased
 
     private void printLabelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printLabelsActionPerformed
+        workingFrame = new Working((Window)Shared.getMyMainWindows());
 
-        if ( !toPrint.isEmpty() ){
+        WaitSplash ws = new WaitSplash(this);
 
-            Item rest = null;
-            int nRest = 0;
-            while( !toPrint.isEmpty() ){
+        Shared.centerFrame(workingFrame);
+        workingFrame.setVisible(true);
 
-                Item i = toPrint.get(0);
-
-                if ( nRest > 0){
-                    Sticker.print(i,rest);
-                    quantToPrint.set(0, quantToPrint.get(0)-1);
-                    nRest = 0;
-                }
-
-                nRest = quantToPrint.get(0) % 2;
-                rest = toPrint.get(0);
-
-                Sticker.print(i,quantToPrint.get(0)-nRest);
-                
-                toPrint.remove(0);
-                quantToPrint.remove(0);
-            }
-            if ( nRest > 0 ){
-                Sticker.print(rest);
-            }
-            updateToPrint();
-        }else{
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo y agregarlo a las etiquetas.");
-            msb.show(this);
-        }
+        ws.execute();
     }//GEN-LAST:event_printLabelsActionPerformed
 
     private void itemTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_itemTableKeyReleased
@@ -630,7 +631,7 @@ public class ManageItem extends JInternalFrame {
                             quantToPrint.add(nn);
                             updateToPrint();
                         }catch ( NumberFormatException ex){
-                            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Formato del número incorrecto", ex);
+                            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Formato del número incorrecto");
                             msg.show(this);
                         }
                     }
@@ -661,7 +662,7 @@ public class ManageItem extends JInternalFrame {
     private void stickerTableFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_stickerTableFocusLost
         DefaultTableModel model = (DefaultTableModel) stickerTable.getModel();
         for (int i = 0; i < quantToPrint.size(); i++) {
-            quantToPrint.set(i, Integer.parseInt((String) model.getValueAt(i, 3)));
+            quantToPrint.set(i, Integer.parseInt( model.getValueAt(i, 3) + ""));
         }
     }//GEN-LAST:event_stickerTableFocusLost
 
@@ -681,6 +682,17 @@ public class ManageItem extends JInternalFrame {
         //loadImage();
     }//GEN-LAST:event_formMouseReleased
 
+    private void deleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteItemActionPerformed
+        DefaultTableModel model = (DefaultTableModel) stickerTable.getModel();
+        int n = stickerTable.getSelectedRow();
+        if ( n != -1 ){
+            model = (DefaultTableModel) stickerTable.getModel();
+            model.removeRow(n);
+            toPrint.remove(n);
+            quantToPrint.remove(n);
+        }
+    }//GEN-LAST:event_deleteItemActionPerformed
+
     private void loadImage(){
         Item i = items.get(itemTable.getSelectedRow());
         Shared.loadPhoto(imageLabel,i.getImageAddr(),Math.max(imagePanel.getWidth()-10,1),getHeight()-360);
@@ -693,6 +705,7 @@ public class ManageItem extends JInternalFrame {
     private javax.swing.JTextField codigoField;
     private javax.swing.JLabel codigoLabel;
     private javax.swing.JButton deleteAll;
+    private javax.swing.JButton deleteItem;
     private javax.swing.JTextField descriptionField;
     private javax.swing.JPanel filterPanel;
     private javax.swing.JLabel imageLabel;
@@ -735,5 +748,56 @@ public class ManageItem extends JInternalFrame {
             String s[] = {toPrint.get(i).getCode(),toPrint.get(i).getDescription(),toPrint.get(i).getLastPrice().plusIva().getQuant().toString(), quantToPrint.get(i).toString() };
             model.addRow(s);
         }
+    }
+
+    @Override
+    public void doIt() {
+
+        for ( int i = 0 ; i < stickerTable.getRowCount() ; i++ ){
+            int n = Integer.parseInt(stickerTable.getValueAt(i, 3)+"");
+            if ( n <= 0 || n > 300 ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "La cantidad de etiquetas debe ser positiva y menor a 300");
+                msb.show(this);
+                return;
+            }
+        }
+
+        if ( !toPrint.isEmpty() ){
+
+            Item rest = null;
+            int nRest = 0;
+            while( !toPrint.isEmpty() ){
+
+                Item i = toPrint.get(0);
+
+                if ( nRest > 0){
+                    Sticker.print(i,rest);
+                    quantToPrint.set(0, quantToPrint.get(0)-1);
+                    nRest = 0;
+                }
+
+                nRest = quantToPrint.get(0) % 2;
+                rest = toPrint.get(0);
+
+                Sticker.print(i,quantToPrint.get(0)-nRest);
+
+                toPrint.remove(0);
+                quantToPrint.remove(0);
+            }
+            if ( nRest > 0 ){
+                Sticker.print(rest);
+            }
+            updateToPrint();
+        }else{
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un artículo y agregarlo a las etiquetas.");
+            msb.show(this);
+        }
+    }
+
+    @Override
+    public void close() {
+        workingFrame.setVisible(false);
+        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Enviado a la impresora");
+        msb.show(this);
     }
 }

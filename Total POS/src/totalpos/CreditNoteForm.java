@@ -27,6 +27,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
     public boolean alreadyDone = false;
     public boolean totally = true;
     Client client = null;
+    public Working workingFrame;
 
     /** Creates new form CreditNoteForm
      * @param parent
@@ -491,7 +492,13 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
-        doIt();
+        workingFrame = new Working(this);
+        WaitSplash ws = new WaitSplash(this);
+
+        Shared.centerFrame(workingFrame);
+        workingFrame.setVisible(true);
+
+        ws.execute();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
@@ -572,7 +579,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
     // End of variables declaration//GEN-END:variables
 
     public void close(){
-        // TODO FINISH IT
+        workingFrame.setVisible(false);
     }
 
     @Override

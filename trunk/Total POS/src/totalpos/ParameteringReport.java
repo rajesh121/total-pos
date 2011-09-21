@@ -7,6 +7,7 @@
 package totalpos;
 
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
@@ -34,7 +35,7 @@ import net.sf.jasperreports.view.JasperViewer;
  *
  * @author Saul Hidalgo
  */
-public class ParameteringReport extends javax.swing.JInternalFrame {
+public class ParameteringReport extends javax.swing.JInternalFrame implements Doer{
 
     private String title = null;
     private List<TextColumnBuilder> columns = new ArrayList<TextColumnBuilder>();
@@ -51,6 +52,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
     JRDataSource jrds;
     JasperViewer jv;
     public boolean empty = false;
+    public Working workingFrame;
 
     /** Creates new form ParameteringReport */
     public ParameteringReport(File f) {
@@ -63,7 +65,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
             if ( parameters.isEmpty() ){
                 titleLabel.setText("No hay parámetros para especificar");
                 empty = true;
-                doIt();
+                doItNow();
             }
             titleLabel.setText(title);
         } catch (FileNotFoundException ex) {
@@ -217,7 +219,18 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void doIt(){
+    public void doItNow(){
+        workingFrame = new Working((Window) Shared.getMyMainWindows());
+
+        WaitSplash ws = new WaitSplash(this);
+
+        Shared.centerFrame(workingFrame);
+        workingFrame.setVisible(true);
+        ws.execute();
+    }
+
+    @Override
+    public void doIt(){
         try {
             jrb = report();
             if ( vertical ){
@@ -263,8 +276,13 @@ public class ParameteringReport extends javax.swing.JInternalFrame {
         }
     }
 
+    @Override
+    public void close() {
+        workingFrame.setVisible(false);
+    }
+    
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
-        doIt();
+        doItNow();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private TextColumnBuilder[] createColumns(List<TextColumnBuilder> lc){

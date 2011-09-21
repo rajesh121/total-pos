@@ -52,14 +52,16 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public boolean finishedFP = false;
     private int msgIndex = -1;
     public List<String> msg2pos;
+    Login myParent;
 
     /** Creates new form MainRetailWindows
      * @param u
      * @param assign
      */
-    public MainRetailWindows(User u, Assign assign) {
+    public MainRetailWindows(User u, Assign assign, Login parent) {
         try {
             initComponents();
+            myParent = parent;
             offlineLabel.setVisible(Shared.isOffline);
             Shared.setMyMainWindows(this);
             if ( this.getWidth() < 1100 ){
@@ -74,7 +76,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 printer = new FiscalPrinter();
             }catch( Exception ex ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se pudo cargar el controlador de la impresora. No se puede continuar",ex);
-                msb.show(null);
+                msb.show(myParent);
                 this.dispose();
                 Shared.reload();
                 return;
@@ -83,17 +85,26 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             yourTurnIsFinishingLabel.setVisible(false);
             if ( !ConnectionDrivers.isAllowed(u.getPerfil(), "retail") ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Esta usuario no tiene permisos para utilizar el punto de venta.");
-                msb.show(null);
+                msb.show(myParent);
                 this.dispose();
                 Shared.reload();
                 return;
             }
 
-            if ( !printer.checkPrinter() ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema.");
-                msb.show(null);
+            try {
+                if ( !printer.checkPrinter() ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema.");
+                    msb.show(myParent);
+                    this.dispose();
+                    Shared.reload();
+                    return;
+                }
+            }catch ( Exception ex ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
+                msb.show(myParent);
                 this.dispose();
                 Shared.reload();
+                printer.forceClose();
                 return;
             }
             
@@ -101,7 +112,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 ConnectionDrivers.updateReportZ(printer.getZ());
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
-                msb.show(null);
+                msb.show(myParent);
                 this.dispose();
                 Shared.reload();
                 printer.forceClose();
@@ -139,12 +150,12 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-            msb.show(null);
+            msb.show(myParent);
             this.dispose();
             Shared.reload();
         } catch (Exception ex){
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido",ex);
-            msb.show(null);
+            msb.show(myParent);
             this.dispose();
             Shared.reload();
         }

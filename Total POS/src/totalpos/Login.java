@@ -181,7 +181,7 @@ public class Login extends JFrame implements Doer{
 
             uc.start(); //Start the screensaver xDD
             Shared.setUser(u);
-            MainRetailWindows mrw = new MainRetailWindows(u, a);
+            MainRetailWindows mrw = new MainRetailWindows(u, a, this);
             if ( mrw.isOk ){
                 Shared.setMyMainWindows(mrw);
                 Shared.centerFrame(mrw);

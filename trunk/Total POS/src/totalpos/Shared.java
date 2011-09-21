@@ -314,12 +314,12 @@ public class Shared {
         }
     }
 
-    /*public void loadDiscount(String fileAdr) throws FileNotFoundException{
+    public void loadDiscount(String fileAdr) throws FileNotFoundException, SQLException{
         Scanner sc = new Scanner(new File(fileAdr));
         while (sc.hasNextLine()) {
             String[] toks = sc.nextLine().split("\t");
             ConnectionDrivers.updateDiscount(toks[0] , toks[8]);
         }
-    }*/
+    }
 
 }

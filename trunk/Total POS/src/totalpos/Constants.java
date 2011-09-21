@@ -71,7 +71,7 @@ public class Constants {
     public static final DecimalFormat df2int = new DecimalFormat("#00.###");
     public static final DecimalFormat df2intSAP = new DecimalFormat("#000000.###");
 
-    public static final String storePrefix = "10";
+    public static final String storePrefix = "";
     public static final String waerks = "VEF";
 
     public static final boolean isPos = false;
@@ -114,4 +114,6 @@ public class Constants {
 
     public static final String mant = "200";
     public static final String genericBank = "BGENE";
+
+    public static final String addrForIncome = ".\\traslados\\";
 }

@@ -143,7 +143,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 }catch ( NumberFormatException ex){
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
                             "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(Constants.minimumCash) + " Bs");
-                    msb.show(null);
+                    msb.show(this);
                     currentMoney = -1.0;
                 }
             }
@@ -977,7 +977,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     }
                 } catch (SQLException ex) {
                     MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos",ex);
-                    msb.show(null);
+                    msb.show(this);
                     this.dispose();
                     Shared.reload();
                 }
@@ -1010,10 +1010,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     Receipt r = ConnectionDrivers.getReceiptToDev(id.substring(0, 12));
                     if (r == null) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La factura no existe!");
-                        msb.show(null);
+                        msb.show(this);
                     } else if ( r.getGlobalDiscount() != .0 ) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La factura tiene descuento global. No puede ser devuelta!");
-                        msb.show(null);
+                        msb.show(this);
                     }else {
                         CreditNoteForm cnf = new CreditNoteForm(this, true, r);
                         Shared.centerFrame(cnf);
@@ -1021,7 +1021,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     }
                 } catch (SQLException ex) {
                     MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos",ex);
-                    msb.show(null);
+                    msb.show(this);
                     this.dispose();
                     Shared.reload();
                 }
@@ -1031,9 +1031,21 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             Shared.centerFrame(cqi);
             cqi.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_END ){
-            ReportZ rz = new ReportZ(this, true, "X");
-            Shared.centerFrame(rz);
-            rz.setVisible(true);
+            try {
+                if (!ConnectionDrivers.listIdleReceiptToday().isEmpty()) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Existen facturas en espera. No se puede hacer el cierre.");
+                    msb.show(this);
+                    return;
+                }
+                ReportZ rz = new ReportZ(this, true, "Z");
+                Shared.centerFrame(rz);
+                rz.setVisible(true);
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
             ReportZ rz = new ReportZ(this, true, "X");
             Shared.centerFrame(rz);
@@ -1318,7 +1330,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 deleteItem();
             }
         } catch (SQLException ex) {
-            // Nothing to do... We are fucked.
+            // Nothing to do... We are fucked. =( 
         }
     }
 

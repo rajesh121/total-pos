@@ -10,7 +10,9 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -314,12 +316,27 @@ public class Shared {
         }
     }
 
-    public void loadDiscount(String fileAdr) throws FileNotFoundException, SQLException{
+    public void parseDiscounts(String fileAdr) throws FileNotFoundException, SQLException{
         Scanner sc = new Scanner(new File(fileAdr));
         while (sc.hasNextLine()) {
             String[] toks = sc.nextLine().split("\t");
             ConnectionDrivers.updateDiscount(toks[0] , toks[8]);
         }
     }
+
+    public String myTrim(String str){
+        return str.substring(1, str.length()-1);
+    }
+/*
+    public Set<Item> parseItems(String fileAdr) throws FileNotFoundException{
+        Set<Item> ans = new TreeSet<Item>();
+        Scanner sc = new Scanner(new File(fileAdr));
+        while (sc.hasNextLine()) {
+            String[] toks = sc.nextLine().split("\t");
+            Item i = new Item(myTrim(toks[0]),
+                    myTrim(toks[1]) , null , fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, currentStock, null, null, null, isOffline, fileAdr, fileAdr)
+        }
+        return ans;
+    }*/
 
 }

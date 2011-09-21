@@ -55,7 +55,7 @@ public class Sticker {
         try {
             if ( na <= 0 ) return;
             
-            System.out.println("Na = " + na);
+            //System.out.println("Na = " + na);
             Item a = new Item(a_);
             int firstLot = (na - na%2)/2;
 

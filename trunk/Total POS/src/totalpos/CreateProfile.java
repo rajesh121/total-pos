@@ -12,7 +12,7 @@ import javax.swing.JInternalFrame;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class CreateProfile extends JInternalFrame {
 
@@ -218,8 +218,6 @@ public class CreateProfile extends JInternalFrame {
         } catch (Exception ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al crear perfil.",ex);
             msb.show(this);
-            this.dispose();
-            Shared.reload();
         }
     }
 

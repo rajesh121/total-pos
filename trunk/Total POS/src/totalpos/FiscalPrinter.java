@@ -438,8 +438,11 @@ public class FiscalPrinter {
         file = new File(Constants.tmpFileName);
         sc = new Scanner(file);
         line = sc.next();
-        Double total = Double.parseDouble(line.substring(2+10*1,2+10*2))/100.0;
-        String lReceipt = line.substring(2+10*2, 2+10*2+8);
+        Double total = Double.parseDouble(line.substring(2+10*1-1,2+10*2-1))/100.0;
+        //Double total = Double.parseDouble(line.substring(2+10*1,2+10*2))/100.0;
+        //String lReceipt = line.substring(2+10*2, 2+10*2+8);
+        //TODO IS IT A BUG?????????????
+        String lReceipt = line.substring(2+10*2-1, 2+10*2+8-1);
         int quantReceiptsToday = Integer.parseInt(line.substring(2+10*2+8 , 2+10*2+8+4));
 
         sc.close();

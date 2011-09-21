@@ -848,8 +848,10 @@ public class ConnectionDrivers {
         List<Assign> ans = new ArrayList<Assign>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select identificador_turno, "
-                + "identificador_pos , fecha , abierto from asigna where datediff(fecha,now()) = 0");
+        PreparedStatement stmt = c.prepareStatement("select identificador_turno , "
+                + "identificador_pos, do.fecha, abierto from asigna a, dia_operativo do "
+                + "where datediff(a.fecha, now())=0 and codigo_punto_de_venta=identificador_pos and"
+                + " datediff(do.fecha,now())=0 and do.reporteZ=0");
 
         ResultSet rs = stmt.executeQuery();
 
@@ -875,6 +877,31 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select identificador , descripcion , impresora , habilitada "
                 + "from punto_de_venta where habilitada = ? ");
+        stmt.setBoolean(1, enabled);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ) {
+            ans.add(
+                    new PointOfSale(
+                        rs.getString("identificador"),
+                        rs.getString("descripcion"),
+                        rs.getString("impresora"),
+                        rs.getBoolean("habilitada"))
+                        );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static List<PointOfSale> listPointOfSales4Assignments(boolean enabled) throws SQLException{
+        List<PointOfSale> ans = new ArrayList<PointOfSale>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select identificador, descripcion, impresora, habilitada from punto_de_venta where habilitada = ? "
+                + " and identificador not in ( select codigo_punto_de_venta from dia_operativo where datediff( curdate() , fecha ) = 0 and reporteZ = 1 ) ");
         stmt.setBoolean(1, enabled);
 
         ResultSet rs = stmt.executeQuery();
@@ -1708,7 +1735,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
-                + "set dinero_efectivo = ? where codigo_punto_de_venta = ? ");
+                + "set dinero_efectivo = ? where codigo_punto_de_venta = ? and datediff(curdate(),fecha)=0");
 
         stmt.setDouble(1, money);
         stmt.setString(2, Shared.getFileConfig("myId"));
@@ -1721,7 +1748,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
-                + "set dinero_efectivo = dinero_efectivo + ? where codigo_punto_de_venta = ? ");
+                + "set dinero_efectivo = dinero_efectivo + ? where codigo_punto_de_venta = ? and datediff(curdate(),fecha)=0 ");
 
         stmt.setDouble(1, money);
         stmt.setString(2, Shared.getFileConfig("myId"));
@@ -1734,7 +1761,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
-                + "set dinero_tarjeta_credito = dinero_tarjeta_credito + ? where codigo_punto_de_venta = ? ");
+                + "set dinero_tarjeta_credito = dinero_tarjeta_credito + ? where codigo_punto_de_venta = ? and datediff(curdate(),fecha)=0");
 
         stmt.setDouble(1, money);
         stmt.setString(2, Shared.getFileConfig("myId"));
@@ -1747,7 +1774,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
-                + "set nota_de_credito = nota_de_credito + ? where codigo_punto_de_venta = ? ");
+                + "set nota_de_credito = nota_de_credito + ? where codigo_punto_de_venta = ? and datediff(curdate(),fecha) = 0 ");
 
         stmt.setDouble(1, money);
         stmt.setString(2, Shared.getFileConfig("myId"));
@@ -1760,7 +1787,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
-                + "set dinero_tarjeta_debito = dinero_tarjeta_debito + ? where codigo_punto_de_venta = ? ");
+                + "set dinero_tarjeta_debito = dinero_tarjeta_debito + ? where codigo_punto_de_venta = ? and datediff(curdate(),fecha)=0 ");
 
         stmt.setDouble(1, money);
         stmt.setString(2, Shared.getFileConfig("myId"));
@@ -1966,14 +1993,15 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select do.codigo_punto_de_venta , pos.impresora , "
                 + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito+ do.nota_de_credito as facturado, "
-                + "dinero_efectivo_impresora+dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora as facturado_impresora "
-                + "from dia_operativo as do , punto_de_venta as pos where datediff(fecha,now())=0 and do.codigo_punto_de_venta "
+                + "dinero_efectivo_impresora+dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora as facturado_impresora ,"
+                + "reporteZ"
+                + " from dia_operativo as do , punto_de_venta as pos where datediff(fecha,now())=0 and do.codigo_punto_de_venta "
                 + "= pos.identificador");
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
-            String[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
-                    ,rs.getString("facturado"),rs.getString("facturado_impresora")};
+            Object[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
+                    ,rs.getString("facturado"),rs.getString("facturado_impresora") , rs.getBoolean("reporteZ")};
             ans.addRow(s);
         }
 
@@ -2643,4 +2671,16 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    static void setZDone() throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo "
+                + "set reporteZ = 1 "
+                + "where codigo_punto_de_venta = ? and datediff( curdate() , fecha ) = 0 ");
+
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        stmt.executeUpdate();
+
+        c.close();
+    }
 }

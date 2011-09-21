@@ -156,6 +156,13 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "report" + kindOfReport) ){
                 myParent.printer.updateValues();
                 myParent.printer.report(kindOfReport);
+                if ( kindOfReport.equals("Z") ){
+                    ConnectionDrivers.setAssignOpen(((MainRetailWindows)Shared.getMyMainWindows()).getAssign(), false);
+                    ConnectionDrivers.setZDone();
+                    MessageBox msg = new MessageBox(MessageBox.SGN_NOTICE, "Se ha culminado satisfactoriamente el día operativo de esta caja.");
+                    msg.show(this);
+                    Shared.reload();
+                }
             }else{
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para calcular el reporte " + kindOfReport);
                 msg.show(this);

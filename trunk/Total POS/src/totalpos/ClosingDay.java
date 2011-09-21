@@ -6,20 +6,18 @@
 
 package totalpos;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Window;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
+import javax.swing.table.TableCellRenderer;
 
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
@@ -34,7 +32,6 @@ import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.Resultado;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISCOBRANZA;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSCABDEV;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSCLIENT;
 import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSVENDFACT;
 import org.tempuri.IsrvSap;
@@ -133,7 +130,29 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jFileChooser1 = new javax.swing.JFileChooser();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        fiscalZ = new javax.swing.JTable();
+        fiscalZ = new javax.swing.JTable(){
+            @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
+                Component comp = super.prepareRenderer(renderer, row, column);
+                boolean closed = false;
+                try{
+                    closed = (Boolean)getValueAt(row, 4);
+                }catch(Exception ex){
+                    ;
+                }
+                if ( fiscalZ.getSelectedRow() == row ){
+                    if ( closed ){
+                        comp.setBackground(Constants.lightGreen);
+                    }else{
+                        comp.setBackground(Constants.lightBlue);
+                    }
+                } else if ( closed ){
+                    comp.setBackground(Color.GREEN);
+                }else{
+                    comp.setBackground(Constants.transparent);
+                }
+                return comp;
+            }
+        };
         updateFiscalNumberslButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -193,18 +212,25 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         fiscalZ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Caja", "Serial", "Dinero Caja", "Zeta Fiscal"
+                "Caja", "Serial", "Dinero Caja", "Zeta Fiscal", "Cerrado"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -220,6 +246,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         });
         jScrollPane6.setViewportView(fiscalZ);
         fiscalZ.getColumnModel().getColumn(0).setPreferredWidth(40);
+        fiscalZ.getColumnModel().getColumn(3).setPreferredWidth(150);
+        fiscalZ.getColumnModel().getColumn(4).setPreferredWidth(50);
 
         updateFiscalNumberslButton.setText("Actualizar Zeta Fiscal de todos");
         updateFiscalNumberslButton.setName("updateFiscalNumberslButton"); // NOI18N

@@ -89,6 +89,7 @@ public class ListTurnsAssigned extends JInternalFrame {
         });
         table.setName("table"); // NOI18N
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        table.getTableHeader().setReorderingAllowed(false);
         table.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tableFocusGained(evt);
@@ -159,7 +160,7 @@ public class ListTurnsAssigned extends JInternalFrame {
                     .addComponent(closeAssignButton)
                     .addComponent(reopenAssignButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

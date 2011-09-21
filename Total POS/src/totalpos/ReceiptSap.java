@@ -38,7 +38,7 @@ public class ReceiptSap {
     public void add(Receipt r){
         receipts.add(r);
         if ( r.getInternId().compareTo(id) < 0 ){
-            id = r.getInternId().substring(5);
+            id = r.getInternId();
         }
 
         if ( r.getFiscalNumber().compareTo(maxFiscalId) > 0 ){
@@ -50,7 +50,7 @@ public class ReceiptSap {
         }
 
         kind = r.getClientId().equals("Contado")?"1":"2";
-        client = r.getClientId();
+        client = r.getClientId().equals("Contado")?r.getClientId():"";
         z = r.getzReportId();
         printerId = r.getFiscalPrinter();
     }
@@ -87,8 +87,8 @@ public class ReceiptSap {
         ans.setMANDT(of.createZSDSCABDEVMANDT(Constants.mant));
         ans.setFKDAT(of.createZSDSPOSDEVFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
         ans.setVBELN(of.createZSDSCABDEVVBELN(idF));
-        ans.setZTIPV(of.createZSDSCABDEVZTIPV("1"));
-        ans.setKUNNR(of.createZSDSCABDEVKUNNR(kind));
+        ans.setZTIPV(of.createZSDSCABDEVZTIPV(kind));
+        ans.setKUNNR(of.createZSDSCABDEVKUNNR(client));
         ans.setRANGO(of.createZSDSCABDEVRANGO(range));
         ans.setREPOZ(of.createZSDSCABDEVREPOZ(z));
         ans.setIMPRE(of.createZSDSCABDEVIMPRE(printerId));

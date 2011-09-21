@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.Window;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
@@ -43,7 +44,7 @@ import org.tempuri.SrvSap;
  *
  * @author Saúl Hidalgo
  */
-public class ClosingDay extends javax.swing.JInternalFrame {
+public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
     List<Expense> expenses;
     List<Deposit> deposits;
@@ -51,6 +52,7 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     Double totalInCash;
     Double totalExpenses;
     private ObjectFactory of = Constants.of;
+    public Working workingFrame;
 
     /** Creates new form ClosingDay */
     public ClosingDay() {
@@ -859,9 +861,16 @@ public class ClosingDay extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_updateFiscalNumberslButtonActionPerformed
 
     private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
-        doIt();
+        workingFrame = new Working((Window) Shared.getMyMainWindows());
+
+        WaitSplash ws = new WaitSplash(this);
+
+        Shared.centerFrame(workingFrame);
+        workingFrame.setVisible(true);
+        ws.execute();
     }//GEN-LAST:event_printAndSendButtonActionPerformed
 
+    @Override
     public void doIt(){
 
         try {
@@ -986,6 +995,13 @@ public class ClosingDay extends javax.swing.JInternalFrame {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    @Override
+    public void close() {
+        workingFrame.setVisible(false);
+    }
+
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ExpenseTable;

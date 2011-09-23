@@ -350,7 +350,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
                 }
 
                 myParent.print(payForms);
-                add("Cambio",change);
+                add("Efectivo",-1*change);
                 ConnectionDrivers.savePayForm(payForms);
                 this.dispose();
             }

@@ -10,15 +10,19 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import totalPackage.BNKA;
+import totalPackage.DD07T;
+import totalPackage.IsrvEntidades;
+import totalPackage.SrvEntidades;
 
 /**
  *
@@ -91,7 +95,7 @@ public class Shared {
 
     public static User giveUser(List<User> l, String u){
         for (User user : l)
-            if ( user.getLogin().equals(u) )
+            if ( user.getLogin().equals(u.toLowerCase()) )
                 return user;
 
         return null;
@@ -316,7 +320,7 @@ public class Shared {
         }
     }
 
-    public void parseDiscounts(String fileAdr) throws FileNotFoundException, SQLException{
+    public static void parseDiscounts(String fileAdr) throws FileNotFoundException, SQLException{
         Scanner sc = new Scanner(new File(fileAdr));
         while (sc.hasNextLine()) {
             String[] toks = sc.nextLine().split("\t");
@@ -324,7 +328,7 @@ public class Shared {
         }
     }
 
-    public String myTrim(String str){
+    public static String myTrim(String str){
         return str.substring(1, str.length()-1);
     }
 /*
@@ -338,5 +342,32 @@ public class Shared {
         }
         return ans;
     }*/
+
+    public static void updateExpensesAndBanks(){
+        try {
+            SrvEntidades srvEnt = new SrvEntidades();
+            IsrvEntidades bHBIE = srvEnt.getBasicHttpBindingIsrvEntidades();
+            List<BNKA> lbnka = bHBIE.obtenerBancosSap(Constants.mant).getBNKA();
+            String banks = "";
+            for (BNKA bnka : lbnka) {
+                banks += "{" + bnka.getBANKL().getValue() + " - " + bnka.getBANKA().getValue() + "}";
+            }
+            ConnectionDrivers.updateConfig("banks", banks);
+            List<DD07T> dD07T = bHBIE.obtenerTiposSap().getDD07T();
+            String expenses = "";
+            for (DD07T dd07t : dD07T) {
+                try{
+                    Integer.parseInt(dd07t.getDOMVALUEL().getValue());
+                    expenses += "{" + dd07t.getDOMVALUEL().getValue() + " - " + dd07t.getDDTEXT().getValue() + "}";
+                }catch(NumberFormatException e){
+                    ;// Nothing to do. That is not a number
+                }
+            }
+            ConnectionDrivers.updateConfig("expenses", expenses);
+            
+        } catch (SQLException ex) {
+            System.err.println("Problemas actualizando a los bancos.");
+        }
+    }
 
 }

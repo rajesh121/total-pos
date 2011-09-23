@@ -48,14 +48,12 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
         dataTable = new javax.swing.JTable();
         closeButton = new javax.swing.JButton();
         acceptButton = new javax.swing.JButton();
-        addButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
         setTitle("Formulario de Configuracion");
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Formulario de Configuración");
         titleLabel.setName("titleLabel"); // NOI18N
 
@@ -75,9 +73,16 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         dataTable.setName("dataTable"); // NOI18N
@@ -108,24 +113,6 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
             }
         });
 
-        addButton.setText("Agregar");
-        addButton.setFocusable(false);
-        addButton.setName("addButton"); // NOI18N
-        addButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
-            }
-        });
-
-        deleteButton.setText("Eliminar");
-        deleteButton.setFocusable(false);
-        deleteButton.setName("deleteButton"); // NOI18N
-        deleteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -136,13 +123,9 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(titleLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(acceptButton, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(acceptButton, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -155,9 +138,7 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(acceptButton)
-                    .addComponent(addButton)
-                    .addComponent(deleteButton))
+                    .addComponent(acceptButton))
                 .addContainerGap())
         );
 
@@ -175,7 +156,6 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
                     return;
                 }
             }
-            ConnectionDrivers.deleteAllFrom("configuracion");
             ConnectionDrivers.createConfig(dataTable.getModel());
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Recuerde que debe reiniciar Total Pos para hacer efectiva la nueva configuración!");
             msg.show(this);
@@ -184,22 +164,6 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
             msg.show(this);
         }
     }//GEN-LAST:event_acceptButtonActionPerformed
-
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        DefaultTableModel model = (DefaultTableModel)dataTable.getModel();
-        model.setRowCount(model.getRowCount()+1);
-    }//GEN-LAST:event_addButtonActionPerformed
-
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        int n = dataTable.getSelectedRow();
-        if ( n != -1){
-            DefaultTableModel model = (DefaultTableModel) dataTable.getModel();
-            model.removeRow(dataTable.getSelectedRow());
-        }else{
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar la configuración a eliminar");
-            msg.show(this);
-        }
-    }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         this.dispose();
@@ -214,10 +178,8 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
-    private javax.swing.JButton addButton;
     private javax.swing.JButton closeButton;
     private javax.swing.JTable dataTable;
-    private javax.swing.JButton deleteButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
@@ -227,8 +189,9 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
         model.setRowCount(0);
 
         data = ConnectionDrivers.listConfig();
-        for (SimpleConfig simpleConfig : data) {
-            String[] s = {simpleConfig.getKey(),simpleConfig.getValue()};
+        String[] filter = Shared.getConfig("fieldsShown").split(",");
+        for (String simpleConfig : filter) {
+            String[] s = {simpleConfig,Shared.getConfig(simpleConfig)};
             model.addRow(s);
         }
     }

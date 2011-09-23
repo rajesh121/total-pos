@@ -13,7 +13,7 @@ public class Main {
 
     protected static StartSplash splash;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
         splash = new StartSplash();
         splash.changeStatus("Leyendo archivo de configuración...", 10);
         Shared.centerFrame(splash);
@@ -37,6 +37,12 @@ public class Main {
         
         splash.changeStatus("Conectado a base de datos...", 30);
         ConnectionDrivers.initialize();
+
+        if ( !Constants.isPos ){
+            splash.changeStatus("Actualizando bancos y gastos desde SAP", 40);
+            Shared.updateExpensesAndBanks();
+        }
+
         splash.changeStatus("Inicializando configuración de base de datos...", 45);
         try {
             ConnectionDrivers.initializeConfig();
@@ -80,7 +86,7 @@ public class Main {
             }
         }
 
-        splash.changeStatus("Creando ventana de login...", 85);
+       splash.changeStatus("Creando ventana de login...", 95);
         Login login = new Login();
         Shared.centerFrame(login);
         login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);

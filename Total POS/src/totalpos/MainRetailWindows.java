@@ -22,8 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -125,28 +123,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
             updateAll();
             
-            Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
-            while ( currentMoney == -1.0 && !Shared.isOffline ){
-                String cc = JOptionPane.showInputDialog(getParent(),
-                        "Monto Inicial de caja", Constants.df.format(Constants.minimumCash));
-
-                try{
-                    if ( cc == null || cc.isEmpty() ){
-                        throw new NumberFormatException();
-                    }
-                    currentMoney = Double.parseDouble(cc.replace(',', '.'));
-                    if ( currentMoney < 150.0 ){
-                        throw new NumberFormatException();
-                    }else{
-                        ConnectionDrivers.newCash(currentMoney, Shared.getFileConfig("myId"));
-                    }
-                }catch ( NumberFormatException ex){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
-                            "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(Constants.minimumCash) + " Bs");
-                    msb.show(this);
-                    currentMoney = -1.0;
-                }
-            }
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
@@ -170,9 +146,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     protected void updateAll() throws SQLException{
-
-        //List<Receipt> ll = ConnectionDrivers.listOkReceiptsToday();
-        
 
         descriptionLabel.setText("Bievenido a Mundo Total");
         currentPrice.setText("");
@@ -821,12 +794,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             return;
         }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             try {
-                if ( barcodeField.getText().isEmpty() ){
+                String myBarcode = barcodeField.getText();
+                barcodeField.setText("");
+                if ( myBarcode.isEmpty() ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");
                     msb.show(this);
                     return;
                 }
-                List<Item> itemC = ConnectionDrivers.listItems(barcodeField.getText(), "", "", "");
+                List<Item> itemC = ConnectionDrivers.listFastItems(myBarcode);
                 if ( itemC.isEmpty() ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo no existe!");
                     msb.show(this);
@@ -1032,10 +1007,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             cqi.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_END ){
             try {
-                if (!ConnectionDrivers.listIdleReceiptToday().isEmpty()) {
-                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Existen facturas en espera. No se puede hacer el cierre.");
-                    msb.show(this);
-                    return;
+                for (Receipt receipt : ConnectionDrivers.listIdleReceiptToday()) {
+                    loadThisReceipt(receipt);
+                    deleteCurrent();
                 }
                 ReportZ rz = new ReportZ(this, true, "Z");
                 Shared.centerFrame(rz);
@@ -1174,7 +1148,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ConnectionDrivers.addItem2Receipt(actualId, get, quant);
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
-            String[] s = {get.getDescription(), quant+"", get.getDescuento()+"", get.getLastPrice().toString(), get.getLastPrice().getIva().toString(), Constants.df.format(get.getLastPrice().plusIva().getQuant()*quant)};
+            String[] s = {get.getDescription(), quant+"", get.getDescuento()+"", get.getLastPrice().toString(),
+            get.getLastPrice().getIva().toString(), Constants.df.format(get.getLastPrice().plusIva().getQuant()*quant)};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
             items.add(new Item2Receipt(get, quant,0));

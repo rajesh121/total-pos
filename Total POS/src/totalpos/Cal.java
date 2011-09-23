@@ -93,10 +93,13 @@ public class Cal extends JPanel {
 
   private JInternalFrame parent;
 
+  private boolean isClosingDay;
+
   /**
    * Construct a Cal, starting with today.
    */
-  Cal(JTextField finish, JInternalFrame myParent) {
+  Cal(JTextField finish, JInternalFrame myParent, boolean isClosingDay) {
+    this.isClosingDay = isClosingDay;
     setYYMMDD(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH));
     buildGUI();
@@ -195,9 +198,13 @@ public class Cal extends JPanel {
           // fire some kind of DateChanged event here.
           // Also, build a similar daySetter for day-of-week btns.
         }
+        String ans = yy + "-" + Constants.df2int.format(mm+1) + "-" + Constants.df2int.format(dd);
 
-        field.setText(yy + "-" + Constants.df2int.format(mm+1) + "-" + Constants.df2int.format(dd) );
+        field.setText( ans );
         parent.dispose();
+        if ( isClosingDay ){
+            ((MainWindows)Shared.getMyMainWindows()).createClosingDay(ans);
+        }
       }
     };
 

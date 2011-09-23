@@ -310,7 +310,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
                 textField.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        ChooseDate cal = new ChooseDate(Constants.appName,textField);
+                        ChooseDate cal = new ChooseDate(Constants.appName,textField,false);
                         ((MainWindows)Shared.getMyMainWindows()).mdiPanel.add(cal);
                         cal.setVisible(true);
                     }

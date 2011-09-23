@@ -9,8 +9,6 @@ package totalpos;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -41,7 +39,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
     }
 
     private void updateAll() throws SQLException{
-        expenses = ConnectionDrivers.listExpensesToday();
+        expenses = ConnectionDrivers.listExpenses("");
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
 
@@ -227,8 +225,8 @@ public class AddExpenses extends javax.swing.JInternalFrame {
             }
         }
         try {
-            ConnectionDrivers.deleteAllExpensesToday();
-            ConnectionDrivers.createExpensesToday(model);
+            ConnectionDrivers.deleteAllExpenses("");
+            ConnectionDrivers.createExpenses(model,"");
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
         } catch (SQLException ex) {

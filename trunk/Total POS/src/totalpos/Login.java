@@ -20,6 +20,7 @@ import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
@@ -183,6 +184,30 @@ public class Login extends JFrame implements Doer{
             Shared.setUser(u);
             MainRetailWindows mrw = new MainRetailWindows(u, a, this);
             if ( mrw.isOk ){
+                workingFrame.setVisible(false);
+                Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
+                while ( currentMoney == -1.0 && !Shared.isOffline ){
+                    String cc = JOptionPane.showInputDialog(getParent(),
+                            "Monto Inicial de caja", Constants.df.format(Constants.minimumCash));
+
+                    try{
+                        if ( cc == null || cc.isEmpty() ){
+                            throw new NumberFormatException();
+                        }
+                        currentMoney = Double.parseDouble(cc.replace(',', '.'));
+                        if ( currentMoney < 150.0 ){
+                            throw new NumberFormatException();
+                        }else{
+                            ConnectionDrivers.newCash(currentMoney, Shared.getFileConfig("myId"));
+                        }
+                    }catch ( NumberFormatException ex){
+                        MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
+                                "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(Constants.minimumCash) + " Bs");
+                        msb.show(this);
+                        currentMoney = -1.0;
+                    }
+                }
+
                 Shared.setMyMainWindows(mrw);
                 Shared.centerFrame(mrw);
                 mrw.setVisible(true);
@@ -233,7 +258,7 @@ public class Login extends JFrame implements Doer{
                 kindErr = Constants.wrongPasswordMsg;
             }
 
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr);
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr , ex );
             msg.show(null);
 
             if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){

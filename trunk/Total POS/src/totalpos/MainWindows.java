@@ -27,6 +27,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -231,9 +232,10 @@ public class MainWindows extends javax.swing.JFrame {
                 mdiPanel.add(md);
                 md.setVisible(true);
             } else if ( ed.getFuncion().equals("closingDay") ) {
-                ClosingDay cd = new ClosingDay();
-                mdiPanel.add(cd);
-                cd.setVisible(true);
+                JTextField textField = new JTextField();
+                ChooseDate cal = new ChooseDate(Constants.appName,textField,true);
+                mdiPanel.add(cal);
+                cal.setVisible(true);
             } else if ( ed.getFuncion().equals("sellWithoutStockAd") ) {
                 EnableSellsWithoutStock esws = new EnableSellsWithoutStock();
                 if ( esws.isOk ){
@@ -344,6 +346,14 @@ public class MainWindows extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    public void createClosingDay(String day){
+        if ( !day.isEmpty() ){
+            ClosingDay cd = new ClosingDay(day);
+            mdiPanel.add(cd);
+            cd.setVisible(true);
+        }
+    }
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){

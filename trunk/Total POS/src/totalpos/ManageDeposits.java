@@ -185,8 +185,8 @@ public class ManageDeposits extends javax.swing.JInternalFrame {
             }
         }
         try {
-            ConnectionDrivers.deleteAllDepositsToday();
-            ConnectionDrivers.createDepositsToday(model);
+            ConnectionDrivers.deleteAllDeposits("");
+            ConnectionDrivers.createDeposits(model,"");
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
         } catch (SQLException ex) {
@@ -213,7 +213,7 @@ public class ManageDeposits extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() throws SQLException {
-        deposits = ConnectionDrivers.listDepositsToday();
+        deposits = ConnectionDrivers.listDeposits("");
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         for (Deposit e : deposits) {

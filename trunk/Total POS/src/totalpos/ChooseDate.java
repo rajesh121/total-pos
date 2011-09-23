@@ -17,12 +17,12 @@ import javax.swing.JTextField;
 public class ChooseDate extends javax.swing.JInternalFrame {
 
     /** Creates new form ChooseDate */
-    public ChooseDate(String title, JTextField jtf) {
+    public ChooseDate(String title, JTextField jtf, boolean isClosingDay) {
         initComponents();
         Container c = getContentPane();
         c.setLayout(new FlowLayout());
-        c.add(new Cal(jtf,this));
-
+        c.add(new Cal(jtf,this,isClosingDay));
+        setTitle(title);
         pack();
     }
 

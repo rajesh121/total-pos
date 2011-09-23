@@ -115,7 +115,7 @@ public class FiscalPrinter {
             for (Item2Receipt item2r : items) {
                 Item item = item2r.getItem();
                 printer.SendCmd(a, b, "!" + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
-                        Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 38)));
+                        Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 37)));
                 if ( b.getValue() != 0 ){
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }
@@ -336,7 +336,7 @@ public class FiscalPrinter {
             for (Item2Receipt item2r : items) {
                 Item item = item2r.getItem();
                 printer.SendCmd(a, b, "d1" + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
-                        Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 38)));
+                        Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 37)));
                 if ( b.getValue() != 0 ){
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }
@@ -438,7 +438,6 @@ public class FiscalPrinter {
         file = new File(Constants.tmpFileName);
         sc = new Scanner(file);
         line = sc.next();
-        Double total = Double.parseDouble(line.substring(2+10*1-1,2+10*2-1))/100.0;
         //Double total = Double.parseDouble(line.substring(2+10*1,2+10*2))/100.0;
         //String lReceipt = line.substring(2+10*2, 2+10*2+8);
         //TODO IS IT A BUG?????????????
@@ -460,6 +459,8 @@ public class FiscalPrinter {
         line = sc.next();
 
         String lastCN = line.substring(168);
+        //System.out.println("line = " + line );
+        Double total = Double.parseDouble(line.substring(39,39+9))/100.0 - Double.parseDouble(line.substring(109, 109+9))/100.0;
         
         sc.close();
         file.delete();

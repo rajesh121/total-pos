@@ -23,6 +23,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         reason = reasonI;
+        titleLabel.setText(reason);
         myParent = parent;
         acceptButton.setMnemonic('A');
         cancelButton.setMnemonic('C');
@@ -38,7 +39,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         moneyField = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
@@ -47,11 +48,11 @@ public class AddMoney2Pay extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Agregar Forma de Pago");
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
-        jLabel1.setText("Agregar Forma de Pago");
-        jLabel1.setName("jLabel1"); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
+        titleLabel.setText("Agregar Forma de Pago");
+        titleLabel.setName("titleLabel"); // NOI18N
 
-        jLabel2.setText("Dinero");
+        jLabel2.setText("Monto");
         jLabel2.setName("jLabel2"); // NOI18N
 
         moneyField.setName("moneyField"); // NOI18N
@@ -84,7 +85,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -100,7 +101,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(titleLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -158,9 +159,9 @@ public class AddMoney2Pay extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
     private javax.swing.JButton cancelButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField moneyField;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
 }

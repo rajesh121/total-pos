@@ -155,14 +155,15 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         updateFiscalZ();
         updatePayWayxPosesDetails();
         updateBankTable();
+        Double expensesD = ConnectionDrivers.getExpenses(myDay);
         totalCardsField.setText(Constants.df.format(totalInCard = ConnectionDrivers.getTotalCards(myDay)));
         totalCashField.setText(Constants.df.format(totalInCash = ConnectionDrivers.getTotalCash(myDay)));
         totalTotalField.setText(Constants.df.format(totalInCard + totalInCash));
-        expensesTodayField.setText(Constants.df.format(ConnectionDrivers.getExpenses(myDay)));
+        expensesTodayField.setText(Constants.df.format(expensesD));
         totalDeclaredField.setText(Constants.df.format(totalDeclared));
         expensesMinusDeclaredField.setText(Constants.df.format(receiptTotal));
-        netValue.setText(Constants.df.format( totalInCard + totalInCash - ( totalInCard + totalInCash - totalExpenses ) - (totalExpenses)));
-        totalField.setText((totalDeclared*(1.0+Shared.getIva()/100.0)-(totalInCard + totalInCash)/(Shared.getIva()/100.0+1.0))+"");
+        //netValue.setText(Constants.df.format( totalInCard + totalInCash - ( totalInCard + totalInCash - totalExpenses ) - (totalExpenses)));
+        totalField.setText(Constants.df.format((totalDeclared*(1.0+Shared.getIva()/100.0)-(totalInCard + totalInCash)-expensesD)));
     }
 
     /** This method is called from within the constructor to
@@ -937,6 +938,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         try {
             ConnectionDrivers.deleteAllDeposits(myDay);
             ConnectionDrivers.createDeposits(model,myDay);
+            updateAll();
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
         } catch (SQLException ex) {
@@ -1002,6 +1004,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         try {
             ConnectionDrivers.deleteAllExpenses(myDay);
             ConnectionDrivers.createExpenses(model,myDay);
+            updateAll();
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
         } catch (SQLException ex) {
@@ -1218,7 +1221,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
-            String tmp = expenseTable.getValueAt(i, 0).toString().split("-")[0];
+            String tmp = bankTable.getValueAt(i, 0).toString().split("-")[0];
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO( tmp.substring(0, tmp.length() - 1)));
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 3).equals("Credito")?"B":"D" ) );
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO( tmp.substring(0, tmp.length() - 1)));

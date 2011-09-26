@@ -50,7 +50,7 @@ public class ReceiptSap {
         }
 
         kind = r.getClientId().equals("Contado")?"1":"2";
-        client = r.getClientId().equals("Contado")?r.getClientId():"";
+        client = r.getClientId().equals("Contado")?"":r.getClientId();
         z = r.getzReportId();
         printerId = r.getFiscalPrinter();
     }

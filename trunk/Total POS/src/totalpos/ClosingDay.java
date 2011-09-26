@@ -1052,8 +1052,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             for (ZFISDATAFISCAL zfdf : ConnectionDrivers.getOperativeDays(myDay)) {
                 zFISDATAFISCAL.add(zfdf);
             }
-            Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
-            System.out.println(sss.getCodigoError());
+            //Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
+            //System.out.println(sss.getCodigoError());
 
             ArrayOfZSDSCABDEV aozsdscd = new ArrayOfZSDSCABDEV();
             ArrayOfZSDSVENDFACT aozsdsvf = new ArrayOfZSDSVENDFACT();
@@ -1067,12 +1067,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
             ReceiptSap rs = new ReceiptSap();
             int previousId = -1;
+            String previousCli = "Contado";
             for (Receipt receipt : receipts) {
                 if ( receipt.getFiscalNumber().isEmpty() ){
                     System.out.println("Error con la factura " + receipt.getInternId());
                     continue;
                 }
-                if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) && receipt.getClientId().equals("Contado")) ){
+                if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) 
+                        && receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
                     rs.add(receipt);
                 }else{
                     aozsdscd.getZSDSCABDEV().add(rs.getHeader());
@@ -1081,6 +1083,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     rs.add(receipt);
                 }
                 previousId = Integer.parseInt(receipt.getFiscalNumber());
+                previousCli = receipt.getClientId();
             }
             if ( rs.getSize() > 0 ){
                 aozsdscd.getZSDSCABDEV().add(rs.getHeader());
@@ -1090,6 +1093,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             receipts = ConnectionDrivers.listOkReceipts(myDay);
             rs = new ReceiptSap();
             previousId = -1;
+            previousCli = "Contado";
 
             List<String> clients = new LinkedList<String>();
 
@@ -1103,7 +1107,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     System.out.println("Error con la factura " + receipt.getInternId());
                     continue;
                 }
-                if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) && receipt.getClientId().equals("Contado")) ){
+                if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) && 
+                        receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
                     rs.add(receipt);
                 }else{
                     aozsdscf.getZSDSCABFACT().add(rs.getHeaderF());
@@ -1112,6 +1117,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     rs.add(receipt);
                 }
                 previousId = Integer.parseInt(receipt.getFiscalNumber());
+                previousCli = receipt.getClientId();
             }
             if ( rs.getSize() > 0 ){
                 aozsdscf.getZSDSCABFACT().add(rs.getHeaderF());
@@ -1141,7 +1147,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 aozsdsc.getZSDSCLIENT().add(cli);
             }
             
-            sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
+            Resultado sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
             System.out.println(sss.getCodigoError());
             System.out.println(sss.getMensaje().getValue());
 
@@ -1152,6 +1158,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         } catch (SQLException ex) {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage() + ex.getStackTrace());
         }
     }
 

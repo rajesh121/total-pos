@@ -293,7 +293,7 @@ public class FiscalPrinter {
         return lastReceipt;
     }
 
-    public void printCreditNote(List<Item2Receipt> items, String ticketId, String myId, User u , Client client) throws Exception{
+    public void printCreditNote(List<Item2Receipt> items, String ticketId, String myId, User u , Client client, String alternativeId) throws Exception{
         if ( !Constants.withFiscalPrinter ){
             return;
         }
@@ -324,6 +324,7 @@ public class FiscalPrinter {
             }
             buffer.add("i0" + ( line++ ) + "Correlativo: " + myId);
             buffer.add("i0" + ( line++ ) + "Factura: " + ticketId);
+            buffer.add("i0" + ( line++ ) + "Factura ID Temporal: " + alternativeId);
             buffer.add("i0" + ( line++ ) + "Caja: " + Shared.getFileConfig("myId"));
 
             for (String bu : buffer) {

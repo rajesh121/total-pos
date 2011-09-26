@@ -749,7 +749,9 @@ public class ConnectionDrivers {
     protected static void createReceipt(String id, String user , Assign assign) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura"
-                + " ( codigo_interno, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , codigo_de_cliente , identificador_turno , identificador_pos) "
+                + " ( " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") +
+                ", estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, "
+                + "cantidad_de_articulos , codigo_de_cliente , identificador_turno , identificador_pos) "
                 + "values ( ? , 'Pedido' , now() , 0, 0, 0 , ? , 0 , \"Contado\", ? , ?)");
         stmt.setString(1, id);
         stmt.setString(2, user);
@@ -763,7 +765,8 @@ public class ConnectionDrivers {
     protected static double accumulatedInReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select total_sin_iva from factura where codigo_interno = ?");
+        PreparedStatement stmt = c.prepareStatement("select total_sin_iva from factura where "
+                + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ?");
         stmt.setString(1, receiptId);
         ResultSet rs = stmt.executeQuery();
 
@@ -797,7 +800,7 @@ public class ConnectionDrivers {
                 " , total_con_iva =" + (new Price(null,subT)).plusIva().getQuant() +
                 " , iva = " + (new Price(null,subT)).getIva().getQuant() +
                 " , cantidad_de_articulos = cantidad_de_articulos + 1 "
-                + "where codigo_interno = ? ");
+                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
         
@@ -822,7 +825,7 @@ public class ConnectionDrivers {
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = total_sin_iva + ? " +
                 " , cantidad_de_articulos = cantidad_de_articulos - 1 "
-                + "where codigo_interno = ? ");
+                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setDouble(1, withoutTax);
         stmt.setString(2, receiptId);
         stmt.executeUpdate();
@@ -831,7 +834,7 @@ public class ConnectionDrivers {
                 + "set total_con_iva = total_sin_iva * ? " +
                 " , iva = total_sin_iva * ? " +
                 " , cantidad_de_articulos = cantidad_de_articulos - 1 "
-                + "where codigo_interno = ? ");
+                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setDouble(1, Double.parseDouble(Shared.getConfig("iva"))+1.0);
         stmt.setDouble(2, Double.parseDouble(Shared.getConfig("iva")));
         stmt.setString(3, receiptId);
@@ -845,6 +848,21 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select count(*) from factura "
                 + "where datediff(now(),fecha_creacion) = 0 and identificador_pos = ? ");
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        int ans = rs.getInt(1);
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static int lastReceipt() throws SQLException, Exception{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select count(*) from factura where identificador_pos= ? ");
         stmt.setString(1, Shared.getFileConfig("myId"));
         ResultSet rs = stmt.executeQuery();
 
@@ -1058,7 +1076,7 @@ public class ConnectionDrivers {
     public static void putToIdle(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
-                + "  estado = 'Espera' where codigo_interno = ? ");
+                + "  estado = 'Espera' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
 
@@ -1068,7 +1086,7 @@ public class ConnectionDrivers {
     public static void putToNormal(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
-                + "  estado = 'Pedido' where codigo_interno = ? ");
+                + "  estado = 'Pedido' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
 
@@ -1079,7 +1097,7 @@ public class ConnectionDrivers {
     public static void cancelReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
-                + "  estado = 'Anulada' where codigo_interno = ? ");
+                + "  estado = 'Anulada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
 
@@ -1214,7 +1232,7 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
-                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno "
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno , codigo_interno_alternativo "
                 + "from factura where estado='Espera' and datediff(fecha_creacion,now()) = 0");
         
         ResultSet rs = stmt.executeQuery();
@@ -1237,7 +1255,8 @@ public class ConnectionDrivers {
                             rs.getString("codigo_de_usuario"),
                             rs.getInt("cantidad_de_articulos"),
                             listItems2Receipt(rs.getString("codigo_interno")),
-                            rs.getString("identificador_turno")
+                            rs.getString("identificador_turno"),
+                            rs.getString("codigo_interno_alternativo")
                         )
                     );
         }
@@ -1254,7 +1273,7 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
-                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno "
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno , codigo_interno_alternativo "
                 + "from factura where estado='Pedido' and datediff(fecha_creacion,now()) = 0 and identificador_pos = ? ");
 
         stmt.setString(1, Shared.getFileConfig("myId"));
@@ -1276,8 +1295,9 @@ public class ConnectionDrivers {
                             rs.getString("numero_reporte_z"),
                             rs.getString("codigo_de_usuario"),
                             rs.getInt("cantidad_de_articulos"),
-                            listItems2Receipt(rs.getString("codigo_interno")),
-                            rs.getString("identificador_turno")
+                            listItems2Receipt(Shared.isOffline?rs.getString("codigo_interno_alternativo"):rs.getString("codigo_interno")),
+                            rs.getString("identificador_turno"),
+                            rs.getString("codigo_interno_alternativo")
                         );
             if ( !r.getItems().isEmpty() ){
                 ans.add(r);
@@ -1462,7 +1482,7 @@ public class ConnectionDrivers {
     static void setFiscalData(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
-                + "where codigo_interno = ? ");
+                + "where " + (Shared.isOffline?"codigo_interno_alternativo ":"codigo_interno ") + " = ? ");
         stmt.setString(1, serial);
         stmt.setString(2, fiscalNumber);
         stmt.setString(3, z);
@@ -1475,7 +1495,7 @@ public class ConnectionDrivers {
     static void setFiscalDataCN(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update nota_de_credito set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
-                + "where codigo_interno = ? ");
+                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, serial);
         stmt.setString(2, fiscalNumber);
         stmt.setString(3, z);
@@ -1488,7 +1508,7 @@ public class ConnectionDrivers {
     public static void finishReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
-                + "  estado = 'Facturada' where codigo_interno = ? ");
+                + "  estado = 'Facturada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
 
@@ -1498,7 +1518,7 @@ public class ConnectionDrivers {
     public static void setGlobalDiscount(String receiptId , Double d) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
-                + "  descuento_global = ? where codigo_interno = ? ");
+                + "  descuento_global = ? where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setDouble(1, d);
         stmt.setString(2, receiptId);
         stmt.executeUpdate();
@@ -1509,7 +1529,7 @@ public class ConnectionDrivers {
     static void setClient(Client cu, String actualId) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
-                + "  codigo_de_cliente = ? where codigo_interno = ? ");
+                + "  codigo_de_cliente = ? where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, cu.getId());
         stmt.setString(2, actualId);
         stmt.executeUpdate();
@@ -1520,7 +1540,7 @@ public class ConnectionDrivers {
     static void setPritingHour(String actualId, String table) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update " + table + " set "
-                + "  fecha_impresion = now() where codigo_interno = ? ");
+                + "  fecha_impresion = now() where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, actualId);
         stmt.executeUpdate();
 
@@ -1652,6 +1672,69 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static void renameReceipts() throws SQLException{
+        List<String> tmpCode = new LinkedList<String>();
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_interno_alternativo , identificador_pos from factura "
+                + "where codigo_interno='' and identificador_pos = ? ");
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            tmpCode.add(rs.getString("codigo_interno_alternativo"));
+        }
+
+        rs.close();
+
+        for (String code : tmpCode) {
+            String newCode = Shared.nextId(1);
+            stmt = c.prepareStatement("update factura set codigo_interno = ? where codigo_interno_alternativo= ? ");
+            stmt.setString(1, newCode);
+            stmt.setString(2, code);
+            stmt.executeUpdate();
+            stmt = c.prepareStatement("update factura_contiene set codigo_interno_factura = ? where codigo_interno_factura = ? ");
+            stmt.setString(1, newCode);
+            stmt.setString(2, code);
+            stmt.executeUpdate();
+            stmt = c.prepareStatement("update forma_de_pago set codigo_interno_factura = ? where codigo_interno_factura = ? ");
+            stmt.setString(1, newCode);
+            stmt.setString(2, code);
+            stmt.executeUpdate();
+        }
+
+        c.close();
+    }
+
+    public static void renameCN() throws SQLException{
+        List<String> tmpCode = new LinkedList<String>();
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_interno_alternativo , identificador_pos from nota_de_credito "
+                + "where codigo_interno='' and identificador_pos = ? ");
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            tmpCode.add(rs.getString("codigo_interno_alternativo"));
+        }
+
+        rs.close();
+
+        for (String code : tmpCode) {
+            String newCode = Shared.nextIdCN(1);
+            stmt = c.prepareStatement("update nota_de_credito set codigo_interno = ? where codigo_interno_alternativo = ? ");
+            stmt.setString(1, newCode);
+            stmt.setString(2, code);
+            stmt.executeUpdate();
+            stmt = c.prepareStatement("update nota_de_credito_contiene set codigo_interno_nota_de_credito = ? "
+                    + "where codigo_interno_nota_de_credito = ? ");
+            stmt.setString(1, newCode);
+            stmt.setString(2, code);
+            stmt.executeUpdate();
+        }
+
+        c.close();
+    }
+
     public static void createCreditNote(String myId, String idReceipt, String user, Assign assign, List<Item2Receipt> items) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         double subT = .0 , ivaT = .0 , total = .0 ;
@@ -1663,7 +1746,10 @@ public class ConnectionDrivers {
         total = subT + ivaT;
 
         PreparedStatement stmt = c.prepareStatement("insert into nota_de_credito"
-                + " ( codigo_interno, codigo_factura, estado, fecha_creacion , total_sin_iva , total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , identificador_turno , identificador_pos) "
+                + " ( " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") +
+                " , codigo_factura, estado, fecha_creacion , total_sin_iva , "
+                + "total_con_iva , iva, codigo_de_usuario, cantidad_de_articulos , identificador_turno"
+                + " , identificador_pos) "
                 + "values ( ?, ? , 'Nota' , now() , ? , ?, ? , ? , ? , ? , ?)");
         stmt.setString(1, myId);
         stmt.setString(2, idReceipt);
@@ -1700,21 +1786,45 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static Receipt getReceiptToDev(String id) throws SQLException {
+    protected static int lastCreditNote() throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select codigo_interno , estado , fecha_creacion , codigo_de_cliente , total_con_iva ,"
-                + "impresora , numero_fiscal , numero_reporte_z , descuento_global"
-                + " from factura where codigo_interno = ? and estado='Facturada'");
+        PreparedStatement stmt = c.prepareStatement("select count(*) from nota_de_credito where identificador_pos = ? ");
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        int ans = rs.getInt(1);
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    public static Receipt getReceiptToDev(String id) throws SQLException {
+        String campoId = "codigo_interno";
+        String campoIdW = "codigo_interno";
+        if ( id.charAt(6) == '9' ){
+            campoIdW = "codigo_interno_alternativo";
+            if ( Shared.isOffline ){
+                campoId = "codigo_interno_alternativo";
+            }
+        }
+        
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select " + campoId + " , estado , fecha_creacion , codigo_de_cliente , total_con_iva ,"
+                + "impresora , numero_fiscal , numero_reporte_z , descuento_global, codigo_interno_alternativo "
+                + " from factura where " + campoIdW + " = ? and estado='Facturada'");
         stmt.setString(1, id);
         ResultSet rs = stmt.executeQuery();
         boolean ok = rs.next();
 
         Receipt ans = null;
         if ( ok ){
-            ans = new Receipt(id, "Facturada",rs.getTimestamp("fecha_creacion"), null, rs.getString("codigo_de_cliente")
+            ans = new Receipt(rs.getString(campoId), "Facturada",rs.getTimestamp("fecha_creacion"), null, rs.getString("codigo_de_cliente")
                     , null, rs.getDouble("total_con_iva"), rs.getDouble("descuento_global"), null, rs.getString("impresora"),
                     rs.getString("numero_fiscal"), rs.getString("numero_reporte_z"),
-                    null, null, listItems2Receipt(id), null);
+                    null, null, listItems2Receipt(rs.getString(campoId)), null, rs.getString("codigo_interno_alternativo"));
         }
         c.close();
         rs.close();
@@ -1741,7 +1851,7 @@ public class ConnectionDrivers {
                 " , total_con_iva =" + (new Price(null,subT)).plusIva().getQuant() +
                 " , iva = " + (new Price(null,subT)).getIva().getQuant() +*/
                 " cantidad_de_articulos = cantidad_de_articulos + ? "
-                + "where codigo_interno = ? ");
+                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(2, receiptId);
         stmt.setInt(1, item.getQuant());
         stmt.executeUpdate();
@@ -2305,7 +2415,7 @@ public class ConnectionDrivers {
 
     static void updateMoney() throws PropertyVetoException, SQLException{
         if ( !Constants.isPos ){
-            // Admin has no mirror
+            // Admin does'nt have mirror
             return;
         }
 
@@ -2371,7 +2481,7 @@ public class ConnectionDrivers {
 
 
         PreparedStatement stmtA = a.prepareStatement("select codigo_de_articulo,cantidad-devuelto as cantidad "
-                + "from factura_contiene where cantidad-devuelto != 0");
+                + "from factura_contiene where cantidad-devuelto != 0  and sincronizado = 0");
         ResultSet rsA = stmtA.executeQuery();
 
         while( rsA.next() ){
@@ -2427,6 +2537,11 @@ public class ConnectionDrivers {
             }
 
             stmtNewB.executeUpdate();
+            if ( tableName.equals("factura") ){
+                ConnectionDrivers.renameReceipts();
+            }else if ( tableName.equals("nota_de_credito") ){
+                ConnectionDrivers.renameCN();
+            }
         }
 
 
@@ -2679,7 +2794,7 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
-                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno "
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno , codigo_interno_alternativo "
                 + "from factura where estado='Facturada' and datediff(fecha_creacion,?) = 0 and identificador_pos = ? order by impresora , numero_fiscal ");
 
         stmt.setString(1, day);
@@ -2703,7 +2818,8 @@ public class ConnectionDrivers {
                             rs.getString("codigo_de_usuario"),
                             rs.getInt("cantidad_de_articulos"),
                             listItems2Receipt(rs.getString("codigo_interno")),
-                            rs.getString("identificador_turno")
+                            rs.getString("identificador_turno"),
+                            rs.getString("codigo_interno_alternativo")
                         );
             if ( !r.getItems().isEmpty() ){
                 ans.add(r);
@@ -2722,7 +2838,7 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("select nc.codigo_interno, nc.estado, nc.fecha_creacion, "
                 + "nc.fecha_impresion, fac.codigo_de_cliente , nc.total_sin_iva, nc.total_con_iva, "
                 + "nc.iva, nc.impresora, nc.numero_fiscal, "
-                + "nc.numero_reporte_z, nc.codigo_de_usuario, nc.cantidad_de_articulos , nc.identificador_turno "
+                + "nc.numero_reporte_z, nc.codigo_de_usuario, nc.cantidad_de_articulos , nc.identificador_turno , nc.codigo_interno_alternativo "
                 + "from nota_de_credito nc , factura fac where nc.codigo_factura = fac.codigo_interno and nc.estado='Nota' "
                 + "and datediff(nc.fecha_creacion,?) = 0 and nc.identificador_pos = ? order by nc.impresora , nc.numero_fiscal ");
 
@@ -2747,7 +2863,8 @@ public class ConnectionDrivers {
                             rs.getString("codigo_de_usuario"),
                             rs.getInt("cantidad_de_articulos"),
                             listItems2CN(rs.getString("codigo_interno")),
-                            rs.getString("identificador_turno")
+                            rs.getString("identificador_turno"),
+                            rs.getString("codigo_interno_alternativo")
                         );
             if ( !r.getItems().isEmpty() ){
                 ans.add(r);

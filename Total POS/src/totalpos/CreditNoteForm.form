@@ -156,7 +156,6 @@
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancelar"/>
-        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="cancelButton" noResource="true"/>
       </Properties>
       <Events>
@@ -166,7 +165,6 @@
     <Component class="javax.swing.JButton" name="acceptButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Aceptar"/>
-        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="acceptButton" noResource="true"/>
       </Properties>
       <Events>
@@ -569,7 +567,6 @@
     <Component class="javax.swing.JButton" name="reverseALLButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Devolver todo"/>
-        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="reverseALLButton" noResource="true"/>
       </Properties>
       <Events>

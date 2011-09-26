@@ -186,6 +186,12 @@ public class Login extends JFrame implements Doer{
             if ( mrw.isOk ){
                 workingFrame.setVisible(false);
                 Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
+
+                if ( currentMoney == -1.0 && Shared.isOffline ){
+                    ConnectionDrivers.newCash(currentMoney, Shared.getFileConfig("myId"));
+                    currentMoney = .0;
+                }
+                
                 while ( currentMoney == -1.0 && !Shared.isOffline ){
                     String cc = JOptionPane.showInputDialog(getParent(),
                             "Monto Inicial de caja", Constants.df.format(Constants.minimumCash));

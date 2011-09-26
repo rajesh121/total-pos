@@ -44,7 +44,7 @@ public class Constants {
     public static final String[] tablesToMirrorAtBegin = {"articulo","usuario","codigo_de_barras","costo",
         "precio","tipo_de_usuario","tipo_de_usuario_puede","asigna","configuracion","nodo","punto_de_venta","cliente"};
     public static final String[] tablesToMirrorAtDay = {"articulo","precio"};
-    public static final String[] tablesToCleanMirror = {"factura","factura_contiene","nota_de_credito","nota_de_credito_contiene"};
+    public static final String[] tablesToCleanMirror = {"factura_contiene","factura","nota_de_credito_contiene","nota_de_credito"};
 
     public static final String[] var2check = {"Server","ServerMirror","myId"};
 
@@ -74,7 +74,7 @@ public class Constants {
     public static final String storePrefix = "";
     public static final String waerks = "VEF";
 
-    public static final boolean isPos = false;
+    public static final boolean isPos = true;
 
     public static String maximunId = "9999999999999999999999999";
     public static String minimunId = "";

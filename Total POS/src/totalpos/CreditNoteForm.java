@@ -183,7 +183,6 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
         jScrollPane1.setViewportView(table);
 
         cancelButton.setText("Cancelar");
-        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -192,7 +191,6 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
         });
 
         acceptButton.setText("Aceptar");
-        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -438,7 +436,6 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
         );
 
         reverseALLButton.setText("Devolver todo");
-        reverseALLButton.setFocusable(false);
         reverseALLButton.setName("reverseALLButton"); // NOI18N
         reverseALLButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -512,7 +509,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
     private void reverseALLButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reverseALLButtonActionPerformed
         for (int i = 0; i < table.getRowCount(); ++i) {
             try{
-                int antiQuantComplement = Integer.parseInt((String)(table.getValueAt(i, 1)+""));
+                int antiQuantComplement = Integer.parseInt((table.getValueAt(i, 1)+""));
                 int antiQuantComplementDone = Integer.parseInt((table.getValueAt(i, 2)+""));
                 table.setValueAt((antiQuantComplement-antiQuantComplementDone)+"", i, 0);
             }catch ( NumberFormatException ex){
@@ -522,29 +519,6 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
             }
         }
     }//GEN-LAST:event_reverseALLButtonActionPerformed
-
-    private String nextId(){
-        try {
-            int rightNow = ConnectionDrivers.lastCreditNoteToday();
-
-            Date d = ConnectionDrivers.getDate();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
-            return sdf.format(d) + Shared.getFileConfig("myId") + String.format(Shared.isOffline?"9%03d":"%04d", rightNow);
-        } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
-            return "";
-        } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas al listar calcular el siguiente código de factura.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
-            return "";
-        }
-
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton acceptButton;
@@ -591,14 +565,14 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
                 try{
                     // This part was a little annoying :-o!
                     // x2
-                    int antiquant = Integer.parseInt(((String)(table.getValueAt(i, 0)+"")));
-                    int antiQuantComplement = Integer.parseInt((String)(table.getValueAt(i, 1)+""));
+                    int antiquant = Integer.parseInt(((table.getValueAt(i, 0)+"")));
+                    int antiQuantComplement = Integer.parseInt((table.getValueAt(i, 1)+""));
                     int antiQuantComplementDone = Integer.parseInt((table.getValueAt(i, 2)+""));
                     int a = antiQuantComplement - antiQuantComplementDone;
                     if ( antiquant > a ){
                         MessageBox msb = null;
                         if ( a != 0 ){
-                            msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar máximo " + (a) +" artículos en el item " + (i+1) + "!");
+                            msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar máximo " + (a) +" artículo(s) en el item " + (i+1) + "!");
                         }else{
                             msb = new MessageBox(MessageBox.SGN_CAUTION, "Ese producto ya fue devuelto!");
                         }
@@ -625,10 +599,10 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
                 msb.show(null);
                 return;
             }
-            actualId = nextId();
+            actualId = Shared.nextIdCN(0);
             ConnectionDrivers.createCreditNote(actualId, receipt.getInternId(), myParent.getUser().getLogin(), myParent.getAssign(), items);
-            myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client);
-;
+            myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client, receipt.getAlternativeID());
+
             ConnectionDrivers.setFiscalDataCN(actualId, myParent.printer.getSerial() , myParent.printer.getZ() , myParent.printer.getLastFiscalNumber());
             ConnectionDrivers.setPritingHour(actualId, "nota_de_credito");
 

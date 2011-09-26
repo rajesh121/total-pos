@@ -120,6 +120,29 @@ public class Shared {
         return profiles;
     }
 
+    public static String nextId(int offset){
+        try {
+            return Shared.getConfig("storeName") + Shared.getFileConfig("myId")
+                    + String.format((Shared.isOffline?"9%05d":"%06d"), ConnectionDrivers.lastReceipt()-offset);
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+            msb.show(Shared.getMyMainWindows());
+            Shared.reload();
+            return "";
+        } catch (Exception ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas al listar calcular el siguiente código de factura.",ex);
+            msb.show(Shared.getMyMainWindows());
+            Shared.reload();
+            return "";
+        }
+
+    }
+
+    public static String nextIdCN(int offset) throws SQLException{
+        return Shared.getConfig("storeName") + Shared.getFileConfig("myId")
+                + String.format((Shared.isOffline?"9%05d":"%06d"), ConnectionDrivers.lastCreditNote()-offset);
+    }
+
     public static void userTrying(String l) throws Exception{
         if ( !tries.containsKey(l) ){
             getTries().put(l, new Integer(1));

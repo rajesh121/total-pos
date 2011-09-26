@@ -178,7 +178,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         List<Receipt> uncompletedReceipts = ConnectionDrivers.listUncompletedReceiptToday();
         
         if ( uncompletedReceipts.isEmpty() ){
-            actualId = nextId();
+            actualId = Shared.nextId(0);
             ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
             if ( ConnectionDrivers.isNeededtoUpdate() ){
                 try {
@@ -1199,29 +1199,6 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         TotalLabelResult.setText(Constants.df.format(total) + " Bs");
     }
 
-    private String nextId(){
-        try {
-            int rightNow = ConnectionDrivers.lastReceiptToday();
-
-            Date d = ConnectionDrivers.getDate();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
-            return sdf.format(d)+ Shared.getFileConfig("myId") + String.format((Shared.isOffline?"9%03d":"%04d"), rightNow);
-        } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
-            return "";
-        } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas al listar calcular el siguiente código de factura.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
-            return "";
-        }
-        
-    }
-
     private void deleteItem() {
         if ( gridTable.getSelectedRow() != -1){
             try {
@@ -1282,7 +1259,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
     public void loadThisReceipt(Receipt r) throws SQLException{
         if ( !r.getItems().isEmpty() ){
-            actualId = r.getInternId();
+            if ( r.getInternId().isEmpty() ){
+                actualId = r.getAlternativeID();
+            }else{
+                actualId = r.getInternId();
+            }
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
             for (Item2Receipt item2r : r.getItems()) {

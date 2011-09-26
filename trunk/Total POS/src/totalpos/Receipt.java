@@ -24,13 +24,14 @@ public class Receipt {
     private Integer numberItems;
     private List<Item2Receipt> items;
     private String turn;
+    private String alternativeID;
 
     public Receipt(String internId, String status, Timestamp creationDate,
             Timestamp printingDate, String clientId, Double totalWithoutIva,
             Double totalWithIva, Double globalDiscount, Double iva,
             String fiscalPrinter, String fiscalNumber, String zReportId,
             String userCodeId, Integer numberItems, List<Item2Receipt> items,
-            String turn) {
+            String turn, String alternativeID) {
         this.internId = internId;
         this.status = status;
         this.creationDate = creationDate;
@@ -47,6 +48,7 @@ public class Receipt {
         this.numberItems = numberItems;
         this.items = items;
         this.turn = turn;
+        this.alternativeID = alternativeID;
     }
 
     public String getClientId() {
@@ -113,4 +115,7 @@ public class Receipt {
         return turn;
     }
 
+    public String getAlternativeID() {
+        return alternativeID;
+    }
 }

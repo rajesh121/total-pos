@@ -324,7 +324,9 @@ public class FiscalPrinter {
             }
             buffer.add("i0" + ( line++ ) + "Correlativo: " + myId);
             buffer.add("i0" + ( line++ ) + "Factura: " + ticketId);
-            buffer.add("i0" + ( line++ ) + "Factura ID Temporal: " + alternativeId);
+            if ( !alternativeId.isEmpty() ){
+                buffer.add("i0" + ( line++ ) + "Factura ID Temporal: " + alternativeId);
+            }
             buffer.add("i0" + ( line++ ) + "Caja: " + Shared.getFileConfig("myId"));
 
             for (String bu : buffer) {

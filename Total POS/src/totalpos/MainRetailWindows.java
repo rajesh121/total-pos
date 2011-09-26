@@ -959,8 +959,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F8 ){
             ManageClient mc = new ManageClient(this, true, client);
-            Shared.centerFrame(mc);
-            mc.setVisible(true);
+            if ( mc.isOk ){
+                Shared.centerFrame(mc);
+                mc.setVisible(true);
+            }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F9 ){
             if ( items.isEmpty() ){
                 return;

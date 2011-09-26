@@ -10,6 +10,8 @@ import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,6 +22,7 @@ public class ManageClient extends javax.swing.JDialog {
     private boolean found = false;
     private MainRetailWindows parent;
     private boolean modified = false;
+    public boolean isOk = false;
 
     /** Creates new form ManageClient */
     public ManageClient(Frame parent, boolean modal, Client c) {
@@ -31,9 +34,17 @@ public class ManageClient extends javax.swing.JDialog {
         cancelButton.setMnemonic('C');
         acceptButton.setMnemonic('A');
         if ( c != null ){
-            searchIt(c.getId());
-            if ( found ){
-                idField.setText(c.getId());
+            try {
+                searchIt(c.getId());
+                if (found) {
+                    idField.setText(c.getId());
+                }
+                isOk = true;
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
             }
         }
     }
@@ -275,39 +286,32 @@ public class ManageClient extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void searchIt(String clientId){
-        try {
-            List<Client> clients = ConnectionDrivers.listClients(clientId);
-            if ( clients.isEmpty() ){
-                nameField.setText("");
-                phoneField.setText("");
-                addressField.setText("");
-                nameField.setEditable(true);
-                phoneField.setEditable(true);
-                addressField.setEditable(true);
-                modifyClient.setVisible(false);
-                found = false;
-            }else if ( clients.size() == 1 ){
-                Client c = clients.get(0);
-                nameField.setText(c.getName());
-                phoneField.setText(c.getPhone());
-                addressField.setText(c.getAddress());
-                nameField.setEditable(false);
-                phoneField.setEditable(false);
-                addressField.setEditable(false);
-                found = true;
-                modifyClient.setVisible(true);
-            }else{
-                // This section shouldn't be reached.
-                // There are 2 clients with the same RIF.
-                found = false;
-                assert( false );
-            }
-        } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-            msb.show(this);
-            this.dispose();
-            Shared.reload();
+    private void searchIt(String clientId) throws SQLException{
+        List<Client> clients = ConnectionDrivers.listClients(clientId);
+        if ( clients.isEmpty() ){
+            nameField.setText("");
+            phoneField.setText("");
+            addressField.setText("");
+            nameField.setEditable(true);
+            phoneField.setEditable(true);
+            addressField.setEditable(true);
+            modifyClient.setVisible(false);
+            found = false;
+        }else if ( clients.size() == 1 ){
+            Client c = clients.get(0);
+            nameField.setText(c.getName());
+            phoneField.setText(c.getPhone());
+            addressField.setText(c.getAddress());
+            nameField.setEditable(false);
+            phoneField.setEditable(false);
+            addressField.setEditable(false);
+            found = true;
+            modifyClient.setVisible(true);
+        }else{
+            // This section shouldn't be reached.
+            // There are 2 clients with the same RIF.
+            found = false;
+            assert( false );
         }
     }
 
@@ -363,7 +367,14 @@ public class ManageClient extends javax.swing.JDialog {
 
     private void nameFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameFieldFocusGained
         if ( validateRif() ){
-            searchIt(idField.getText());
+            try {
+                searchIt(idField.getText());
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
         }
     }//GEN-LAST:event_nameFieldFocusGained
 

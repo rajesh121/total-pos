@@ -62,6 +62,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         try {
             initComponents();
             myDay = day;
+            jLabel8.setVisible(false);
+            netValue.setVisible(false);
             updateAll();
             MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "El cierre de Caja aún está en desarrollo!!");
             msg.show(this);

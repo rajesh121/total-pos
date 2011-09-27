@@ -9,8 +9,6 @@ package totalpos;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -245,8 +243,8 @@ public class SearchProfile extends javax.swing.JInternalFrame {
 
     private void changeDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeDetailsActionPerformed
         if ( table.getSelectedRow() != -1 ){
-            ChangeProfileDetails cpd = new ChangeProfileDetails(null, true, (String)table.getValueAt(table.getSelectedRow(),0), (String)table.getValueAt(table.getSelectedRow(),1));
-            Shared.centerFrame(cpd);
+            ChangeProfileDetails cpd = new ChangeProfileDetails((String)table.getValueAt(table.getSelectedRow(),0), (String)table.getValueAt(table.getSelectedRow(),1));
+            getParent().add(cpd);
             cpd.setVisible(true);
             update();
         }else{

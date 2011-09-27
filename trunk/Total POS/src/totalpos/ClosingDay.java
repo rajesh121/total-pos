@@ -23,24 +23,23 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISCOBRANZA;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZFISDATAFISCAL;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSCABDEV;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSCABFACT;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSCLIENT;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSPOSDEV;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSPOSFACT;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ArrayOfZSDSVENDFACT;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.Resultado;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISCOBRANZA;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISHISTENVIOS;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSCLIENT;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSVENDFACT;
-import org.tempuri.IsrvSap;
-import org.tempuri.SrvSap;
+import srvSapPackage.ArrayOfZFISCOBRANZA;
+import srvSapPackage.ArrayOfZFISDATAFISCAL;
+import srvSapPackage.ArrayOfZSDSCABDEV;
+import srvSapPackage.ArrayOfZSDSCABFACT;
+import srvSapPackage.ArrayOfZSDSCLIENT;
+import srvSapPackage.ArrayOfZSDSPOSDEV;
+import srvSapPackage.ArrayOfZSDSPOSFACT;
+import srvSapPackage.ArrayOfZSDSVENDFACT;
+import srvSapPackage.IsrvSap;
+import srvSapPackage.ObjectFactory;
+import srvSapPackage.Resultado;
+import srvSapPackage.SrvSap;
+import srvSapPackage.ZFISCOBRANZA;
+import srvSapPackage.ZFISDATAFISCAL;
+import srvSapPackage.ZFISHISTENVIOS;
+import srvSapPackage.ZSDSCLIENT;
+import srvSapPackage.ZSDSVENDFACT;
 
 /**
  *

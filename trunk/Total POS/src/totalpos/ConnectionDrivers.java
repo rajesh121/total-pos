@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRDataSource;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZFISDATAFISCAL;
+import srvSapPackage.ZFISDATAFISCAL;
 
 /**
  *

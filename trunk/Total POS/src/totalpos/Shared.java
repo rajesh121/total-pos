@@ -20,10 +20,10 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import totalPackage.BNKA;
-import totalPackage.DD07T;
-import totalPackage.IsrvEntidades;
-import totalPackage.SrvEntidades;
+import srvEntidadesPackage.BNKA;
+import srvEntidadesPackage.DD07T;
+import srvEntidadesPackage.IsrvEntidades;
+import srvEntidadesPackage.SrvEntidades;
 
 /**
  *

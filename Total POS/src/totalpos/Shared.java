@@ -8,9 +8,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -352,17 +355,17 @@ public class Shared {
     public static String myTrim(String str){
         return str.substring(1, str.length()-1);
     }
-/*
-    public Set<Item> parseItems(String fileAdr) throws FileNotFoundException{
+
+    public Set<Item> parseItems(String fileAdr) throws FileNotFoundException, ParseException{
         Set<Item> ans = new TreeSet<Item>();
         Scanner sc = new Scanner(new File(fileAdr));
         while (sc.hasNextLine()) {
             String[] toks = sc.nextLine().split("\t");
             Item i = new Item(myTrim(toks[0]),
-                    myTrim(toks[1]) , null , fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, currentStock, null, null, null, isOffline, fileAdr, fileAdr)
+                    myTrim(toks[1]) , Constants.dateFormatter.parse(toks[2].split(" ")[0]) , fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, 0, null, null, null, isOffline, fileAdr, fileAdr);
         }
         return ans;
-    }*/
+    }
 
     public static void updateExpensesAndBanks(){
         try {

@@ -47,6 +47,7 @@ public class ManageClient extends javax.swing.JDialog {
                 Shared.reload();
             }
         }
+        isOk = true;
     }
 
     /** This method is called from within the constructor to

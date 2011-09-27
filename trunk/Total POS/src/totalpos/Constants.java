@@ -5,6 +5,7 @@ import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import java.awt.Color;
 import java.awt.Font;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
@@ -66,6 +67,7 @@ public class Constants {
     public static final SimpleDateFormat sdfDay2DB = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
     public static final SimpleDateFormat sdfDay2SAP = new SimpleDateFormat("yyyyMMdd");
+    public static final DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yy");
     public static final DecimalFormat df = new DecimalFormat("#0.00");
     public static final DecimalFormat df2z = new DecimalFormat("0000");
     public static final DecimalFormat df2int = new DecimalFormat("#00.###");

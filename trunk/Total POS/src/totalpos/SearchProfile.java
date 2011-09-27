@@ -9,11 +9,12 @@ package totalpos;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class SearchProfile extends javax.swing.JInternalFrame {
 
@@ -29,6 +30,7 @@ public class SearchProfile extends javax.swing.JInternalFrame {
         try {
             List<Profile> profiles = ConnectionDrivers.listProfile(searchTextField.getText());
             DefaultTableModel model = (DefaultTableModel) table.getModel();
+            int selected = table.getSelectedRow();
 
             model.setRowCount(0);
 
@@ -36,6 +38,8 @@ public class SearchProfile extends javax.swing.JInternalFrame {
                 String s[] = {p.getId() , p.getDescription()};
                 model.addRow(s);
             }
+            ListSelectionModel lsm = table.getSelectionModel();
+            lsm.setSelectionInterval(selected, selected);
 
             isOk = true;
         } catch (SQLException ex) {
@@ -76,6 +80,11 @@ public class SearchProfile extends javax.swing.JInternalFrame {
                 formMouseMoved(evt);
             }
         });
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                formFocusGained(evt);
+            }
+        });
 
         searchTitle.setFont(new java.awt.Font("Courier New", 1, 18));
         searchTitle.setText("Buscar Perfil");
@@ -93,7 +102,7 @@ public class SearchProfile extends javax.swing.JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        table.setFont(new java.awt.Font("Courier New", 0, 11));
+        table.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -126,6 +135,11 @@ public class SearchProfile extends javax.swing.JInternalFrame {
         table.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 tableMouseMoved(evt);
+            }
+        });
+        table.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tableFocusGained(evt);
             }
         });
         table.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -246,7 +260,6 @@ public class SearchProfile extends javax.swing.JInternalFrame {
             ChangeProfileDetails cpd = new ChangeProfileDetails((String)table.getValueAt(table.getSelectedRow(),0), (String)table.getValueAt(table.getSelectedRow(),1));
             getParent().add(cpd);
             cpd.setVisible(true);
-            update();
         }else{
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe seleccionar un perfil.");
             msb.show(this);
@@ -269,6 +282,14 @@ public class SearchProfile extends javax.swing.JInternalFrame {
     private void tableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseMoved
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_tableMouseMoved
+
+    private void formFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusGained
+        update();
+    }//GEN-LAST:event_formFocusGained
+
+    private void tableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tableFocusGained
+        update();
+    }//GEN-LAST:event_tableFocusGained
 
     private void showThisProfile(String p){
         ModifyProfile cnte = new ModifyProfile(p);

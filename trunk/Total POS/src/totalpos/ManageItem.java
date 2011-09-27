@@ -611,8 +611,9 @@ public class ManageItem extends JInternalFrame implements Doer {
     private void addStickerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStickerActionPerformed
         if ( itemTable.getSelectedRow() != -1 ){
 
-            if ( items.get(itemTable.getSelectedRow()).getLastPrice().getQuant() > .0 ){
-                if ( items.get(itemTable.getSelectedRow()).getCurrentStock() <=0 ){
+            Item item = items.get(itemTable.getSelectedRow());
+            if ( item.getLastPrice().getQuant() > .0 ){
+                if ( item.getCurrentStock() <= 0 ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se puede imprimir etiquetas de un producto sin existencia.");
                     msb.show(this);
                 }else{
@@ -621,17 +622,15 @@ public class ManageItem extends JInternalFrame implements Doer {
                         try{
                             int nn = Integer.parseInt(n);
 
-                            if ( nn < 0 ){
+                            if ( nn < 0 || nn > item.getCurrentStock() ){
                                 throw new NumberFormatException();
                             }
 
-                            Item i = items.get(itemTable.getSelectedRow());
-
-                            toPrint.add(i);
+                            toPrint.add(item);
                             quantToPrint.add(nn);
                             updateToPrint();
                         }catch ( NumberFormatException ex){
-                            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Formato del número incorrecto");
+                            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Formato del número incorrecto. Debe ser un entero positivo menor o igual a " + item.getCurrentStock() );
                             msg.show(this);
                         }
                     }
@@ -755,7 +754,7 @@ public class ManageItem extends JInternalFrame implements Doer {
 
         for ( int i = 0 ; i < stickerTable.getRowCount() ; i++ ){
             int n = Integer.parseInt(stickerTable.getValueAt(i, 3)+"");
-            if ( n <= 0 || n > 300 ){
+            if ( n <= 0 || n > 500 ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "La cantidad de etiquetas debe ser positiva y menor a 300");
                 msb.show(this);
                 return;
@@ -797,7 +796,5 @@ public class ManageItem extends JInternalFrame implements Doer {
     @Override
     public void close() {
         workingFrame.setVisible(false);
-        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Enviado a la impresora");
-        msb.show(this);
     }
 }

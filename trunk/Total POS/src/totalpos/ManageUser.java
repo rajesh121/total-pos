@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- * @author shidalgo
+ * @author Saúl Hidalgo
  */
 public class ManageUser extends javax.swing.JInternalFrame {
 

@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
+import srvSapPackage.ObjectFactory;
 
 /**
  *
@@ -76,7 +76,7 @@ public class Constants {
     public static final String storePrefix = "";
     public static final String waerks = "VEF";
 
-    public static final boolean isPos = true;
+    public static final boolean isPos = false;
 
     public static String maximunId = "9999999999999999999999999";
     public static String minimunId = "";

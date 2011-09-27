@@ -2,19 +2,16 @@
 package totalpos;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSCABDEV;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSPOSDEV;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ObjectFactory;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSCABFACT;
-import org.datacontract.schemas._2004._07.grupototalcapacomunicacion.ZSDSPOSFACT;
+import srvSapPackage.ObjectFactory;
+import srvSapPackage.ZSDSCABDEV;
+import srvSapPackage.ZSDSCABFACT;
+import srvSapPackage.ZSDSPOSDEV;
+import srvSapPackage.ZSDSPOSFACT;
 
 /**
  *

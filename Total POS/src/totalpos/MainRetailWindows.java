@@ -90,6 +90,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             }
 
             try {
+                printer.printerSerial = null;
                 if ( !printer.checkPrinter() ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema.");
                     msb.show(myParent);
@@ -108,6 +109,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             
             try {
                 ConnectionDrivers.updateReportZ(printer.getZ());
+                ConnectionDrivers.updateLastReceipt(printer.lastReceipt);
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
                 msb.show(myParent);

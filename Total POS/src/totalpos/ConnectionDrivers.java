@@ -124,7 +124,7 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery("select login, password, nombre, apellido, tipo_de_usuario_id, bloqueado,debeCambiarPassword,puedeCambiarPassword from usuario");
 
         while ( rs.next() ){
-            ans.add(new User(rs.getString("login"),
+            ans.add(new User(rs.getString("login").toLowerCase(),
                     rs.getString("password"),
                     rs.getString("tipo_de_usuario_id"),
                     rs.getString("nombre"),
@@ -2932,6 +2932,60 @@ public class ConnectionDrivers {
         boolean ok = rs.next();
         if ( ok ){
             ans = rs.getDouble("total");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static void updateLastReceipt(String lastReceipt) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_factura = ? where identificador = ? ");
+        stmt.setString(1, lastReceipt);
+        stmt.setString(2, Shared.getFileConfig("myId"));
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    static void updateLastCN(String lastCN) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_nota_de_credito = ? where identificador = ? ");
+        stmt.setString(1, lastCN);
+        stmt.setString(2, Shared.getFileConfig("myId"));
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    static String getLastReceipt() throws SQLException {
+        String ans = "";
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select ultima_factura from punto_de_venta where identificador = ? ");
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString("ultima_factura");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static String getLastCN() throws SQLException {
+        String ans = "";
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select ultima_nota_de_credito from punto_de_venta where identificador = ? ");
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString("ultima_nota_de_credito");
         }
 
         c.close();

@@ -8,19 +8,18 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JInternalFrame;
 
 /**
  *
  * @author shidalgo
  */
-public class ChangeProfileDetails extends javax.swing.JDialog {
+public class ChangeProfileDetails extends JInternalFrame {
 
     private String prevId;
     /** Creates new form ChangeProfileDetails */
-    public ChangeProfileDetails(java.awt.Frame parent, boolean modal, String prevId, String description) {
-        super(parent, modal);
+    public ChangeProfileDetails( String prevId, String description) {
+        super("Cambiar detalles");
         initComponents();
 
         changeId.setText(prevId);
@@ -43,10 +42,11 @@ public class ChangeProfileDetails extends javax.swing.JDialog {
         changeDescription = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setClosable(true);
+        setIconifiable(true);
         setTitle(Constants.appName);
+        setToolTipText("Formulario para cambiar detalles de un perfil");
         setMinimumSize(new java.awt.Dimension(400, 96));
-        setResizable(false);
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 formMouseMoved(evt);

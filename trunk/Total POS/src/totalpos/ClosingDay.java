@@ -56,11 +56,15 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private ObjectFactory of = Constants.of;
     public Working workingFrame;
     private String myDay = "";
+    private boolean showReport;
 
-    /** Creates new form ClosingDay */
-    public ClosingDay(String day) {
+    /** Creates new form ClosingDay
+     * @param day 
+     */
+    public ClosingDay(String day , boolean sr) {
         try {
             initComponents();
+            showReport = sr;
             myDay = day;
             jLabel8.setVisible(false);
             netValue.setVisible(false);
@@ -1054,8 +1058,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             for (ZFISDATAFISCAL zfdf : ConnectionDrivers.getOperativeDays(myDay)) {
                 zFISDATAFISCAL.add(zfdf);
             }
-            //Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
-            //System.out.println(sss.getCodigoError());
+            Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
+            String ansMoney = sss.getMensaje().getValue();
 
             ArrayOfZSDSCABDEV aozsdscd = new ArrayOfZSDSCABDEV();
             ArrayOfZSDSVENDFACT aozsdsvf = new ArrayOfZSDSVENDFACT();
@@ -1149,14 +1153,15 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 aozsdsc.getZSDSCLIENT().add(cli);
             }
             
-            Resultado sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
-            System.out.println(sss.getCodigoError());
-            System.out.println(sss.getMensaje().getValue());
+            sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
+            String ansSells = sss.getMensaje().getValue();
 
-            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Envío : " + sss.getMensaje().getValue());
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansSells + " </html>");
             msg.show(this);
 
-            new CreateClosingDayReport();
+            if ( showReport ){
+                new CreateClosingDayReport(myDay);
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
@@ -1230,10 +1235,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
-            String tmp = bankTable.getValueAt(i, 0).toString().split("-")[0];
-            zfc.setSIMBO(of.createZFISCOBRANZASIMBO( tmp.substring(0, tmp.length() - 1)));
+            zfc.setSIMBO(of.createZFISCOBRANZASIMBO( bankTable.getValueAt(i, 0).toString()));
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 3).equals("Credito")?"B":"D" ) );
-            zfc.setBPAGO(of.createZFISCOBRANZABPAGO( tmp.substring(0, tmp.length() - 1)));
+            zfc.setBPAGO(of.createZFISCOBRANZABPAGO( bankTable.getValueAt(i, 0).toString() ));
             zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 2)));
             zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 4)));
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
@@ -1268,9 +1272,10 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
-            zfc.setSIMBO(of.createZFISCOBRANZASIMBO((String)depositTable.getValueAt(i, 0)));
+            String bancoId = ((String)depositTable.getValueAt(i, 0)).split("-")[0].trim();
+            zfc.setSIMBO(of.createZFISCOBRANZASIMBO(bancoId));
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( "E" ) );
-            zfc.setBPAGO(of.createZFISCOBRANZABPAGO((String)depositTable.getValueAt(i, 0)));
+            zfc.setBPAGO(of.createZFISCOBRANZABPAGO(bancoId));
             zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
             zfc.setMONTO(new BigDecimal(((String)depositTable.getValueAt(i, 2)).replace(',','.')));
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));

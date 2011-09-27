@@ -23,7 +23,10 @@ import org.hibernate.connection.DatasourceConnectionProvider;
 
 public class CreateClosingDayReport {
 
-    public CreateClosingDayReport() {
+    private String myDay = "";
+
+    public CreateClosingDayReport(String myDay) {
+        this.myDay = myDay;
         build();
     }
 
@@ -104,7 +107,7 @@ public class CreateClosingDayReport {
 
             if ( masterRowNumber == 1 ){
                 try {
-                    return ConnectionDrivers.getExpensesReport();
+                    return ConnectionDrivers.getExpensesReport(myDay);
                 } catch (SQLException ex) {
                     Logger.getLogger(CreateClosingDayReport.class.getName()).log(Level.SEVERE, null, ex);
                     String[] columns = {};
@@ -112,7 +115,7 @@ public class CreateClosingDayReport {
                 }
             } if ( masterRowNumber == 2 ) {
                 try {
-                    return ConnectionDrivers.getIncommingReport();
+                    return ConnectionDrivers.getIncommingReport(myDay);
                 } catch (SQLException ex) {
                     Logger.getLogger(CreateClosingDayReport.class.getName()).log(Level.SEVERE, null, ex);
                     String[] columns = {};
@@ -120,7 +123,7 @@ public class CreateClosingDayReport {
                 }
             } if ( masterRowNumber == 3 ) {
                 try {
-                    return ConnectionDrivers.getFiscalInfo();
+                    return ConnectionDrivers.getFiscalInfo(myDay);
                 } catch (SQLException ex) {
                     Logger.getLogger(CreateClosingDayReport.class.getName()).log(Level.SEVERE, null, ex);
                     String[] columns = {};

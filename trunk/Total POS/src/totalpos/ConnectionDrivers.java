@@ -2675,7 +2675,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static JRDataSource getExpensesReport() throws SQLException {
+    static JRDataSource getExpensesReport(String day) throws SQLException {
 
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3 ; i++) {
@@ -2684,7 +2684,8 @@ public class ConnectionDrivers {
         DataSource dataSource = new DataSource(columnsArray);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select concepto , monto , descripcion from gasto where datediff(curdate(),fecha)=0");
+        PreparedStatement stmt = c.prepareStatement("select concepto , monto , descripcion from gasto where datediff( ? ,fecha)=0");
+        stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -2701,7 +2702,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    static JRDataSource getIncommingReport() throws SQLException {
+    static JRDataSource getIncommingReport(String day) throws SQLException {
         String[] columnsArray = new String[4];
         for (int i = 0; i < 4; i++) {
             columnsArray[i] = i + "";
@@ -2711,10 +2712,12 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.tipo , b.descripcion " +
                 ", a.lote , sum(monto) as monto from forma_de_pago a, " +
-                "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and datediff(curdate(),fecha)=0 " +
+                "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and datediff(?,fecha)=0 " +
                 "group by a.codigo_punto_de_venta_de_banco union " +
                 "select 'Efectivo' as tipo , banco as descripcion , " +
-                "numero as lote, monto from deposito where datediff(fecha,curdate())=0");
+                "numero as lote, monto from deposito where datediff(fecha,?)=0");
+        stmt.setString(1, day);
+        stmt.setString(2, day);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -2732,7 +2735,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    static JRDataSource getFiscalInfo() throws SQLException {
+    static JRDataSource getFiscalInfo(String day) throws SQLException {
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3 ; i++) {
             columnsArray[i] = i + "";
@@ -2741,7 +2744,8 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select impresora, numero_reporte_z , total_ventas " +
-                "from dia_operativo where datediff(fecha,curdate())=0");
+                "from dia_operativo where datediff(fecha,?)=0");
+        stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){

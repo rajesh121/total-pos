@@ -8,22 +8,27 @@ package totalpos;
 
 import java.awt.GridLayout;
 import java.awt.Window;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
@@ -68,16 +73,17 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
                 doItNow();
             }
             titleLabel.setText(title);
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(ParameteringReport.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void parseFile() throws FileNotFoundException{
-        Scanner sc = new Scanner(new File(fileAddr));
+    private void parseFile() throws FileNotFoundException, IOException{
+        DataInputStream in = new DataInputStream(new FileInputStream(fileAddr));
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        String line;
         int curLine = 1;
-        while (sc.hasNextLine()){
-            String line = sc.nextLine();
+        while ((line = br.readLine()) != null){
             String[] tokens = line.split("==");
             if ( tokens.length != 2 ){
                 System.err.println("Err parsing line " + curLine);
@@ -114,11 +120,11 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
                 String[] subtoks = tokens[1].split("\\|");
                 for (String subsubtok : subtoks) {
                     String[] comp = subsubtok.split("\\,");
-                    if ( comp.length != 3 ){
+                    if ( comp.length != 4 ){
                         System.err.println("Err parsing component \"" + subsubtok + "\"");
                         continue;
                     }
-                    parameters.add(new Parameter(comp[2], comp[0], comp[1],null,null));
+                    parameters.add(new Parameter(comp[2], comp[0], comp[1], comp[3],null,null));
                 }
             }else if ( tokens[0].equals("SQL") ){
                 sql = tokens[1];
@@ -128,6 +134,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
             }
             ++curLine;
         }
+        in.close();
     }
 
     /** This method is called from within the constructor to
@@ -146,6 +153,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
 
         setClosable(true);
         setIconifiable(true);
+        setResizable(true);
         setTitle("Especifique los parametros");
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
@@ -239,14 +247,6 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
                 jrb = jrb.setPageFormat(PageType.LETTER, PageOrientation.PORTRAIT);
             }
             jrb = jrb.setColumnTitleStyle(Constants.columnTitleStyle);
-            for (Parameter parameter : parameters) {
-                //TODO Check the syntaxis.
-                if (parameter.getTextField().getText().isEmpty()) {
-                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se pueden dejar parámetros vacíos.");
-                    msg.show(this);
-                    return;
-                }
-            }
             jrb = jrb.addColumn(createColumns(columns));
             jrb = jrb.setDataSource(ConnectionDrivers.createDataSource(parameters, sql, columnsTD));
             if ( title != null ){/*
@@ -304,23 +304,36 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
         mainPanel.setLayout(new GridLayout(parameters.size(), 2));
         for (Parameter name : parameters) {
             JLabel label = new JLabel(name.getFormName());
-            final JTextField textField = new JTextField();
             mainPanel.add(label);
-            if ( name.getType().equals("Date") ){
-                textField.addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        ChooseDate cal = new ChooseDate(Constants.appName,textField,false);
-                        ((MainWindows)Shared.getMyMainWindows()).mdiPanel.add(cal);
-                        cal.setVisible(true);
-                    }
-                });
-                textField.setEditable(false);
+            final JComponent textField ;
+            if ( name.getType().equals("Date") || name.getType().equals("String") ){
+                textField = new JTextField();
+                JTextField jtf = (JTextField) textField;
+                if ( name.getType().equals("Date") ){
+                    textField.addMouseListener(new java.awt.event.MouseAdapter() {
+                        @Override
+                        public void mouseClicked(java.awt.event.MouseEvent evt) {
+                            ChooseDate cal = new ChooseDate(Constants.appName,textField,false);
+                            ((MainWindows)Shared.getMyMainWindows()).mdiPanel.add(cal);
+                            cal.setVisible(true);
+                        }
+                    });
+                    jtf.setEditable(false);
+                }
+            }else if ( name.getType().equals("Combo") ){
+                textField = new JComboBox();
+                JComboBox jcb = (JComboBox)textField;
+                String[] toks = name.getFieldName().split(":");
+                for (String t : toks) {
+                    jcb.addItem(t);
+                }
+            }else{
+                textField = null;
             }
             mainPanel.add(textField);
             name.setLabel(label);
             name.setTextField(textField);
         }
-        setSize(450, 130+parameters.size()*22);
+        setSize(450, 130+parameters.size()*30);
     }
 }

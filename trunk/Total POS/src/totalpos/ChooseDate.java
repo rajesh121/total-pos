@@ -8,6 +8,7 @@ package totalpos;
 
 import java.awt.Container;
 import java.awt.FlowLayout;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 /**
@@ -17,11 +18,11 @@ import javax.swing.JTextField;
 public class ChooseDate extends javax.swing.JInternalFrame {
 
     /** Creates new form ChooseDate */
-    public ChooseDate(String title, JTextField jtf, boolean isClosingDay) {
+    public ChooseDate(String title, JComponent jtf, boolean isClosingDay) {
         initComponents();
         Container c = getContentPane();
         c.setLayout(new FlowLayout());
-        c.add(new Cal(jtf,this,isClosingDay));
+        c.add(new Cal((JTextField)jtf,this,isClosingDay));
         setTitle(title);
         pack();
     }

@@ -1,0 +1,6 @@
+Title==Cantidad de articulos
+Columns==Codigo,codigo,String|Descripcion,descripcion,String|Existencia Actual,existencia_actual,bigDecimalType,1
+ShowNumbers==True
+Parameters==
+SQL==Select codigo, existencia_actual , descripcion from articulo order by existencia_actual desc
+Vertical==False

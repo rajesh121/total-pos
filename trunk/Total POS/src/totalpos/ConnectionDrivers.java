@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -2065,7 +2067,18 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement(sql);
         for (int i = 0; i < parameters.size(); i++) {
             Parameter p = parameters.get(i);
-            stmt.setString(i+1, p.getTextField().getText());
+            String[] positions = p.getPositions().split(":");
+            for (String pos : positions) {
+                int myI = Integer.parseInt(pos);
+                if ( p.getTextField() instanceof JTextField ){
+                    JTextField jtf = (JTextField) p.getTextField();
+                    stmt.setString(myI, jtf.getText());
+                }else if ( p.getTextField() instanceof JComboBox ){
+                    JComboBox jtf = (JComboBox) p.getTextField();
+                    stmt.setString(myI, (String) jtf.getSelectedItem());
+                }
+            }
+            
         }
         ResultSet rs = stmt.executeQuery();
 
@@ -2995,13 +3008,24 @@ public class ConnectionDrivers {
 
     public static void updateItemsDetails(Item item) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("insert into codigo_de_barras( codigo_de_articulo , codigo_de_barras ) values ( ? , ? )");
+        PreparedStatement stmt = c.prepareStatement("delete from codigo_de_barras where codigo_de_articulo = ? and"
+                + " codigo_de_barras = ? ");
         stmt.setString(1, item.getCode());
         stmt.setString(2, item.getMainBarcode());
+        stmt.executeUpdate();
+        stmt = c.prepareStatement("insert into codigo_de_barras( codigo_de_articulo , codigo_de_barras ) values ( ? , ? )");
+        stmt.setString(1, item.getCode());
+        stmt.setString(2, item.getMainBarcode());
+        stmt.executeUpdate();
+        stmt = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = curdate()");
+        stmt.setString(1, item.getCode());
         stmt.executeUpdate();
         stmt = c.prepareStatement("insert into precio( codigo_de_articulo , monto , fecha  ) values ( ? , ? , curdate() )");
         stmt.setString(1, item.getCode());
         stmt.setDouble(2, item.getPrice().get(0).getQuant());
+        stmt.executeUpdate();
+        stmt = c.prepareStatement("delete from costo where codigo_de_articulo = ? and fecha = curdate()");
+        stmt.setString(1, item.getCode());
         stmt.executeUpdate();
         stmt = c.prepareStatement("insert into costo( codigo_de_articulo , monto , fecha  ) values ( ? , ? , curdate() )");
         stmt.setString(1, item.getCode());
@@ -3011,7 +3035,6 @@ public class ConnectionDrivers {
     }
 
     public static void updateItems(List<Item> items) throws SQLException{
-        System.out.println(items.size());
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (Item item : items) {
@@ -3041,7 +3064,10 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (Movement movement : movements) {
-            PreparedStatement stmt = c.prepareStatement("insert into movimiento_inventario "
+            PreparedStatement stmt = c.prepareStatement("delete from movimiento_inventario where identificador = ?");
+            stmt.setString(1, movement.getId());
+            stmt.executeUpdate();
+            stmt = c.prepareStatement("insert into movimiento_inventario "
                     + "( identificador , fecha , descripcion, codigo, almacen ) values( ? , ? , ? , ? , ? )");
             stmt.setString(1, movement.getId());
             stmt.setDate(2, movement.getDate());
@@ -3050,6 +3076,10 @@ public class ConnectionDrivers {
             stmt.setString(5, movement.getStoreId());
             stmt.executeUpdate();
             for (ItemQuant itemMovement : movement.getItems()) {
+                stmt = c.prepareStatement("delete from detalles_movimientos where identificador_movimiento = ? and codigo_articulo = ? ");
+                stmt.setString(1, movement.getId());
+                stmt.setString(2, itemMovement.getItemId());
+                stmt.executeUpdate();
                 stmt = c.prepareStatement("insert into detalles_movimientos "
                     + "( identificador_movimiento , codigo_articulo , cantidad_articulo ) values( ? , ? , ? )");
                 stmt.setString(1, movement.getId());

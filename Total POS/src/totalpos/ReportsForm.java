@@ -6,11 +6,14 @@
 
 package totalpos;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -44,16 +47,18 @@ public class ReportsForm extends javax.swing.JInternalFrame {
         File reportsFolder = new File(Constants.reportFolder);
         for (File file : reportsFolder.listFiles()) {
             try {
-                Scanner sc = new Scanner(file);
-                while (sc.hasNextLine()) {
-                    String line = sc.nextLine();
+                DataInputStream in = new DataInputStream(new FileInputStream(file));
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String line;
+                while ( (line = br.readLine()) != null ) {
                     String[] toks = line.split("==");
                     if (toks[0].equals("Title")) {
                         reportsScanned.add(new Report(file,toks[1]));
                         break;
                     }
                 }
-            } catch (FileNotFoundException ex) {
+                in.close();
+            } catch (IOException ex) {
                 Logger.getLogger(ReportsForm.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

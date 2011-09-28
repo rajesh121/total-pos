@@ -1,7 +1,7 @@
 package totalpos;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 /**
  *
@@ -12,14 +12,16 @@ public class Parameter {
     private String formName;
     private String fieldName;
     private JLabel label;
-    private JTextField textField;
+    private JComponent textField;
+    private String positions;
 
-    public Parameter(String type, String formName, String fieldName, JLabel label, JTextField textField) {
+    public Parameter(String type, String formName, String fieldName, String positions, JLabel label, JComponent textField) {
         this.type = type;
         this.formName = formName;
         this.fieldName = fieldName;
         this.label = label;
         this.textField = textField;
+        this.positions = positions;
     }
 
     public String getFieldName() {
@@ -34,7 +36,7 @@ public class Parameter {
         return label;
     }
 
-    public JTextField getTextField() {
+    public JComponent getTextField() {
         return textField;
     }
 
@@ -46,8 +48,12 @@ public class Parameter {
         this.label = label;
     }
 
-    public void setTextField(JTextField textField) {
+    public void setTextField(JComponent textField) {
         this.textField = textField;
+    }
+
+    public String getPositions() {
+        return positions;
     }
     
 }

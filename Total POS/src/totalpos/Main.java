@@ -38,10 +38,10 @@ public class Main {
         splash.changeStatus("Conectado a base de datos...", 30);
         ConnectionDrivers.initialize();
 
-        if ( !Constants.isPos ){
+        /*if ( !Constants.isPos ){
             splash.changeStatus("Actualizando bancos y gastos desde SAP", 40);
             Shared.updateExpensesAndBanks();
-        }
+        }*/
 
         splash.changeStatus("Inicializando configuración de base de datos...", 45);
         try {

@@ -388,6 +388,7 @@ public class MainWindows extends javax.swing.JFrame {
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         try {
             Shared.updateMovements();
+            System.out.println("listo");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MainWindows.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {

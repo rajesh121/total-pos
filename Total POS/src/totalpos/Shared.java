@@ -375,7 +375,7 @@ public class Shared {
         while ( (line = br.readLine()) != null ) {
             String[] toks = line.split("\t");
             
-            Price p = new Price( null , Double.parseDouble(toks[35]));
+            Price p = new Price( null , Double.parseDouble(toks[35])/(getIva()/100.0+1.0));
             Cost c = new Cost(null, Double.parseDouble(toks[55]));
             List<Price> lp = new LinkedList<Price>();
             lp.add(p);

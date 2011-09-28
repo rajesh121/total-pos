@@ -4,6 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -2341,21 +2343,20 @@ public class ConnectionDrivers {
             FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptName);
             BufferedWriter out = new BufferedWriter(fstream);
 
-            //String cmd = " echo \"Hola \" > salida.txt";
             out.write(cmd);
             out.close();
 
-            //String[] exp = {"chmod"  , "+x" , Constants.rootDir + Constants.scriptName};
-            //Runtime.getRuntime().exec(exp);
             Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptName);
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
-            String line;
 
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
+            while ( br.readLine() != null) {
+                ;
             }
+
+            File f = new File(Constants.rootDir + Constants.scriptName);
+            f.delete();
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionDrivers.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -2991,4 +2992,109 @@ public class ConnectionDrivers {
         rs.close();
         return ans;
     }
+
+    public static void updateItemsDetails(Item item) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into codigo_de_barras( codigo_de_articulo , codigo_de_barras ) values ( ? , ? )");
+        stmt.setString(1, item.getCode());
+        stmt.setString(2, item.getMainBarcode());
+        stmt.executeUpdate();
+        stmt = c.prepareStatement("insert into precio( codigo_de_articulo , monto , fecha  ) values ( ? , ? , curdate() )");
+        stmt.setString(1, item.getCode());
+        stmt.setDouble(2, item.getPrice().get(0).getQuant());
+        stmt.executeUpdate();
+        stmt = c.prepareStatement("insert into costo( codigo_de_articulo , monto , fecha  ) values ( ? , ? , curdate() )");
+        stmt.setString(1, item.getCode());
+        stmt.setDouble(2, item.getCost().get(0).getQuant());
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    public static void updateItems(List<Item> items) throws SQLException{
+        System.out.println(items.size());
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (Item item : items) {
+            PreparedStatement stmt = c.prepareStatement("update articulo set descripcion = ? , marca = ? , sector = ? "
+                    + ", codigo_sublinea = ? , codigo_de_barras = ? , modelo = ? , unidad_venta = ? , unidad_compra = ? , "
+                    + " bloqueado = ? where codigo = ? ");
+            stmt.setString(1, item.getDescription());
+            stmt.setString(2, item.getMark());
+            stmt.setString(3, item.getSector());
+            stmt.setString(4, item.getSublineCode());
+            stmt.setString(5, item.getMainBarcode());
+            stmt.setString(6, item.getModel());
+            stmt.setString(7, item.getSellUnits());
+            stmt.setString(8, item.getBuyUnits());
+            stmt.setBoolean(9, item.isStatus());
+            stmt.setString(10, item.getCode());
+            int ans = stmt.executeUpdate();
+            if ( ans > 0 ){
+                updateItemsDetails(item);
+            }
+        }
+
+        c.close();
+    }
+
+    static void updateMovements(List<Movement> movements, TreeMap<String, Item> newItemMapping) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (Movement movement : movements) {
+            PreparedStatement stmt = c.prepareStatement("insert into movimiento_inventario "
+                    + "( identificador , fecha , descripcion, codigo, almacen ) values( ? , ? , ? , ? , ? )");
+            stmt.setString(1, movement.getId());
+            stmt.setDate(2, movement.getDate());
+            stmt.setString(3, movement.getDescription());
+            stmt.setString(4, movement.getCode());
+            stmt.setString(5, movement.getStoreId());
+            stmt.executeUpdate();
+            for (ItemQuant itemMovement : movement.getItems()) {
+                stmt = c.prepareStatement("insert into detalles_movimientos "
+                    + "( identificador_movimiento , codigo_articulo , cantidad_articulo ) values( ? , ? , ? )");
+                stmt.setString(1, movement.getId());
+                stmt.setString(2, itemMovement.getItemId());
+                stmt.setInt(3, itemMovement.getQuant());
+                stmt.executeUpdate();
+                stmt = c.prepareStatement("update articulo set existencia_actual = ? where codigo = ? ");
+                stmt.setString(2, itemMovement.getItemId());
+                stmt.setInt(1, itemMovement.getQuant());
+                int ans = stmt.executeUpdate();
+                if ( ans == 0 ){
+                    insertItem(newItemMapping.get(itemMovement.getItemId()));
+                    stmt = c.prepareStatement("update articulo set existencia_actual = ? where codigo = ? ");
+                    stmt.setString(2, itemMovement.getItemId());
+                    stmt.setInt(1, itemMovement.getQuant());
+                    stmt.executeUpdate();
+                }
+            }
+            
+        }
+
+        c.close();
+    }
+
+    private static void insertItem(Item item) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into articulo ( codigo , descripcion , fecha_registro , "
+                + "marca , sector, codigo_sublinea , codigo_de_barras , modelo , unidad_venta, unidad_compra, "
+                + "existencia_actual, bloqueado, imagen, descuento ) values (?,?,now(),?,?,?,?,?,?,?,0,?,?,?)");
+        stmt.setString(1, item.getCode());
+        stmt.setString(2, item.getDescription());
+        stmt.setString(3 , item.getMark());
+        stmt.setString(4, item.getSector());
+        stmt.setString(5, item.getSublineCode());
+        stmt.setString(6, item.getMainBarcode());
+        stmt.setString(7, item.getModel());
+        stmt.setString(8, item.getSellUnits());
+        stmt.setString(9, item.getBuyUnits());
+        stmt.setBoolean(10, item.isStatus());
+        stmt.setString(11, Constants.photoPrefix + item.getCode() + ".JPG");
+        stmt.setString(12, "0");
+        stmt.executeUpdate();
+        c.close();
+        updateItemsDetails(item);
+
+    }
+
 }

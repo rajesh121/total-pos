@@ -4,11 +4,19 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -39,6 +47,7 @@ public class Shared {
     private static UpdateClock screenSaver;
     private static TreeMap<Integer, String> errMapping = new TreeMap<Integer, String>();
     protected static boolean isOffline = false;
+    private static TreeMap<String , Item > newItemMapping;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -348,24 +357,76 @@ public class Shared {
         Scanner sc = new Scanner(new File(fileAdr));
         while (sc.hasNextLine()) {
             String[] toks = sc.nextLine().split("\t");
-            ConnectionDrivers.updateDiscount(toks[0] , toks[8]);
+            ConnectionDrivers.updateDiscount(myTrim(toks[0]) , toks[8]);
         }
+        sc.close();
     }
 
     public static String myTrim(String str){
         return str.substring(1, str.length()-1);
     }
 
-    public Set<Item> parseItems(String fileAdr) throws FileNotFoundException, ParseException{
-        Set<Item> ans = new TreeSet<Item>();
-        Scanner sc = new Scanner(new File(fileAdr));
-        while (sc.hasNextLine()) {
-            String[] toks = sc.nextLine().split("\t");
+    public static List<Item> parseItems(String fileAddr) throws FileNotFoundException, ParseException, IOException{
+        newItemMapping = new TreeMap<String, Item>();
+        List<Item> ans = new LinkedList<Item>();
+        DataInputStream in = new DataInputStream(new FileInputStream(fileAddr));
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        String line = "";
+        while ( (line = br.readLine()) != null ) {
+            String[] toks = line.split("\t");
+            
+            Price p = new Price( null , Double.parseDouble(toks[35]));
+            Cost c = new Cost(null, Double.parseDouble(toks[55]));
+            List<Price> lp = new LinkedList<Price>();
+            lp.add(p);
+            List<Cost> lc = new LinkedList<Cost>();
+            lc.add(c);
+            List<String> barcodes = new LinkedList<String>();
+            barcodes.add(myTrim(toks[9]));
             Item i = new Item(myTrim(toks[0]),
-                    myTrim(toks[1]) , Constants.dateFormatter.parse(toks[2].split(" ")[0]) , myTrim(toks[3]),
-                    myTrim(toks[6]),  myTrim(toks[7]), myTrim(toks[9]), myTrim(toks[10]), myTrim(toks[13]),
-                    myTrim(toks[14]), Integer.parseInt(toks[14].split("\\.")[0]), null, null, null, isOffline, fileAdr, fileAdr);
+                    myTrim(toks[1]) , Constants.dateFormatter.parse(toks[2].split(" ")[0]) , myTrim(toks[4]),
+                    "",  myTrim(toks[6]), myTrim(toks[9]), myTrim(toks[10]), myTrim(toks[14]),
+                    myTrim(toks[15]), Integer.parseInt(toks[19].split("\\.")[0]), lp, lc, barcodes,
+                    toks[85].equals("T"), Constants.photoPrefix + myTrim(toks[0]) + ".JPG", "0");
+            ans.add(i);
+            newItemMapping.put(i.getCode(), i);
         }
+        in.close();
+        return ans;
+    }
+
+    public static List<Movement> parseMovements(String fileAddrMain, String fileAddrDetails) throws FileNotFoundException, ParseException, IOException{
+        List<Movement> ans = new LinkedList<Movement>();
+
+        DataInputStream inM = new DataInputStream(new FileInputStream(fileAddrMain));
+        DataInputStream inD = new DataInputStream(new FileInputStream(fileAddrDetails));
+        BufferedReader brM = new BufferedReader(new InputStreamReader(inM));
+        BufferedReader brD = new BufferedReader(new InputStreamReader(inD));
+
+        TreeMap<String , List<ItemQuant> > t = new TreeMap<String, List<ItemQuant>>();
+
+        String line;
+        while ( (line = brD.readLine()) != null ) {
+            String[] toks = line.split("\t");
+            if ( !t.containsKey(toks[0]) ){
+                t.put(toks[0], new LinkedList<ItemQuant>());
+            }
+            t.get(toks[0]).add(new ItemQuant(myTrim(toks[3]), (int) Double.parseDouble(toks[4])));
+        }
+
+        while( (line = brM.readLine()) != null ){
+            String[] toks = line.split("\t");
+            if ( myTrim(toks[25]).equals(Shared.getConfig("storeName")) ){
+                Date dd = Constants.dateFormatter.parse(toks[1].split(" ")[0]);
+                java.sql.Date ddsql = new java.sql.Date(dd.getYear(), dd.getMonth(), dd.getDate());
+                Movement m = new Movement(toks[0], ddsql
+                        , myTrim(toks[2]) , myTrim(toks[16]), myTrim(toks[28]), t.get(toks[0]));
+                ans.add(m);
+            }
+        }
+
+        inM.close();
+        inD.close();
         return ans;
     }
 
@@ -394,6 +455,14 @@ public class Shared {
         } catch (SQLException ex) {
             System.err.println("Problemas actualizando a los bancos.");
         }
+    }
+
+    public static void updateMovements() throws FileNotFoundException, SQLException, ParseException, IOException{
+        List<Item> items = parseItems(Constants.addrForIncome + "art.txt");
+        ConnectionDrivers.updateItems(items);
+        List<Movement> movements = parseMovements(Constants.addrForIncome + "ajuste.txt", Constants.addrForIncome + "reng_aju.txt");
+        ConnectionDrivers.updateMovements(movements, newItemMapping);
+        parseDiscounts(Constants.addrForIncome + "descuen.txt");
     }
 
 }

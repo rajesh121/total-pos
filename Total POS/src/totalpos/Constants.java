@@ -114,8 +114,9 @@ public class Constants {
                              .setVerticalAlignment(VerticalAlignment.MIDDLE)
                              .setFontSize(15);
 
-    public static final String mant = "200";
+    public static final String mant = "250";
     public static final String genericBank = "BGENE";
 
     public static final String addrForIncome = ".\\traslados\\";
+    public static final String photoPrefix = ".\\fotos\\";
 }

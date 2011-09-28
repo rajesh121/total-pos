@@ -362,7 +362,9 @@ public class Shared {
         while (sc.hasNextLine()) {
             String[] toks = sc.nextLine().split("\t");
             Item i = new Item(myTrim(toks[0]),
-                    myTrim(toks[1]) , Constants.dateFormatter.parse(toks[2].split(" ")[0]) , fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, fileAdr, 0, null, null, null, isOffline, fileAdr, fileAdr);
+                    myTrim(toks[1]) , Constants.dateFormatter.parse(toks[2].split(" ")[0]) , myTrim(toks[3]),
+                    myTrim(toks[6]),  myTrim(toks[7]), myTrim(toks[9]), myTrim(toks[10]), myTrim(toks[13]),
+                    myTrim(toks[14]), Integer.parseInt(toks[14].split("\\.")[0]), null, null, null, isOffline, fileAdr, fileAdr);
         }
         return ans;
     }

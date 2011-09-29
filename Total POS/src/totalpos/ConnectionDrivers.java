@@ -3092,7 +3092,7 @@ public class ConnectionDrivers {
                 int ans = stmt.executeUpdate();
                 if ( ans == 0 ){
                     insertItem(newItemMapping.get(itemMovement.getItemId()));
-                    stmt = c.prepareStatement("update articulo set existencia_actual = ? where codigo = ? ");
+                    stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
                     stmt.setString(2, itemMovement.getItemId());
                     stmt.setInt(1, itemMovement.getQuant());
                     stmt.executeUpdate();

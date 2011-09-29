@@ -15,7 +15,6 @@ import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.view.JasperViewer;
-import org.hibernate.connection.DatasourceConnectionProvider;
 
 /**
  * @author Saul Hidalgo (Basado en DynamicReports!)
@@ -24,9 +23,11 @@ import org.hibernate.connection.DatasourceConnectionProvider;
 public class CreateClosingDayReport {
 
     private String myDay = "";
+    private String note = "";
 
-    public CreateClosingDayReport(String myDay) {
+    public CreateClosingDayReport(String myDay, String obs) {
         this.myDay = myDay;
+        this.note = obs;
         build();
     }
 
@@ -51,7 +52,7 @@ public class CreateClosingDayReport {
     }
 
     private JRDataSource createDataSource() {
-        return new JREmptyDataSource(3);
+        return new JREmptyDataSource(4);
     }
 
     private class SubreportExpression extends AbstractSimpleExpression<JasperReportBuilder> {
@@ -62,30 +63,55 @@ public class CreateClosingDayReport {
             JasperReportBuilder report = report();
             report
               .setTemplate(Templates.reportTemplate);
-              
 
-            if ( masterRowNumber == 1 ){
-                report.title(cmp.text("Gastos").setStyle(Templates.bold12CenteredStyle));
+            if(masterRowNumber == 1){
+                try {
+                    String[] toks = myDay.split("-");
+                    report.title(cmp.text("Correspondiente al " + toks[2] + "-"+ toks[1] + "-" + toks[0] + "\n\n" +
+                            "Total ventas del día (B): "
+                            + Constants.df.format(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0)
+                            + " Bs" + "\n\nFondos de Caja (A)").setStyle(Templates.bold12CenteredStyle));
+                    TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());
+                    report.addColumn(col.column("Caja", "0", type.stringType()));
+                    report.addColumn(col.column("Fecha", "1", type.stringType()));
+                    report.addColumn(tcb);
+                } catch (SQLException ex) {
+                    Logger.getLogger(CreateClosingDayReport.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else if ( masterRowNumber == 2 ){
+                report.title(cmp.text("Gastos (C)").setStyle(Templates.bold12CenteredStyle));
                 TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());
                 report.addColumn(col.column("Tipo de Gasto", "0", type.stringType()));
                 report.addColumn(col.column("Observaciones", "1", type.stringType()));
                 report.addColumn(tcb);
                 report.subtotalsAtSummary((AggregationSubtotalBuilder<BigDecimal>)sbt.sum(tcb).setLabel("Total Egresos"));
-            } else if ( masterRowNumber == 2 ){
-                report.title(cmp.text("Depositos").setStyle(Templates.bold12CenteredStyle));
+            } else if ( masterRowNumber == 3 ){
+                report.title(cmp.text("Depositos (D)").setStyle(Templates.bold12CenteredStyle));
                 TextColumnBuilder tcb = col.column("Monto", "3", type.bigDecimalType());
                 report.addColumn(col.column("Tipo de Ingreso", "0", type.stringType()));
                 report.addColumn(col.column("Nombre del Banco", "1", type.stringType()));
                 report.addColumn(col.column("Lote", "2", type.stringType()));
                 report.addColumn(tcb);
                 report.subtotalsAtSummary((AggregationSubtotalBuilder<BigDecimal>)sbt.sum(tcb).setLabel("Total Ingresos"));
-            } else if ( masterRowNumber == 3 ) {
-                report.title(cmp.text("Impresoras Fiscales").setStyle(Templates.bold12CenteredStyle));
-                TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());
-                report.addColumn(col.column("Maquina Fiscal Nro", "0", type.stringType()));
-                report.addColumn(col.column("Numero Z", "1", type.stringType()));
-                report.addColumn(tcb);
-                report.subtotalsAtSummary((AggregationSubtotalBuilder<BigDecimal>)sbt.sum(tcb).setLabel("Total Ingresos"));
+            } else if ( masterRowNumber == 4 ) {
+                try {
+                    Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false);
+                    Double income = ConnectionDrivers.getTotalIncomming(myDay);
+                    Double amc = ConnectionDrivers.getTotalAMinusC(myDay);
+                    report.title(cmp.text(
+                            Shared.formatIt("Cuadre de Cajas (B-D):",Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0-income)) + "\n" +
+                            Shared.formatIt("Cuadre de Cajas del Día (A+B-C-D): ",Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0-income+amc)) + "\n\n" +
+                            "Observaciones: Cantidad de Notas de Créditos: " +
+                            ConnectionDrivers.getQuantCN(myDay) + "      Monto: " + ConnectionDrivers.getTotalCN(myDay)
+                            + "\n" + note + "\n"+ "Impresoras Fiscales").setStyle(Templates.bold12CenteredStyle));
+                    TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());
+                    report.addColumn(col.column("Maquina Fiscal Nro", "0", type.stringType()));
+                    report.addColumn(col.column("Numero Z", "1", type.stringType()));
+                    report.addColumn(tcb);
+                    report.subtotalsAtSummary((AggregationSubtotalBuilder<BigDecimal>) sbt.sum(tcb).setLabel("Total Ingresos"));
+                } catch (SQLException ex) {
+                    Logger.getLogger(CreateClosingDayReport.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }else{
 
                 report.title(cmp.text("Subreport" + masterRowNumber).setStyle(Templates.bold12CenteredStyle));
@@ -101,11 +127,20 @@ public class CreateClosingDayReport {
     private class SubreportDataSourceExpression extends AbstractSimpleExpression<JRDataSource> {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public JRDataSource evaluate(ReportParameters reportParameters) {
             int masterRowNumber = reportParameters.getReportRowNumber();
-            
 
+            
             if ( masterRowNumber == 1 ){
+                try {
+                    return ConnectionDrivers.getInitialFounds(myDay);
+                } catch (SQLException ex) {
+                    Logger.getLogger(CreateClosingDayReport.class.getName()).log(Level.SEVERE, null, ex);
+                    String[] columns = {};
+                    return new DataSource(columns);
+                }
+            }else if ( masterRowNumber == 2 ){
                 try {
                     return ConnectionDrivers.getExpensesReport(myDay);
                 } catch (SQLException ex) {
@@ -113,7 +148,7 @@ public class CreateClosingDayReport {
                     String[] columns = {};
                     return new DataSource(columns);
                 }
-            } if ( masterRowNumber == 2 ) {
+            } if ( masterRowNumber == 3 ) {
                 try {
                     return ConnectionDrivers.getIncommingReport(myDay);
                 } catch (SQLException ex) {
@@ -121,7 +156,7 @@ public class CreateClosingDayReport {
                     String[] columns = {};
                     return new DataSource(columns);
                 }
-            } if ( masterRowNumber == 3 ) {
+            } if ( masterRowNumber == 4 ) {
                 try {
                     return ConnectionDrivers.getFiscalInfo(myDay);
                 } catch (SQLException ex) {

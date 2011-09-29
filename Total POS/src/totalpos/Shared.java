@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -463,6 +464,12 @@ public class Shared {
         List<Movement> movements = parseMovements(Constants.addrForIncome + "ajuste.txt", Constants.addrForIncome + "reng_aju.txt");
         ConnectionDrivers.updateMovements(movements, newItemMapping);
         parseDiscounts(Constants.addrForIncome + "descuen.txt");
+    }
+
+    public static String formatIt(String msg1, String msg2){
+        char[] spaces = new char[Constants.longReportTotals - msg1.length() - msg2.length()];
+        Arrays.fill(spaces, ' ');
+        return msg1 + new String(spaces) + msg2;
     }
 
 }

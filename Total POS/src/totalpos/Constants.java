@@ -88,6 +88,8 @@ public class Constants {
     public static final int secondsToShiftMsg = 1;
     public static final int dbTimeout = 60000;
 
+    public static final int longReportTotals = 100;
+
     public static final int maximumLenghtMsg2Pos = 50;
 
     public static final boolean withFiscalPrinter = true;

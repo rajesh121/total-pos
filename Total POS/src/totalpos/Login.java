@@ -183,10 +183,10 @@ public class Login extends JFrame implements Doer{
                 workingFrame.setVisible(false);
                 Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
 
-                if ( currentMoney == -1.0 && Shared.isOffline ){
-                    ConnectionDrivers.newCash(currentMoney, Shared.getFileConfig("myId"));
+                /*if ( currentMoney == -1.0 && Shared.isOffline ){
+                    ConnectionDrivers.modifyMoney(currentMoney);
                     currentMoney = .0;
-                }
+                }*/
                 
                 while ( currentMoney == -1.0 && !Shared.isOffline ){
                     String cc = JOptionPane.showInputDialog(getParent(),
@@ -200,7 +200,8 @@ public class Login extends JFrame implements Doer{
                         if ( currentMoney < 150.0 ){
                             throw new NumberFormatException();
                         }else{
-                            ConnectionDrivers.newCash(currentMoney, Shared.getFileConfig("myId"));
+                            ConnectionDrivers.modifyMoney(currentMoney);
+                            ConnectionDrivers.createOperativeDay();
                         }
                     }catch ( NumberFormatException ex){
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,

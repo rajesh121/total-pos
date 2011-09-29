@@ -1964,13 +1964,12 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void newCash(Double money, String pos) throws SQLException{
+    public static void createOperativeDay() throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito "
-                + ", dinero_efectivo , dinero_tarjeta_debito , nota_de_credito ) values ( curdate() , ? , .0 , ? , .0 , 0)");
+                + ", dinero_efectivo , dinero_tarjeta_debito , nota_de_credito ) values ( curdate() , ? , .0 , .0 , .0 , 0)");
 
-        stmt.setDouble(2, money);
         stmt.setString(1, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
 
@@ -2156,15 +2155,18 @@ public class ConnectionDrivers {
         ans.setRowCount(0);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select codigo_punto_de_venta "
-                + ", dinero_efectivo, dinero_tarjeta_credito + dinero_tarjeta_debito as dinero_tarjeta , "
-                + "nota_de_credito from dia_operativo where datediff( fecha , ? ) = 0");
+        PreparedStatement stmt = c.prepareStatement("select do.codigo_punto_de_venta , "
+                + "do.dinero_efectivo, do.dinero_tarjeta_credito + do.dinero_tarjeta_debito as dinero_tarjeta "
+                + ", do.nota_de_credito , sum(me.monto) as retiros , do.dinero_efectivo+sum(me.monto) as suma from dia_operativo do ,"
+                + " movimiento_efectivo me where datediff( do.fecha , ? ) = 0 and me.identificador_punto_de_venta "
+                + "= do.codigo_punto_de_venta group by codigo_punto_de_venta");
+
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
             String[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("dinero_efectivo")
-                    ,rs.getString("dinero_tarjeta"),rs.getString("nota_de_credito")};
+                    ,rs.getString("dinero_tarjeta"),rs.getString("nota_de_credito") , rs.getString("retiros"), rs.getString("suma")};
             ans.addRow(s);
         }
 
@@ -2178,9 +2180,8 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select do.codigo_punto_de_venta , pos.impresora , "
-                + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito+ do.nota_de_credito as facturado, "
-                + "dinero_efectivo_impresora+dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora as facturado_impresora ,"
-                + "reporteZ"
+                + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito as facturado, "
+                + "dinero_efectivo_impresora+dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora as facturado_impresora "
                 + " from dia_operativo as do , punto_de_venta as pos where datediff(fecha,?)=0 and do.codigo_punto_de_venta "
                 + "= pos.identificador");
         stmt.setString(1, day);
@@ -2188,7 +2189,7 @@ public class ConnectionDrivers {
 
         while ( rs.next() ){
             Object[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
-                    ,rs.getString("facturado"),rs.getString("facturado_impresora") , rs.getBoolean("reporteZ")};
+                    ,rs.getString("facturado"),rs.getString("facturado_impresora") };
             ans.addRow(s);
         }
 
@@ -2271,6 +2272,22 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from deposito "
                 + "where datediff(?,fecha) = 0");
+        stmt.setString(1, day);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        Double ans = rs.getDouble("monto");
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static Double getTotalCN(String day) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(total_sin_iva) as monto from nota_de_credito "
+                + "where datediff(fecha_creacion,?) = 0");
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
 
@@ -2723,7 +2740,7 @@ public class ConnectionDrivers {
         DataSource dataSource = new DataSource(columnsArray);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select a.tipo , b.descripcion " +
+        PreparedStatement stmt = c.prepareStatement("select a.tipo , concat(concat(b.id,' - '),b.descripcion) as descripcion " +
                 ", a.lote , sum(monto) as monto from forma_de_pago a, " +
                 "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and datediff(?,fecha)=0 " +
                 "group by a.codigo_punto_de_venta_de_banco union " +
@@ -2739,6 +2756,47 @@ public class ConnectionDrivers {
             toAdd[1] = rs.getString("descripcion");
             toAdd[2] = rs.getString("lote");
             toAdd[3] = new BigDecimal(rs.getDouble("monto"));
+            dataSource.add(toAdd);
+        }
+
+        c.close();
+        rs.close();
+
+        return dataSource;
+    }
+
+    static JRDataSource getTotal(String day) throws SQLException {
+        String[] columnsArray = new String[1];
+        for (int i = 0; i < 1; i++) {
+            columnsArray[i] = i + "";
+        }
+        DataSource dataSource = new DataSource(columnsArray);
+
+        Object[] toAdd = new Object[1];
+        toAdd[0] = ConnectionDrivers.getTotalDeclared(day) + "";
+        dataSource.add(toAdd);
+        
+        return dataSource;
+    }
+
+    static JRDataSource getInitialFounds(String day) throws SQLException {
+        String[] columnsArray = new String[3];
+        for (int i = 0; i < 3; i++) {
+            columnsArray[i] = i + "";
+        }
+        DataSource dataSource = new DataSource(columnsArray);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select identificador_punto_de_venta, fecha , monto from movimiento_efectivo"
+                + " where monto > 0 and datediff(fecha,?) = 0");
+        stmt.setString(1, day);
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            Object[] toAdd = new Object[3];
+            toAdd[0] = rs.getString("identificador_punto_de_venta");
+            toAdd[1] = rs.getString("fecha");
+            toAdd[2] = new BigDecimal(rs.getDouble("monto"));
             dataSource.add(toAdd);
         }
 
@@ -3125,6 +3183,92 @@ public class ConnectionDrivers {
         c.close();
         updateItemsDetails(item);
 
+    }
+
+    public static void modifyMoney(Double diffMoney) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("insert into movimiento_efectivo ( identificador_punto_de_venta , fecha , monto )"
+                + " values (?,now(),?)");
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        stmt.setDouble(2, diffMoney);
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    static boolean allZready(String myDay) throws SQLException {
+        boolean ans = false;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select count(*) as c from dia_operativo where datediff( ? , fecha ) = 0 and reporteZ = 0");
+        stmt.setString(1, myDay);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString("c").equals("0");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static Integer getQuantCN(String myDay) throws SQLException {
+        Integer ans = 0;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(numero_notas_credito) as ans from dia_operativo where datediff( ? , fecha ) = 0");
+        stmt.setString(1, myDay);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getInt("ans");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static Double getTotalIncomming(String myDay) throws SQLException {
+        Double ans = .0;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto"
+                + " from (select sum(monto) as monto from forma_de_pago where datediff(?,fecha)=0"
+                + " and tipo != 'Efectivo' and tipo != 'Nota de Credito' union select sum(monto) "
+                + "as monto from deposito where datediff(fecha,?)=0) as myTable");
+        stmt.setString(1, myDay);
+        stmt.setString(2, myDay);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getDouble("monto");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static Double getTotalAMinusC(String myDay) throws SQLException {
+        Double ans = .0;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from "
+                + "(select -1*sum(monto) as monto from gasto where datediff(fecha,?)=0 "
+                + "union select sum(monto) as monto from movimiento_efectivo where datediff(?,fecha)=0 "
+                + "and monto > 0) as myTable");
+        stmt.setString(1, myDay);
+        stmt.setString(2, myDay);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getDouble("monto");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
     }
 
 }

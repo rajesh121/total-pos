@@ -88,7 +88,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
-        jLabel1.setText("Formas de Pago");
+        jLabel1.setText("Formas de Cobro");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -174,24 +174,24 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
         jPanel1.setName("jPanel1"); // NOI18N
 
         moneyLabel.setBackground(new java.awt.Color(255, 255, 255));
-        moneyLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        moneyLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         moneyLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         moneyLabel.setText("Dinero:");
         moneyLabel.setName("moneyLabel"); // NOI18N
 
         changeLabel.setBackground(new java.awt.Color(255, 255, 255));
-        changeLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        changeLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         changeLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         changeLabel.setText("Cambio:");
         changeLabel.setName("changeLabel"); // NOI18N
 
         ChangeResult.setBackground(new java.awt.Color(255, 255, 255));
-        ChangeResult.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        ChangeResult.setFont(new java.awt.Font("Courier New", 1, 18));
         ChangeResult.setText("jLabel12");
         ChangeResult.setName("ChangeResult"); // NOI18N
 
         moneyResult.setBackground(new java.awt.Color(255, 255, 255));
-        moneyResult.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        moneyResult.setFont(new java.awt.Font("Courier New", 1, 18));
         moneyResult.setText("jLabel11");
         moneyResult.setName("moneyResult"); // NOI18N
 

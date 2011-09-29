@@ -377,7 +377,7 @@ public class FiscalPrinter {
                 if ( b.getValue() != 0 ){
                     // Nothing to do... lets continue;
                 }
-                printer.SendCmd(a, b, "f01000000000000");
+                printer.SendCmd(a, b, "f11000000000000");
             }
         }
 

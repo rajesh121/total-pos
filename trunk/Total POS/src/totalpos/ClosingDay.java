@@ -8,7 +8,6 @@ package totalpos;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Window;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.GregorianCalendar;
@@ -52,6 +51,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     Double totalInCard = .0;
     Double totalInCash = .0;
     Double totalExpenses = .0;
+    Double totalCN = .0;
     private ObjectFactory of = Constants.of;
     public Working workingFrame;
     private String myDay = "";
@@ -65,8 +65,21 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             initComponents();
             showReport = sr;
             myDay = day;
-            jLabel8.setVisible(false);
-            netValue.setVisible(false);
+
+            DefaultTableModel model = (DefaultTableModel) bankTable2.getModel();
+            model.setRowCount(0);
+
+            JComboBox jcb = new JComboBox();
+            jcb.addItem("Credito");
+            jcb.addItem("Debito");
+
+            DefaultTableCellRenderer renderer =
+                    new DefaultTableCellRenderer();
+            renderer.setToolTipText("Click para ver las opciones");
+            TableColumn conceptColumn = bankTable2.getColumnModel().getColumn(3);
+            conceptColumn.setCellRenderer(renderer);
+            conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
+            
             updateAll();
             MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "El cierre de Caja aún está en desarrollo!!");
             msg.show(this);
@@ -148,6 +161,21 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }
 
     public void updateBankTable() throws SQLException{
+        DefaultTableModel model = (DefaultTableModel) bankTable.getModel();
+        model.setRowCount(0);
+
+        System.out.println("Actualizando Bancos!");
+
+        JComboBox jcb = new JComboBox();
+        jcb.addItem("Credito");
+        jcb.addItem("Debito");
+
+        DefaultTableCellRenderer renderer =
+                new DefaultTableCellRenderer();
+        renderer.setToolTipText("Click para ver las opciones");
+        TableColumn conceptColumn = bankTable.getColumnModel().getColumn(3);
+        conceptColumn.setCellRenderer(renderer);
+        conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
         ConnectionDrivers.listBankTable((DefaultTableModel) bankTable.getModel(),myDay);
     }
 
@@ -159,16 +187,16 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         updatePayFormWaysxPoses();
         updateFiscalZ();
         updatePayWayxPosesDetails();
-        updateBankTable();
         Double expensesD = ConnectionDrivers.getExpenses(myDay);
         totalCardsField.setText(Constants.df.format(totalInCard = ConnectionDrivers.getTotalCards(myDay)));
         totalCashField.setText(Constants.df.format(totalInCash = ConnectionDrivers.getTotalCash(myDay)));
+        creditNoteField.setText(Constants.df.format(totalCN = ConnectionDrivers.getTotalCN(myDay)));
         totalTotalField.setText(Constants.df.format(totalInCard + totalInCash));
         expensesTodayField.setText(Constants.df.format(expensesD));
-        totalDeclaredField.setText(Constants.df.format(totalDeclared));
-        expensesMinusDeclaredField.setText(Constants.df.format(receiptTotal));
-        //netValue.setText(Constants.df.format( totalInCard + totalInCash - ( totalInCard + totalInCash - totalExpenses ) - (totalExpenses)));
+        totalDeclaredField.setText(Constants.df.format(totalDeclared*(Shared.getIva()+100.0)/100.0));
+        expensesMinusDeclaredField.setText(Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0));
         totalField.setText(Constants.df.format((totalDeclared*(1.0+Shared.getIva()/100.0)-(totalInCard + totalInCash)-expensesD)));
+        updateBankTable();
     }
 
     /** This method is called from within the constructor to
@@ -215,6 +243,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel4 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         bankTable = new javax.swing.JTable();
+        addDeposit1 = new javax.swing.JButton();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        bankTable2 = new javax.swing.JTable();
+        deleteNewBanks = new javax.swing.JButton();
+        saveNewBanks = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         expenseTable = new javax.swing.JTable();
@@ -242,12 +275,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         expensesTodayField = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        netValue = new javax.swing.JTextField();
+        cnLabel = new javax.swing.JLabel();
+        creditNoteField = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
         printAndSendButton = new javax.swing.JButton();
         totalField = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        updateButton = new javax.swing.JButton();
         noteField = new javax.swing.JTextField();
         noteLabel = new javax.swing.JLabel();
 
@@ -267,25 +301,18 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         fiscalZ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Caja", "Serial", "Dinero Caja", "Zeta Fiscal", "Cerrado"
+                "Caja", "Serial", "Dinero Caja", "Zeta Fiscal"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
-            };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -301,8 +328,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         });
         jScrollPane6.setViewportView(fiscalZ);
         fiscalZ.getColumnModel().getColumn(0).setPreferredWidth(40);
-        fiscalZ.getColumnModel().getColumn(3).setPreferredWidth(150);
-        fiscalZ.getColumnModel().getColumn(4).setPreferredWidth(50);
+        fiscalZ.getColumnModel().getColumn(2).setPreferredWidth(120);
+        fiscalZ.getColumnModel().getColumn(3).setPreferredWidth(120);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -400,20 +427,20 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         bankTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Código", "Banco", "Lote", "Medio", "Declarado"
+                "Código", "Banco", "Lote", "Medio", "Declarado", "Monto Real"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true
+                false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -434,19 +461,66 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         });
         jScrollPane5.setViewportView(bankTable);
 
+        addDeposit1.setText("Agregar");
+        addDeposit1.setName("addDeposit1"); // NOI18N
+        addDeposit1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addDeposit1ActionPerformed(evt);
+            }
+        });
+
+        jScrollPane7.setName("jScrollPane7"); // NOI18N
+
+        bankTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Código", "Banco", "Lote", "Medio", "Monto"
+            }
+        ));
+        bankTable2.setName("bankTable2"); // NOI18N
+        jScrollPane7.setViewportView(bankTable2);
+
+        deleteNewBanks.setText("Eliminar");
+        deleteNewBanks.setName("deleteNewBanks"); // NOI18N
+        deleteNewBanks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteNewBanksActionPerformed(evt);
+            }
+        });
+
+        saveNewBanks.setText("Guardar");
+        saveNewBanks.setName("saveNewBanks"); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                        .addComponent(addDeposit1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteNewBanks, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveNewBanks, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addDeposit1)
+                    .addComponent(deleteNewBanks)
+                    .addComponent(saveNewBanks))
                 .addContainerGap())
         );
 
@@ -501,11 +575,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(addExpense)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteExpense, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
@@ -515,9 +589,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveExpense)
                     .addComponent(addExpense)
@@ -532,17 +606,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         formWayxPoses.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Cajero", "Efectivo", "Tarjeta", "NC"
+                "Cajero", "Efectivo", "Tarjeta", "NC", "Mov", "Mov+Retiro"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -565,13 +636,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -615,7 +686,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -654,7 +725,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         totalTotalField.setName("totalTotalField"); // NOI18N
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel4.setText("Total Pagos");
+        jLabel4.setText("Total Cobro");
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel4.setName("jLabel4"); // NOI18N
 
@@ -688,14 +759,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jLabel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jLabel10.setName("jLabel10"); // NOI18N
 
-        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel8.setText("Neto");
-        jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel8.setName("jLabel8"); // NOI18N
+        cnLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        cnLabel.setText("Monto NC");
+        cnLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        cnLabel.setName("cnLabel"); // NOI18N
 
-        netValue.setText("Falta");
-        netValue.setFocusable(false);
-        netValue.setName("netValue"); // NOI18N
+        creditNoteField.setText("Falta");
+        creditNoteField.setFocusable(false);
+        creditNoteField.setName("creditNoteField"); // NOI18N
 
         cancelButton.setText("Cancelar");
         cancelButton.setFocusable(false);
@@ -706,7 +777,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
         });
 
-        printAndSendButton.setText("Imprimir y Cerrar");
+        printAndSendButton.setText("Imprimir y Enviar");
         printAndSendButton.setFocusable(false);
         printAndSendButton.setName("printAndSendButton"); // NOI18N
         printAndSendButton.addActionListener(new java.awt.event.ActionListener() {
@@ -724,6 +795,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jLabel11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel11.setName("jLabel11"); // NOI18N
 
+        updateButton.setText("Recalcular Todo");
+        updateButton.setName("updateButton"); // NOI18N
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -732,59 +811,60 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(totalCardsField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(totalCashField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())))
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalTotalField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(expensesMinusDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(expensesTodayField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                        .addComponent(cnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(netValue, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(creditNoteField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(printAndSendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                        .addComponent(printAndSendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                         .addContainerGap())))
         );
         jPanel7Layout.setVerticalGroup(
@@ -820,13 +900,15 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(netValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
+                    .addComponent(creditNoteField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cnLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addComponent(updateButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(printAndSendButton))
@@ -858,7 +940,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(noteLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(noteField, javax.swing.GroupLayout.DEFAULT_SIZE, 851, Short.MAX_VALUE)))
+                        .addComponent(noteField, javax.swing.GroupLayout.DEFAULT_SIZE, 936, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -892,35 +974,23 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }// </editor-fold>//GEN-END:initComponents
 
     private void fiscalZFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fiscalZFocusGained
-        try {
-            updateAll();
-        } catch (SQLException ex) {
-            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }//GEN-LAST:event_fiscalZFocusGained
 
     private void payWayxPosTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_payWayxPosTableFocusGained
-        try {
+        /*try {
             updateAll();
         } catch (SQLException ex) {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }//GEN-LAST:event_payWayxPosTableFocusGained
 
     private void bankTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_bankTableFocusGained
-        try {
-            updateAll();
-        } catch (SQLException ex) {
-            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }//GEN-LAST:event_bankTableFocusGained
 
     private void formWayxPosesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formWayxPosesFocusGained
-        try {
-            updateAll();
-        } catch (SQLException ex) {
-            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }//GEN-LAST:event_formWayxPosesFocusGained
 
     private void saveDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDepositActionPerformed
@@ -1013,7 +1083,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
         } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
             msb.show(this);
             this.dispose();
             Shared.reload();
@@ -1021,18 +1091,56 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_saveExpenseActionPerformed
 
     private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
-        workingFrame = new Working((Window) Shared.getMyMainWindows());
+        try {
+            if (!ConnectionDrivers.allZready(myDay)) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se puede hacer el cierre administrativo. Hay cajas sin cerrar.");
+                msb.show(this);
+            }else{
+                /*workingFrame = new Working((Window) Shared.getMyMainWindows());
 
-        WaitSplash ws = new WaitSplash(this);
-
-        Shared.centerFrame(workingFrame);
-        workingFrame.setVisible(true);
-        ws.execute();
+                WaitSplash ws = new WaitSplash(this);
+                
+                Shared.centerFrame(workingFrame);
+                workingFrame.setVisible(true);
+                ws.execute();*/
+                doIt();
+            }
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
+        
 }//GEN-LAST:event_printAndSendButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
 }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void addDeposit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDeposit1ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) bankTable2.getModel();
+        model.setRowCount( model.getRowCount() + 1 );
+    }//GEN-LAST:event_addDeposit1ActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        try {
+            updateAll();
+        } catch (SQLException ex) {
+            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void deleteNewBanksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteNewBanksActionPerformed
+        int n = bankTable2.getSelectedRow();
+        if ( n != -1 ){
+            DefaultTableModel model = (DefaultTableModel) bankTable2.getModel();
+            model.removeRow(n);
+        }else{
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar una forma de pago de punto de venta de banco!");
+            msg.show(this);
+        }
+    }//GEN-LAST:event_deleteNewBanksActionPerformed
 
     @Override
     public void doIt(){
@@ -1159,7 +1267,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             msg.show(this);
 
             if ( showReport ){
-                new CreateClosingDayReport(myDay);
+                new CreateClosingDayReport(myDay,noteField.getText());
             }
 
         } catch (SQLException ex) {
@@ -1177,11 +1285,16 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addDeposit;
+    private javax.swing.JButton addDeposit1;
     private javax.swing.JButton addExpense;
     private javax.swing.JTable bankTable;
+    private javax.swing.JTable bankTable2;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JLabel cnLabel;
+    private javax.swing.JTextField creditNoteField;
     private javax.swing.JButton deleteDeposit;
     private javax.swing.JButton deleteExpense;
+    private javax.swing.JButton deleteNewBanks;
     private javax.swing.JTable depositTable;
     private javax.swing.JTable expenseTable;
     private javax.swing.JTextField expensesMinusDeclaredField;
@@ -1198,7 +1311,6 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1212,22 +1324,27 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTextField netValue;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTextField noteField;
     private javax.swing.JLabel noteLabel;
     private javax.swing.JTable payWayxPosTable;
     private javax.swing.JButton printAndSendButton;
     private javax.swing.JButton saveDeposit;
     private javax.swing.JButton saveExpense;
+    private javax.swing.JButton saveNewBanks;
     private javax.swing.JTextField totalCardsField;
     private javax.swing.JTextField totalCashField;
     private javax.swing.JTextField totalDeclaredField;
     private javax.swing.JTextField totalField;
     private javax.swing.JTextField totalTotalField;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 
     private void fillBanks(List<ZFISCOBRANZA> zFISCOBRANZA) {
         for ( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
+            if ( bankTable.getValueAt(i, 5) != null && bankTable.getValueAt(i, 5).equals(.0) ){
+                continue;
+            }
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
             zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
@@ -1238,7 +1355,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 3).equals("Credito")?"B":"D" ) );
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO( bankTable.getValueAt(i, 0).toString() ));
             zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 2)));
-            zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 4)));
+            if ( bankTable.getValueAt(i, 5) != null ) {
+                zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 5)));
+            }else{
+                zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 4)));
+            }
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
             zFISCOBRANZA.add(zfc);
         }

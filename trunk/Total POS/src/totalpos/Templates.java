@@ -120,7 +120,7 @@ public class Templates {
 		  	cmp.verticalList(
 		  		cmp.text("Grupo Total 99 CA").setStyle(bold22CenteredStyle).setHorizontalAlignment(HorizontalAlignment.LEFT),
 		  		//cmp.text("http://dynamicreports.sourceforge.net").setStyle(italicStyle).setHyperLink(link)));
-                                cmp.text("Total Pos. Fecha : " + Constants.sdfDateHour.format(new GregorianCalendar().getTime())).setStyle(italicStyle)));
+                                cmp.text("RIF J-311501878. Generado el : " + Constants.sdfDateHour.format(new GregorianCalendar().getTime()) + "\n Total Pos" ).setStyle(italicStyle) ));
 
 		footerComponent = cmp.pageXofY()
 		                     .setStyle(
@@ -130,7 +130,10 @@ public class Templates {
 
 	/**
 	 * Creates custom component which is possible to add to any report band component
-	 */
+         *
+         * @param label
+         * @return
+         */
 	public static ComponentBuilder<?, ?> createTitleComponent(String label) {
 		return cmp.horizontalList()
 		        .add(

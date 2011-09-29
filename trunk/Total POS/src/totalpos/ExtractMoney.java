@@ -13,9 +13,10 @@ import java.sql.SQLException;
  *
  * @author Saúl Hidalgo
  */
-public class ExtractMoney extends javax.swing.JDialog {
+public class ExtractMoney extends javax.swing.JDialog implements Doer{
 
     FiscalPrinter printer;
+    private Working workingFrame;
 
     /** Creates new form ExtractMoney */
     public ExtractMoney(java.awt.Frame parent, boolean modal, FiscalPrinter print) {
@@ -222,7 +223,13 @@ public class ExtractMoney extends javax.swing.JDialog {
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
+            workingFrame = new Working(this);
+            WaitSplash ws = new WaitSplash(this);
+
+            Shared.centerFrame(workingFrame);
+            workingFrame.setVisible(true);
+
+            ws.execute();
         }
 }//GEN-LAST:event_moneyFieldKeyPressed
 
@@ -231,7 +238,13 @@ public class ExtractMoney extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
-        doIt();
+        workingFrame = new Working(this);
+        WaitSplash ws = new WaitSplash(this);
+
+        Shared.centerFrame(workingFrame);
+        workingFrame.setVisible(true);
+
+        ws.execute();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
@@ -257,7 +270,8 @@ public class ExtractMoney extends javax.swing.JDialog {
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
-    private void doIt() {
+    @Override
+    public void doIt() {
         if ( idField.getText().isEmpty() ){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");
             msg.show(this);
@@ -271,7 +285,7 @@ public class ExtractMoney extends javax.swing.JDialog {
             double p = Double.parseDouble(moneyField.getText());
 
             double curMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
-            if ( p >= curMoney || p <= 1.0){
+            if ( p > curMoney || p <= 1.0){
                 throw new NumberFormatException("");
             }
 
@@ -295,7 +309,7 @@ public class ExtractMoney extends javax.swing.JDialog {
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "extractMoney") ){
                 Shared.userInsertedPasswordOk(idField.getText());
 
-                ConnectionDrivers.setCash(curMoney-p, Shared.getFileConfig("myId"));
+                ConnectionDrivers.modifyMoney(-1*p);
                 printer.extractMoney(u, idField.getText(), p);
 
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Operación existosa!");
@@ -336,6 +350,11 @@ public class ExtractMoney extends javax.swing.JDialog {
             }
 
         }
+    }
+
+    @Override
+    public void close() {
+        workingFrame.setVisible(false);
     }
 
 }

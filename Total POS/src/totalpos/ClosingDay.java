@@ -63,10 +63,16 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         @Override
         public Component getTableCellRendererComponent(
             JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if ( value == null ){
-                value = Constants.df.format(.0);
-            }else{
-                value = Constants.df.format((Double)value);
+            if ( column == 4 ){
+                if ( value instanceof String ){
+                    System.out.println(value);
+                    System.out.println(row + " _ " + column);
+                }
+                if ( value == null ){
+                    value = Constants.df.format(.0);
+                }else{
+                    value = Constants.df.format((Double)value);
+                }
             }
 
             return super.getTableCellRendererComponent(
@@ -472,6 +478,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         bankTable.setName("bankTable"); // NOI18N
         bankTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         bankTable.getTableHeader().setReorderingAllowed(false);
+        bankTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bankTableMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                bankTableMouseReleased(evt);
+            }
+        });
         bankTable.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 bankTableFocusGained(evt);
@@ -1067,8 +1081,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         DefaultTableModel model = (DefaultTableModel) expenseTable.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             try{
-                if ( model.getValueAt(i, 0) == null || model.getValueAt(i, 1) == null ||
-                        ((String)model.getValueAt(i, 0)).isEmpty() || ((String)model.getValueAt(i, 1)).isEmpty()){
+                if ( model.getValueAt(i, 0) == null || model.getValueAt(i, 1) == null || model.getValueAt(i, 2) == null ||
+                        ((String)model.getValueAt(i, 0)).isEmpty() || ((String)model.getValueAt(i, 1)).isEmpty() ||  ((String)model.getValueAt(i, 2)).isEmpty() ){
                     MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios. No pueden haber gastos con campos vacíos.");
                     msg.show(this);
                     return;
@@ -1195,6 +1209,17 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             Shared.reload();
         }
     }//GEN-LAST:event_saveNewBanksActionPerformed
+
+    private void bankTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bankTableMouseClicked
+        
+    }//GEN-LAST:event_bankTableMouseClicked
+
+    private void bankTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bankTableMouseReleased
+        /*if ( bankTable.getSelectedColumn() == 4 ){
+            int n = bankTable.getSelectedRow();
+            bankTable.setValueAt(bankTable.getValueAt(n, 3), n, 4);
+        }*/
+    }//GEN-LAST:event_bankTableMouseReleased
 
     @Override
     public void doIt(){
@@ -1408,7 +1433,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 3).equals("Credito")?"B":"D" ) );
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
-            zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 2)));
+            zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 1)));
             if ( !bankTable.getValueAt(i, 4).equals("0") ) {
                 zfc.setMONTO(new BigDecimal((Double)bankTable.getValueAt(i, 4)));
             }else{

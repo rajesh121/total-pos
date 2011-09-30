@@ -66,7 +66,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             showReport = sr;
             myDay = day;
 
-            DefaultTableModel model = (DefaultTableModel) bankTable2.getModel();
+            DefaultTableModel model = (DefaultTableModel) bankTable.getModel();
             model.setRowCount(0);
 
             JComboBox jcb = new JComboBox();
@@ -76,7 +76,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             DefaultTableCellRenderer renderer =
                     new DefaultTableCellRenderer();
             renderer.setToolTipText("Click para ver las opciones");
-            TableColumn conceptColumn = bankTable2.getColumnModel().getColumn(3);
+            TableColumn conceptColumn = bankTable.getColumnModel().getColumn(2);
             conceptColumn.setCellRenderer(renderer);
             conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
             
@@ -161,23 +161,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }
 
     public void updateBankTable() throws SQLException{
-        DefaultTableModel model = (DefaultTableModel) bankTable.getModel();
-        model.setRowCount(0);
-
-        JComboBox jcb = new JComboBox();
-        jcb.addItem("Credito");
-        jcb.addItem("Debito");
-
-        DefaultTableCellRenderer renderer =
-                new DefaultTableCellRenderer();
-        renderer.setToolTipText("Click para ver las opciones");
-        TableColumn conceptColumn = bankTable.getColumnModel().getColumn(3);
-        conceptColumn.setCellRenderer(renderer);
-        conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
         ConnectionDrivers.listBankTable((DefaultTableModel) bankTable.getModel(),myDay);
     }
 
     private void updateAll() throws SQLException{
+        updateBankTable();
         Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false);
         Double totalDeclared = ConnectionDrivers.getTotalDeclared(myDay);
         updateDeposits();
@@ -188,13 +176,12 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         Double expensesD = ConnectionDrivers.getExpenses(myDay);
         totalCardsField.setText(Constants.df.format(totalInCard = ConnectionDrivers.getTotalCards(myDay)));
         totalCashField.setText(Constants.df.format(totalInCash = ConnectionDrivers.getTotalCash(myDay)));
-        creditNoteField.setText(Constants.df.format(totalCN = ConnectionDrivers.getTotalCN(myDay)));
+        creditNoteField.setText(Constants.df.format(totalCN = (ConnectionDrivers.getTotalCN(myDay)*(Shared.getIva()+100.0)/100.0)));
         totalTotalField.setText(Constants.df.format(totalInCard + totalInCash));
         expensesTodayField.setText(Constants.df.format(expensesD));
         totalDeclaredField.setText(Constants.df.format(totalDeclared*(Shared.getIva()+100.0)/100.0));
         expensesMinusDeclaredField.setText(Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0));
-        totalField.setText(Constants.df.format((totalDeclared*(1.0+Shared.getIva()/100.0)-(totalInCard + totalInCash)-expensesD)));
-        updateBankTable();
+        totalField.setText(Constants.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 + totalCN - totalInCard - totalInCash-expensesD)));
     }
 
     /** This method is called from within the constructor to
@@ -297,18 +284,25 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         fiscalZ.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Caja", "Serial", "Dinero Caja", "Zeta Fiscal"
+                "Caja", "Serial", "Dinero Caja", "Zeta Fiscal", "Cerrado"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -366,6 +360,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         saveDeposit.setText("Guardar");
         saveDeposit.setName("saveDeposit"); // NOI18N
+        saveDeposit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveDepositActionPerformed(evt);
+            }
+        });
 
         deleteDeposit.setText("Eliminar");
         deleteDeposit.setName("deleteDeposit"); // NOI18N
@@ -402,7 +401,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveDeposit)
@@ -418,20 +417,20 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         bankTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Código", "Banco", "Lote", "Medio", "Declarado", "Monto Real"
+                "Banco", "Lote", "Medio", "Declarado", "Monto Real"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, true
+                true, true, true, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -454,6 +453,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         addDeposit1.setText("Agregar");
         addDeposit1.setName("addDeposit1"); // NOI18N
+        addDeposit1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addDeposit1ActionPerformed(evt);
+            }
+        });
 
         deleteNewBanks.setText("Eliminar");
         deleteNewBanks.setName("deleteNewBanks"); // NOI18N
@@ -465,6 +469,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         saveNewBanks.setText("Guardar");
         saveNewBanks.setName("saveNewBanks"); // NOI18N
+        saveNewBanks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveNewBanksActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -485,7 +494,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addDeposit1)
@@ -552,7 +561,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(addExpense)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteExpense, javax.swing.GroupLayout.PREFERRED_SIZE, 83, Short.MAX_VALUE)
+                        .addComponent(deleteExpense, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveExpense)))
                 .addContainerGap())
@@ -560,7 +569,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveExpense)
@@ -612,7 +621,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -785,7 +794,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -796,22 +805,22 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                                 .addComponent(totalCashField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())))
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalTotalField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(expensesMinusDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(expensesTodayField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
@@ -819,17 +828,17 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(cnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                        .addComponent(cnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(creditNoteField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(printAndSendButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, Short.MAX_VALUE)
+                        .addComponent(printAndSendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
@@ -910,7 +919,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(noteLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(noteField, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE)))
+                        .addComponent(noteField, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1046,7 +1055,17 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 return;
             }
         }
+        double total = .0;
+        for (int i = 0; i < model.getRowCount(); i++) {
+            total += Double.parseDouble(((String) model.getValueAt(i, 1)).replace(',', '.'));;
+        }
+
         try {
+            if ( total >= ConnectionDrivers.getAllCash(myDay) ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_WARNING , "No se puede haber gastado más dinero que la cantidad de efectivo existente en cajas.");
+                msg.show(this);
+                return;
+            }
             ConnectionDrivers.deleteAllExpenses(myDay);
             ConnectionDrivers.createExpenses(model,myDay);
             updateAll();
@@ -1089,8 +1108,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void addDeposit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDeposit1ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) bankTable2.getModel();
+        DefaultTableModel model = (DefaultTableModel) bankTable.getModel();
         model.setRowCount( model.getRowCount() + 1 );
+        model.setValueAt(".0", model.getRowCount()-1, 3);
     }//GEN-LAST:event_addDeposit1ActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
@@ -1102,15 +1122,50 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_updateButtonActionPerformed
 
     private void deleteNewBanksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteNewBanksActionPerformed
-        int n = bankTable2.getSelectedRow();
+        int n = bankTable.getSelectedRow();
         if ( n != -1 ){
-            DefaultTableModel model = (DefaultTableModel) bankTable2.getModel();
+            DefaultTableModel model = (DefaultTableModel) bankTable.getModel();
             model.removeRow(n);
         }else{
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar una forma de pago de punto de venta de banco!");
             msg.show(this);
         }
     }//GEN-LAST:event_deleteNewBanksActionPerformed
+
+    private void saveNewBanksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveNewBanksActionPerformed
+        DefaultTableModel model = (DefaultTableModel) bankTable.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            try{
+                for (int j = 0; j < 3; j++) {
+                    if ( model.getValueAt(i, j) == null || ((String)model.getValueAt(i, j)).isEmpty() ){
+                        MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos (excepto el monto declarado) son obligatorios!");
+                        msg.show(this);
+                    }
+                }
+                if ( (model.getValueAt(i, 3) == null || ((String)model.getValueAt(i, 3)).isEmpty()) &&
+                        (model.getValueAt(i, 4) == null || ((Double)model.getValueAt(i, 4)) == .0) ){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe indicar el monto en el item " + (i+1));
+                    msg.show(this);
+                }
+            }catch (NumberFormatException ex){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido. Debe corregirse!");
+                msg.show(this);
+                return;
+            }
+        }
+        try {
+            ConnectionDrivers.deleteAllPayments(myDay);
+            ConnectionDrivers.createPayments(model,myDay);
+            updateAll();
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
+            msg.show(this);
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos.",ex);
+            msb.show(this);
+            this.dispose();
+            Shared.reload();
+        }
+    }//GEN-LAST:event_saveNewBanksActionPerformed
 
     @Override
     public void doIt(){
@@ -1137,6 +1192,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
             Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
             String ansMoney = sss.getMensaje().getValue();
+            if ( sss.getCodigoError() == 0 ){
+                ansMoney = "OK";
+            }
 
             ArrayOfZSDSCABDEV aozsdscd = new ArrayOfZSDSCABDEV();
             ArrayOfZSDSVENDFACT aozsdsvf = new ArrayOfZSDSVENDFACT();
@@ -1310,23 +1368,20 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
     private void fillBanks(List<ZFISCOBRANZA> zFISCOBRANZA) {
         for ( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
-            if ( bankTable.getValueAt(i, 5) != null && bankTable.getValueAt(i, 5).equals(.0) ){
-                continue;
-            }
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
             zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
-            zfc.setSIMBO(of.createZFISCOBRANZASIMBO( bankTable.getValueAt(i, 0).toString()));
+            zfc.setSIMBO(of.createZFISCOBRANZASIMBO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 3).equals("Credito")?"B":"D" ) );
-            zfc.setBPAGO(of.createZFISCOBRANZABPAGO( bankTable.getValueAt(i, 0).toString() ));
+            zfc.setBPAGO(of.createZFISCOBRANZABPAGO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
             zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 2)));
-            if ( bankTable.getValueAt(i, 5) != null ) {
-                zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 5)));
+            if ( !bankTable.getValueAt(i, 4).equals("0") ) {
+                zfc.setMONTO(new BigDecimal((Double)bankTable.getValueAt(i, 4)));
             }else{
-                zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 4)));
+                zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 3)));
             }
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
             zFISCOBRANZA.add(zfc);

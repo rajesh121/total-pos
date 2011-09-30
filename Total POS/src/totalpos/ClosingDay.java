@@ -56,15 +56,23 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     public Working workingFrame;
     private String myDay = "";
     private boolean showReport;
+    public boolean isOk = false;
 
     /** Creates new form ClosingDay
-     * @param day 
+     * @param day
+     * @param sr
      */
     public ClosingDay(String day , boolean sr) {
         try {
             initComponents();
             showReport = sr;
             myDay = day;
+
+            if ( !ConnectionDrivers.previousClosed(myDay) ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se le ha realizado el cierre administrativo a días anteriores. No se puede continuar");
+                msg.show(Shared.getMyMainWindows());
+                return;
+            }
 
             DefaultTableModel model = (DefaultTableModel) bankTable.getModel();
             model.setRowCount(0);
@@ -81,8 +89,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
             
             updateAll();
-            MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "El cierre de Caja aún está en desarrollo!!");
-            msg.show(this);
+            if ( ConnectionDrivers.wasClosed(day) ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Este día ha sido cerrado anteriormente!");
+                msg.show(this);
+            }
+            isOk = true;
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(null);
@@ -1115,8 +1126,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         try {
+            ConnectionDrivers.deleteAllBufferBank(myDay);
             updateAll();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_updateButtonActionPerformed
@@ -1293,6 +1305,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansSells + " </html>");
             msg.show(this);
+
+            ConnectionDrivers.closeThisDay(myDay);
 
             if ( showReport ){
                 new CreateClosingDayReport(myDay,noteField.getText());

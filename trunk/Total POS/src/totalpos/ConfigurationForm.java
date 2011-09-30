@@ -191,7 +191,14 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
         data = ConnectionDrivers.listConfig();
         String[] filter = Shared.getConfig("fieldsShown").split(",");
         for (String simpleConfig : filter) {
-            String[] s = {simpleConfig,Shared.getConfig(simpleConfig)};
+            String anotherName = ConnectionDrivers.configName(simpleConfig);
+            String[] s = new String[2];
+            if ( anotherName!= null ){
+                s[0] = anotherName;
+            }else{
+                s[0] = simpleConfig;
+            }
+            s[1] = Shared.getConfig(simpleConfig);
             model.addRow(s);
         }
     }

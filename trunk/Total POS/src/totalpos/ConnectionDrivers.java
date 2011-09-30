@@ -2280,13 +2280,13 @@ public class ConnectionDrivers {
                 PreparedStatement stmt2 =  c.prepareStatement(
                         "insert into pagos_punto_de_venta_banco(fecha," +
                         "punto_de_venta_de_banco,lote,medio,declarado," +
-                        "monto_real) values(curdate(),?,?,?,?,.0)");
+                        "monto_real) values(curdate(),?,?,?,?,?)");
 
                 stmt2.setString(1, rs.getString("codigo_punto_de_venta_de_banco") );
                 stmt2.setString(2, rs.getString("lote"));
-                System.out.println(rs.getString("tipo"));
                 stmt2.setString(3, rs.getString("tipo"));
                 stmt2.setString(4, rs.getString("monto"));
+                stmt2.setString(5, rs.getString("monto"));
                 stmt2.executeUpdate();
 
             }
@@ -2758,9 +2758,10 @@ public class ConnectionDrivers {
             String key = (String) model.getValueAt(i, 0) ;
             String value = (String) model.getValueAt(i, 1) ;
             PreparedStatement stmt = c.prepareStatement(
-                "update configuracion set `Value` = ? where `Key` = ?");
+                "update configuracion set `Value` = ? where (`Key` = ? or nombre = ? )");
             stmt.setString(1, value);
             stmt.setString(2, key);
+            stmt.setString(3, key);
             stmt.executeUpdate();
         }
         c.close();
@@ -2819,10 +2820,9 @@ public class ConnectionDrivers {
         DataSource dataSource = new DataSource(columnsArray);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select a.tipo , concat(concat(b.id,' - '),b.descripcion) as descripcion " +
-                ", a.lote , sum(monto) as monto from forma_de_pago a, " +
-                "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and datediff(?,fecha)=0 " +
-                "group by a.codigo_punto_de_venta_de_banco union " +
+        PreparedStatement stmt = c.prepareStatement("select medio  as tipo, punto_de_venta_de_banco as descripcion ,"
+                + " lote , monto_real as monto from pagos_punto_de_venta_banco where datediff(?,fecha)=0 " +
+                "union " +
                 "select 'Efectivo' as tipo , banco as descripcion , " +
                 "numero as lote, monto from deposito where datediff(fecha,?)=0");
         stmt.setString(1, day);
@@ -3413,5 +3413,21 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
         return ok;
+    }
+
+    static String configName(String key) throws SQLException{
+        String ans = null;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("select nombre from configuracion where `Key` = ? ");
+        stmt.setString(1, key);
+        ResultSet rs = stmt.executeQuery();
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString("nombre");
+        }
+
+        c.close();
+        return ans;
     }
 }

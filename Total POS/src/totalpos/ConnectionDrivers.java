@@ -2216,24 +2216,53 @@ public class ConnectionDrivers {
         rs.close();
     }
 
-    static void listBankTable(DefaultTableModel ans, String day) throws SQLException {
-        ans.setRowCount(0);
-
+    static boolean wereCalculatedBanks(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select a.codigo_punto_de_venta_de_banco , b.descripcion , a.lote,"
-                + "a.tipo , sum(monto) as monto from forma_de_pago a,"
-                + "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and "
-                + "datediff(?,fecha) = 0 group by a.codigo_punto_de_venta_de_banco");
+        PreparedStatement stmt = c.prepareStatement("select * from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
 
-        while ( rs.next() ){
-            String[] s = {rs.getString("codigo_punto_de_venta_de_banco") , rs.getString("descripcion"),rs.getString("lote"),rs.getString("tipo"),rs.getString("monto")};
-            ans.addRow(s);
-        }
+        boolean ans = rs.next();
 
         c.close();
         rs.close();
+        return ans;
+    }
+
+    static void listBankTable(DefaultTableModel ans, String day) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        
+        if ( wereCalculatedBanks(day) ){
+            ;// Just load it!! It was calculated
+        }else{
+            PreparedStatement stmt = c.prepareStatement("select concat(concat(a.codigo_punto_de_venta_de_banco,' - ') , b.descripcion) as codigo_punto_de_venta_de_banco , a.lote,"
+                + "a.tipo , sum(monto) as monto from forma_de_pago a,"
+                + "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and "
+                + "datediff(?,fecha) = 0 group by a.codigo_punto_de_venta_de_banco");
+
+            stmt.setString(1, day);
+            ResultSet rs = stmt.executeQuery();
+
+            while ( rs.next() ){
+                String[] s = {rs.getString("codigo_punto_de_venta_de_banco") ,rs.getString("lote"),rs.getString("tipo"),rs.getString("monto")};
+                PreparedStatement stmt2 =  c.prepareStatement(
+                        "insert into pagos_punto_de_venta_banco(fecha," +
+                        "punto_de_venta_de_banco,lote,medio,declarado," +
+                        "monto_real) values(curdate(),?,?,?,?,.0)");
+
+                stmt2.setString(1, rs.getString("codigo_punto_de_venta_de_banco") );
+                stmt2.setString(2, rs.getString("lote"));
+                stmt2.setString(3, rs.getString("tipo"));
+                stmt2.setString(4, rs.getString("monto"));
+                stmt2.executeUpdate();
+
+                ans.addRow(s);
+            }
+
+        }
+        ans.setRowCount(0);
+
+        c.close();
     }
 
     static Double getTotalCards(String day) throws SQLException{

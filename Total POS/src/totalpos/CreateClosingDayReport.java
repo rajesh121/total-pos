@@ -102,7 +102,8 @@ public class CreateClosingDayReport {
                             Shared.formatIt("Cuadre de Cajas (B-D):",Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0-income)) + "\n" +
                             Shared.formatIt("Cuadre de Cajas del Día (A+B-C-D): ",Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0-income+amc)) + "\n\n" +
                             "Observaciones: Cantidad de Notas de Créditos: " +
-                            ConnectionDrivers.getQuantCN(myDay) + "      Monto: " + ConnectionDrivers.getTotalCN(myDay)
+                            ConnectionDrivers.getQuantCN(myDay) + "      Monto: " +
+                            Constants.df.format((ConnectionDrivers.getTotalCN(myDay) *(Shared.getIva()+100.0)/100.0))
                             + "\n" + note + "\n"+ "Impresoras Fiscales").setStyle(Templates.bold12CenteredStyle));
                     TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());
                     report.addColumn(col.column("Maquina Fiscal Nro", "0", type.stringType()));

@@ -796,7 +796,10 @@ public class ConnectionDrivers {
 
         changeItemStock(item.getCode(), -1*quant);
 
-        double withoutTax = item.getLastPrice().getQuant()*quant;
+        System.out.println(item.getDescuento());
+        System.out.println(item.getLastPrice().getQuant()*quant);
+        System.out.println((100.0-item.getDescuento())/100.0);
+        double withoutTax = item.getLastPrice().getQuant()*quant*(100.0-item.getDescuento())/100.0;
         double subT = accumulatedInReceipt(receiptId) + withoutTax;
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = " + (subT) +
@@ -1876,6 +1879,29 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    public static Double getAllCash(String day) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from forma_de_pago "
+                + "where tipo = 'Efectivo' and datediff(fecha,?)=0");
+        stmt.setString(1, day );
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ans = rs.next();
+
+        if ( !ans ){
+            c.close();
+            rs.close();
+            return .0;
+        }
+
+        Double doubl = rs.getDouble("monto");
+
+        c.close();
+        rs.close();
+
+        return doubl;
+    }
+
     public static Double getCashToday(String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select dinero_efectivo "
@@ -2181,7 +2207,8 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select do.codigo_punto_de_venta , pos.impresora , "
                 + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito as facturado, "
-                + "dinero_efectivo_impresora+dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora as facturado_impresora "
+                + "dinero_efectivo_impresora+dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora as facturado_impresora ,"
+                + "reporteZ"
                 + " from dia_operativo as do , punto_de_venta as pos where datediff(fecha,?)=0 and do.codigo_punto_de_venta "
                 + "= pos.identificador");
         stmt.setString(1, day);
@@ -2189,7 +2216,7 @@ public class ConnectionDrivers {
 
         while ( rs.next() ){
             Object[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
-                    ,rs.getString("facturado"),rs.getString("facturado_impresora") };
+                    ,rs.getString("facturado"),rs.getString("facturado_impresora"), rs.getBoolean("reporteZ") };
             ans.addRow(s);
         }
 
@@ -2244,7 +2271,6 @@ public class ConnectionDrivers {
             ResultSet rs = stmt.executeQuery();
 
             while ( rs.next() ){
-                String[] s = {rs.getString("codigo_punto_de_venta_de_banco") ,rs.getString("lote"),rs.getString("tipo"),rs.getString("monto")};
                 PreparedStatement stmt2 =  c.prepareStatement(
                         "insert into pagos_punto_de_venta_banco(fecha," +
                         "punto_de_venta_de_banco,lote,medio,declarado," +
@@ -2252,29 +2278,47 @@ public class ConnectionDrivers {
 
                 stmt2.setString(1, rs.getString("codigo_punto_de_venta_de_banco") );
                 stmt2.setString(2, rs.getString("lote"));
+                System.out.println(rs.getString("tipo"));
                 stmt2.setString(3, rs.getString("tipo"));
                 stmt2.setString(4, rs.getString("monto"));
                 stmt2.executeUpdate();
 
-                ans.addRow(s);
             }
 
         }
         ans.setRowCount(0);
+        PreparedStatement stmt = c.prepareStatement("select punto_de_venta_de_banco "
+                + ", lote, medio, declarado, monto_real from pagos_punto_de_venta_banco "
+                + "where datediff(fecha, ? )=0");
+        stmt.setString(1, day );
 
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            Object[] s = {rs.getString("punto_de_venta_de_banco") ,rs.getString("lote")
+                    ,rs.getString("medio"),rs.getString("declarado"),rs.getDouble("monto_real")};
+            ans.addRow(s);
+        }
         c.close();
     }
 
     static Double getTotalCards(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select sum(dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora)"
-                + " as monto from dia_operativo where datediff(?,fecha)=0");
+        PreparedStatement stmt = c.prepareStatement("select declarado, monto_real from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
+
+        Double ans = .0;
+        while( rs.next() ){
+            Double desc = rs.getDouble("declarado");
+            Double modi = rs.getDouble("monto_real");
+            if ( modi == .0 ){
+                ans += desc;
+            }else{
+                ans += modi;
+            }
+        }
         
-        boolean ok = rs.next();
-        assert(ok);
-        Double ans = rs.getDouble("monto");
 
         c.close();
         rs.close();
@@ -2331,7 +2375,7 @@ public class ConnectionDrivers {
 
     static Double getExpenses(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select monto from gasto where datediff(?,fecha)=0");
+        PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from gasto where datediff(?,fecha)=0");
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
 
@@ -2852,7 +2896,7 @@ public class ConnectionDrivers {
             Object[] toAdd = new Object[3];
             toAdd[0] = rs.getString("impresora");
             toAdd[1] = rs.getString("numero_reporte_z");
-            toAdd[2] = new BigDecimal(rs.getDouble("total_ventas"));
+            toAdd[2] = new BigDecimal(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0);
             dataSource.add(toAdd);
         }
 
@@ -3298,6 +3342,32 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
         return ans;
+    }
+
+    static void deleteAllPayments(String myDay) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
+        stmt.setString(1, myDay);
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    static void createPayments(DefaultTableModel model, String myDay) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into pagos_punto_de_venta_banco ( fecha, punto_de_venta_de_banco "
+                + ", lote , medio , declarado , monto_real ) values( curdate(),?,?,?,?,?)");
+            stmt.setString(1, (String) model.getValueAt(i, 0));
+            stmt.setString(2, (String) model.getValueAt(i, 1));
+            stmt.setString(3, (String) model.getValueAt(i, 2));
+            stmt.setString(4, (String) model.getValueAt(i, 3));
+            stmt.setDouble(5, (Double) model.getValueAt(i, 4));
+            stmt.executeUpdate();
+        }
+
+        c.close();
     }
 
 }

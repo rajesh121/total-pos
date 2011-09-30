@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.6" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
   <NonVisualComponents>
@@ -52,7 +52,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="noteLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="noteField" pref="850" max="32767" attributes="0"/>
+                      <Component id="noteField" pref="873" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -138,11 +138,12 @@
             <Component class="javax.swing.JTable" name="fiscalZ">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="4" rowCount="4">
+                  <Table columnCount="5" rowCount="4">
                     <Column editable="false" title="Caja" type="java.lang.Object"/>
                     <Column editable="false" title="Serial" type="java.lang.Object"/>
                     <Column editable="false" title="Dinero Caja" type="java.lang.Object"/>
                     <Column editable="false" title="Zeta Fiscal" type="java.lang.Object"/>
+                    <Column editable="false" title="Cerrado" type="java.lang.Boolean"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -163,6 +164,11 @@
                       <Renderer/>
                     </Column>
                     <Column maxWidth="-1" minWidth="-1" prefWidth="120" resizable="true">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
+                    </Column>
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
                       <Renderer/>
@@ -220,7 +226,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jScrollPane1" pref="198" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="200" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="saveDeposit" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -287,6 +293,9 @@
             <Property name="text" type="java.lang.String" value="Guardar"/>
             <Property name="name" type="java.lang.String" value="saveDeposit" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveDepositActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="deleteDeposit">
           <Properties>
@@ -340,7 +349,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jScrollPane5" pref="259" max="32767" attributes="0"/>
+                  <Component id="jScrollPane5" pref="263" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="addDeposit1" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -366,22 +375,16 @@
             <Component class="javax.swing.JTable" name="bankTable">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="6" rowCount="4">
-                    <Column editable="false" title="C&#xf3;digo" type="java.lang.String"/>
-                    <Column editable="false" title="Banco" type="java.lang.String"/>
-                    <Column editable="false" title="Lote" type="java.lang.String"/>
-                    <Column editable="false" title="Medio" type="java.lang.String"/>
+                  <Table columnCount="5" rowCount="4">
+                    <Column editable="true" title="Banco" type="java.lang.String"/>
+                    <Column editable="true" title="Lote" type="java.lang.String"/>
+                    <Column editable="true" title="Medio" type="java.lang.String"/>
                     <Column editable="false" title="Declarado" type="java.lang.String"/>
                     <Column editable="true" title="Monto Real" type="java.lang.Double"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                   <TableColumnModel selectionModel="0">
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                      <Title/>
-                      <Editor/>
-                      <Renderer/>
-                    </Column>
                     <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
@@ -428,6 +431,9 @@
             <Property name="text" type="java.lang.String" value="Agregar"/>
             <Property name="name" type="java.lang.String" value="addDeposit1" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addDeposit1ActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="deleteNewBanks">
           <Properties>
@@ -443,6 +449,9 @@
             <Property name="text" type="java.lang.String" value="Guardar"/>
             <Property name="name" type="java.lang.String" value="saveNewBanks" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveNewBanksActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -466,7 +475,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="addExpense" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="deleteExpense" pref="83" max="32767" attributes="0"/>
+                          <Component id="deleteExpense" pref="103" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="saveExpense" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -478,7 +487,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jScrollPane2" pref="198" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="200" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="saveExpense" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -592,7 +601,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="jScrollPane4" pref="290" max="32767" attributes="0"/>
+                  <Component id="jScrollPane4" pref="292" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -777,7 +786,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jLabel2" pref="106" max="32767" attributes="0"/>
+                              <Component id="jLabel2" pref="114" max="32767" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -793,25 +802,25 @@
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel4" pref="106" max="32767" attributes="0"/>
+                          <Component id="jLabel4" pref="114" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="totalTotalField" min="-2" pref="122" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jLabel5" pref="106" max="32767" attributes="0"/>
+                          <Component id="jLabel5" pref="114" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="expensesMinusDeclaredField" min="-2" pref="122" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel6" pref="106" max="32767" attributes="0"/>
+                          <Component id="jLabel6" pref="114" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="totalDeclaredField" min="-2" pref="122" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel7" pref="106" max="32767" attributes="0"/>
+                          <Component id="jLabel7" pref="114" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="expensesTodayField" min="-2" pref="122" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -821,7 +830,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="cnLabel" pref="106" max="32767" attributes="0"/>
+                          <Component id="cnLabel" pref="114" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="creditNoteField" min="-2" pref="122" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -833,7 +842,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel11" pref="106" max="32767" attributes="0"/>
+                          <Component id="jLabel11" pref="114" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="totalField" min="-2" pref="122" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>

@@ -360,8 +360,10 @@ public class MainWindows extends javax.swing.JFrame {
     public void createClosingDay(String day){
         if ( !day.isEmpty() ){
             ClosingDay cd = new ClosingDay(day,true);
-            mdiPanel.add(cd);
-            cd.setVisible(true);
+            if ( cd.isOk ){
+                mdiPanel.add(cd);
+                cd.setVisible(true);
+            }
         }
     }
 

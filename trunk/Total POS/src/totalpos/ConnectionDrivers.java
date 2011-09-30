@@ -796,9 +796,6 @@ public class ConnectionDrivers {
 
         changeItemStock(item.getCode(), -1*quant);
 
-        System.out.println(item.getDescuento());
-        System.out.println(item.getLastPrice().getQuant()*quant);
-        System.out.println((100.0-item.getDescuento())/100.0);
         double withoutTax = item.getLastPrice().getQuant()*quant*(100.0-item.getDescuento())/100.0;
         double subT = accumulatedInReceipt(receiptId) + withoutTax;
         stmt = c.prepareStatement("update factura "
@@ -812,6 +809,15 @@ public class ConnectionDrivers {
         
         c.close();
 
+    }
+
+    protected static void deleteAllBufferBank(String day) throws SQLException, Exception{
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("delete from pagos_punto_de_venta_banco where datediff(? , fecha)=0");
+        stmt.setString(1, day);
+        stmt.executeUpdate();
+        c.close();
     }
 
     protected static void deleteItem2Receipt(String receiptId, Item item, int quant) throws SQLException, Exception{
@@ -3370,4 +3376,42 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    static boolean wasClosed(String myDay) throws SQLException {
+        boolean ans = false;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select cerrado from dia_operativo where datediff(fecha,?)=0");
+        stmt.setString(1, myDay);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getBoolean("cerrado");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static void closeThisDay(String myDay) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo set cerrado = 1 where datediff(fecha,?)=0");
+        stmt.setString(1, myDay);
+
+        c.close();
+    }
+
+    static boolean previousClosed(String myDay) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select * from dia_operativo where datediff( ? , fecha ) > 0 and cerrado = 0");
+        stmt.setString(1, myDay);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = !rs.next();
+        
+        c.close();
+        rs.close();
+        return ok;
+    }
 }

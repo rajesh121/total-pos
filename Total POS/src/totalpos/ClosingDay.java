@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -58,6 +59,21 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private boolean showReport;
     public boolean isOk = false;
 
+    static class DecimalFormatRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if ( value == null ){
+                value = Constants.df.format(.0);
+            }else{
+                value = Constants.df.format((Double)value);
+            }
+
+            return super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column );
+        }
+    }
+
     /** Creates new form ClosingDay
      * @param day
      * @param sr
@@ -87,6 +103,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             TableColumn conceptColumn = bankTable.getColumnModel().getColumn(2);
             conceptColumn.setCellRenderer(renderer);
             conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
+            bankTable.getColumnModel().getColumn(4).setCellRenderer(new DecimalFormatRenderer() );
             
             updateAll();
             if ( ConnectionDrivers.wasClosed(day) ){

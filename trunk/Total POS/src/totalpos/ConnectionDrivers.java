@@ -2449,13 +2449,13 @@ public class ConnectionDrivers {
                     + Constants.dbName + " " + tableName + " | mysql -u " + Constants.mirrordbUser
                     + " -p" + Constants.mirrordbPassword + " " + "-h " + Shared.getFileConfig("ServerMirror")
                     + " " + Constants.mirrorDbName ;
-            FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptName);
+            FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptReplicateName);
             BufferedWriter out = new BufferedWriter(fstream);
 
             out.write(cmd);
             out.close();
 
-            Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptName);
+            Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptReplicateName);
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
@@ -2464,7 +2464,7 @@ public class ConnectionDrivers {
                 ;
             }
 
-            File f = new File(Constants.rootDir + Constants.scriptName);
+            File f = new File(Constants.rootDir + Constants.scriptReplicateName);
             f.delete();
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionDrivers.class.getName()).log(Level.SEVERE, null, ex);
@@ -3150,6 +3150,11 @@ public class ConnectionDrivers {
         stmt.setString(1, item.getCode());
         stmt.setString(2, item.getMainBarcode());
         stmt.executeUpdate();
+        // TODO It should'nt be here
+        stmt = c.prepareStatement("delete from codigo_de_barras where codigo_de_articulo = ? and codigo_de_barras = ? ");
+        stmt.setString(1, item.getCode());
+        stmt.setString(2, item.getMainBarcode());
+        stmt.executeUpdate();
         stmt = c.prepareStatement("insert into codigo_de_barras( codigo_de_articulo , codigo_de_barras ) values ( ? , ? )");
         stmt.setString(1, item.getCode());
         stmt.setString(2, item.getMainBarcode());
@@ -3223,7 +3228,7 @@ public class ConnectionDrivers {
                 stmt.setString(2, itemMovement.getItemId());
                 stmt.setInt(3, itemMovement.getQuant());
                 stmt.executeUpdate();
-                stmt = c.prepareStatement("update articulo set existencia_actual = ? where codigo = ? ");
+                stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
                 stmt.setString(2, itemMovement.getItemId());
                 stmt.setInt(1, itemMovement.getQuant());
                 int ans = stmt.executeUpdate();

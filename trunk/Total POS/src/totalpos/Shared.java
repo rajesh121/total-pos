@@ -5,11 +5,14 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -27,6 +30,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import srvEntidadesPackage.BNKA;
@@ -470,6 +474,32 @@ public class Shared {
         char[] spaces = new char[Constants.longReportTotals - msg1.length() - msg2.length()];
         Arrays.fill(spaces, ' ');
         return msg1 + new String(spaces) + msg2;
+    }
+
+    static void prepareMovements(File myRar) throws IOException {
+        String cmd = "copy \"" + myRar.getAbsolutePath() + "\" \"" + Constants.addrForIncome + Constants.fileName4Income + "\"\n"+
+                "cd \"" + Constants.addrForIncome + "\"\n" +
+                "erase *.txt\n" +
+                "\"C:\\Archivos de programa\\WinRAR\\unrar.exe\" -p" + Shared.getConfig("password4rar") + " e " + Constants.fileName4Income + "\n"+
+                "erase " + Constants.fileName4Income + "\n";
+
+        FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptMovementsName);
+        BufferedWriter out = new BufferedWriter(fstream);
+
+        out.write(cmd);
+        out.close();
+
+        Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptMovementsName);
+        InputStream is = process.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        while ( br.readLine() != null) {
+            ;
+        }
+        File f = new File(Constants.rootDir + Constants.scriptMovementsName);
+        f.delete();
+
     }
 
 }

@@ -261,7 +261,10 @@ public class MainWindows extends javax.swing.JFrame {
                 }
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
-            } else if (ed.getFuncion().isEmpty()) {
+            } else if ( ed.getFuncion().equals("updateStock") ) {
+                UpdateStock us = new UpdateStock();
+                us.updateStock();
+            }else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);
             }else{
@@ -310,11 +313,6 @@ public class MainWindows extends javax.swing.JFrame {
         jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jPanel1MouseMoved(evt);
-            }
-        });
-        jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jPanel1KeyPressed(evt);
             }
         });
 
@@ -381,25 +379,8 @@ public class MainWindows extends javax.swing.JFrame {
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_jPanel1MouseMoved
 
-    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            logout();
-        }
-    }//GEN-LAST:event_jPanel1KeyPressed
-
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
-        try {
-            Shared.updateMovements();
-            System.out.println("listo");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MainWindows.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(MainWindows.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(MainWindows.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindows.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }//GEN-LAST:event_jPanel1MouseClicked
 
     private void logout(){

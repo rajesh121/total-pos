@@ -1321,6 +1321,15 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static void cancelAllReceipts() throws SQLException{
+        // for performace;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement(
+                "update factura set estado = 'Anulada' where estado = 'Pedido'");
+        stmt.executeUpdate();
+        c.close();
+    }
+
     protected static String getMyPrinter() throws SQLException{
         List<PointOfSale> poses = listPointOfSales(true);
         for (PointOfSale pointOfSale : poses) {

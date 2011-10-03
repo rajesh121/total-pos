@@ -1,3 +1,4 @@
 Server==localhost
 ServerMirror==localhost
 myId==01
+printerPort==COM3

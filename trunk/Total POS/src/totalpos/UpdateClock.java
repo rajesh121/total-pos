@@ -134,7 +134,8 @@ public class UpdateClock extends Thread{
 
                 if ( !Shared.isOffline && checking % (Integer.parseInt(Shared.getConfig("Sincronizacion SAP"))) == 0
                         && Shared.getMyMainWindows() instanceof MainWindows ){
-                    ClosingDay c = new ClosingDay(Constants.sdfDay2DB.format(Calendar.getInstance()), false);
+                    
+                    ClosingDay c = new ClosingDay(Constants.sdfDay2DB.format(ConnectionDrivers.getDate()), false);
                     c.doIt();
                 }
 

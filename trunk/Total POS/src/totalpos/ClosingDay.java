@@ -90,7 +90,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             showReport = sr;
             myDay = day;
 
-            if ( !ConnectionDrivers.previousClosed(myDay) ){
+            if ( sr && !ConnectionDrivers.previousClosed(myDay) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se le ha realizado el cierre administrativo a días anteriores. No se puede continuar");
                 msg.show(Shared.getMyMainWindows());
                 return;
@@ -112,7 +112,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             bankTable.getColumnModel().getColumn(4).setCellRenderer(new DecimalFormatRenderer() );
             
             updateAll();
-            if ( ConnectionDrivers.wasClosed(day) ){
+            if ( sr &&  ConnectionDrivers.wasClosed(day) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Este día ha sido cerrado anteriormente!");
                 msg.show(this);
             }
@@ -999,11 +999,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_fiscalZFocusGained
 
     private void payWayxPosTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_payWayxPosTableFocusGained
-        /*try {
-            updateAll();
-        } catch (SQLException ex) {
-            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+
     }//GEN-LAST:event_payWayxPosTableFocusGained
 
     private void bankTableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_bankTableFocusGained
@@ -1225,29 +1221,32 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     public void doIt(){
 
         try {
+            String ansMoney = "";
             SrvSap ss = new SrvSap();
             IsrvSap isrvs = ss.getBasicHttpBindingIsrvSap();
-            ZFISHISTENVIOS zfhe = new ZFISHISTENVIOS();
-            ArrayOfZFISCOBRANZA lzfc = new ArrayOfZFISCOBRANZA();
-            ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
-            zfhe.setMANDT(of.createZFISHISTENVIOSMANDT(Constants.mant));
-            zfhe.setIDTIENDA(of.createZFISHISTENVIOSIDTIENDA(Constants.storePrefix + Shared.getConfig("storeName")));
-            zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
-            zfhe.setTOTALVENTASDIA(new BigDecimal(totalInCard + totalInCash));
-            zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES(noteField.getText()));
-            zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
-            zfhe.setFONDOCAJA(BigDecimal.ZERO);
-            fillBanks(lzfc.getZFISCOBRANZA());
-            fillExpenses(lzfc.getZFISCOBRANZA());
-            fillDeposits(lzfc.getZFISCOBRANZA());
-            List<ZFISDATAFISCAL> zFISDATAFISCAL = aozfdf.getZFISDATAFISCAL();
-            for (ZFISDATAFISCAL zfdf : ConnectionDrivers.getOperativeDays(myDay)) {
-                zFISDATAFISCAL.add(zfdf);
-            }
-            Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
-            String ansMoney = sss.getMensaje().getValue();
-            if ( sss.getCodigoError() == 0 ){
-                ansMoney = "OK";
+            if ( showReport ){
+                ZFISHISTENVIOS zfhe = new ZFISHISTENVIOS();
+                ArrayOfZFISCOBRANZA lzfc = new ArrayOfZFISCOBRANZA();
+                ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
+                zfhe.setMANDT(of.createZFISHISTENVIOSMANDT(Constants.mant));
+                zfhe.setIDTIENDA(of.createZFISHISTENVIOSIDTIENDA(Constants.storePrefix + Shared.getConfig("storeName")));
+                zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+                zfhe.setTOTALVENTASDIA(new BigDecimal(totalInCard + totalInCash));
+                zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES(noteField.getText()));
+                zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
+                zfhe.setFONDOCAJA(BigDecimal.ZERO);
+                fillBanks(lzfc.getZFISCOBRANZA());
+                fillExpenses(lzfc.getZFISCOBRANZA());
+                fillDeposits(lzfc.getZFISCOBRANZA());
+                List<ZFISDATAFISCAL> zFISDATAFISCAL = aozfdf.getZFISDATAFISCAL();
+                for (ZFISDATAFISCAL zfdf : ConnectionDrivers.getOperativeDays(myDay)) {
+                    zFISDATAFISCAL.add(zfdf);
+                }
+                Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
+                ansMoney = sss.getMensaje().getValue();
+                if ( sss.getCodigoError() == 0 ){
+                    ansMoney = "OK";
+                }
             }
 
             ArrayOfZSDSCABDEV aozsdscd = new ArrayOfZSDSCABDEV();
@@ -1342,16 +1341,17 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 aozsdsc.getZSDSCLIENT().add(cli);
             }
             
-            sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
+            Resultado sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
             String ansSells = sss.getMensaje().getValue();
 
-            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansSells + " </html>");
-            msg.show(this);
-
-            ConnectionDrivers.closeThisDay(myDay);
-
             if ( showReport ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansSells + " </html>");
+                msg.show(this);
+
+                ConnectionDrivers.closeThisDay(myDay);
                 new CreateClosingDayReport(myDay,noteField.getText());
+            }else{
+                System.out.println("Sincronización exitosa!!");
             }
 
         } catch (SQLException ex) {

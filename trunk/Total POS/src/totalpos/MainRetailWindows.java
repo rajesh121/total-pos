@@ -180,6 +180,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         List<Receipt> uncompletedReceipts = ConnectionDrivers.listUncompletedReceiptToday();
         
         if ( uncompletedReceipts.isEmpty() ){
+            // For performance!
+            ConnectionDrivers.cancelAllReceipts();
             actualId = Shared.nextId(0);
             ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
             if ( ConnectionDrivers.isNeededtoUpdate() ){

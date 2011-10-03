@@ -44,7 +44,7 @@ public class Constants {
     public static final String[] tablesToMirrorAtDay = {"articulo","precio"};
     public static final String[] tablesToCleanMirror = {"forma_de_pago","factura_contiene","factura","nota_de_credito_contiene","nota_de_credito"};
 
-    public static final String[] var2check = {"Server","ServerMirror","myId"};
+    public static final String[] var2check = {"Server","ServerMirror","myId","printerPort"};
 
     public static final String scriptReplicateName = "replicate.bat";
     public static final String rootDir = "./";
@@ -61,6 +61,7 @@ public class Constants {
                     "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora<br></html>";
 
     public static final SimpleDateFormat sdfHour = new SimpleDateFormat("h:mm a");
+    public static final SimpleDateFormat sdfHour2BK = new SimpleDateFormat("hh-mm-ss-a");
     public static final SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
     public static final SimpleDateFormat sdfDay2DB = new SimpleDateFormat("yyyy-MM-dd");
     public static final SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
@@ -119,6 +120,8 @@ public class Constants {
 
     public static final String addrForIncome = ".\\traslados\\";
     public static final String photoPrefix = ".\\fotos\\";
+    public static final String backupDir = ".\\conf\\";
 
     public static final String fileName4Income = "income.rar";
+    public static final String[] forbiddenWords = {"delete","upgrade","insert","drop"};
 }

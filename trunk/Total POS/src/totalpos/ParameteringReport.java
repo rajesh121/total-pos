@@ -240,6 +240,14 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
     @Override
     public void doIt(){
         try {
+            for ( String w : Constants.forbiddenWords ){
+                if ( sql.toLowerCase().contains(w)){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Operación no permitida en la consulta");
+                    msb.show(this);
+                    return;
+                }
+            }
+            
             jrb = report();
             if ( vertical ){
                 jrb = jrb.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE);

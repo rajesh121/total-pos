@@ -502,4 +502,27 @@ public class Shared {
 
     }
 
+    public static void createBackup() throws IOException, SQLException{
+        String cmd = "mysqldump -u " + Constants.dbUser + " -p" + Constants.dbPassword + " " + Constants.dbName + " > " +
+                Constants.backupDir + Constants.sdfDay2DB.format(Calendar.getInstance().getTime()) + "-" +
+                Constants.sdfHour2BK.format((Calendar.getInstance().getTime()));
+
+        FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptMovementsName);
+        BufferedWriter out = new BufferedWriter(fstream);
+
+        out.write(cmd);
+        out.close();
+
+        Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptMovementsName);
+        InputStream is = process.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        while ( br.readLine() != null) {
+            ;
+        }
+        File f = new File(Constants.rootDir + Constants.scriptMovementsName);
+        f.delete();
+    }
+
 }

@@ -40,7 +40,7 @@ public class FiscalPrinter {
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
-        ansT = printer.OpenFpctrl("COM1");
+        ansT = printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
         if ( !ansT ){
             throw new Exception(Shared.getErrMapping().get(128));
         }
@@ -84,7 +84,7 @@ public class FiscalPrinter {
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
-        printer.OpenFpctrl("COM1");
+        printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
 
         List<String> buffer = new ArrayList<String>();
 
@@ -204,7 +204,7 @@ public class FiscalPrinter {
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
-        printer.OpenFpctrl("COM1");
+        printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
 
         // TODO Bug in the printer?? Sometimes It prints 10K instead of Shared.formatDoubleToPrint(quant);
         /*printer.SendCmd(a, b, "9001" + Shared.formatDoubleToPrint(quant) );
@@ -240,7 +240,7 @@ public class FiscalPrinter {
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
-        printer.OpenFpctrl("COM1");
+        printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
 
         printer.SendCmd(a, b, "t");
         if ( b.getValue() != 0 ){
@@ -260,7 +260,7 @@ public class FiscalPrinter {
             isOk = false;
             IntByReference a = new IntByReference();
             IntByReference b = new IntByReference();
-            printer.OpenFpctrl("COM1");
+            printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
 
             printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
             if ( b.getValue() != 0 ){
@@ -312,7 +312,7 @@ public class FiscalPrinter {
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
-        printer.OpenFpctrl("COM1");
+        printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
 
         List<String> buffer = new ArrayList<String>();
 
@@ -411,7 +411,7 @@ public class FiscalPrinter {
         isOk = false;
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
-        printer.OpenFpctrl("COM1");
+        printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
         printer.SendCmd(a, b, "I0"+r);
         printer.CloseFpctrl();
         isOk = true;
@@ -426,7 +426,7 @@ public class FiscalPrinter {
             return;
         }
 
-        printer.OpenFpctrl("COM1");
+        printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
         IntByReference a = new IntByReference();
         IntByReference b = new IntByReference();
         printer.UploadStatusCmd(a, b, "S4", Constants.tmpFileName);

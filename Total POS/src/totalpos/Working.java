@@ -6,10 +6,7 @@
 
 package totalpos;
 
-import java.awt.Component;
 import java.awt.Window;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 
 /**
  *

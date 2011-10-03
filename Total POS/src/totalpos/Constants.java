@@ -22,9 +22,6 @@ public class Constants {
 
     public static final int numberConnection = 5;
 
-    /**
-     * TODO: This must be in a configuration file.
-     */
     //public static final String dbHost = "localhost";
     public static final String dbName = "gt99";
     public static final String dbUser = "root";
@@ -49,8 +46,9 @@ public class Constants {
 
     public static final String[] var2check = {"Server","ServerMirror","myId"};
 
-    public static final String scriptName = "replicate.bat";
+    public static final String scriptReplicateName = "replicate.bat";
     public static final String rootDir = "./";
+    public static final String scriptMovementsName = "prepareMovements.bat";
 
     public static final String wrongPasswordMsg = "Contraseña errónea.";
     public static final String userLocked = "El usuario ha sido bloqueado.";
@@ -121,4 +119,6 @@ public class Constants {
 
     public static final String addrForIncome = ".\\traslados\\";
     public static final String photoPrefix = ".\\fotos\\";
+
+    public static final String fileName4Income = "income.rar";
 }

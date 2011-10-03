@@ -134,7 +134,7 @@ public class FiscalPrinter {
             printer.SendCmd(a, b, "3");
             if ( b.getValue() != 0 ){
                 // Fiscal Number has been generated.
-                System.out.println("RECUPERANDO NUMERO FISCAL!!");
+                //System.out.println("RECUPERANDO NUMERO FISCAL!!");
                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                 everythingCool = false;
             }
@@ -367,7 +367,7 @@ public class FiscalPrinter {
             printer.SendCmd(a, b, "3");
             if ( b.getValue() != 0 ){
                 // Fiscal Number has been generated.
-                System.out.println("RECUPERANDO NUMERO FISCAL!!");
+                //System.out.println("RECUPERANDO NUMERO FISCAL!!");
                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                 everythingCool = false;
             }

@@ -95,7 +95,7 @@ public class CreateClosingDayReport {
                 report.subtotalsAtSummary((AggregationSubtotalBuilder<BigDecimal>)sbt.sum(tcb).setLabel("Total Ingresos"));
             } else if ( masterRowNumber == 4 ) {
                 try {
-                    Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false);
+                    Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true , null) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false, null);
                     Double income = ConnectionDrivers.getTotalIncomming(myDay);
                     Double amc = ConnectionDrivers.getTotalAMinusC(myDay);
                     report.title(cmp.text(

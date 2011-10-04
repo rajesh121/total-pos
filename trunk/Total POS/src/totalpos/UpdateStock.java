@@ -35,8 +35,13 @@ public class UpdateStock implements Doer{
             if ( selection == JFileChooser.APPROVE_OPTION ){
                 Shared.prepareMovements( jfc.getSelectedFile());
                 Shared.updateMovements();
-                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Fue cargado el nuevo inventario satisfactoriamente!");
-                msg.show(Shared.getMyMainWindows());
+                if ( Shared.isHadMovements() ){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Fue cargado el nuevo inventario satisfactoriamente!");
+                    msg.show(Shared.getMyMainWindows());
+                }else{
+                    MessageBox msg = new MessageBox(MessageBox.SGN_WARNING, "La tienda no tuvo ningun movimiento asociado.");
+                    msg.show(Shared.getMyMainWindows());
+                }
             }
         } catch (Exception ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Ha ocurrido un error. Puede que haya elegido un archivo inválido." , ex);

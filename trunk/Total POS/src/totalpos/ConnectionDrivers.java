@@ -1245,8 +1245,9 @@ public class ConnectionDrivers {
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
                 + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno , codigo_interno_alternativo "
-                + "from factura where estado='Espera' and datediff(fecha_creacion,now()) = 0");
-        
+                + "from factura where estado='Espera' and datediff(fecha_creacion,now()) = 0 and identificador_pos = ? ");
+
+        stmt.setString(1, Shared.getFileConfig("myId"));
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -2222,16 +2223,20 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select do.codigo_punto_de_venta , pos.impresora , "
                 + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito as facturado, "
-                + "dinero_efectivo_impresora+dinero_tarjeta_credito_impresora+dinero_tarjeta_debito_impresora+nota_de_credito_impresora as facturado_impresora ,"
+                + "do.total_ventas * ? as facturado_impresora ,"
                 + "reporteZ"
                 + " from dia_operativo as do , punto_de_venta as pos where datediff(fecha,?)=0 and do.codigo_punto_de_venta "
                 + "= pos.identificador");
-        stmt.setString(1, day);
+        stmt.setDouble(1, (Shared.getIva()/100.0+1.0));
+        stmt.setString(2, day);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
             Object[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
-                    ,rs.getString("facturado"),rs.getString("facturado_impresora"), rs.getBoolean("reporteZ") };
+                    , Constants.df.format((ConnectionDrivers.getSumTotalWithIva(day,"factura","Facturada", true , rs.getString("codigo_punto_de_venta"))
+                        - ConnectionDrivers.getSumTotalWithIva(day,"nota_de_credito","Nota",false, rs.getString("codigo_punto_de_venta")))
+                        *(Shared.getIva()/100.0+1.0))
+                    ,Constants.df.format(rs.getDouble("facturado_impresora")), rs.getBoolean("reporteZ") };
             ans.addRow(s);
         }
 
@@ -2334,6 +2339,22 @@ public class ConnectionDrivers {
             }
         }
         
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static Double getTotalPCN(String day) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from forma_de_pago where tipo='Nota de Credito' "
+                + "and datediff(?,fecha)=0");
+        stmt.setString(1, day);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        Double ans = rs.getDouble("monto");
 
         c.close();
         rs.close();
@@ -2927,9 +2948,8 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select total_ventas , impresora , numero_reporte_z ,"
                 + " codigo_ultima_factura, num_facturas, codigo_ultima_nota_credito, numero_notas_credito "
-                + "from dia_operativo where codigo_punto_de_venta = ? and datediff(fecha,?) = 0");
-        stmt.setString(1, Shared.getFileConfig("myId"));
-        stmt.setString(2, day);
+                + "from dia_operativo where datediff(fecha,?) = 0");
+        stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
         while( rs.next() ){
             ZFISDATAFISCAL zfdf = new ZFISDATAFISCAL();
@@ -3062,13 +3082,16 @@ public class ConnectionDrivers {
     }
 
     //WARNING. NON ESCAPED STRINGS
-    static Double getSumTotalWithIva(String myDay, String table, String status, boolean withDiscount) throws SQLException {
+    static Double getSumTotalWithIva(String myDay, String table, String status, boolean withDiscount, String pos) throws SQLException {
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_sin_iva " + (withDiscount?"-total_sin_iva*descuento_global":"") + ")"
-                + " as total from " + table + " where datediff(?,fecha_creacion) = 0 and estado=?");
+                + " as total from " + table + " where datediff(?,fecha_creacion) = 0 and estado = ? " + (pos==null?"":"and identificador_pos = ? ") );
         stmt.setString(1, myDay);
         stmt.setString(2, status);
+        if ( pos != null ){
+            stmt.setString(3,pos);
+        }
         ResultSet rs = stmt.executeQuery();
 
         boolean ok = rs.next();
@@ -3412,6 +3435,7 @@ public class ConnectionDrivers {
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set cerrado = 1 where datediff(fecha,?)=0");
         stmt.setString(1, myDay);
+        stmt.executeUpdate();
 
         c.close();
     }

@@ -53,6 +53,7 @@ public class Shared {
     private static TreeMap<Integer, String> errMapping = new TreeMap<Integer, String>();
     protected static boolean isOffline = false;
     private static TreeMap<String , Item > newItemMapping;
+    private static boolean hadMovements;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -422,6 +423,7 @@ public class Shared {
         while( (line = brM.readLine()) != null ){
             String[] toks = line.split("\t");
             if ( myTrim(toks[25]).equals(Shared.getConfig("storeName")) ){
+                hadMovements = true;
                 Date dd = Constants.dateFormatter.parse(toks[1].split(" ")[0]);
                 java.sql.Date ddsql = new java.sql.Date(dd.getYear(), dd.getMonth(), dd.getDate());
                 Movement m = new Movement(toks[0], ddsql
@@ -463,6 +465,7 @@ public class Shared {
     }
 
     public static void updateMovements() throws FileNotFoundException, SQLException, ParseException, IOException{
+        hadMovements = false;
         List<Item> items = parseItems(Constants.addrForIncome + "art.txt");
         ConnectionDrivers.updateItems(items);
         List<Movement> movements = parseMovements(Constants.addrForIncome + "ajuste.txt", Constants.addrForIncome + "reng_aju.txt");
@@ -470,6 +473,10 @@ public class Shared {
         parseDiscounts(Constants.addrForIncome + "descuen.txt");
     }
 
+    public static boolean isHadMovements() {
+        return hadMovements;
+    }
+    
     public static String formatIt(String msg1, String msg2){
         char[] spaces = new char[Constants.longReportTotals - msg1.length() - msg2.length()];
         Arrays.fill(spaces, ' ');

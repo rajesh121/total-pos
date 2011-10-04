@@ -58,6 +58,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private String myDay = "";
     private boolean showReport;
     public boolean isOk = false;
+    private Double totalpcn;
 
     static class DecimalFormatRenderer extends DefaultTableCellRenderer {
         @Override
@@ -199,8 +200,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }
 
     private void updateAll() throws SQLException{
+        Shared.getScreenSaver().actioned();
         updateBankTable();
-        Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false);
+        Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true, null) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false,null);
         Double totalDeclared = ConnectionDrivers.getTotalDeclared(myDay);
         updateDeposits();
         updateExpense();
@@ -210,12 +212,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         Double expensesD = ConnectionDrivers.getExpenses(myDay);
         totalCardsField.setText(Constants.df.format(totalInCard = ConnectionDrivers.getTotalCards(myDay)));
         totalCashField.setText(Constants.df.format(totalInCash = ConnectionDrivers.getTotalCash(myDay)));
+        payWithCreditNoteField.setText( Constants.df.format( totalpcn = ConnectionDrivers.getTotalPCN(myDay) ));
         creditNoteField.setText(Constants.df.format(totalCN = (ConnectionDrivers.getTotalCN(myDay)*(Shared.getIva()+100.0)/100.0)));
         totalTotalField.setText(Constants.df.format(totalInCard + totalInCash));
         expensesTodayField.setText(Constants.df.format(expensesD));
         totalDeclaredField.setText(Constants.df.format(totalDeclared*(Shared.getIva()+100.0)/100.0));
         expensesMinusDeclaredField.setText(Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0));
-        totalField.setText(Constants.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 + totalCN - totalInCard - totalInCash-expensesD)));
+        totalField.setText(Constants.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 + totalCN - totalInCard - totalInCash-expensesD-totalpcn)));
     }
 
     /** This method is called from within the constructor to
@@ -299,6 +302,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         totalField = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         updateButton = new javax.swing.JButton();
+        payWithCreditNoteField = new javax.swing.JTextField();
+        payWithCN = new javax.swing.JLabel();
         noteField = new javax.swing.JTextField();
         noteLabel = new javax.swing.JLabel();
 
@@ -310,6 +315,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         setResizable(true);
         setTitle("Día Operativo");
         setVisible(true);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Zetas Fiscales"));
         jPanel2.setName("jPanel2"); // NOI18N
@@ -324,7 +334,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 {null, null, null, null, null}
             },
             new String [] {
-                "Caja", "Serial", "Dinero Caja", "Zeta Fiscal", "Cerrado"
+                "Caja", "Serial", "Neto Ventas", "Neto Fiscal", "Cerrado"
             }
         ) {
             Class[] types = new Class [] {
@@ -824,6 +834,15 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
         });
 
+        payWithCreditNoteField.setText("Falta");
+        payWithCreditNoteField.setFocusable(false);
+        payWithCreditNoteField.setName("payWithCreditNoteField"); // NOI18N
+
+        payWithCN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        payWithCN.setText("Pagos con NC");
+        payWithCN.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        payWithCN.setName("payWithCN"); // NOI18N
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -831,9 +850,6 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
-                        .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
@@ -846,46 +862,50 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(totalCashField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalTotalField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(expensesMinusDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(expensesTodayField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(cnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(creditNoteField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addComponent(printAndSendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addComponent(updateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(payWithCN, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(payWithCreditNoteField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(totalTotalField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(expensesMinusDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(totalDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(expensesTodayField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(cnLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(creditNoteField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())))
         );
         jPanel7Layout.setVerticalGroup(
@@ -900,12 +920,16 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                             .addComponent(jLabel2)))
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(payWithCreditNoteField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(payWithCN))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(totalTotalField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(expensesMinusDeclaredField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
@@ -927,7 +951,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addComponent(updateButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1217,6 +1241,10 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         }*/
     }//GEN-LAST:event_bankTableMouseReleased
 
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
+
     @Override
     public void doIt(){
 
@@ -1410,6 +1438,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private javax.swing.JTextField noteField;
     private javax.swing.JLabel noteLabel;
     private javax.swing.JTable payWayxPosTable;
+    private javax.swing.JLabel payWithCN;
+    private javax.swing.JTextField payWithCreditNoteField;
     private javax.swing.JButton printAndSendButton;
     private javax.swing.JButton saveDeposit;
     private javax.swing.JButton saveExpense;

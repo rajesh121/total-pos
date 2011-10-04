@@ -215,6 +215,7 @@ public class ReportsForm extends javax.swing.JInternalFrame {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         if ( table.getSelectedRow() != -1 ){
+            
             AddReport ar = new AddReport(new Report(reportsScanned.get(table.getSelectedRow()).getFile()));
             MdiPanel mrw = (MdiPanel) getParent();
             mrw.add(ar);

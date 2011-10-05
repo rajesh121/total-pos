@@ -8,9 +8,7 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -55,9 +53,6 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
             clientDescriptionField.setText(c.getAddress());
             clientNameField.setText(c.getName());
             clientPhoneField.setText(c.getPhone());
-            acceptButton.setMnemonic('A');
-            cancelButton.setMnemonic('C');
-            reverseALLButton.setMnemonic('D');
             updateAll();
             if ( totally ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_NOTICE, "Esta factura ha sido TOTALMENTE devuelta.");
@@ -500,7 +495,13 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
 
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            //doIt();
+            workingFrame = new Working(this);
+            WaitSplash ws = new WaitSplash(this);
+
+            Shared.centerFrame(workingFrame);
+            workingFrame.setVisible(true);
+
+            ws.execute();
         } else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }

@@ -29,9 +29,6 @@ public class GlobalDiscount extends javax.swing.JDialog {
         initComponents();
         this.parent = (MainRetailWindows) parent;
         subtotal = subT;
-        calculate.setMnemonic('l');
-        acceptButton.setMnemonic('a');
-        cancelButton.setMnemonic('c');
         isOk = true;
     }
 
@@ -96,7 +93,6 @@ public class GlobalDiscount extends javax.swing.JDialog {
         });
 
         cancelButton.setText("Cancelar");
-        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -105,7 +101,6 @@ public class GlobalDiscount extends javax.swing.JDialog {
         });
 
         acceptButton.setText("Aceptar");
-        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -197,7 +192,6 @@ public class GlobalDiscount extends javax.swing.JDialog {
         );
 
         calculate.setText("Calcular");
-        calculate.setFocusable(false);
         calculate.setName("calculate"); // NOI18N
         calculate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

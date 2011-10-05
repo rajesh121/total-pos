@@ -33,6 +33,8 @@ public class Client {
         return phone;
     }
 
-    
+    public void setId(String id) {
+        this.id = id;
+    }
 
 }

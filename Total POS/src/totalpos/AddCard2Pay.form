@@ -95,7 +95,6 @@
     <Component class="javax.swing.JButton" name="acceptButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Aceptar"/>
-        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="acceptButton" noResource="true"/>
       </Properties>
       <Events>
@@ -105,8 +104,6 @@
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancelar"/>
-        <Property name="defaultCapable" type="boolean" value="false"/>
-        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="cancelButton" noResource="true"/>
       </Properties>
       <Events>
@@ -131,12 +128,13 @@
       <Properties>
         <Property name="name" type="java.lang.String" value="bposCombo" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="bposComboKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="modifyLot">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cambiar Lote"/>
-        <Property name="defaultCapable" type="boolean" value="false"/>
-        <Property name="focusable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="modifyLot" noResource="true"/>
       </Properties>
       <Events>

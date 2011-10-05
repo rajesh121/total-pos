@@ -44,12 +44,12 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="idField" min="-2" pref="280" max="-2" attributes="0"/>
+                              <Component id="idField" pref="284" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="passwordField" pref="280" max="32767" attributes="1"/>
+                              <Component id="passwordField" pref="284" max="32767" attributes="1"/>
                           </Group>
                       </Group>
                   </Group>
@@ -58,7 +58,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="quantField" pref="280" max="32767" attributes="1"/>
+                      <Component id="quantField" pref="284" max="32767" attributes="1"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>

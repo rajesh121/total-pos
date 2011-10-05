@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -215,11 +216,20 @@ public class ReportsForm extends javax.swing.JInternalFrame {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         if ( table.getSelectedRow() != -1 ){
-            
-            AddReport ar = new AddReport(new Report(reportsScanned.get(table.getSelectedRow()).getFile()));
-            MdiPanel mrw = (MdiPanel) getParent();
-            mrw.add(ar);
-            ar.setVisible(true);
+            try {
+                if (ConnectionDrivers.isAllowed(Shared.getUser().getPerfil(), "editReports")) {
+                    AddReport ar = new AddReport(new Report(reportsScanned.get(table.getSelectedRow()).getFile()));
+                    MdiPanel mrw = (MdiPanel) getParent();
+                    mrw.add(ar);
+                    ar.setVisible(true);
+                }else{
+                    MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para esta operación!");
+                    msg.show(this);
+                }
+            } catch (SQLException ex) {
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos.",ex);
+                msg.show(this);
+            }
         }else{
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el reporte primero.");
             msg.show(this);
@@ -227,10 +237,20 @@ public class ReportsForm extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        AddReport ar = new AddReport();
-        MdiPanel mrw = (MdiPanel) getParent();
-        mrw.add(ar);
-        ar.setVisible(true);
+        try {
+            if (ConnectionDrivers.isAllowed(Shared.getUser().getPerfil(), "editReports")) {
+                AddReport ar = new AddReport();
+                MdiPanel mrw = (MdiPanel) getParent();
+                mrw.add(ar);
+                ar.setVisible(true);
+            }else{
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para esta operación!");
+                msg.show(this);
+            }
+        } catch (SQLException ex) {
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos.",ex);
+            msg.show(this);
+        }
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void tableFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tableFocusGained

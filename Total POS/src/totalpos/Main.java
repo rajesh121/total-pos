@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 /**
  *
@@ -18,6 +19,8 @@ public class Main {
         splash.changeStatus("Leyendo archivo de configuración...", 10);
         Shared.centerFrame(splash);
         splash.setVisible(true);
+
+        UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
         
         try {
             Shared.loadFileConfig();
@@ -38,6 +41,7 @@ public class Main {
         splash.changeStatus("Conectado a base de datos...", 30);
         ConnectionDrivers.initialize();
 
+        // TODO UNCOMMENT THIS
         /*if ( !Constants.isPos ){
             splash.changeStatus("Actualizando bancos y gastos desde SAP", 40);
             Shared.updateExpensesAndBanks();

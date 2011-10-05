@@ -124,49 +124,49 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
 
         jLabel2.setFont(new java.awt.Font("Courier New", 1, 12));
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel2.setText("(E)fectivo");
+        jLabel2.setText("E / Efectivo");
         jLabel2.setFocusable(false);
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Courier New", 1, 12));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
-        jLabel3.setText("(N)ota de Crédito");
+        jLabel3.setText("N / Nota de Crédito");
         jLabel3.setFocusable(false);
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel3.setName("jLabel3"); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Courier New", 1, 12));
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel4.setText("(D)ébito");
+        jLabel4.setText("D / Débito");
         jLabel4.setFocusable(false);
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel4.setName("jLabel4"); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Courier New", 1, 12));
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel5.setText("(C)rédito");
+        jLabel5.setText("C / Crédito");
         jLabel5.setFocusable(false);
         jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel5.setName("jLabel5"); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Courier New", 1, 12));
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel6.setText("(A)tras");
+        jLabel6.setText("Esc / Atras");
         jLabel6.setFocusable(false);
         jLabel6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel6.setName("jLabel6"); // NOI18N
 
         jLabel7.setFont(new java.awt.Font("Courier New", 1, 12));
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel7.setText("(O)k");
+        jLabel7.setText("Enter / OK");
         jLabel7.setFocusable(false);
         jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel7.setName("jLabel7"); // NOI18N
 
         jLabel8.setFont(new java.awt.Font("Courier New", 1, 12));
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel8.setText("Eliminar(F12)");
+        jLabel8.setText("F12 / Eliminar");
         jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel8.setName("jLabel8"); // NOI18N
 
@@ -290,7 +290,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_A || evt.getKeyCode() == KeyEvent.VK_ESCAPE){
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE){
             this.dispose();
         }else if ( evt.getKeyCode() == KeyEvent.VK_F12 ){
             payForms.remove(table.getSelectedRow());

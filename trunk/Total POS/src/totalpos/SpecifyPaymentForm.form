@@ -166,7 +166,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="(E)fectivo"/>
+        <Property name="text" type="java.lang.String" value="E / Efectivo"/>
         <Property name="focusable" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel2" noResource="true"/>
@@ -180,7 +180,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas 2x.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="(N)ota de Cr&#xe9;dito"/>
+        <Property name="text" type="java.lang.String" value="N / Nota de Cr&#xe9;dito"/>
         <Property name="focusable" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
@@ -194,7 +194,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="(D)&#xe9;bito"/>
+        <Property name="text" type="java.lang.String" value="D / D&#xe9;bito"/>
         <Property name="focusable" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
@@ -208,7 +208,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="(C)r&#xe9;dito"/>
+        <Property name="text" type="java.lang.String" value="C / Cr&#xe9;dito"/>
         <Property name="focusable" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel5" noResource="true"/>
@@ -222,7 +222,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="(A)tras"/>
+        <Property name="text" type="java.lang.String" value="Esc / Atras"/>
         <Property name="focusable" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel6" noResource="true"/>
@@ -236,7 +236,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="(O)k"/>
+        <Property name="text" type="java.lang.String" value="Enter / OK"/>
         <Property name="focusable" type="boolean" value="false"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel7" noResource="true"/>
@@ -250,7 +250,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Eliminar(F12)"/>
+        <Property name="text" type="java.lang.String" value="F12 / Eliminar"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel8" noResource="true"/>
       </Properties>

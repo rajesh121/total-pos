@@ -31,9 +31,6 @@ public class AddCard2Pay extends javax.swing.JDialog {
             initComponents();
             reason = reasonI;
             myParent = parent;
-            acceptButton.setMnemonic('A');
-            cancelButton.setMnemonic('C');
-            modifyLot.setMnemonic('M');
             this.total = total;
             updateAll();
             isOk = true;
@@ -73,7 +70,6 @@ public class AddCard2Pay extends javax.swing.JDialog {
         jLabel1.setName("jLabel1"); // NOI18N
 
         acceptButton.setText("Aceptar");
-        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -82,8 +78,6 @@ public class AddCard2Pay extends javax.swing.JDialog {
         });
 
         cancelButton.setText("Cancelar");
-        cancelButton.setDefaultCapable(false);
-        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,10 +96,13 @@ public class AddCard2Pay extends javax.swing.JDialog {
         posLabel.setName("posLabel"); // NOI18N
 
         bposCombo.setName("bposCombo"); // NOI18N
+        bposCombo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                bposComboKeyPressed(evt);
+            }
+        });
 
         modifyLot.setText("Cambiar Lote");
-        modifyLot.setDefaultCapable(false);
-        modifyLot.setFocusable(false);
         modifyLot.setName("modifyLot"); // NOI18N
         modifyLot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -206,6 +203,12 @@ public class AddCard2Pay extends javax.swing.JDialog {
             doIt();
         }
     }//GEN-LAST:event_moneyFieldKeyReleased
+
+    private void bposComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_bposComboKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            doIt();
+        }
+    }//GEN-LAST:event_bposComboKeyPressed
 
     public void doIt(){
         Double d = .0;

@@ -25,8 +25,6 @@ public class AddMoney2Pay extends javax.swing.JDialog {
         reason = reasonI;
         titleLabel.setText(reason);
         myParent = parent;
-        acceptButton.setMnemonic('A');
-        cancelButton.setMnemonic('C');
         this.price = price;
     }
 

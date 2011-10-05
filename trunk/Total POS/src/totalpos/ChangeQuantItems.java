@@ -85,7 +85,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         jLabel13.setText("*");
         jLabel13.setName("jLabel13"); // NOI18N
 
-        idField.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        idField.setFont(new java.awt.Font("Courier New", 0, 12));
         idField.setName("idField"); // NOI18N
         idField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -143,17 +143,17 @@ public class ChangeQuantItems extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(idField, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))))
+                                .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(phoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(quantField, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)))
+                        .addComponent(quantField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

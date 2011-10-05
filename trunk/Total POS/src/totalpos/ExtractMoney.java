@@ -23,8 +23,6 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
         super(parent, modal);
         initComponents();
         printer = print;
-        acceptButton.setMnemonic('A');
-        cancelButton.setMnemonic('C');
     }
 
     /** This method is called from within the constructor to
@@ -105,7 +103,6 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
         });
 
         cancelButton.setText("Cancelar");
-        cancelButton.setFocusable(false);
         cancelButton.setName("cancelButton"); // NOI18N
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,7 +111,6 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
         });
 
         acceptButton.setText("Aceptar");
-        acceptButton.setFocusable(false);
         acceptButton.setName("acceptButton"); // NOI18N
         acceptButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -157,9 +153,9 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
                             .addComponent(jLabel9))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(moneyField, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)))
+                            .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                            .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                            .addComponent(moneyField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(143, 143, 143)
@@ -169,7 +165,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 73, Short.MAX_VALUE)
+                    .addGap(0, 77, Short.MAX_VALUE)
                     .addComponent(jLabel12)
                     .addGap(344, 344, 344)))
         );

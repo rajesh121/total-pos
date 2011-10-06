@@ -23,7 +23,7 @@ public class Constants {
     public static final int numberConnection = 5;
 
     //public static final String dbHost = "localhost";
-    public static final String dbName = "gt99";
+    public static final String dbName = "pruebas";
     public static final String dbUser = "root";
     public static final String dbPassword = "123456789";
     public static final String defaultUser = "Invitado";
@@ -75,7 +75,7 @@ public class Constants {
     public static final String storePrefix = "";
     public static final String waerks = "VEF";
 
-    public static final boolean isPos = true;
+    public static final boolean isPos = false;
 
     public static String maximunId = "9999999999999999999999999";
     public static String minimunId = "";

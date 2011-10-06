@@ -17,6 +17,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
 
     FiscalPrinter printer;
     private Working workingFrame;
+    private Double curMoney;
 
     /** Creates new form ExtractMoney */
     public ExtractMoney(java.awt.Frame parent, boolean modal, FiscalPrinter print) {
@@ -280,7 +281,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
         try{
             double p = Double.parseDouble(moneyField.getText());
 
-            double curMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
+            curMoney = ConnectionDrivers.maximunMoney2Extract(Shared.getFileConfig("myId"));
             if ( p > curMoney || p <= 1.0){
                 throw new NumberFormatException("");
             }
@@ -320,7 +321,11 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);
             msg.show(this);
         } catch ( NumberFormatException ex ){
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido");
+            String msgExtra = " Se ha extraído todo el dinero de la caja";
+            if ( Math.abs(curMoney) > 1.0 ){
+                msgExtra = " La máxima cantidad de dinero que se puede extraer es " + Constants.df.format(curMoney) + " Bs";
+            }
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido." + msgExtra );
             msg.show(this);
         } catch (Exception ex) {
             String kindErr = "";
@@ -329,7 +334,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
                 kindErr = Constants.wrongPasswordMsg;
             }
 
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr);
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr,ex);
             msg.show(this);
 
             if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){

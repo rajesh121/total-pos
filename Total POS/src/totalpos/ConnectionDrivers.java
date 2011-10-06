@@ -1941,6 +1941,23 @@ public class ConnectionDrivers {
         return doubl;
     }
 
+    public static Double maximunMoney2Extract(String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(monto) from "
+                + "(select sum(monto) as monto from movimiento_efectivo where "
+                + "datediff(curdate(),fecha)=0 and identificador_punto_de_venta = ? "
+                + "and monto < 0 union select dinero_efectivo from dia_operativo where "
+                + "datediff(now(),fecha)=0 and codigo_punto_de_venta = ?) as myTable");
+        stmt.setString(1, pos);
+        stmt.setString(2, pos);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        Double ans = rs.getDouble(1);
+        c.close();
+        rs.close();
+        return ans;
+    }
+
     public static void setCash(Double money, String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
@@ -2806,7 +2823,7 @@ public class ConnectionDrivers {
         stmt.setDouble(1, total);
         stmt.setString(2, z);
         stmt.setString(3, getMyPrinter());
-        stmt.setString(4, lReceipt);
+        stmt.setString(4, lReceipt==null?"":lReceipt);
         stmt.setInt(5, quantReceiptsToday);
         stmt.setString(6, lastCN);
         stmt.setInt(7, nNC);
@@ -3466,6 +3483,44 @@ public class ConnectionDrivers {
         }
 
         c.close();
+        return ans;
+    }
+
+    // WARNING NON_ESCAPE QUERY
+    static Integer getQuant( String pos, String field) throws SQLException {
+        Integer ans = 0;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select " + field + " as ans from dia_operativo where datediff( curdate() , fecha ) = 0 "
+                + "and codigo_punto_de_venta = ? ");
+        stmt.setString(1, pos);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getInt("ans");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static Double getTotalDeclaredPos( String pos) throws SQLException{
+        Double ans = .0;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select total_ventas as ans from dia_operativo "
+                + "where codigo_punto_de_venta = ? and datediff(fecha,curdate())=0");
+        stmt.setString(1, pos);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getDouble("ans");
+        }
+
+        ans *= Shared.getIva()/100.0+1.0;
+        c.close();
+        rs.close();
         return ans;
     }
 }

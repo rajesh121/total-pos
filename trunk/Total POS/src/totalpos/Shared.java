@@ -215,10 +215,12 @@ public class Shared {
     }
 
     public static void loadPhoto(JLabel imageLabel , String addr, int x, int y){
-        ImageIcon image = new ImageIcon(addr);
-        ImageIcon imageIcon = new ImageIcon(image.getImage().getScaledInstance( x, y, Image.SCALE_AREA_AVERAGING));
-        imageLabel.setIcon(imageIcon);
-        imageLabel.setVisible(true);
+        if ( addr != null ){
+            ImageIcon image = new ImageIcon(addr);
+            ImageIcon imageIcon = new ImageIcon(image.getImage().getScaledInstance( x, y, Image.SCALE_AREA_AVERAGING));
+            imageLabel.setIcon(imageIcon);
+            imageLabel.setVisible(true);
+        }
     }
 
     public static double round(double value, int decimalPlace)

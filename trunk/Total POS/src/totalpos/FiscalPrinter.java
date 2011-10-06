@@ -27,6 +27,9 @@ public class FiscalPrinter {
     }
 
      public boolean checkPrinter() throws SQLException, FileNotFoundException, Exception {
+        if ( !Constants.withFiscalPrinter ){
+            return true;
+        }
         return isTheSame(ConnectionDrivers.getMyPrinter());
     }
 
@@ -500,6 +503,44 @@ public class FiscalPrinter {
         ConnectionDrivers.updateTotalFromPrinter(total, z ,lReceipt,quantReceiptsToday,lastCN,nNC);
 
         printer.CloseFpctrl();
+    }
+
+    // Pre: updateValues()
+    void printResumeZ() throws Exception{
+        if ( !Constants.withFiscalPrinter ){
+            return;
+        }
+
+        isOk = false;
+        IntByReference a = new IntByReference();
+        IntByReference b = new IntByReference();
+        printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
+
+        List<String> buffer = new ArrayList<String>();
+        buffer.add("800 ");
+        buffer.add("800 Resumen del Reporte Z Nro " + z);
+        buffer.add("800 Impresora Fiscal Serial Nro " + printerSerial );
+        buffer.add("800 ");
+        buffer.add("800 Sucursal: " + Shared.getConfig("storeName"));
+        buffer.add("800 Caja Nro: " + Shared.getFileConfig("myId"));
+        buffer.add("800 Ult Factura:        " + ConnectionDrivers.getLastReceipt());
+        buffer.add("800 Ult Nota de Credito " + ConnectionDrivers.getLastCN());
+        buffer.add("800 Nro de Ventas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas"));
+        buffer.add("800 Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito"));
+        buffer.add("800 ");
+        buffer.add("800 Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"))));
+        buffer.add("800 ");
+        buffer.add("810 Fin de Resumen del Reporte Z Nro " + z);
+
+         for (String bu : buffer) {
+            printer.SendCmd(a, b, bu);
+            if ( b.getValue() != 0 ){
+                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            }
+        }
+
+        printer.CloseFpctrl();
+        isOk = true;
     }
     
 }

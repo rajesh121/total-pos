@@ -1633,15 +1633,14 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static List<BankPOS> listBPos(String pos, String kindbpos) throws SQLException {
+    static List<BankPOS> listBPos(String kindbpos) throws SQLException {
         List<BankPOS> ans = new ArrayList<BankPOS>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select id , descripcion, lote, identificador_pos , tipo from punto_de_venta_de_banco "
-                + "where identificador_pos = ? and ( tipo = ?  or tipo = ? ) ");
-        stmt.setString(1, Shared.getFileConfig("myId"));
-        stmt.setString(2, kindbpos);
-        stmt.setString(3, Constants.kindOfBPOS[Constants.kindOfBPOS.length-1]);
+                + "where ( tipo = ?  or tipo = ? ) ");
+        stmt.setString(1, kindbpos);
+        stmt.setString(2, Constants.kindOfBPOS[Constants.kindOfBPOS.length-1]);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -2995,10 +2994,9 @@ public class ConnectionDrivers {
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
                 + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno , codigo_interno_alternativo "
-                + "from factura where estado='Facturada' and datediff(fecha_creacion,?) = 0 and identificador_pos = ? order by impresora , numero_fiscal ");
+                + "from factura where estado='Facturada' and datediff(fecha_creacion,?) = 0 order by impresora , numero_fiscal ");
 
         stmt.setString(1, day);
-        stmt.setString(2, Shared.getFileConfig("myId"));
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -3040,9 +3038,8 @@ public class ConnectionDrivers {
                 + "nc.iva, nc.impresora, nc.numero_fiscal, "
                 + "nc.numero_reporte_z, nc.codigo_de_usuario, nc.cantidad_de_articulos , nc.identificador_turno , nc.codigo_interno_alternativo "
                 + "from nota_de_credito nc , factura fac where nc.codigo_factura = fac.codigo_interno and nc.estado='Nota' "
-                + "and datediff(nc.fecha_creacion,?) = 0 and nc.identificador_pos = ? order by nc.impresora , nc.numero_fiscal ");
+                + "and datediff(nc.fecha_creacion,?) = 0 order by nc.impresora , nc.numero_fiscal ");
 
-        stmt.setString(2, Shared.getFileConfig("myId"));
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
 

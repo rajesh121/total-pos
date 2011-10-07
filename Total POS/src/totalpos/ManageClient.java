@@ -345,6 +345,8 @@ public class ManageClient extends javax.swing.JDialog {
         Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            phoneField.requestFocus();
         }
     }//GEN-LAST:event_nameFieldKeyPressed
 
@@ -352,6 +354,8 @@ public class ManageClient extends javax.swing.JDialog {
         Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            addressField.requestFocus();
         }
     }//GEN-LAST:event_phoneFieldKeyPressed
 

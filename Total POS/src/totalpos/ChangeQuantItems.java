@@ -266,7 +266,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
             ConnectionDrivers.login(idField.getText(), passwordField.getPassword());
 
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), idField.getText());
-            if ( ConnectionDrivers.isAllowed(u.getPerfil(), "extractMoney") ){
+            if ( ConnectionDrivers.isAllowed(u.getPerfil(), "setQuant") ){
                 Shared.userInsertedPasswordOk(idField.getText());
 
                 MainRetailWindows parent = (MainRetailWindows) Shared.getMyMainWindows();

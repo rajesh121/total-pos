@@ -1347,25 +1347,40 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
             
             ZSDSVENDFACT zsdsvfi = new ZSDSVENDFACT();
+            System.out.println("FKDAT\tMANDT\tPARTNNUMB\tPARTNROLE\tPOSNR\tVBELN\tWERKS");
             zsdsvfi.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            System.out.print(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime()) + "\t");
             zsdsvfi.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
+            System.out.print(Constants.mant + "\t");
             zsdsvfi.setPARTNNUMB(of.createZSDSVENDFACTPARTNNUMB("999999"));
+            System.out.print("999999" + "\t");
             zsdsvfi.setPARTNROLE(of.createZSDSVENDFACTPARTNROLE("999999"));
+            System.out.print("999999" + "\t");
             zsdsvfi.setPOSNR(of.createZSDSVENDFACTPOSNR("000001"));
+            System.out.print("000001" + "\t");
             zsdsvfi.setVBELN(of.createZSDSVENDFACTVBELN("999999"));
+            System.out.print("999999" + "\t");
             zsdsvfi.setWERKS(of.createZSDSVENDFACTWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
+            System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\t");
 
             aozsdsvf.getZSDSVENDFACT().add(zsdsvfi);
 
+            System.out.println("MANDT\tFKDAT\tNAME1\tKUNNR\tWAERS\tADRNR");
             for (String c : clients) {
                 Client clientL = ConnectionDrivers.listClients(c).get(0);
                 ZSDSCLIENT cli = new ZSDSCLIENT();
                 cli.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
+                System.out.print(Constants.mant + "\t");
                 cli.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+                System.out.print(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime()) + "\t");
                 cli.setNAME1(of.createZSDSCLIENTNAME1(clientL.getName()));
+                System.out.print(clientL.getName() + "\t");
                 cli.setKUNNR(of.createZSDSCLIENTKUNNR(clientL.getId()));
+                System.out.print(clientL.getId() + "\t");
                 cli.setWAERS(of.createZSDSCLIENTWAERS(Constants.waerks));
+                System.out.print(Constants.waerks + "\t");
                 cli.setADRNR(of.createZSDSCLIENTADRNR(clientL.getAddress() + " " + clientL.getPhone()));
+                System.out.print(clientL.getAddress() + " " + clientL.getPhone() + "\t");
                 aozsdsc.getZSDSCLIENT().add(cli);
             }
             
@@ -1461,7 +1476,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
-            zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 3).equals("Credito")?"B":"D" ) );
+            zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 2).equals("Credito")?"B":"D" ) );
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
             zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 1)));
             if ( !bankTable.getValueAt(i, 4).equals("0") ) {
@@ -1505,7 +1520,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO(bancoId));
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( "E" ) );
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO(bancoId));
-            zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
+            zfc.setLOTE(of.createZFISCOBRANZALOTE(((String)depositTable.getValueAt(i, 1))));
             zfc.setMONTO(new BigDecimal(((String)depositTable.getValueAt(i, 2)).replace(',','.')));
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
             zFISCOBRANZA.add(zfc);

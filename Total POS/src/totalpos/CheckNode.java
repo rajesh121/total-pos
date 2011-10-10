@@ -14,22 +14,22 @@ import javax.swing.tree.*;
  */
 public class CheckNode extends DefaultMutableTreeNode {
 
-  public final static int SINGLE_SELECTION = 0;
-  public final static int DIG_IN_SELECTION = 4;
+  protected final static int SINGLE_SELECTION = 0;
+  protected final static int DIG_IN_SELECTION = 4;
   protected int selectionMode;
   protected boolean isSelected;
   private String profile;
-  public boolean isOk = false;
+  protected boolean isOk = false;
 
-  public CheckNode(String profile) {
+  protected CheckNode(String profile) {
     this(null,profile);
   }
 
-  public CheckNode(Object userObject, String profile) {
+  protected CheckNode(Object userObject, String profile) {
     this(userObject, true, profile);
   }
 
-  public CheckNode(Object userObject, boolean allowsChildren
+  protected CheckNode(Object userObject, boolean allowsChildren
                                     , String profile) {
     super(userObject, allowsChildren);
     try {
@@ -50,15 +50,15 @@ public class CheckNode extends DefaultMutableTreeNode {
   }
 
 
-  public void setSelectionMode(int mode) {
+  protected void setSelectionMode(int mode) {
     selectionMode = mode;
   }
 
-  public int getSelectionMode() {
+  protected int getSelectionMode() {
     return selectionMode;
   }
 
-  public void setSelected(boolean isSelected) {
+  protected void setSelected(boolean isSelected) {
     this.isSelected = isSelected;
 
     // DO NOT MODIFY!! IT WORKS OK!!
@@ -90,7 +90,7 @@ public class CheckNode extends DefaultMutableTreeNode {
     }
   }
 
-  public boolean isSelected() {
+  protected boolean isSelected() {
     return isSelected;
   }
 

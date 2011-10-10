@@ -18,7 +18,7 @@ public class ChangeProfileDetails extends JInternalFrame {
 
     private String prevId;
     /** Creates new form ChangeProfileDetails */
-    public ChangeProfileDetails( String prevId, String description) {
+    protected ChangeProfileDetails( String prevId, String description) {
         super("Cambiar detalles");
         initComponents();
 

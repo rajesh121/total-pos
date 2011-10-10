@@ -17,13 +17,13 @@ import javax.swing.JInternalFrame;
  */
 public class ChangeIdleTime extends JInternalFrame {
 
-    public boolean isOk = false;
+    protected boolean isOk = false;
     private double currentTime;
     /** Creates new form ChangeIdleTime
      * @param parent
      * @param modal
      */
-    public ChangeIdleTime() {
+    protected ChangeIdleTime() {
         initComponents();
 
         String c = Shared.getConfig("idleTime");

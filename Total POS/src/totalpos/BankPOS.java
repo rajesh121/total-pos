@@ -11,7 +11,7 @@ public class BankPOS {
     private String posId;
     private String kind;
 
-    public BankPOS(String id, String descripcion, String lot, String posId, String kind) {
+    protected BankPOS(String id, String descripcion, String lot, String posId, String kind) {
         this.id = id;
         this.descripcion = descripcion;
         this.lot = lot;
@@ -19,23 +19,23 @@ public class BankPOS {
         this.kind = kind;
     }
 
-    public String getDescripcion() {
+    protected String getDescripcion() {
         return descripcion;
     }
 
-    public String getId() {
+    protected String getId() {
         return id;
     }
 
-    public String getKind() {
+    protected String getKind() {
         return kind;
     }
 
-    public String getLot() {
+    protected String getLot() {
         return lot;
     }
 
-    public String getPosId() {
+    protected String getPosId() {
         return posId;
     }
 }

@@ -54,10 +54,10 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     Double totalExpenses = .0;
     Double totalCN = .0;
     private ObjectFactory of = Constants.of;
-    public Working workingFrame;
+    protected Working workingFrame;
     private String myDay = "";
     private boolean showReport;
-    public boolean isOk = false;
+    protected boolean isOk = false;
     private Double totalpcn;
 
     static class DecimalFormatRenderer extends DefaultTableCellRenderer {
@@ -85,7 +85,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
      * @param day
      * @param sr
      */
-    public ClosingDay(String day , boolean sr) {
+    protected ClosingDay(String day , boolean sr) {
         try {
             initComponents();
             showReport = sr;
@@ -183,19 +183,19 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         }
     }
 
-    public void updatePayFormWaysxPoses() throws SQLException{
+    protected void updatePayFormWaysxPoses() throws SQLException{
         ConnectionDrivers.listFormWayXPos((DefaultTableModel) formWayxPoses.getModel(), myDay);
     }
 
-    public void updateFiscalZ() throws SQLException{
+    protected void updateFiscalZ() throws SQLException{
         ConnectionDrivers.listFiscalZ((DefaultTableModel) fiscalZ.getModel(), myDay);
     }
 
-    public void updatePayWayxPosesDetails() throws SQLException{
+    protected void updatePayWayxPosesDetails() throws SQLException{
         ConnectionDrivers.listFormWayXPosesDetail((DefaultTableModel) payWayxPosTable.getModel(), myDay);
     }
 
-    public void updateBankTable() throws SQLException{
+    protected void updateBankTable() throws SQLException{
         ConnectionDrivers.listBankTable((DefaultTableModel) bankTable.getModel(),myDay);
     }
 

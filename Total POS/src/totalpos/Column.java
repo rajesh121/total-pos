@@ -9,21 +9,21 @@ public class Column {
     private String fieldName;
     private String myClass;
 
-    public Column(String name, String fieldName, String myClass) {
+    protected Column(String name, String fieldName, String myClass) {
         this.name = name;
         this.fieldName = fieldName;
         this.myClass = myClass;
     }
 
-    public String getFieldName() {
+    protected String getFieldName() {
         return fieldName;
     }
 
-    public String getMyClass() {
+    protected String getMyClass() {
         return myClass;
     }
 
-    public String getName() {
+    protected String getName() {
         return name;
     }
 }

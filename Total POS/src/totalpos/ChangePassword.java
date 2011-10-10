@@ -18,10 +18,10 @@ public class ChangePassword extends javax.swing.JDialog {
 
     private User user;
     private Login parent;
-    public boolean isOk = false;
+    protected boolean isOk = false;
 
     /** Creates new form ChangePassword */
-    public ChangePassword(Login parent, boolean modal , User u) {
+    protected ChangePassword(Login parent, boolean modal , User u) {
         super(parent, modal);
         initComponents();
 

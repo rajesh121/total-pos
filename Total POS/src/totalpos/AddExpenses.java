@@ -22,10 +22,10 @@ import javax.swing.table.TableColumn;
 public class AddExpenses extends javax.swing.JInternalFrame {
 
     List<Expense> expenses;
-    public boolean isOk = false;
+    protected boolean isOk = false;
 
     /** Creates new form AddExpenses */
-    public AddExpenses() {
+    protected AddExpenses() {
         try {
             initComponents();
             updateAll();

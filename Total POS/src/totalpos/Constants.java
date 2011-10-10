@@ -17,111 +17,111 @@ import srvSapPackage.ObjectFactory;
  * @author Saul Hidalgo.
  */
 public class Constants {
-    public static final String companyName = "Grupo Total 99";
-    public static final String appName = "Total POS";
+    protected static final String companyName = "Grupo Total 99";
+    protected static final String appName = "Total POS";
 
-    public static final int numberConnection = 5;
+    protected static final int numberConnection = 5;
 
-    //public static final String dbHost = "localhost";
-    public static final String dbName = "gt99";
-    public static final String dbUser = "root";
-    public static final String dbPassword = "123456789";
-    public static final String defaultUser = "Invitado";
+    //protected static final String dbHost = "localhost";
+    protected static final String dbName = "gt99";
+    protected static final String dbUser = "root";
+    protected static final String dbPassword = "123456789";
+    protected static final String defaultUser = "Invitado";
 
 
     
-    public static final ObjectFactory of = new ObjectFactory();
+    protected static final ObjectFactory of = new ObjectFactory();
 
-    //public static final String mirrorDbHost = "localhost";
+    //protected static final String mirrorDbHost = "localhost";
     //is This redundant??
 
-    public static final String mirrorDbName = "gt99mirror";
-    public static final String mirrordbUser = "root";
-    public static final String mirrordbPassword = "123456789";
+    protected static final String mirrorDbName = "gt99mirror";
+    protected static final String mirrordbUser = "root";
+    protected static final String mirrordbPassword = "123456789";
 
-    public static final String[] tablesToMirrorAtBegin = {"articulo","usuario","codigo_de_barras","costo",
+    protected static final String[] tablesToMirrorAtBegin = {"articulo","usuario","codigo_de_barras","costo",
         "precio","tipo_de_usuario","tipo_de_usuario_puede","asigna","configuracion","nodo","punto_de_venta","cliente"};
-    public static final String[] tablesToMirrorAtDay = {"articulo","precio"};
-    public static final String[] tablesToCleanMirror = {"forma_de_pago","factura_contiene","factura","nota_de_credito_contiene","nota_de_credito"};
+    protected static final String[] tablesToMirrorAtDay = {"articulo","precio"};
+    protected static final String[] tablesToCleanMirror = {"forma_de_pago","factura_contiene","factura","nota_de_credito_contiene","nota_de_credito"};
 
-    public static final String[] var2check = {"Server","ServerMirror","myId","printerPort"};
+    protected static final String[] var2check = {"Server","ServerMirror","myId","printerPort"};
 
-    public static final String scriptReplicateName = "replicate.bat";
-    public static final String rootDir = "./";
-    public static final String scriptMovementsName = "prepareMovements.bat";
+    protected static final String scriptReplicateName = "replicate.bat";
+    protected static final String rootDir = "./";
+    protected static final String scriptMovementsName = "prepareMovements.bat";
 
-    public static final String wrongPasswordMsg = "Contraseña errónea.";
-    public static final String userLocked = "El usuario ha sido bloqueado.";
-    public static final String dataRepeated = "Esta intentando ingresar valores repetidos";
-    public static final String isDataRepeated = "Duplicate entry \'[^\\\']*\' for key \'[^\\\']*\'";
-    public static final String duplicatedMsg = "Duplicate entry \'GenericTable\' for key \'Generic Key\'";
-    public static final String errWithPrinter = "<html>Hubo un problema con la impresora.<br>"
+    protected static final String wrongPasswordMsg = "Contraseña errónea.";
+    protected static final String userLocked = "El usuario ha sido bloqueado.";
+    protected static final String dataRepeated = "Esta intentando ingresar valores repetidos";
+    protected static final String isDataRepeated = "Duplicate entry \'[^\\\']*\' for key \'[^\\\']*\'";
+    protected static final String duplicatedMsg = "Duplicate entry \'GenericTable\' for key \'Generic Key\'";
+    protected static final String errWithPrinter = "<html>Hubo un problema con la impresora.<br>"
                     + "Posibles causas:<br>" +
                     "--- Falta de papel. Verifique que la impresora está encendida y revise el papel.<br>"+
                     "--- Falla de comunicación: Verifique que la impresora está encendida y revise la conexión con la impresora<br></html>";
 
-    public static final SimpleDateFormat sdfHour = new SimpleDateFormat("h:mm a");
-    public static final SimpleDateFormat sdfHour2BK = new SimpleDateFormat("hh-mm-ss-a");
-    public static final SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
-    public static final SimpleDateFormat sdfDay2DB = new SimpleDateFormat("yyyy-MM-dd");
-    public static final SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
-    public static final SimpleDateFormat sdfDay2SAP = new SimpleDateFormat("yyyyMMdd");
-    public static final DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yy");
-    public static final DecimalFormat df = new DecimalFormat("#0.00");
-    public static final DecimalFormat df2z = new DecimalFormat("0000");
-    public static final DecimalFormat df2int = new DecimalFormat("#00.###");
-    public static final DecimalFormat df2intSAP = new DecimalFormat("#000000.###");
+    protected static final SimpleDateFormat sdfHour = new SimpleDateFormat("h:mm a");
+    protected static final SimpleDateFormat sdfHour2BK = new SimpleDateFormat("hh-mm-ss-a");
+    protected static final SimpleDateFormat sdfDay = new SimpleDateFormat("d MMM yyyy");
+    protected static final SimpleDateFormat sdfDay2DB = new SimpleDateFormat("yyyy-MM-dd");
+    protected static final SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
+    protected static final SimpleDateFormat sdfDay2SAP = new SimpleDateFormat("yyyyMMdd");
+    protected static final DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yy");
+    protected static final DecimalFormat df = new DecimalFormat("#0.00");
+    protected static final DecimalFormat df2z = new DecimalFormat("0000");
+    protected static final DecimalFormat df2int = new DecimalFormat("#00.###");
+    protected static final DecimalFormat df2intSAP = new DecimalFormat("#000000.###");
 
-    public static final String storePrefix = "";
-    public static final String waerks = "VEF";
+    protected static final String storePrefix = "";
+    protected static final String waerks = "VEF";
 
-    public static final boolean isPos = false;
+    protected static final boolean isPos = false;
 
-    public static String maximunId = "9999999999999999999999999";
-    public static String minimunId = "";
+    protected static String maximunId = "9999999999999999999999999";
+    protected static String minimunId = "";
 
-    public static final int secondsToCheckTurn = 30;
-    public static final int secondsToUpdateCountdown = 10;
-    public static final int secondsToUpdateMirror = 6000;
-    public static final int secondsToChangeMsg2Pos = 10;
-    public static final int secondsToShiftMsg = 1;
-    public static final int dbTimeout = 60000;
+    protected static final int secondsToCheckTurn = 30;
+    protected static final int secondsToUpdateCountdown = 10;
+    protected static final int secondsToUpdateMirror = 6000;
+    protected static final int secondsToChangeMsg2Pos = 10;
+    protected static final int secondsToShiftMsg = 1;
+    protected static final int dbTimeout = 60000;
 
-    public static final int longReportTotals = 100;
+    protected static final int longReportTotals = 100;
 
-    public static final int maximumLenghtMsg2Pos = 50;
+    protected static final int maximumLenghtMsg2Pos = 50;
 
-    public static final boolean withFiscalPrinter = true;
+    protected static final boolean withFiscalPrinter = true;
 
-    public static final String tmpFileName = "tmp.data";
+    protected static final String tmpFileName = "tmp.data";
 
-    public static final Font font = new Font("Courier New", 0, 12);
-    public static final Color transparent = new Color(0, true);
-    public static final Color lightBlue = new Color(184,207,229);
-    public static final Color lightGreen = new Color(150,255,150);
+    protected static final Font font = new Font("Courier New", 0, 12);
+    protected static final Color transparent = new Color(0, true);
+    protected static final Color lightBlue = new Color(184,207,229);
+    protected static final Color lightGreen = new Color(150,255,150);
 
-    public static final Double minimumCash = 150.0;
-    public static final String[] kindOfBPOS={"Debito","Credito","Ambas"};
+    protected static final Double minimumCash = 150.0;
+    protected static final String[] kindOfBPOS={"Debito","Credito","Ambas"};
 
-    public static final String reportFolder = "./reports";
-    public static final StyleBuilder boldStyle = stl.style().bold();
-    public static final StyleBuilder boldCenteredStyle = stl.style(boldStyle)
+    protected static final String reportFolder = "./reports";
+    protected static final StyleBuilder boldStyle = stl.style().bold();
+    protected static final StyleBuilder boldCenteredStyle = stl.style(boldStyle)
 	                                    .setHorizontalAlignment(HorizontalAlignment.CENTER);
-    public static final StyleBuilder columnTitleStyle  = stl.style(boldCenteredStyle)
+    protected static final StyleBuilder columnTitleStyle  = stl.style(boldCenteredStyle)
 	                                    .setBorder(stl.pen1Point())
 	                                    .setBackgroundColor(Color.LIGHT_GRAY);
 
-    public static final StyleBuilder titleStyle = stl.style(boldCenteredStyle)
+    protected static final StyleBuilder titleStyle = stl.style(boldCenteredStyle)
                              .setVerticalAlignment(VerticalAlignment.MIDDLE)
                              .setFontSize(15);
 
-    public static final String mant = "250";
-    public static final String genericBank = "BGENE";
+    protected static final String mant = "250";
+    protected static final String genericBank = "BGENE";
 
-    public static final String addrForIncome = ".\\traslados\\";
-    public static final String photoPrefix = ".\\fotos\\";
-    public static final String backupDir = ".\\conf\\";
+    protected static final String addrForIncome = ".\\traslados\\";
+    protected static final String photoPrefix = ".\\fotos\\";
+    protected static final String backupDir = ".\\conf\\";
 
-    public static final String fileName4Income = "income.rar";
-    public static final String[] forbiddenWords = {"delete","upgrade","insert","drop"};
+    protected static final String fileName4Income = "income.rar";
+    protected static final String[] forbiddenWords = {"delete","upgrade","insert","drop"};
 }

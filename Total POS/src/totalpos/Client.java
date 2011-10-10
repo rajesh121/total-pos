@@ -10,30 +10,30 @@ public class Client {
     private String address;
     private String phone;
 
-    public Client(String id, String name, String address, String phone) {
+    protected Client(String id, String name, String address, String phone) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phone = phone;
     }
 
-    public String getAddress() {
+    protected String getAddress() {
         return address;
     }
 
-    public String getId() {
+    protected String getId() {
         return id;
     }
 
-    public String getName() {
+    protected String getName() {
         return name;
     }
 
-    public String getPhone() {
+    protected String getPhone() {
         return phone;
     }
 
-    public void setId(String id) {
+    protected void setId(String id) {
         this.id = id;
     }
 

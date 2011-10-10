@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class ChangeQuantItems extends javax.swing.JDialog {
 
     /** Creates new form ChangeQuantItems */
-    public ChangeQuantItems(java.awt.Frame parent, boolean modal) {
+    protected ChangeQuantItems(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }

@@ -26,7 +26,7 @@ public class UpdateStock implements Doer{
     @Override
     public void doIt() {
         try {
-            Shared.createBackup();
+            Shared.createBackup("articulo");
 
             JFileChooser jfc = new JFileChooser();
             FileFilter f = new ExtensionFileFilter("Traslados de Total Pos","pos");

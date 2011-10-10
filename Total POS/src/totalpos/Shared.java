@@ -23,14 +23,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import srvEntidadesPackage.BNKA;
@@ -511,8 +508,8 @@ public class Shared {
 
     }
 
-    public static void createBackup() throws IOException, SQLException{
-        String cmd = "mysqldump -u " + Constants.dbUser + " -p" + Constants.dbPassword + " " + Constants.dbName + " > " +
+    public static void createBackup(String table) throws IOException, SQLException{
+        String cmd = "mysqldump -u " + Constants.dbUser + " -p" + Constants.dbPassword + " " + Constants.dbName + " " + table + " > " +
                 Constants.backupDir + Constants.sdfDay2DB.format(Calendar.getInstance().getTime()) + "-" +
                 Constants.sdfHour2BK.format((Calendar.getInstance().getTime()));
 
@@ -533,5 +530,7 @@ public class Shared {
         File f = new File(Constants.rootDir + Constants.scriptMovementsName);
         f.delete();
     }
+
+    
 
 }

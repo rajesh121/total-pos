@@ -56,7 +56,7 @@ public class ReceiptSap {
         return receipts.size();
     }
 
-    public ZSDSCABFACT getHeaderF(){
+    public ZSDSCABFACT getHeaderF(String myDay){
         ZSDSCABFACT ans = new ZSDSCABFACT();
         String idF = "F" + id;
 
@@ -65,8 +65,8 @@ public class ReceiptSap {
         System.out.println("MANDT\tFKDAT\tVBELN\tZTIPV\tKUNNR\tRANGO\tREPOZ\tIMPRE\tWAERS\tWERKS");
         ans.setMANDT(of.createZSDSCABDEVMANDT(Constants.mant));
         System.out.print(Constants.mant + "\t");
-        ans.setFKDAT(of.createZSDSPOSDEVFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
-        System.out.print(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime()) + "\t");
+        ans.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
+        System.out.print(myDay.replace("-", "") + "\t");
         ans.setVBELN(of.createZSDSCABDEVVBELN(idF));
         System.out.print(idF + "\t");
         ans.setZTIPV(of.createZSDSCABDEVZTIPV(kind));
@@ -86,7 +86,7 @@ public class ReceiptSap {
         return ans;
     }
 
-    public ZSDSCABDEV getHeader(){
+    public ZSDSCABDEV getHeader(String myDay){
         ZSDSCABDEV ans = new ZSDSCABDEV();
         String idF = "D" + id;
 
@@ -95,8 +95,8 @@ public class ReceiptSap {
         System.out.println("MANDT\tFKDAT\tVBELN\tZTIPV\tKUNNR\tRANGO\tREPOZ\tIMPRE\tWAERS\tWERKS");
         ans.setMANDT(of.createZSDSCABDEVMANDT(Constants.mant));
         System.out.print(Constants.mant + "\t");
-        ans.setFKDAT(of.createZSDSPOSDEVFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
-        System.out.print(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime()) + "\t");
+        ans.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
+        System.out.print(myDay.replace("-", "") + "\t");
         ans.setVBELN(of.createZSDSCABDEVVBELN(idF));
         System.out.print(idF + "\t");
         ans.setZTIPV(of.createZSDSCABDEVZTIPV(kind));
@@ -116,7 +116,7 @@ public class ReceiptSap {
         return ans;
     }
 
-    public List<ZSDSPOSDEV> getDetails(){
+    public List<ZSDSPOSDEV> getDetails(String myDay){
         List<ZSDSPOSDEV> ans = new LinkedList<ZSDSPOSDEV>();
         
         /**
@@ -150,8 +150,8 @@ public class ReceiptSap {
             ZSDSPOSDEV zdpd = new ZSDSPOSDEV();
             zdpd.setMANDT(of.createZSDSPOSDEVMANDT(Constants.mant));
             System.out.print(Constants.mant + "\t");
-            zdpd.setFKDAT(of.createZSDSPOSDEVFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
-            System.out.print(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime()) + "\t");
+            zdpd.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
+            System.out.print(myDay.replace("-", "") + "\t");
             zdpd.setVBELN(of.createZSDSPOSDEVVBELN("D" + id ));
             System.out.print("D" + id + "\t");
             zdpd.setPOSNR(of.createZSDSPOSDEVPOSNR(Constants.df2intSAP.format(position++)));
@@ -177,7 +177,7 @@ public class ReceiptSap {
         return ans;
     }
 
-    public List<ZSDSPOSFACT> getDetailsF(){
+    public List<ZSDSPOSFACT> getDetailsF(String myDay){
         List<ZSDSPOSFACT> ans = new LinkedList<ZSDSPOSFACT>();
 
         /**
@@ -212,8 +212,8 @@ public class ReceiptSap {
             ZSDSPOSFACT zdpd = new ZSDSPOSFACT();
             zdpd.setMANDT(of.createZSDSPOSDEVMANDT(Constants.mant));
             System.out.print(Constants.mant + "\t");
-            zdpd.setFKDAT(of.createZSDSPOSDEVFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
-            System.out.print(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime()) + "\t");
+            zdpd.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
+            System.out.print(myDay.replace("-", "") + "\t");
             zdpd.setVBELN(of.createZSDSPOSDEVVBELN("F" + id ));
             System.out.print("F" + id + "\t");
             zdpd.setPOSNR(of.createZSDSPOSDEVPOSNR(Constants.df2intSAP.format(position++)));

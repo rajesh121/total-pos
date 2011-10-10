@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -59,6 +58,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private boolean showReport;
     protected boolean isOk = false;
     private Double totalpcn;
+    private String date4sap = "";
 
     static class DecimalFormatRenderer extends DefaultTableCellRenderer {
         @Override
@@ -90,6 +90,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             initComponents();
             showReport = sr;
             myDay = day;
+            date4sap = myDay.replace("-", "");
 
             if ( sr && !ConnectionDrivers.previousClosed(myDay) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se le ha realizado el cierre administrativo a días anteriores. No se puede continuar");
@@ -1201,7 +1202,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             try{
                 for (int j = 0; j < 3; j++) {
                     if ( model.getValueAt(i, j) == null || ((String)model.getValueAt(i, j)).isEmpty() ){
-                        MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos (excepto el monto declarado) son obligatorios!");
+                        MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios!");
                         msg.show(this);
                     }
                 }
@@ -1258,7 +1259,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
                 zfhe.setMANDT(of.createZFISHISTENVIOSMANDT(Constants.mant));
                 zfhe.setIDTIENDA(of.createZFISHISTENVIOSIDTIENDA(Constants.storePrefix + Shared.getConfig("storeName")));
-                zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+                zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO(date4sap));
                 zfhe.setTOTALVENTASDIA(new BigDecimal(totalInCard + totalInCash));
                 zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES(noteField.getText()));
                 zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
@@ -1299,8 +1300,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         && receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
                     rs.add(receipt);
                 }else{
-                    aozsdscd.getZSDSCABDEV().add(rs.getHeader());
-                    aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails());
+                    aozsdscd.getZSDSCABDEV().add(rs.getHeader(myDay));
+                    aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails(myDay));
                     rs = new ReceiptSap();
                     rs.add(receipt);
                 }
@@ -1308,8 +1309,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 previousCli = receipt.getClientId();
             }
             if ( rs.getSize() > 0 ){
-                aozsdscd.getZSDSCABDEV().add(rs.getHeader());
-                aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails());
+                aozsdscd.getZSDSCABDEV().add(rs.getHeader(myDay));
+                aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails(myDay));
             }
 
             receipts = ConnectionDrivers.listOkReceipts(myDay);
@@ -1333,8 +1334,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
                     rs.add(receipt);
                 }else{
-                    aozsdscf.getZSDSCABFACT().add(rs.getHeaderF());
-                    aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF());
+                    aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
+                    aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF(myDay));
                     rs = new ReceiptSap();
                     rs.add(receipt);
                 }
@@ -1342,14 +1343,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 previousCli = receipt.getClientId();
             }
             if ( rs.getSize() > 0 ){
-                aozsdscf.getZSDSCABFACT().add(rs.getHeaderF());
-                aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF());
+                aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
+                aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF(myDay));
             }
             
             ZSDSVENDFACT zsdsvfi = new ZSDSVENDFACT();
             System.out.println("FKDAT\tMANDT\tPARTNNUMB\tPARTNROLE\tPOSNR\tVBELN\tWERKS");
-            zsdsvfi.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
-            System.out.print(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime()) + "\t");
+            zsdsvfi.setFKDAT(of.createZSDSVENDFACTFKDAT(date4sap));
+            System.out.print(date4sap + "\t");
             zsdsvfi.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
             System.out.print(Constants.mant + "\t");
             zsdsvfi.setPARTNNUMB(of.createZSDSVENDFACTPARTNNUMB("999999"));
@@ -1371,8 +1372,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 ZSDSCLIENT cli = new ZSDSCLIENT();
                 cli.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
                 System.out.print(Constants.mant + "\t");
-                cli.setFKDAT(of.createZSDSVENDFACTFKDAT(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
-                System.out.print(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime()) + "\t");
+                cli.setFKDAT(of.createZSDSVENDFACTFKDAT(date4sap));
+                System.out.print(date4sap + "\t");
                 cli.setNAME1(of.createZSDSCLIENTNAME1(clientL.getName()));
                 System.out.print(clientL.getName() + "\t");
                 cli.setKUNNR(of.createZSDSCLIENTKUNNR(clientL.getId()));
@@ -1472,7 +1473,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
             zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
-            zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
@@ -1494,7 +1495,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
             zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
-            zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO(Constants.genericBank));
@@ -1513,7 +1514,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
             zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
-            zfc.setFECHA(of.createZFISCOBRANZAFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
             String bancoId = ((String)depositTable.getValueAt(i, 0)).split("-")[0].trim();

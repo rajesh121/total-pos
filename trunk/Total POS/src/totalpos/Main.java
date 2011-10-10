@@ -1,8 +1,11 @@
 package totalpos;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
@@ -24,7 +27,7 @@ public class Main {
         
         try {
             Shared.loadFileConfig();
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al leer el archivo de configuración. No se puede continuar",ex);
             msb.show(splash);
             System.exit(0);

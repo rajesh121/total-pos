@@ -189,8 +189,10 @@ public class Shared {
         setUser(null);
     }
 
-    protected static void loadFileConfig() throws FileNotFoundException{
-        Scanner sc = new Scanner(new File("config"));
+    protected static void loadFileConfig() throws FileNotFoundException, IOException{
+        prepareFile(new File(Constants.rootDir + Constants.fileName4ConfigN), Constants.fileName4ConfigRar, "password4config", Constants.scriptConfig);
+        File f = new File(Constants.tmpDir + Constants.fileName4Config);
+        Scanner sc = new Scanner(f);
         int lineNumber = 1;
         while(sc.hasNextLine()){
             String line = sc.nextLine();
@@ -201,6 +203,8 @@ public class Shared {
             fileConfig.put(toks[0], toks[1]);
             ++lineNumber;
         }
+        sc.close();
+        f.delete();
     }
 
     public static String getFileConfig(String k){
@@ -513,13 +517,13 @@ public class Shared {
                 Constants.backupDir + Constants.sdfDay2DB.format(Calendar.getInstance().getTime()) + "-" +
                 Constants.sdfHour2BK.format((Calendar.getInstance().getTime()));
 
-        FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptMovementsName);
+        FileWriter fstream = new FileWriter(Constants.tmpDir + Constants.scriptMovementsName);
         BufferedWriter out = new BufferedWriter(fstream);
 
         out.write(cmd);
         out.close();
 
-        Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptMovementsName);
+        Process process = Runtime.getRuntime().exec(Constants.tmpDir + Constants.scriptMovementsName);
         InputStream is = process.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
@@ -527,10 +531,37 @@ public class Shared {
         while ( br.readLine() != null) {
             ;
         }
-        File f = new File(Constants.rootDir + Constants.scriptMovementsName);
+        File f = new File(Constants.tmpDir + Constants.scriptMovementsName);
         f.delete();
     }
 
-    
+    protected static void prepareFile(File myRar, String fileName, String configKey, String scriptFile) throws IOException {
+        String pass = Shared.getConfig(configKey);
+        if ( configKey.equals("password4config") ){
+            pass = Constants.configPassword;
+        }
+        String cmd = "copy \"" + myRar.getAbsolutePath() + "\" \"" + Constants.tmpDir + fileName + "\"\n"+
+                "cd \"" + Constants.tmpDir + "\"\n" +
+                "\"C:\\Archivos de programa\\WinRAR\\unrar.exe\" -p" + pass + " e -y " + fileName + "\n"+
+                "erase " + Constants.tmpDir + fileName + "\n";
+
+        FileWriter fstream = new FileWriter(Constants.tmpDir + scriptFile);
+        BufferedWriter out = new BufferedWriter(fstream);
+
+        out.write(cmd);
+        out.close();
+
+        Process process = Runtime.getRuntime().exec(Constants.tmpDir + scriptFile);
+        InputStream is = process.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        while ( br.readLine() != null) {
+            ;
+        }
+        File f = new File(Constants.tmpDir + scriptFile);
+        f.delete();
+
+    }
 
 }

@@ -131,7 +131,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_moneyFieldKeyPressed
 
-    public void doIt(){
+    protected void doIt(){
         Double d = .0;
         try{
             d = Double.parseDouble(moneyField.getText().replace(',', '.'));

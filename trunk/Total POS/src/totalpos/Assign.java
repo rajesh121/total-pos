@@ -12,25 +12,25 @@ public class Assign {
     private Date date;
     private boolean open;
 
-    public Assign(String turn, String pos, Date date, boolean open) {
+    protected Assign(String turn, String pos, Date date, boolean open) {
         this.turn = turn;
         this.pos = pos;
         this.date = date;
         this.open = open;
     }
-    public Date getDate() {
+    protected Date getDate() {
         return date;
     }
 
-    public boolean isOpen() {
+    protected boolean isOpen() {
         return open;
     }
 
-    public String getPos() {
+    protected String getPos() {
         return pos;
     }
 
-    public String getTurn() {
+    protected String getTurn() {
         return turn;
     }
 }

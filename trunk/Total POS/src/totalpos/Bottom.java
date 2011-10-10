@@ -14,7 +14,7 @@ public class Bottom extends JPanel{
 
     private Image wallpaper;
 
-    public Bottom(Image wallpaper) {
+    protected Bottom(Image wallpaper) {
         super();
         this.wallpaper = wallpaper;
     }

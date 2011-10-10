@@ -17,11 +17,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ConfigurationForm extends javax.swing.JInternalFrame {
 
-    public boolean isOk = false;
+    protected boolean isOk = false;
     private List<SimpleConfig> data;
 
     /** Creates new form ConfigurationForm */
-    public ConfigurationForm() {
+    protected ConfigurationForm() {
         try {
             initComponents();
             updateAll();

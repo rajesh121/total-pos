@@ -21,11 +21,11 @@ public class AddCard2Pay extends javax.swing.JDialog {
     private String reason;
     SpecifyPaymentForm myParent;
     List<BankPOS> bpos = new ArrayList<BankPOS>();
-    public boolean isOk = false;
+    protected boolean isOk = false;
     Price total;
     
     /** Creates new form AddCard2Pay */
-    public AddCard2Pay(SpecifyPaymentForm parent, boolean modal, String reasonI, Price total) {
+    protected AddCard2Pay(SpecifyPaymentForm parent, boolean modal, String reasonI, Price total) {
         super(parent, modal);
         try {
             initComponents();
@@ -210,7 +210,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_bposComboKeyPressed
 
-    public void doIt(){
+    protected void doIt(){
         Double d = .0;
         try{
             d = Double.parseDouble(moneyField.getText().replace(',', '.'));

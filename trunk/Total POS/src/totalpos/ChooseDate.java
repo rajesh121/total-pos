@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 public class ChooseDate extends javax.swing.JInternalFrame {
 
     /** Creates new form ChooseDate */
-    public ChooseDate(String title, JComponent jtf, boolean isClosingDay) {
+    protected ChooseDate(String title, JComponent jtf, boolean isClosingDay) {
         initComponents();
         Container c = getContentPane();
         c.setLayout(new FlowLayout());

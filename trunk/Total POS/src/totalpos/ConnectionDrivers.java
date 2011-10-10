@@ -342,7 +342,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void changeProperties(String loginT, String nombreT,
+    protected static void changeProperties(String loginT, String nombreT,
             String apellidoT, String roleT,
             boolean bloqueado, boolean puede , boolean debe) throws SQLException, Exception {
         
@@ -363,7 +363,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static boolean existsUser(String username) throws SQLException, Exception{
+    protected static boolean existsUser(String username) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? ");
         pstmt.setString(1, username);
@@ -380,7 +380,7 @@ public class ConnectionDrivers {
         return true;
     }
 
-    public static boolean isLocked(String username) throws SQLException, Exception{
+    protected static boolean isLocked(String username) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and bloqueado = 1 ");
         pstmt.setString(1, username.toLowerCase());
@@ -397,7 +397,7 @@ public class ConnectionDrivers {
         return true;
     }
 
-    public static void lockUser(String username) throws SQLException, Exception{
+    protected static void lockUser(String username) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set bloqueado = 1 where login = ? ");
         stmt.setString(1, username.toLowerCase());
@@ -441,7 +441,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void mustntChangePassword(String username) throws SQLException, Exception{
+    protected static void mustntChangePassword(String username) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set debeCambiarPassword = 0 where login = ? ");
         stmt.setString(1, username.toLowerCase());
@@ -887,7 +887,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static Date getDate() throws SQLException{
+    protected static Date getDate() throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
         ResultSet rs = stmt.executeQuery(
@@ -1085,7 +1085,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static void putToIdle(String receiptId) throws SQLException{
+    protected static void putToIdle(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Espera' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1095,7 +1095,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void putToNormal(String receiptId) throws SQLException{
+    protected static void putToNormal(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Pedido' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1106,7 +1106,7 @@ public class ConnectionDrivers {
     }
 
 
-    public static void cancelReceipt(String receiptId) throws SQLException{
+    protected static void cancelReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Anulada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1368,7 +1368,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static void createClient(Client client) throws SQLException{
+    protected static void createClient(Client client) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement(
                 "insert into cliente ( codigo, nombre , direccion , telefono ) values ( ? , ? , ? , ? )");
@@ -1380,7 +1380,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void modifyClient(Client myClient) throws SQLException {
+    protected static void modifyClient(Client myClient) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update cliente set nombre = ? , direccion = ? , telefono = ? where codigo = ?");
         stmt.setString(1, myClient.getName());
@@ -1392,7 +1392,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static boolean wasAssignUsedToday(Assign t) throws SQLException{
+    protected static boolean wasAssignUsedToday(Assign t) throws SQLException{
         boolean ans = false;
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1410,7 +1410,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static void deleteAssignToday(Assign t) throws SQLException{
+    protected static void deleteAssignToday(Assign t) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from asigna where datediff(now(),fecha) = 0 and identificador_turno = ? and identificador_pos = ?");
         stmt.setString(1, t.getTurn() );
@@ -1420,7 +1420,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void setAssignOpen(Assign a, boolean isOpen) throws SQLException, Exception {
+    protected static void setAssignOpen(Assign a, boolean isOpen) throws SQLException, Exception {
         if ( isExpired(a) ){
             throw new Exception("No se puede modificar una asignación expirada");
         }
@@ -1435,14 +1435,14 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void deleteAllStores() throws SQLException{
+    protected static void deleteAllStores() throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from almacen");
         stmt.executeUpdate();
         c.close();
     }
 
-    public static void createStore(DefaultTableModel model) throws SQLException{
+    protected static void createStore(DefaultTableModel model) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -1458,7 +1458,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static List<Store> listStores() throws SQLException{
+    protected static List<Store> listStores() throws SQLException{
         List<Store> ans = new ArrayList<Store>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1501,7 +1501,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void setFiscalData(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
+    protected static void setFiscalData(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
                 + "where " + (Shared.isOffline?"codigo_interno_alternativo ":"codigo_interno ") + " = ? ");
@@ -1514,7 +1514,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void setFiscalDataCN(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
+    protected static void setFiscalDataCN(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update nota_de_credito set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
                 + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1527,7 +1527,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void finishReceipt(String receiptId) throws SQLException{
+    protected static void finishReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Facturada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1537,7 +1537,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void setGlobalDiscount(String receiptId , Double d) throws SQLException{
+    protected static void setGlobalDiscount(String receiptId , Double d) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  descuento_global = ? where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1548,7 +1548,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void setClient(Client cu, String actualId) throws SQLException {
+    protected static void setClient(Client cu, String actualId) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  codigo_de_cliente = ? where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1559,7 +1559,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void setPritingHour(String actualId, String table) throws SQLException {
+    protected static void setPritingHour(String actualId, String table) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update " + table + " set "
                 + "  fecha_impresion = now() where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1569,7 +1569,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static boolean hasMovements() throws SQLException{
+    protected static boolean hasMovements() throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select * from factura");
         ResultSet rs = stmt.executeQuery();
@@ -1579,14 +1579,14 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void deleteAllBPos() throws SQLException {
+    protected static void deleteAllBPos() throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from punto_de_venta_de_banco");
         stmt.executeUpdate();
         c.close();
     }
 
-    static void createBPOS(DefaultTableModel model) throws SQLException {
+    protected static void createBPOS(DefaultTableModel model) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -1608,7 +1608,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static List<BankPOS> listBPos() throws SQLException {
+    protected static List<BankPOS> listBPos() throws SQLException {
         List<BankPOS> ans = new ArrayList<BankPOS>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1633,7 +1633,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static List<BankPOS> listBPos(String kindbpos) throws SQLException {
+    protected static List<BankPOS> listBPos(String kindbpos) throws SQLException {
         List<BankPOS> ans = new ArrayList<BankPOS>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1661,7 +1661,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static void savePayForm(List<PayForm> lpf) throws SQLException{
+    protected static void savePayForm(List<PayForm> lpf) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         for (PayForm payForm : lpf) {
             PreparedStatement stmt = c.prepareStatement(
@@ -1693,7 +1693,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void renameReceipts() throws SQLException{
+    protected static void renameReceipts() throws SQLException{
         List<String> tmpCode = new LinkedList<String>();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo_interno_alternativo , identificador_pos from factura "
@@ -1726,7 +1726,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void renameCN() throws SQLException{
+    protected static void renameCN() throws SQLException{
         List<String> tmpCode = new LinkedList<String>();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo_interno_alternativo , identificador_pos from nota_de_credito "
@@ -1756,7 +1756,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void createCreditNote(String myId, String idReceipt, String user, Assign assign, List<Item2Receipt> items) throws SQLException, Exception{
+    protected static void createCreditNote(String myId, String idReceipt, String user, Assign assign, List<Item2Receipt> items) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         double subT = .0 , ivaT = .0 , total = .0 ;
         for (Item2Receipt item2r : items) {
@@ -1822,7 +1822,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static Receipt getReceiptToDev(String id) throws SQLException {
+    protected static Receipt getReceiptToDev(String id) throws SQLException {
         String campoId = "codigo_interno";
         String campoIdW = "codigo_interno";
         if ( id.charAt(6) == '9' ){
@@ -1881,7 +1881,7 @@ public class ConnectionDrivers {
 
     }
 
-    public static void changeLot( String idBpos , String newLot) throws SQLException{
+    protected static void changeLot( String idBpos , String newLot) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta_de_banco "
@@ -1894,7 +1894,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static Double getAllCash(String day) throws SQLException{
+    protected static Double getAllCash(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from forma_de_pago "
                 + "where tipo = 'Efectivo' and datediff(fecha,?)=0");
@@ -1917,7 +1917,7 @@ public class ConnectionDrivers {
         return doubl;
     }
 
-    public static Double getCashToday(String pos) throws SQLException{
+    protected static Double getCashToday(String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select dinero_efectivo "
                 + "from dia_operativo where datediff(now(),fecha) = 0 and codigo_punto_de_venta = ? ");
@@ -1940,7 +1940,7 @@ public class ConnectionDrivers {
         return doubl;
     }
 
-    public static Double maximunMoney2Extract(String pos) throws SQLException{
+    protected static Double maximunMoney2Extract(String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) from "
                 + "(select sum(monto) as monto from movimiento_efectivo where "
@@ -1957,7 +1957,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static void setCash(Double money, String pos) throws SQLException{
+    protected static void setCash(Double money, String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -1970,7 +1970,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void addCash(Double money, String pos) throws SQLException{
+    protected static void addCash(Double money, String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -1983,7 +1983,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void addCredit(Double money, String pos) throws SQLException{
+    protected static void addCredit(Double money, String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -1996,7 +1996,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void addCreditNote(Double money, String pos) throws SQLException{
+    protected static void addCreditNote(Double money, String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -2009,7 +2009,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void addDebit(Double money, String pos) throws SQLException{
+    protected static void addDebit(Double money, String pos) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -2022,7 +2022,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void createOperativeDay() throws SQLException{
+    protected static void createOperativeDay() throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito "
@@ -2034,7 +2034,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static Time getDiff(Time t) throws SQLException, ParseException{
+    protected static Time getDiff(Time t) throws SQLException, ParseException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select convert(timediff( curtime(), ? ),char)");
         stmt.setTime(1, t);
@@ -2061,7 +2061,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static List<Expense> listExpenses(String day) throws SQLException {
+    protected static List<Expense> listExpenses(String day) throws SQLException {
         List<Expense> ans = new ArrayList<Expense>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2086,7 +2086,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static void deleteAllExpenses(String day) throws SQLException{
+    protected static void deleteAllExpenses(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from gasto where datediff(?,fecha) = 0 ");
         stmt.setString(1, day);
@@ -2094,7 +2094,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void createExpenses(DefaultTableModel model, String day) throws SQLException{
+    protected static void createExpenses(DefaultTableModel model, String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -2112,7 +2112,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static JRDataSource createDataSource(List<Parameter> parameters, String sql, List<Column> columns) throws SQLException {
+    protected static JRDataSource createDataSource(List<Parameter> parameters, String sql, List<Column> columns) throws SQLException {
         String[] columnsArray = new String[columns.size()];
         for (int i = 0; i < columns.size(); i++) {
             Column c = columns.get(i);
@@ -2158,7 +2158,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    public static List<Deposit> listDeposits(String day) throws SQLException {
+    protected static List<Deposit> listDeposits(String day) throws SQLException {
         List<Deposit> ans = new ArrayList<Deposit>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2183,7 +2183,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static void deleteAllDeposits(String day) throws SQLException{
+    protected static void deleteAllDeposits(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from deposito where datediff(?,fecha) = 0 ");
         stmt.setString(1, day);
@@ -2191,7 +2191,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void createDeposits(DefaultTableModel model, String day) throws SQLException{
+    protected static void createDeposits(DefaultTableModel model, String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -2209,7 +2209,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void listFormWayXPos(DefaultTableModel ans, String day) throws SQLException{
+    protected static void listFormWayXPos(DefaultTableModel ans, String day) throws SQLException{
         ans.setRowCount(0);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2233,7 +2233,7 @@ public class ConnectionDrivers {
 
     }
 
-    public static void listFiscalZ(DefaultTableModel ans, String day) throws SQLException{
+    protected static void listFiscalZ(DefaultTableModel ans, String day) throws SQLException{
         ans.setRowCount(0);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2260,7 +2260,7 @@ public class ConnectionDrivers {
         rs.close();
     }
 
-    static void listFormWayXPosesDetail(DefaultTableModel ans, String day) throws SQLException {
+    protected static void listFormWayXPosesDetail(DefaultTableModel ans, String day) throws SQLException {
         ans.setRowCount(0);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2279,7 +2279,7 @@ public class ConnectionDrivers {
         rs.close();
     }
 
-    static boolean wereCalculatedBanks(String day) throws SQLException{
+    protected static boolean wereCalculatedBanks(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select * from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
         stmt.setString(1, day);
@@ -2292,7 +2292,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void listBankTable(DefaultTableModel ans, String day) throws SQLException {
+    protected static void listBankTable(DefaultTableModel ans, String day) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         
         if ( wereCalculatedBanks(day) ){
@@ -2338,7 +2338,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static Double getTotalCards(String day) throws SQLException{
+    protected static Double getTotalCards(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select declarado, monto_real from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
         stmt.setString(1, day);
@@ -2361,7 +2361,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getTotalPCN(String day) throws SQLException{
+    protected static Double getTotalPCN(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from forma_de_pago where tipo='Nota de Credito' "
                 + "and datediff(?,fecha)=0");
@@ -2377,7 +2377,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getTotalCashfromPrinter(String day) throws SQLException{
+    protected static Double getTotalCashfromPrinter(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(dinero_efectivo_impresora) as monto from dia_operativo "
                 + "where datediff(?,fecha)=0");
@@ -2393,7 +2393,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getTotalCash(String day) throws SQLException{
+    protected static Double getTotalCash(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from deposito "
                 + "where datediff(?,fecha) = 0");
@@ -2409,7 +2409,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getTotalCN(String day) throws SQLException{
+    protected static Double getTotalCN(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_sin_iva) as monto from nota_de_credito "
                 + "where datediff(fecha_creacion,?) = 0");
@@ -2425,7 +2425,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getExpenses(String day) throws SQLException{
+    protected static Double getExpenses(String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from gasto where datediff(?,fecha)=0");
         stmt.setString(1, day);
@@ -2442,7 +2442,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void markToUpdateFiscalNumbersToday() throws SQLException {
+    protected static void markToUpdateFiscalNumbersToday() throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores=1 "
                 + "where reporteZ = 0 and datediff(curdate(),fecha)=0");
@@ -2450,7 +2450,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static boolean isNeededtoUpdate() throws SQLException {
+    protected static boolean isNeededtoUpdate() throws SQLException {
         boolean ans ;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select actualizar_valores from dia_operativo where datediff(curdate(),fecha)=0 and codigo_punto_de_venta= ? ");
@@ -2470,7 +2470,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void updateFiscalNumbers(Double cash, Double cn, Double debit, Double credit) throws SQLException{
+    protected static void updateFiscalNumbers(Double cash, Double cn, Double debit, Double credit) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores = 0 , dinero_efectivo_impresora = ? , "
                 + "dinero_tarjeta_credito_impresora = ? , dinero_tarjeta_debito_impresora = ? , nota_de_credito_impresora = ? where "
@@ -2484,7 +2484,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void mirrorTableFastMode(String tableName){
+    protected static void mirrorTableFastMode(String tableName){
         try {
             if (!Constants.isPos) {
                 // Admin has no mirror
@@ -2518,7 +2518,7 @@ public class ConnectionDrivers {
     }
 
     // WARNING!! NON-ESCAPED STRING
-    static void mirrorTableSlowMode(String tableName) throws SQLException, PropertyVetoException{
+    protected static void mirrorTableSlowMode(String tableName) throws SQLException, PropertyVetoException{
 
         if ( !Constants.isPos ){
             // Admin has no mirror
@@ -2568,7 +2568,7 @@ public class ConnectionDrivers {
 
     }
 
-    static void updateMoney() throws PropertyVetoException, SQLException{
+    protected static void updateMoney() throws PropertyVetoException, SQLException{
         if ( !Constants.isPos ){
             // Admin does'nt have mirror
             return;
@@ -2615,7 +2615,7 @@ public class ConnectionDrivers {
         b.close();
     }
 
-    static void updateStock() throws PropertyVetoException, SQLException{
+    protected static void updateStock() throws PropertyVetoException, SQLException{
         if ( !Constants.isPos ){
             // Admin has no mirror
             return;
@@ -2654,7 +2654,7 @@ public class ConnectionDrivers {
         b.close();
     }
 
-    static void cleanMirror(String tableName) throws PropertyVetoException, SQLException{
+    protected static void cleanMirror(String tableName) throws PropertyVetoException, SQLException{
         if ( !Constants.isPos ){
             // Admin has no mirror
             return;
@@ -2709,7 +2709,7 @@ public class ConnectionDrivers {
         b.close();
     }
 
-    static void updateConfig(String k, String v) throws SQLException {
+    protected static void updateConfig(String k, String v) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = ? where `Key` = ?");
         stmt.setString(1, v);
@@ -2718,7 +2718,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void setEnableSellWithoutStock(String i) throws SQLException {
+    protected static void setEnableSellWithoutStock(String i) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = ? where `Key` = 'sellWithoutStock'");
         stmt.setString(1, i);
@@ -2726,7 +2726,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static boolean getEnableSellWithoutStock() throws SQLException {
+    protected static boolean getEnableSellWithoutStock() throws SQLException {
         boolean ans = false;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select `Value` from configuracion where `Key` = 'sellWithoutStock'");
@@ -2742,7 +2742,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static List<String> getListMsg2Pos() throws SQLException {
+    protected static List<String> getListMsg2Pos() throws SQLException {
         List<String> ans = new ArrayList<String>();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select `mensaje` from mensaje");
@@ -2756,14 +2756,14 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void deleteAllMsgs() throws SQLException {
+    protected static void deleteAllMsgs() throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from mensaje");
         stmt.executeUpdate();
         c.close();
     }
 
-    static void createMsgs(TableModel model) throws SQLException {
+    protected static void createMsgs(TableModel model) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -2776,7 +2776,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static List<SimpleConfig> listConfig() throws SQLException{
+    protected static List<SimpleConfig> listConfig() throws SQLException{
         List<SimpleConfig> ans = new ArrayList<SimpleConfig>();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select `Key` , `Value` from configuracion");
@@ -2790,14 +2790,14 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void deleteAllFrom(String table) throws SQLException {
+    protected static void deleteAllFrom(String table) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from " + table);
         stmt.executeUpdate();
         c.close();
     }
 
-    static void createConfig(TableModel model) throws SQLException {
+    protected static void createConfig(TableModel model) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -2813,7 +2813,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void updateTotalFromPrinter(Double total, String z, String lReceipt, int quantReceiptsToday, String lastCN, int nNC) throws SQLException {
+    protected static void updateTotalFromPrinter(Double total, String z, String lReceipt, int quantReceiptsToday, String lastCN, int nNC) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores = 0 , total_ventas = ? , "
                 + "numero_reporte_z = ? , impresora = ? , codigo_ultima_factura = ? , ultima_actualizacion = now() , num_facturas = ? , "
@@ -2831,7 +2831,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static JRDataSource getExpensesReport(String day) throws SQLException {
+    protected static JRDataSource getExpensesReport(String day) throws SQLException {
 
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3 ; i++) {
@@ -2858,7 +2858,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    static JRDataSource getIncommingReport(String day) throws SQLException {
+    protected static JRDataSource getIncommingReport(String day) throws SQLException {
         String[] columnsArray = new String[4];
         for (int i = 0; i < 4; i++) {
             columnsArray[i] = i + "";
@@ -2890,7 +2890,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    static JRDataSource getTotal(String day) throws SQLException {
+    protected static JRDataSource getTotal(String day) throws SQLException {
         String[] columnsArray = new String[1];
         for (int i = 0; i < 1; i++) {
             columnsArray[i] = i + "";
@@ -2904,7 +2904,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    static JRDataSource getInitialFounds(String day) throws SQLException {
+    protected static JRDataSource getInitialFounds(String day) throws SQLException {
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3; i++) {
             columnsArray[i] = i + "";
@@ -2931,7 +2931,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    static JRDataSource getFiscalInfo(String day) throws SQLException {
+    protected static JRDataSource getFiscalInfo(String day) throws SQLException {
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3 ; i++) {
             columnsArray[i] = i + "";
@@ -2958,7 +2958,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    static List<ZFISDATAFISCAL> getOperativeDays(String day) throws SQLException {
+    protected static List<ZFISDATAFISCAL> getOperativeDays(String day) throws SQLException {
         List<ZFISDATAFISCAL> ans = new ArrayList<ZFISDATAFISCAL>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -3073,7 +3073,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void updateDiscount(String itemId, String discount) throws SQLException {
+    protected static void updateDiscount(String itemId, String discount) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update articulo set descuento = ? where codigo = ?");
         stmt.setString(1, discount);
@@ -3082,7 +3082,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void setZDone() throws SQLException {
+    protected static void setZDone() throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -3096,7 +3096,7 @@ public class ConnectionDrivers {
     }
 
     //WARNING. NON ESCAPED STRINGS
-    static Double getSumTotalWithIva(String myDay, String table, String status, boolean withDiscount, String pos) throws SQLException {
+    protected static Double getSumTotalWithIva(String myDay, String table, String status, boolean withDiscount, String pos) throws SQLException {
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_sin_iva " + (withDiscount?"-total_sin_iva*descuento_global":"") + ")"
@@ -3118,7 +3118,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getTotalDeclared(String myDay) throws SQLException {
+    protected static Double getTotalDeclared(String myDay) throws SQLException {
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_ventas) as total from dia_operativo where fecha=?");
@@ -3135,7 +3135,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void updateLastReceipt(String lastReceipt) throws SQLException {
+    protected static void updateLastReceipt(String lastReceipt) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_factura = ? where identificador = ? ");
         stmt.setString(1, lastReceipt);
@@ -3145,7 +3145,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void updateLastCN(String lastCN) throws SQLException {
+    protected static void updateLastCN(String lastCN) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_nota_de_credito = ? where identificador = ? ");
         stmt.setString(1, lastCN);
@@ -3155,7 +3155,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static String getLastReceipt() throws SQLException {
+    protected static String getLastReceipt() throws SQLException {
         String ans = "";
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select ultima_factura from punto_de_venta where identificador = ? ");
@@ -3172,7 +3172,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static String getLastCN() throws SQLException {
+    protected static String getLastCN() throws SQLException {
         String ans = "";
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select ultima_nota_de_credito from punto_de_venta where identificador = ? ");
@@ -3189,7 +3189,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    public static void updateItemsDetails(Item item) throws SQLException{
+    protected static void updateItemsDetails(Item item) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from codigo_de_barras where codigo_de_articulo = ? and"
                 + " codigo_de_barras = ? ");
@@ -3222,7 +3222,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static void updateItems(List<Item> items) throws SQLException{
+    protected static void updateItems(List<Item> items) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (Item item : items) {
@@ -3248,7 +3248,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void updateMovements(List<Movement> movements, TreeMap<String, Item> newItemMapping) throws SQLException {
+    protected static void updateMovements(List<Movement> movements, TreeMap<String, Item> newItemMapping) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (Movement movement : movements) {
@@ -3315,7 +3315,7 @@ public class ConnectionDrivers {
 
     }
 
-    public static void modifyMoney(Double diffMoney) throws SQLException{
+    protected static void modifyMoney(Double diffMoney) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into movimiento_efectivo ( identificador_punto_de_venta , fecha , monto )"
                 + " values (?,now(),?)");
@@ -3325,7 +3325,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static boolean allZready(String myDay) throws SQLException {
+    protected static boolean allZready(String myDay) throws SQLException {
         boolean ans = false;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select count(*) as c from dia_operativo where datediff( ? , fecha ) = 0 and reporteZ = 0");
@@ -3342,7 +3342,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Integer getQuantCN(String myDay) throws SQLException {
+    protected static Integer getQuantCN(String myDay) throws SQLException {
         Integer ans = 0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(numero_notas_credito) as ans from dia_operativo where datediff( ? , fecha ) = 0");
@@ -3359,7 +3359,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getTotalIncomming(String myDay) throws SQLException {
+    protected static Double getTotalIncomming(String myDay) throws SQLException {
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto"
@@ -3380,7 +3380,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getTotalAMinusC(String myDay) throws SQLException {
+    protected static Double getTotalAMinusC(String myDay) throws SQLException {
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from "
@@ -3401,7 +3401,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void deleteAllPayments(String myDay) throws SQLException {
+    protected static void deleteAllPayments(String myDay) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
         stmt.setString(1, myDay);
@@ -3409,7 +3409,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void createPayments(DefaultTableModel model, String myDay) throws SQLException {
+    protected static void createPayments(DefaultTableModel model, String myDay) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -3427,7 +3427,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static boolean wasClosed(String myDay) throws SQLException {
+    protected static boolean wasClosed(String myDay) throws SQLException {
         boolean ans = false;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select cerrado from dia_operativo where datediff(fecha,?)=0");
@@ -3444,7 +3444,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void closeThisDay(String myDay) throws SQLException{
+    protected static void closeThisDay(String myDay) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set cerrado = 1 where datediff(fecha,?)=0");
@@ -3454,7 +3454,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static boolean previousClosed(String myDay) throws SQLException {
+    protected static boolean previousClosed(String myDay) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select * from dia_operativo where datediff( ? , fecha ) > 0 and cerrado = 0");
         stmt.setString(1, myDay);
@@ -3467,7 +3467,7 @@ public class ConnectionDrivers {
         return ok;
     }
 
-    static String configName(String key) throws SQLException{
+    protected static String configName(String key) throws SQLException{
         String ans = null;
         Connection c = ConnectionDrivers.cpds.getConnection();
 

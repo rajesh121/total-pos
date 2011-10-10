@@ -25,7 +25,7 @@ public class ColorEditor extends AbstractCellEditor
     JDialog dialog;
     protected static final String EDIT = "edit";
 
-    public ColorEditor() {
+    protected ColorEditor() {
         button = new JButton();
         button.setActionCommand(EDIT);
         button.addActionListener(this);

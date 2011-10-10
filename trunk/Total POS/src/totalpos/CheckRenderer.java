@@ -16,7 +16,7 @@ public class CheckRenderer extends JPanel implements TreeCellRenderer {
   protected JCheckBox check;
   protected TreeLabel label;
 
-  public CheckRenderer() {
+  protected CheckRenderer() {
     setLayout(null);
     add(check = new JCheckBox());
     add(label = new TreeLabel());

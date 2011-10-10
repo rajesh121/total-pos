@@ -19,7 +19,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
     private List<PointOfSale> poses;
 
     /** Creates new form AssignTurn */
-    public AssignTurn() {
+    protected AssignTurn() {
         initComponents();
         updateAll();
 

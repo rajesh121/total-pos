@@ -18,7 +18,7 @@ import javax.swing.JInternalFrame;
 public class AddReport extends JInternalFrame {
 
     /** Creates new form AddReport */
-    public AddReport() {
+    protected AddReport() {
         initComponents();
         titleLabel.setText("Agregar Reporte");
         titleField.setText("");
@@ -32,7 +32,7 @@ public class AddReport extends JInternalFrame {
     /** Creates new form AddReport
      * @param report 
      */
-    public AddReport(Report report) {
+    protected AddReport(Report report) {
         initComponents();
         titleLabel.setText("Modificar Reporte");
         titleField.setText(report.getTitle());

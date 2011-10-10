@@ -22,7 +22,7 @@ public class ChooseMessage extends javax.swing.JInternalFrame {
     List<String> msg2poses;
 
     /** Creates new form ChooseMessage */
-    public ChooseMessage() {
+    protected ChooseMessage() {
         try {
             initComponents();
             updateAll();

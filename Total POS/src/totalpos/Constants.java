@@ -27,9 +27,8 @@ public class Constants {
     protected static final String dbUser = "root";
     protected static final String dbPassword = "123456789";
     protected static final String defaultUser = "Invitado";
+    protected static final String configPassword = "Admingt.99Admingt.99";
 
-
-    
     protected static final ObjectFactory of = new ObjectFactory();
 
     //protected static final String mirrorDbHost = "localhost";
@@ -49,6 +48,7 @@ public class Constants {
     protected static final String scriptReplicateName = "replicate.bat";
     protected static final String rootDir = "./";
     protected static final String scriptMovementsName = "prepareMovements.bat";
+    protected static final String scriptCreateFileReport = "createReport.bat";
 
     protected static final String wrongPasswordMsg = "Contraseña errónea.";
     protected static final String userLocked = "El usuario ha sido bloqueado.";
@@ -121,7 +121,14 @@ public class Constants {
     protected static final String addrForIncome = ".\\traslados\\";
     protected static final String photoPrefix = ".\\fotos\\";
     protected static final String backupDir = ".\\conf\\";
+    protected static final String tmpDir = "C:\\WINDOWS\\Temp\\";
 
     protected static final String fileName4Income = "income.rar";
-    protected static final String[] forbiddenWords = {"delete","upgrade","insert","drop"};
+    protected static final String fileName4ReportRar = "report.rar";
+    protected static final String fileName4ConfigN = "config";
+    protected static final String fileName4ConfigRar = "config.rar";
+    protected static final String fileName4Config = "config.txt";
+    protected static final String scriptConfig = "config.bat";
+    protected static final String fileName4Report = "report.txt";
+    protected static final String[] forbiddenWords = {"delete","upgrade","insert","drop", "create"};
 }

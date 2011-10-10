@@ -2495,13 +2495,13 @@ public class ConnectionDrivers {
                     + Constants.dbName + " " + tableName + " | mysql -u " + Constants.mirrordbUser
                     + " -p" + Constants.mirrordbPassword + " " + "-h " + Shared.getFileConfig("ServerMirror")
                     + " " + Constants.mirrorDbName ;
-            FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptReplicateName);
+            FileWriter fstream = new FileWriter(Constants.tmpDir + Constants.scriptReplicateName);
             BufferedWriter out = new BufferedWriter(fstream);
 
             out.write(cmd);
             out.close();
 
-            Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptReplicateName);
+            Process process = Runtime.getRuntime().exec(Constants.tmpDir + Constants.scriptReplicateName);
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
@@ -2510,7 +2510,7 @@ public class ConnectionDrivers {
                 ;
             }
 
-            File f = new File(Constants.rootDir + Constants.scriptReplicateName);
+            File f = new File(Constants.tmpDir + Constants.scriptReplicateName);
             f.delete();
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionDrivers.class.getName()).log(Level.SEVERE, null, ex);
@@ -2972,7 +2972,7 @@ public class ConnectionDrivers {
             zfdf.setMANDT(Constants.of.createZFISDATAFISCALMANDT(Constants.mant));
             zfdf.setIDTIENDA(Constants.of.createZFISDATAFISCALIDTIENDA(Constants.storePrefix+Shared.getConfig("storeName")));
             zfdf.setIDIMPFISCAL(Constants.of.createZFISDATAFISCALIDIMPFISCAL(rs.getString("impresora")));
-            zfdf.setFECHA(Constants.of.createZFISDATAFISCALFECHA(Constants.sdfDay2SAP.format(new GregorianCalendar().getTime())));
+            zfdf.setFECHA(Constants.of.createZFISDATAFISCALFECHA(day.replace("-", "")));
             zfdf.setMONTO(new BigDecimal(rs.getString("total_ventas")));
             zfdf.setNUMREPZ(Constants.of.createZFISDATAFISCALNUMREPZ(rs.getString("numero_reporte_z")));
             zfdf.setULTFACTURA(Constants.of.createZFISDATAFISCALULTFACTURA(rs.getString("codigo_ultima_factura")));

@@ -1077,8 +1077,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private void barcodeFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_barcodeFieldKeyReleased
         if ( evt.getKeyCode() == KeyEvent.VK_DOWN ){
             updateCurrentItem();
+            Shared.checkVisibility(gridTable);
         } else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
             updateCurrentItem();
+            Shared.checkVisibility(gridTable);
         } else if ( evt.getKeyChar() == '*' ) {
             String code = barcodeField.getText();
             code = code.substring(0, code.length()-1);

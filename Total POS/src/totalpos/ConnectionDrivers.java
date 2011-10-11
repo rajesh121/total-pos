@@ -574,7 +574,47 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static List<Item> listFastItems(String barCode) throws SQLException, Exception{
+    protected static List<Item> listItemsByModel(String model) throws SQLException{
+        List<Item> ans = new LinkedList<Item>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento "
+                + "from articulo a "
+                + "where a.modelo like ? limit 100");
+        stmt.setString(1, "%" + model + "%");
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Item(
+                        rs.getString("codigo"),
+                        rs.getString("descripcion"),
+                        rs.getDate("fecha_registro"),
+                        rs.getString("marca"),
+                        rs.getString("sector"),
+                        rs.getString("codigo_sublinea"),
+                        rs.getString("codigo_de_barras"),
+                        rs.getString("modelo"),
+                        rs.getString("unidad_venta"),
+                        rs.getString("unidad_compra"),
+                        rs.getInt("existencia_actual"),
+                        listPrices(rs.getString("codigo")),
+                        listCosts(rs.getString("codigo")),
+                        listBarcodes(rs.getString("codigo")),
+                        rs.getBoolean("bloqueado"),
+                        rs.getString("imagen"),
+                        rs.getString("descuento")
+                        )
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static List<Item> listFastItems(String barCode) throws SQLException{
         List<Item> ans = new LinkedList<Item>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2034,19 +2074,22 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static Time getDiff(Time t) throws SQLException, ParseException{
+    protected static String getDiff(Time t) throws SQLException, ParseException{
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select convert(timediff( curtime(), ? ),char)");
+        PreparedStatement stmt = c.prepareStatement("select max(t) from "
+                + "(select convert(timediff(curtime(),?),char) as t union "
+                + "select convert(timediff(?,curtime()),char)) as myTable");
         stmt.setTime(1, t);
+        stmt.setTime(2, t);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String ansS = rs.getString(1);
-        ansS = ansS.substring(1);
-        Time ans = new Time(sdf.parse(ansS).getTime());
+        //ansS = ansS.substring(1);
+        //Time ans = new Time(sdf.parse(ansS).getTime());
         c.close();
         rs.close();
-        return ans;
+        return ansS;
     }
 
     private static void deleteItemFromReceipt(Item2Receipt item2r, String receiptId) throws SQLException {

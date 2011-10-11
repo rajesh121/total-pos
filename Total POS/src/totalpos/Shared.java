@@ -3,6 +3,7 @@ package totalpos;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -30,6 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import srvEntidadesPackage.BNKA;
 import srvEntidadesPackage.DD07T;
 import srvEntidadesPackage.IsrvEntidades;
@@ -562,6 +564,11 @@ public class Shared {
         File f = new File(Constants.tmpDir + scriptFile);
         f.delete();
 
+    }
+
+    protected static void checkVisibility(JTable table) {
+        Rectangle rect = table.getCellRect(table.getSelectedRow(), 0, true);
+        table.scrollRectToVisible(rect);
     }
 
 }

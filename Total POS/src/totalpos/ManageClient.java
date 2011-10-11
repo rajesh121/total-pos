@@ -412,7 +412,7 @@ public class ManageClient extends javax.swing.JDialog {
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
+            idField.requestFocus();
         }
     }//GEN-LAST:event_comboKindKeyPressed
 

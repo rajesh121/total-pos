@@ -87,6 +87,9 @@ public class AddCard2Pay extends javax.swing.JDialog {
 
         moneyField.setName("moneyField"); // NOI18N
         moneyField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                moneyFieldKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 moneyFieldKeyReleased(evt);
             }
@@ -196,19 +199,26 @@ public class AddCard2Pay extends javax.swing.JDialog {
     }//GEN-LAST:event_modifyLotActionPerformed
 
     private void moneyFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moneyFieldKeyReleased
+        
+    }//GEN-LAST:event_moneyFieldKeyReleased
+
+    private void bposComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_bposComboKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             doIt();
         }
-    }//GEN-LAST:event_moneyFieldKeyReleased
+    }//GEN-LAST:event_bposComboKeyPressed
 
-    private void bposComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_bposComboKeyPressed
+    private void moneyFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moneyFieldKeyPressed
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             doIt();
         }
-    }//GEN-LAST:event_bposComboKeyPressed
+    }//GEN-LAST:event_moneyFieldKeyPressed
 
     protected void doIt(){
         Double d = .0;

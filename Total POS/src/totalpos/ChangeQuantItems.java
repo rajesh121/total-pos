@@ -15,10 +15,12 @@ import java.sql.SQLException;
  */
 public class ChangeQuantItems extends javax.swing.JDialog {
 
+    public boolean passOk = false;
     /** Creates new form ChangeQuantItems */
-    protected ChangeQuantItems(java.awt.Frame parent, boolean modal) {
+    protected ChangeQuantItems(java.awt.Frame parent, boolean modal, int quant) {
         super(parent, modal);
         initComponents();
+        titleLabel.setText(titleLabel.getText() + " " + quant);
     }
 
     /** This method is called from within the constructor to
@@ -34,10 +36,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         jLabel11 = new javax.swing.JLabel();
         acceptButton = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        phoneLabel = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        quantField = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
         idField = new javax.swing.JTextField();
         cirifLabel = new javax.swing.JLabel();
         passwordField = new javax.swing.JPasswordField();
@@ -48,7 +47,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         setTitle("Cantidad de Productos");
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
-        titleLabel.setText("Cantidad de Productos");
+        titleLabel.setText("Cantidad de Producto:");
         titleLabel.setName("titleLabel"); // NOI18N
 
         jLabel11.setText("* = Campo Obligatorio");
@@ -65,25 +64,8 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         jLabel9.setText("*");
         jLabel9.setName("jLabel9"); // NOI18N
 
-        phoneLabel.setFont(new java.awt.Font("Courier New", 0, 12));
-        phoneLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        phoneLabel.setText("Cantidad");
-        phoneLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        phoneLabel.setName("phoneLabel"); // NOI18N
-
         jLabel10.setText("*");
         jLabel10.setName("jLabel10"); // NOI18N
-
-        quantField.setFont(new java.awt.Font("Courier New", 0, 12));
-        quantField.setName("quantField"); // NOI18N
-        quantField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                quantFieldKeyPressed(evt);
-            }
-        });
-
-        jLabel13.setText("*");
-        jLabel13.setName("jLabel13"); // NOI18N
 
         idField.setFont(new java.awt.Font("Courier New", 0, 12));
         idField.setName("idField"); // NOI18N
@@ -100,6 +82,11 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         cirifLabel.setName("cirifLabel"); // NOI18N
 
         passwordField.setName("passwordField"); // NOI18N
+        passwordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordFieldActionPerformed(evt);
+            }
+        });
         passwordField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 passwordFieldKeyPressed(evt);
@@ -147,13 +134,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(phoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(quantField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)))
+                                .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -171,11 +152,6 @@ public class ChangeQuantItems extends javax.swing.JDialog {
                     .addComponent(jLabel10)
                     .addComponent(Nombre)
                     .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(phoneLabel)
-                    .addComponent(quantField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -192,17 +168,11 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         doIt();
 }//GEN-LAST:event_acceptButtonActionPerformed
 
-    private void quantFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_quantFieldKeyPressed
-        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            this.dispose();
-        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
-        }
-}//GEN-LAST:event_quantFieldKeyPressed
-
     private void idFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            passwordField.requestFocus();
         }
 }//GEN-LAST:event_idFieldKeyPressed
 
@@ -216,6 +186,10 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         this.dispose();
 }//GEN-LAST:event_cancelButtonActionPerformed
 
+    private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
+        doIt();
+    }//GEN-LAST:event_passwordFieldActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Nombre;
     private javax.swing.JButton acceptButton;
@@ -224,11 +198,8 @@ public class ChangeQuantItems extends javax.swing.JDialog {
     private javax.swing.JTextField idField;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPasswordField passwordField;
-    private javax.swing.JLabel phoneLabel;
-    private javax.swing.JTextField quantField;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
@@ -237,17 +208,8 @@ public class ChangeQuantItems extends javax.swing.JDialog {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");
             msg.show(this);
             return;
-        }else if ( quantField.getText().isEmpty() ) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El campo \"Cantidad\" no puede ser vacío");
-            msg.show(this);
-            return;
         }
         try{
-            int p = Integer.parseInt(quantField.getText());
-
-            if ( p < 1 || p > 100 ){
-                throw new NumberFormatException("");
-            }
 
             if ( !ConnectionDrivers.existsUser(idField.getText().trim()) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
@@ -268,10 +230,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), idField.getText());
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "setQuant") ){
                 Shared.userInsertedPasswordOk(idField.getText());
-
-                MainRetailWindows parent = (MainRetailWindows) Shared.getMyMainWindows();
-                parent.quant = p;
-
+                passOk = true;
             }else{
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para cambiar la cantidad de productos que son agregados");
                 msg.show(this);
@@ -280,9 +239,6 @@ public class ChangeQuantItems extends javax.swing.JDialog {
 
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);
-            msg.show(this);
-        } catch ( NumberFormatException ex ){
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "La cantidad es inválida. Debe ser mayor a uno y menor a 100");
             msg.show(this);
         } catch (Exception ex) {
             String kindErr = "";

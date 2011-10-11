@@ -254,7 +254,7 @@ public class ManageItem extends JInternalFrame implements Doer {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        stickerTable.setFont(new java.awt.Font("Courier New", 0, 11));
         stickerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -427,6 +427,9 @@ public class ManageItem extends JInternalFrame implements Doer {
             }
         });
         jScrollPane1.setViewportView(itemTable);
+        itemTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+        itemTable.getColumnModel().getColumn(7).setPreferredWidth(50);
+        itemTable.getColumnModel().getColumn(8).setPreferredWidth(50);
 
         addSticker.setText("Agregar a las etiquetas");
         addSticker.setName("addSticker"); // NOI18N

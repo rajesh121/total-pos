@@ -75,7 +75,7 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = false;
+    protected static final boolean isPos = true;
 
     protected static String maximunId = "9999999999999999999999999";
     protected static String minimunId = "";
@@ -83,13 +83,13 @@ public class Constants {
     protected static final int secondsToCheckTurn = 30;
     protected static final int secondsToUpdateCountdown = 10;
     protected static final int secondsToUpdateMirror = 6000;
-    protected static final int secondsToChangeMsg2Pos = 10;
+    protected static final int secondsToChangeMsg2Pos = 60;
     protected static final int secondsToShiftMsg = 1;
     protected static final int dbTimeout = 60000;
 
     protected static final int longReportTotals = 100;
 
-    protected static final int maximumLenghtMsg2Pos = 50;
+    protected static final int maximumLenghtMsg2Pos = 60;
 
     protected static final boolean withFiscalPrinter = true;
 

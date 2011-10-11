@@ -791,65 +791,73 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    protected void loadItem(String myBarcode){
+        try{
+            if ( myBarcode.isEmpty() ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");
+                msb.show(this);
+                return;
+            }
+            List<Item> itemC = ConnectionDrivers.listFastItems(myBarcode);
+            if ( itemC.isEmpty() ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo no existe!");
+                msb.show(this);
+                cleanForNewItem();
+                return;
+            }
+            //TODO FIX IT!!!!!!
+            assert( itemC.size() >= 1 );
+            if ( itemC.get(0).isStatus() ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo bloqueado. No puede ser facturado!");
+                msb.show(this);
+                cleanForNewItem();
+                return;
+            }
+
+            if ( quant != 1 ){
+                ChangeQuantItems cqi = new ChangeQuantItems(this, true, quant);
+                Shared.centerFrame(cqi);
+                cqi.setVisible(true);
+                if ( !cqi.passOk ){
+                    quant = 1;
+                    return;
+                }
+            }
+            if ( itemC.get(0).getCurrentStock() - quant < 0 ){
+                if ( Shared.getConfig("sellWithoutStock").equals("0") ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Este artículo no tiene stock. No se puede agregar.");
+                    msb.show(this);
+                    cleanForNewItem();
+                    return;
+                }else{
+                    SellWithoutStock sws = new SellWithoutStock(this, true, "Artículo sin stock.","sellWithoutStock");
+                    Shared.centerFrame(sws);
+                    sws.setVisible(true);
+                    if ( !sws.authorized ){
+                        return;
+                    }
+                }
+            }
+            addItem(itemC.get(0));
+            updateCurrentItem();
+            cleanForNewItem();
+            updateSubTotal();
+
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
+            msb.show(this);
+        }
+    }
+
     private void barcodeFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_barcodeFieldKeyPressed
         Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             logout();
             return;
         }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            try {
-                String myBarcode = barcodeField.getText();
-                barcodeField.setText("");
-                if ( myBarcode.isEmpty() ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");
-                    msb.show(this);
-                    return;
-                }
-                List<Item> itemC = ConnectionDrivers.listFastItems(myBarcode);
-                if ( itemC.isEmpty() ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo no existe!");
-                    msb.show(this);
-                    cleanForNewItem();
-                    return;
-                }
-                //TODO FIX IT!!!!!!
-                assert( itemC.size() >= 1 );
-                if ( itemC.get(0).isStatus() ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Artículo bloqueado. No puede ser facturado!");
-                    msb.show(this);
-                    cleanForNewItem();
-                    return;
-                }
-
-                if ( itemC.get(0).getCurrentStock() - quant < 0 ){
-                    if ( Shared.getConfig("sellWithoutStock").equals("0") ){
-                        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Este artículo no tiene stock. No se puede agregar.");
-                        msb.show(this);
-                        cleanForNewItem();
-                        return;
-                    }else{
-                        SellWithoutStock sws = new SellWithoutStock(this, true, "Artículo sin stock.","sellWithoutStock");
-                        Shared.centerFrame(sws);
-                        sws.setVisible(true);
-                        if ( !sws.authorized ){
-                            return;
-                        }
-                    }
-                }
-                addItem(itemC.get(0));
-                updateCurrentItem();
-                cleanForNewItem();
-                updateSubTotal();
-                
-            } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
-                msb.show(this);
-            } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas al listar artículos.",ex);
-                msb.show(this);
-                this.dispose();
-                Shared.reload();
-            }
+            String myBarcode = barcodeField.getText();
+            barcodeField.setText("");
+            loadItem(myBarcode);
         } else if ( evt.getKeyCode() == KeyEvent.VK_DOWN ){
             if ( gridTable.getSelectedRow() == gridTable.getModel().getRowCount() - 1 ){
                 return;
@@ -1008,9 +1016,13 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F1 ){
-            ChangeQuantItems cqi = new ChangeQuantItems(this, true);
-            Shared.centerFrame(cqi);
-            cqi.setVisible(true);
+            /*MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Escriba la cantidad, luego el signo \'*\' y finalmente introduzca el código de barras.");
+            msg.show(this);*/
+            SearchItem si = new SearchItem(this, true);
+            if ( si.isOk ){
+                Shared.centerFrame(si);
+                si.setVisible(true);
+            }
         } else if ( evt.getKeyCode() == KeyEvent.VK_END ){
             try {
                 for (Receipt receipt : ConnectionDrivers.listIdleReceiptToday()) {
@@ -1067,6 +1079,20 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             updateCurrentItem();
         } else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
             updateCurrentItem();
+        } else if ( evt.getKeyChar() == '*' ) {
+            String code = barcodeField.getText();
+            code = code.substring(0, code.length()-1);
+            try{
+                quant = Integer.parseInt(code);
+                if ( quant < 1 ){
+                    throw new NumberFormatException();
+                }
+            }catch ( NumberFormatException ex){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Cantidad incorrecta!!");
+                msb.show(this);
+                quant = 1;
+            }
+            barcodeField.setText("");
         }
     }//GEN-LAST:event_barcodeFieldKeyReleased
 

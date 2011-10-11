@@ -87,9 +87,10 @@ public class UpdateClock extends Thread{
                         for (Assign assign : as) {
                             if (assign.getPos().equals(Shared.getFileConfig("myId")) && assign.isOpen()) {
                                 Turn cur = Shared.getTurn(ConnectionDrivers.listTurns(), assign.getTurn());
-                                Time diff = ConnectionDrivers.getDiff( cur.getFin() );
-                                int leaving = (diff.getMinutes()+diff.getHours()*60);
-                                if ( leaving < 5 ){
+                                String diff = ConnectionDrivers.getDiff( cur.getFin() );
+                                String[] toks = diff.split(":");
+                                int leaving = Integer.parseInt(toks[1]);
+                                if ( toks[0].equals("00") && leaving < 5 ){
                                     MainRetailWindows mrw = (MainRetailWindows) Shared.getMyMainWindows();
                                     if ( leaving > 0 ){
                                         mrw.yourTurnIsFinishingLabel.setText("Su turno se va a vencer en " + leaving + " minuto" + (leaving>1?"s":"") + ".");

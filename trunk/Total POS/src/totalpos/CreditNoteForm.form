@@ -26,10 +26,10 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jScrollPane1" alignment="0" pref="625" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="762" max="32767" attributes="0"/>
                   <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
                   <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jLabel1" alignment="0" pref="625" max="32767" attributes="0"/>
+                  <Component id="jLabel1" alignment="0" pref="762" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="reverseALLButton" min="-2" pref="130" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -87,11 +87,12 @@
         <Component class="javax.swing.JTable" name="table">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="8" rowCount="4">
+              <Table columnCount="9" rowCount="4">
                 <Column editable="true" title="Devolver" type="java.lang.Integer"/>
                 <Column editable="false" title="Cantidad" type="java.lang.Integer"/>
                 <Column editable="false" title="Devuelto" type="java.lang.Integer"/>
                 <Column editable="false" title="Descripci&#xf3;n" type="java.lang.Object"/>
+                <Column editable="false" title="Modelo" type="java.lang.Object"/>
                 <Column editable="false" title="Descuento" type="java.lang.Object"/>
                 <Column editable="false" title="Precio" type="java.lang.Object"/>
                 <Column editable="false" title="IVA" type="java.lang.Object"/>
@@ -100,7 +101,22 @@
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="40" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="40" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="40" resizable="true">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="200" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
@@ -110,32 +126,22 @@
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="50" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="60" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="60" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="60" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
@@ -194,9 +200,9 @@
                   </Group>
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="clientPhoneField" pref="179" max="32767" attributes="0"/>
-                      <Component id="clientNameField" pref="179" max="32767" attributes="0"/>
-                      <Component id="clientIDField" alignment="1" pref="179" max="32767" attributes="0"/>
+                      <Component id="clientPhoneField" pref="316" max="32767" attributes="0"/>
+                      <Component id="clientNameField" pref="316" max="32767" attributes="0"/>
+                      <Component id="clientIDField" alignment="1" pref="316" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -364,23 +370,23 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="internIdField" linkSize="1" min="-2" pref="170" max="-2" attributes="0"/>
-                      <Component id="fiscalNumberField" linkSize="1" min="-2" pref="170" max="-2" attributes="0"/>
-                      <Component id="dateField" linkSize="1" min="-2" pref="173" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="fiscalPrinter" max="32767" attributes="1"/>
-                          <Component id="zReport1" alignment="0" max="32767" attributes="1"/>
-                      </Group>
-                      <Component id="zReport" pref="107" max="32767" attributes="1"/>
+                      <Component id="dateField" alignment="0" pref="228" max="32767" attributes="0"/>
+                      <Component id="fiscalNumberField" alignment="0" pref="228" max="32767" attributes="0"/>
+                      <Component id="internIdField" alignment="0" pref="228" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="totalField" pref="206" max="32767" attributes="2"/>
-                      <Component id="fiscalPrinterField" alignment="0" pref="206" max="32767" attributes="2"/>
-                      <Component id="zReportField" alignment="0" pref="206" max="32767" attributes="2"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="zReport1" alignment="1" max="32767" attributes="1"/>
+                          <Component id="zReport" alignment="1" max="32767" attributes="1"/>
+                      </Group>
+                      <Component id="fiscalPrinter" min="-2" max="-2" attributes="1"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="fiscalPrinterField" max="32767" attributes="3"/>
+                      <Component id="totalField" alignment="1" max="32767" attributes="3"/>
+                      <Component id="zReportField" alignment="1" pref="290" max="32767" attributes="3"/>
                   </Group>
               </Group>
           </Group>
@@ -393,18 +399,14 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="internCode" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="internIdField" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="fiscalPrinter" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="dateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="dateField" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Component id="zReport1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="dateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="dateField" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -414,14 +416,20 @@
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="fiscalPrinterField" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="fiscalPrinterField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="fiscalPrinter" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="zReportField" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="zReport" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="totalField" min="-2" max="-2" attributes="1"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="totalField" alignment="3" min="-2" max="-2" attributes="1"/>
+                              <Component id="zReport1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>

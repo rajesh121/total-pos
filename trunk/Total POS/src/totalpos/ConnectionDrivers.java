@@ -975,7 +975,7 @@ public class ConnectionDrivers {
                 + "a.fecha, abierto from asigna a, dia_operativo do where datediff(a.fecha,now())=0 "
                 + "and codigo_punto_de_venta=identificador_pos and datediff(do.fecha,now())=0 and "
                 + "do.reporteZ=0 union select identificador_turno , identificador_pos , fecha, abierto"
-                + " from asigna where identificador_turno not in (select codigo_punto_de_venta from "
+                + " from asigna where identificador_pos not in (select codigo_punto_de_venta from "
                 + "dia_operativo where datediff(fecha,curdate())=0) and datediff(fecha,now()) = 0");
 
         ResultSet rs = stmt.executeQuery();

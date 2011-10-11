@@ -92,6 +92,8 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(dataTable);
+        dataTable.getColumnModel().getColumn(0).setPreferredWidth(170);
+        dataTable.getColumnModel().getColumn(1).setPreferredWidth(40);
 
         closeButton.setText("Cerrar");
         closeButton.setFocusable(false);

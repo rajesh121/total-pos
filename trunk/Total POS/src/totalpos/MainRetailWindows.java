@@ -18,9 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -1018,10 +1016,12 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         } else if ( evt.getKeyCode() == KeyEvent.VK_F1 ){
             /*MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Escriba la cantidad, luego el signo \'*\' y finalmente introduzca el código de barras.");
             msg.show(this);*/
-            SearchItem si = new SearchItem(this, true);
-            if ( si.isOk ){
-                Shared.centerFrame(si);
-                si.setVisible(true);
+            if ( Shared.getConfig("searchByModel").equals("1") ){
+                SearchItem si = new SearchItem(this, true);
+                if ( si.isOk ){
+                    Shared.centerFrame(si);
+                    si.setVisible(true);
+                }
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_END ){
             try {

@@ -45,10 +45,10 @@ public class Main {
         ConnectionDrivers.initialize();
 
         // TODO UNCOMMENT THIS
-        /*if ( !Constants.isPos ){
+        if ( !Constants.isPos ){
             splash.changeStatus("Actualizando bancos y gastos desde SAP", 40);
             Shared.updateExpensesAndBanks();
-        }*/
+        }
 
         splash.changeStatus("Inicializando configuración de base de datos...", 45);
         try {

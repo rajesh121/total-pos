@@ -131,4 +131,5 @@ public class Constants {
     protected static final String scriptConfig = "config.bat";
     protected static final String fileName4Report = "report.txt";
     protected static final String[] forbiddenWords = {"delete","upgrade","insert","drop", "create"};
+    protected static double exilon = .00001;
 }

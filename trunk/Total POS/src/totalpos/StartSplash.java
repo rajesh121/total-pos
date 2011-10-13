@@ -43,14 +43,17 @@ class StartSplash extends javax.swing.JFrame {
         titleLabel.setText(Constants.appName);
         titleLabel.setName("titleLabel"); // NOI18N
 
+        loadingLabel.setFont(resourceMap.getFont("loadingLabel.font")); // NOI18N
         loadingLabel.setText(resourceMap.getString("loadingLabel.text")); // NOI18N
         loadingLabel.setName("loadingLabel"); // NOI18N
 
         progressBar.setName("progressBar"); // NOI18N
 
+        statusLabel.setFont(resourceMap.getFont("loadingLabel.font")); // NOI18N
         statusLabel.setText(resourceMap.getString("statusLabel.text")); // NOI18N
         statusLabel.setName("statusLabel"); // NOI18N
 
+        statusLabel2Change.setFont(resourceMap.getFont("loadingLabel.font")); // NOI18N
         statusLabel2Change.setText(resourceMap.getString("statusLabel2Change.text")); // NOI18N
         statusLabel2Change.setName("statusLabel2Change"); // NOI18N
 
@@ -81,7 +84,7 @@ class StartSplash extends javax.swing.JFrame {
                 .addComponent(statusLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(statusLabel2Change)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         pack();

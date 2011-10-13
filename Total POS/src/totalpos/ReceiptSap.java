@@ -136,7 +136,7 @@ public class ReceiptSap {
                         units.put(idd, item2Receipt.getItem().getSellUnits());
                         quant.put(idd, item2Receipt.getQuant());
                         price.put(idd, item2Receipt.getItem().getLastPrice().getQuant());
-                        disc.put(idd, item2Receipt.getItem().getDescuento());
+                        disc.put(idd, (item2Receipt.getItem().getDescuento()/100.0)*item2Receipt.getItem().getLastPrice().getQuant());
                     }else{
                         quant.put(idd, quant.get(idd) + item2Receipt.getQuant());
                     }
@@ -189,6 +189,7 @@ public class ReceiptSap {
         TreeMap<String,Integer> quant = new TreeMap<String, Integer>();
         TreeMap<String,Double> price = new TreeMap<String, Double>();
         TreeMap<String,Double> disc = new TreeMap<String, Double>();
+        Double gDisc = .0;
         for (Receipt receipt : receipts) {
             for (Item2Receipt item2Receipt : receipt.getItems()) {
                 if ( item2Receipt.getQuant() > 0 ){
@@ -197,12 +198,14 @@ public class ReceiptSap {
                         units.put(idd, item2Receipt.getItem().getSellUnits());
                         quant.put(idd, item2Receipt.getQuant() );
                         price.put(idd, item2Receipt.getItem().getLastPrice().getQuant());
-                        disc.put(idd, item2Receipt.getItem().getDescuento());
+                        disc.put(idd, (item2Receipt.getItem().getDescuento()/100.0)*item2Receipt.getItem().getLastPrice().getQuant());
+
                     }else{
                         quant.put(idd, quant.get(idd) + item2Receipt.getQuant());
                     }
                 }
             }
+            gDisc = receipt.getGlobalDiscount();
         }
 
         System.out.println("MANDT\tFKDAT\tVBELN\tPOSNR\tEAN11\tKWMENG\tVRKME\tCHARG\tKBETP\tKBETD\tPERNR\tWERKS");
@@ -228,8 +231,8 @@ public class ReceiptSap {
             System.out.print("" + "\t");
             zdpd.setKBETP(new BigDecimal(price.get(idd)));
             System.out.print(price.get(idd) + "\t");
-            zdpd.setKBETD(new BigDecimal(disc.get(idd)));
-            System.out.print(disc.get(idd) + "\t");
+            zdpd.setKBETD(new BigDecimal(disc.get(idd)+gDisc*(price.get(idd)-disc.get(idd))));
+            System.out.print((disc.get(idd)+gDisc*(price.get(idd)-disc.get(idd))) + "\t");
             zdpd.setPERNR(of.createZSDSPOSDEVPERNR("999999"));
             System.out.print("999999" + "\t");
             zdpd.setWERKS(of.createZSDSCABDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));

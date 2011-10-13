@@ -54,7 +54,7 @@
               <Component id="statusLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="statusLabel2Change" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="12" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -71,6 +71,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="loadingLabel">
       <Properties>
+        <Property name="font" type="java.awt.Font" resourceKey="loadingLabel.font"/>
         <Property name="text" type="java.lang.String" resourceKey="loadingLabel.text"/>
         <Property name="name" type="java.lang.String" value="loadingLabel" noResource="true"/>
       </Properties>
@@ -85,12 +86,14 @@
     </Component>
     <Component class="javax.swing.JLabel" name="statusLabel">
       <Properties>
+        <Property name="font" type="java.awt.Font" resourceKey="loadingLabel.font"/>
         <Property name="text" type="java.lang.String" resourceKey="statusLabel.text"/>
         <Property name="name" type="java.lang.String" value="statusLabel" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="statusLabel2Change">
       <Properties>
+        <Property name="font" type="java.awt.Font" resourceKey="loadingLabel.font"/>
         <Property name="text" type="java.lang.String" resourceKey="statusLabel2Change.text"/>
         <Property name="name" type="java.lang.String" value="statusLabel2Change" noResource="true"/>
       </Properties>

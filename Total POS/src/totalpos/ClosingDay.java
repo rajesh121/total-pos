@@ -8,6 +8,7 @@ package totalpos;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Window;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -1148,14 +1149,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se puede hacer el cierre administrativo. Hay cajas sin cerrar.");
                 msb.show(this);
             }else{
-                /*workingFrame = new Working((Window) Shared.getMyMainWindows());
+                workingFrame = new Working((Window) Shared.getMyMainWindows());
 
                 WaitSplash ws = new WaitSplash(this);
                 
                 Shared.centerFrame(workingFrame);
                 workingFrame.setVisible(true);
-                ws.execute();*/
-                doIt();
+                ws.execute();
+                //doIt();
             }
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
@@ -1317,6 +1318,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             rs = new ReceiptSap();
             previousId = -1;
             previousCli = "Contado";
+            Double previousDis = -1.0;
 
             List<String> clients = new LinkedList<String>();
 
@@ -1331,7 +1333,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     continue;
                 }
                 if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) && 
-                        receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
+                        receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) &&
+                        ( Math.abs(receipt.getGlobalDiscount() - previousDis) < Constants.exilon || previousDis == -1.0 )){
                     rs.add(receipt);
                 }else{
                     aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
@@ -1341,6 +1344,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 }
                 previousId = Integer.parseInt(receipt.getFiscalNumber());
                 previousCli = receipt.getClientId();
+                previousDis = receipt.getGlobalDiscount();
             }
             if ( rs.getSize() > 0 ){
                 aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));

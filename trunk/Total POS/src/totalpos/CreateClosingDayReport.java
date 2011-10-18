@@ -10,6 +10,8 @@ import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.constant.PageOrientation;
+import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -42,7 +44,8 @@ public class CreateClosingDayReport {
                 subreport,
                 cmp.verticalGap(20))
               .pageFooter(Templates.footerComponent)
-              .setDataSource(createDataSource());
+              .setDataSource(createDataSource())
+              .setPageFormat(PageType.LETTER, PageOrientation.PORTRAIT);
             JasperViewer jv = new JasperViewer(jrb.toJasperPrint(), false);
             jv.setTitle(Constants.appName);
             jv.setVisible(true);;
@@ -98,13 +101,18 @@ public class CreateClosingDayReport {
                     Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true , null) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false, null);
                     Double income = ConnectionDrivers.getTotalIncomming(myDay);
                     Double amc = ConnectionDrivers.getTotalAMinusC(myDay);
+                    /*System.out.println(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0);
+                    System.out.println(ConnectionDrivers.getTotalPrinter(myDay));*/
                     report.title(cmp.text(
-                            Shared.formatIt("Cuadre de Cajas (B-D):",Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0-income)) + "\n" +
-                            Shared.formatIt("Cuadre de Cajas del Día (A+B-C-D): ",Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0-income+amc)) + "\n\n" +
-                            "Observaciones: Cantidad de Notas de Créditos: " +
+                            Shared.formatIt("Cuadre de Cajas (B-D):",Constants.df.format(Shared.round(receiptTotal*(Shared.getIva()+100.0)/100.0-income,2))) + "\n" +
+                            Shared.formatIt("Cuadre de Cajas del Día (A+B-C-D): ",Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0-income+amc)) + "\n"
+
+                            + Shared.formatIt("Diff entre Impresoras Fiscales y Sistema (B-E) ", Constants.df.format(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0 - ConnectionDrivers.getTotalPrinter(myDay)))+
+                            "\n\nObservaciones: Cantidad de Notas de Créditos: " +
                             ConnectionDrivers.getQuantCN(myDay) + "      Monto: " +
                             Constants.df.format((ConnectionDrivers.getTotalCN(myDay) *(Shared.getIva()+100.0)/100.0))
-                            + "\n" + note + "\n"+ "Impresoras Fiscales").setStyle(Templates.bold12CenteredStyle));
+                            + "\n" + note 
+                            + "\nImpresoras Fiscales (E)").setStyle(Templates.bold12CenteredStyle));
                     TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());
                     report.addColumn(col.column("Maquina Fiscal Nro", "0", type.stringType()));
                     report.addColumn(col.column("Numero Z", "1", type.stringType()));

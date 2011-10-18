@@ -296,6 +296,11 @@ public class MainWindows extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);
@@ -382,6 +387,10 @@ public class MainWindows extends javax.swing.JFrame {
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
         
     }//GEN-LAST:event_jPanel1MouseClicked
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formMouseMoved
 
     private void logout(){
 

@@ -15,6 +15,7 @@ class StartSplash extends javax.swing.JFrame {
     /** Creates new form StartSplash */
     public StartSplash() {
         initComponents();
+        setSize(485, 172);
     }
 
     /** This method is called from within the constructor to
@@ -38,22 +39,22 @@ class StartSplash extends javax.swing.JFrame {
         setName("Form"); // NOI18N
         setResizable(false);
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance().getContext().getResourceMap(StartSplash.class);
-        titleLabel.setFont(resourceMap.getFont("titleLabel.font")); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         titleLabel.setText(Constants.appName);
         titleLabel.setName("titleLabel"); // NOI18N
 
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance().getContext().getResourceMap(StartSplash.class);
         loadingLabel.setFont(resourceMap.getFont("loadingLabel.font")); // NOI18N
         loadingLabel.setText(resourceMap.getString("loadingLabel.text")); // NOI18N
         loadingLabel.setName("loadingLabel"); // NOI18N
 
         progressBar.setName("progressBar"); // NOI18N
 
-        statusLabel.setFont(resourceMap.getFont("loadingLabel.font")); // NOI18N
+        statusLabel.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         statusLabel.setText(resourceMap.getString("statusLabel.text")); // NOI18N
         statusLabel.setName("statusLabel"); // NOI18N
 
-        statusLabel2Change.setFont(resourceMap.getFont("loadingLabel.font")); // NOI18N
+        statusLabel2Change.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         statusLabel2Change.setText(resourceMap.getString("statusLabel2Change.text")); // NOI18N
         statusLabel2Change.setName("statusLabel2Change"); // NOI18N
 
@@ -84,7 +85,7 @@ class StartSplash extends javax.swing.JFrame {
                 .addComponent(statusLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(statusLabel2Change)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();

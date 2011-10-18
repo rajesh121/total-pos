@@ -357,6 +357,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         fiscalZ.setName("fiscalZ"); // NOI18N
         fiscalZ.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         fiscalZ.getTableHeader().setReorderingAllowed(false);
+        fiscalZ.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                fiscalZMouseMoved(evt);
+            }
+        });
         fiscalZ.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 fiscalZFocusGained(evt);
@@ -402,6 +407,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         depositTable.setName("depositTable"); // NOI18N
         depositTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         depositTable.getTableHeader().setReorderingAllowed(false);
+        depositTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                depositTableMouseMoved(evt);
+            }
+        });
         jScrollPane1.setViewportView(depositTable);
 
         saveDeposit.setText("Guardar");
@@ -496,6 +506,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 bankTableMouseReleased(evt);
+            }
+        });
+        bankTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                bankTableMouseMoved(evt);
             }
         });
         bankTable.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -656,6 +671,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         formWayxPoses.setName("formWayxPoses"); // NOI18N
         formWayxPoses.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         formWayxPoses.getTableHeader().setReorderingAllowed(false);
+        formWayxPoses.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formWayxPosesMouseMoved(evt);
+            }
+        });
         formWayxPoses.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 formWayxPosesFocusGained(evt);
@@ -1246,6 +1266,22 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_formMouseMoved
+
+    private void bankTableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bankTableMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_bankTableMouseMoved
+
+    private void depositTableMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_depositTableMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_depositTableMouseMoved
+
+    private void fiscalZMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fiscalZMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_fiscalZMouseMoved
+
+    private void formWayxPosesMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formWayxPosesMouseMoved
+        Shared.getScreenSaver().actioned();
+    }//GEN-LAST:event_formWayxPosesMouseMoved
 
     @Override
     public void doIt(){

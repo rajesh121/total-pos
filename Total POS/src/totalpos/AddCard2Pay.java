@@ -32,6 +32,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
             reason = reasonI;
             myParent = parent;
             this.total = total;
+            titleLabel.setText(titleLabel.getText() + " " + reasonI);
             updateAll();
             isOk = true;
         } catch (SQLException ex) {
@@ -51,7 +52,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
     private void initComponents() {
 
         moneyLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
         acceptButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         moneyField = new javax.swing.JTextField();
@@ -65,9 +66,9 @@ public class AddCard2Pay extends javax.swing.JDialog {
         moneyLabel.setText("Dinero");
         moneyLabel.setName("moneyLabel"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Courier New", 1, 18));
-        jLabel1.setText("Agregar Forma de Pago");
-        jLabel1.setName("jLabel1"); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
+        titleLabel.setText("Agregar Forma de Pago");
+        titleLabel.setName("titleLabel"); // NOI18N
 
         acceptButton.setText("Aceptar");
         acceptButton.setName("acceptButton"); // NOI18N
@@ -120,7 +121,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                    .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(posLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -141,7 +142,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(titleLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(moneyLabel)
@@ -261,11 +262,11 @@ public class AddCard2Pay extends javax.swing.JDialog {
     private javax.swing.JButton acceptButton;
     private java.awt.Choice bposCombo;
     private javax.swing.JButton cancelButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JButton modifyLot;
     private javax.swing.JTextField moneyField;
     private javax.swing.JLabel moneyLabel;
     private javax.swing.JLabel posLabel;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
 }

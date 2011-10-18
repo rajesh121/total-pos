@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -2947,6 +2946,23 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
+    protected static Double getTotalPrinter(String day) throws SQLException{
+        Double ans = .0;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(total_ventas)*1.12 as total from dia_operativo where datediff(?,fecha)=0");
+        stmt.setString(1, day);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getDouble("total");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
     protected static JRDataSource getInitialFounds(String day) throws SQLException {
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3; i++) {
@@ -2991,7 +3007,7 @@ public class ConnectionDrivers {
             Object[] toAdd = new Object[3];
             toAdd[0] = rs.getString("impresora");
             toAdd[1] = rs.getString("numero_reporte_z");
-            toAdd[2] = new BigDecimal(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0);
+            toAdd[2] = new BigDecimal(Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2));
             dataSource.add(toAdd);
         }
 

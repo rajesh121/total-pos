@@ -1325,6 +1325,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
             // CN
             List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
+            if ( receipts.isEmpty() ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una nota de crédito.");
+                msg.show(this);
+                return;
+            }
             ReceiptSap rs = new ReceiptSap();
             int previousId = -1;
             String previousCli = "Contado";
@@ -1351,6 +1356,12 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
 
             receipts = ConnectionDrivers.listOkReceipts(myDay);
+
+            if ( receipts.isEmpty() ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una factura.");
+                msg.show(this);
+                return;
+            }
             rs = new ReceiptSap();
             previousId = -1;
             previousCli = "Contado";

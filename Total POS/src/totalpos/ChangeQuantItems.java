@@ -16,11 +16,17 @@ import java.sql.SQLException;
 public class ChangeQuantItems extends javax.swing.JDialog {
 
     public boolean passOk = false;
+    public String funct;
     /** Creates new form ChangeQuantItems */
-    protected ChangeQuantItems(java.awt.Frame parent, boolean modal, int quant) {
+    protected ChangeQuantItems(java.awt.Frame parent, boolean modal, int quant, String title, String function) {
         super(parent, modal);
         initComponents();
-        titleLabel.setText(titleLabel.getText() + " " + quant);
+        funct = function;
+        if ( function.equals(Constants.changeReceipt) ){
+            titleLabel.setText(title);
+        }else if ( function.equals(Constants.changeQuant) ){
+            titleLabel.setText(title + " " + quant);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -47,7 +53,7 @@ public class ChangeQuantItems extends javax.swing.JDialog {
         setTitle("Cantidad de Productos");
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
-        titleLabel.setText("Cantidad de Producto:");
+        titleLabel.setText("Titulo");
         titleLabel.setName("titleLabel"); // NOI18N
 
         jLabel11.setText("* = Campo Obligatorio");
@@ -228,11 +234,12 @@ public class ChangeQuantItems extends javax.swing.JDialog {
             ConnectionDrivers.login(idField.getText(), passwordField.getPassword());
 
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), idField.getText());
-            if ( ConnectionDrivers.isAllowed(u.getPerfil(), "setQuant") ){
+            if ( (funct.equals(Constants.changeQuant) && ConnectionDrivers.isAllowed(u.getPerfil(), "setQuant")) ||
+                    (funct.equals(Constants.changeReceipt) && ConnectionDrivers.isAllowed(u.getPerfil(), "createCN")) ){
                 Shared.userInsertedPasswordOk(idField.getText());
                 passOk = true;
             }else{
-                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para cambiar la cantidad de productos que son agregados");
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para esa operación");
                 msg.show(this);
             }
             this.dispose();

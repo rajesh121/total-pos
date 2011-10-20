@@ -782,6 +782,12 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
     protected void loadItem(String myBarcode){
         try{
+            if ( myBarcode.equals("about") ){
+                About ab = new About(this, true);
+                Shared.centerFrame(ab);
+                ab.setVisible(true);
+                return;
+            }
             if ( myBarcode.isEmpty() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");
                 msb.show(this);
@@ -804,7 +810,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             }
 
             if ( quant != 1 ){
-                ChangeQuantItems cqi = new ChangeQuantItems(this, true, quant);
+                ChangeQuantItems cqi = new ChangeQuantItems(this, true, quant, "Cantidad de Producto: ", Constants.changeQuant);
                 Shared.centerFrame(cqi);
                 cqi.setVisible(true);
                 if ( !cqi.passOk ){
@@ -995,9 +1001,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La factura tiene descuento global. No puede ser devuelta!");
                         msb.show(this);
                     }else {
-                        CreditNoteForm cnf = new CreditNoteForm(this, true, r);
-                        Shared.centerFrame(cnf);
-                        cnf.setVisible(true);
+                        ChangeQuantItems cqi = new ChangeQuantItems(this, true, -1, "Crear Nota de Crédito", "cn");
+                        Shared.centerFrame(cqi);
+                        cqi.setVisible(true);
+                        if ( cqi.passOk ){
+                            CreditNoteForm cnf = new CreditNoteForm(this, true, r);
+                            Shared.centerFrame(cnf);
+                            cnf.setVisible(true);
+                        }
                     }
                 } catch (SQLException ex) {
                     MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos",ex);

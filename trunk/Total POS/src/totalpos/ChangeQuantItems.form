@@ -94,7 +94,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Cantidad de Producto:"/>
+        <Property name="text" type="java.lang.String" value="Titulo"/>
         <Property name="name" type="java.lang.String" value="titleLabel" noResource="true"/>
       </Properties>
     </Component>

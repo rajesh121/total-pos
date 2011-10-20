@@ -1450,8 +1450,12 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos.",ex);
+            msg.show(this);
             System.out.println(ex.getMessage() + ex.getStackTrace());
+        } catch (Exception ex) {
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error en el envío del gasto. Debe intentar de nuevo.",ex);
+            msg.show(this);
         }
     }
 
@@ -1459,8 +1463,6 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     public void close() {
         workingFrame.setVisible(false);
     }
-
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addDeposit;

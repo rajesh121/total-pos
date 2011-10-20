@@ -75,7 +75,7 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = true;
+    protected static final boolean isPos = false;
 
     protected static String maximunId = "9999999999999999999999999";
     protected static String minimunId = "";
@@ -132,4 +132,6 @@ public class Constants {
     protected static final String fileName4Report = "report.txt";
     protected static final String[] forbiddenWords = {"delete","upgrade","insert","drop", "create"};
     protected static double exilon = .00001;
+    protected static String changeQuant = "quant";
+    protected static String changeReceipt = "cn";
 }

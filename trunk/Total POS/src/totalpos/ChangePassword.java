@@ -7,8 +7,6 @@
 package totalpos;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -121,15 +119,15 @@ public class ChangePassword extends javax.swing.JDialog {
     }//GEN-LAST:event_newPasswordText2ActionPerformed
 
     private void newPasswordText2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newPasswordText2KeyPressed
-        Shared.getScreenSaver().actioned();
+        
     }//GEN-LAST:event_newPasswordText2KeyPressed
 
     private void newPasswordTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newPasswordTextKeyPressed
-        Shared.getScreenSaver().actioned();
+
     }//GEN-LAST:event_newPasswordTextKeyPressed
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        Shared.getScreenSaver().actioned();
+        
     }//GEN-LAST:event_formMouseMoved
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -17,7 +17,7 @@ import javax.print.SimpleDoc;
  */
 public class Sticker {
 
-    private static int offset = 420;
+    private static int offset = 430;
     private static int pixA[] = {160,170,215,130,180,20,20,235,228,20};
     private static int pixB[] = {0,15,40,45,-1,100,115,140,160,130};
     private static String header[] = {"A","A","A","A","A","A","A","A","A","B"};

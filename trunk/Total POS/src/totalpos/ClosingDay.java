@@ -23,23 +23,23 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import srvSapPackage.ArrayOfZFISCOBRANZA;
-import srvSapPackage.ArrayOfZFISDATAFISCAL;
-import srvSapPackage.ArrayOfZSDSCABDEV;
-import srvSapPackage.ArrayOfZSDSCABFACT;
-import srvSapPackage.ArrayOfZSDSCLIENT;
-import srvSapPackage.ArrayOfZSDSPOSDEV;
-import srvSapPackage.ArrayOfZSDSPOSFACT;
-import srvSapPackage.ArrayOfZSDSVENDFACT;
-import srvSapPackage.IsrvSap;
-import srvSapPackage.ObjectFactory;
-import srvSapPackage.Resultado;
-import srvSapPackage.SrvSap;
-import srvSapPackage.ZFISCOBRANZA;
-import srvSapPackage.ZFISDATAFISCAL;
-import srvSapPackage.ZFISHISTENVIOS;
-import srvSapPackage.ZSDSCLIENT;
-import srvSapPackage.ZSDSVENDFACT;
+import srvSap.ArrayOfZFISCOBRANZA;
+import srvSap.ArrayOfZFISDATAFISCAL;
+import srvSap.ArrayOfZSDSCABDEV;
+import srvSap.ArrayOfZSDSCABFACT;
+import srvSap.ArrayOfZSDSCLIENT;
+import srvSap.ArrayOfZSDSPOSDEV;
+import srvSap.ArrayOfZSDSPOSFACT;
+import srvSap.ArrayOfZSDSVENDFACT;
+import srvSap.IsrvSap;
+import srvSap.ObjectFactory;
+import srvSap.Resultado;
+import srvSap.SrvSap;
+import srvSap.ZFISCOBRANZA;
+import srvSap.ZFISDATAFISCAL;
+import srvSap.ZFISHISTENVIOS;
+import srvSap.ZSDSCLIENT;
+import srvSap.ZSDSVENDFACT;
 
 /**
  *
@@ -1454,7 +1454,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             msg.show(this);
             System.out.println(ex.getMessage() + ex.getStackTrace());
         } catch (Exception ex) {
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error en el envío del gasto. Debe intentar de nuevo.",ex);
+            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error en el envío del cierre del día. Debe intentar de nuevo.",ex);
             msg.show(this);
         }
     }

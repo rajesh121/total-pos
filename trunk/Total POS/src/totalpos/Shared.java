@@ -32,10 +32,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import srvEntidadesPackage.BNKA;
-import srvEntidadesPackage.DD07T;
-import srvEntidadesPackage.IsrvEntidades;
-import srvEntidadesPackage.SrvEntidades;
+import srvEntidades.BNKA;
+import srvEntidades.DD07T;
+import srvEntidades.IsrvEntidades;
+import srvEntidades.SrvEntidades;
 
 /**
  *
@@ -492,7 +492,7 @@ public class Shared {
         String cmd = "copy \"" + myRar.getAbsolutePath() + "\" \"" + Constants.addrForIncome + Constants.fileName4Income + "\"\n"+
                 "cd \"" + Constants.addrForIncome + "\"\n" +
                 "erase *.txt\n" +
-                "\"C:\\Archivos de programa\\WinRAR\\unrar.exe\" -p" + Shared.getConfig("password4rar") + " e " + Constants.fileName4Income + "\n"+
+                "\"C:\\Archivos de programa\\WinRAR\\unrar.exe\" e " + Constants.fileName4Income + "\n"+
                 "erase " + Constants.fileName4Income + "\n";
 
         FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptMovementsName);

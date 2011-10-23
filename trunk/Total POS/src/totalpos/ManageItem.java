@@ -696,9 +696,11 @@ public class ManageItem extends JInternalFrame implements Doer {
     }//GEN-LAST:event_deleteItemActionPerformed
 
     private void loadImage(){
-        Item i = items.get(itemTable.getSelectedRow());
-        Shared.loadPhoto(imageLabel,i.getImageAddr(),Math.max(imagePanel.getWidth()-10,1),getHeight()-360);
-        imageLabel.setVisible(true);
+        if ( itemTable.getSelectedRow() != -1 ){
+            Item i = items.get(itemTable.getSelectedRow());
+            Shared.loadPhoto(imageLabel,i.getImageAddr(),Math.max(imagePanel.getWidth()-10,1),getHeight()-360);
+            imageLabel.setVisible(true);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

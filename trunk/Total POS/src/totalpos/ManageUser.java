@@ -533,7 +533,6 @@ public class ManageUser extends javax.swing.JInternalFrame {
 
         if ( creatingNewUser ){
             updateAll();
-            newUserButton.setText("Nuevo Usuario");
             updateFields();
         }else{
             creatingNewUser = true;
@@ -699,6 +698,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
             creatingNewUser = false;
             userList.setEnabled(true);
             isOk = true;
+            newUserButton.setText("Nuevo Usuario");
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);

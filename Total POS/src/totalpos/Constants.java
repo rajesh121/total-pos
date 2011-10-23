@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
-import srvSapPackage.ObjectFactory;
+import srvSap.ObjectFactory;
 
 /**
  *
@@ -25,7 +25,8 @@ public class Constants {
     //protected static final String dbHost = "localhost";
     protected static final String dbName = "gt99";
     protected static final String dbUser = "root";
-    protected static final String dbPassword = "123456789";
+    protected static final String dbPassword = ".Gt99Administrador.";
+    //protected static final String dbPassword = "123456789";
     protected static final String defaultUser = "Invitado";
     protected static final String configPassword = "Admingt.99Admingt.99";
 
@@ -36,7 +37,11 @@ public class Constants {
 
     protected static final String mirrorDbName = "gt99mirror";
     protected static final String mirrordbUser = "root";
-    protected static final String mirrordbPassword = "123456789";
+    protected static final String mirrordbPassword = ".Gt99Administrador.";
+    protected static final String ftpHost = "184.172.244.110";
+    protected static final String ftpUser = "gt99";
+    protected static final String ftpPass = "X)!<jeS-8.;";
+    protected static final String ftpDir = "/www/gtotal99/datos/gt99";
 
     protected static final String[] tablesToMirrorAtBegin = {"articulo","usuario","codigo_de_barras","costo",
         "precio","tipo_de_usuario","tipo_de_usuario_puede","asigna","configuracion","nodo","punto_de_venta","cliente"};
@@ -115,7 +120,7 @@ public class Constants {
                              .setVerticalAlignment(VerticalAlignment.MIDDLE)
                              .setFontSize(15);
 
-    protected static final String mant = "250";
+    protected static final String mant = "400";
     protected static final String genericBank = "BGENE";
 
     protected static final String addrForIncome = ".\\traslados\\";
@@ -131,7 +136,8 @@ public class Constants {
     protected static final String scriptConfig = "config.bat";
     protected static final String fileName4Report = "report.txt";
     protected static final String[] forbiddenWords = {"delete","upgrade","insert","drop", "create"};
-    protected static double exilon = .00001;
+    protected static double exilon = .0001;
     protected static String changeQuant = "quant";
     protected static String changeReceipt = "cn";
+    protected static String tmpFtpFileName = "file.rar";
 }

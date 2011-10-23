@@ -31,7 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRDataSource;
-import srvSapPackage.ZFISDATAFISCAL;
+import srvSap.ZFISDATAFISCAL;
 
 /**
  *
@@ -3323,26 +3323,28 @@ public class ConnectionDrivers {
             stmt.setString(5, movement.getStoreId());
             stmt.executeUpdate();
             for (ItemQuant itemMovement : movement.getItems()) {
-                stmt = c.prepareStatement("delete from detalles_movimientos where identificador_movimiento = ? and codigo_articulo = ? ");
-                stmt.setString(1, movement.getId());
-                stmt.setString(2, itemMovement.getItemId());
-                stmt.executeUpdate();
-                stmt = c.prepareStatement("insert into detalles_movimientos "
-                    + "( identificador_movimiento , codigo_articulo , cantidad_articulo ) values( ? , ? , ? )");
-                stmt.setString(1, movement.getId());
-                stmt.setString(2, itemMovement.getItemId());
-                stmt.setInt(3, itemMovement.getQuant());
-                stmt.executeUpdate();
-                stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
-                stmt.setString(2, itemMovement.getItemId());
-                stmt.setInt(1, itemMovement.getQuant());
-                int ans = stmt.executeUpdate();
-                if ( ans == 0 ){
-                    insertItem(newItemMapping.get(itemMovement.getItemId()));
+                if ( newItemMapping.get(itemMovement.getItemId()) != null ){
+                    stmt = c.prepareStatement("delete from detalles_movimientos where identificador_movimiento = ? and codigo_articulo = ? ");
+                    stmt.setString(1, movement.getId());
+                    stmt.setString(2, itemMovement.getItemId());
+                    stmt.executeUpdate();
+                    stmt = c.prepareStatement("insert into detalles_movimientos "
+                        + "( identificador_movimiento , codigo_articulo , cantidad_articulo ) values( ? , ? , ? )");
+                    stmt.setString(1, movement.getId());
+                    stmt.setString(2, itemMovement.getItemId());
+                    stmt.setInt(3, itemMovement.getQuant());
+                    stmt.executeUpdate();
                     stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
                     stmt.setString(2, itemMovement.getItemId());
                     stmt.setInt(1, itemMovement.getQuant());
-                    stmt.executeUpdate();
+                    int ans = stmt.executeUpdate();
+                    if ( ans == 0 ){
+                        insertItem(newItemMapping.get(itemMovement.getItemId()));
+                        stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
+                        stmt.setString(2, itemMovement.getItemId());
+                        stmt.setInt(1, itemMovement.getQuant());
+                        stmt.executeUpdate();
+                    }
                 }
             }
             

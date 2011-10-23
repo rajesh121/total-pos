@@ -7,11 +7,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
-import srvSapPackage.ObjectFactory;
-import srvSapPackage.ZSDSCABDEV;
-import srvSapPackage.ZSDSCABFACT;
-import srvSapPackage.ZSDSPOSDEV;
-import srvSapPackage.ZSDSPOSFACT;
+import srvSap.ObjectFactory;
+import srvSap.ZSDSCABDEV;
+import srvSap.ZSDSCABFACT;
+import srvSap.ZSDSPOSDEV;
+import srvSap.ZSDSPOSFACT;
 
 /**
  *

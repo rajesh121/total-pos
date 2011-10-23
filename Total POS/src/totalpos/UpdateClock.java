@@ -28,7 +28,7 @@ public class UpdateClock extends Thread{
     public void run(){
         int checking = 1;
 
-        // This delay might some an unknown problem. =(
+        // This delay might solve an unknown problem. =(
         try {
             Thread.currentThread().sleep(10000);
         } catch (InterruptedException ex) {
@@ -132,12 +132,12 @@ public class UpdateClock extends Thread{
 
                 }
 
-                if ( !Shared.isOffline && checking % (Integer.parseInt(Shared.getConfig("Sincronizacion SAP"))) == 0
+                /*if ( !Shared.isOffline && checking % (Integer.parseInt(Shared.getConfig("Sincronizacion SAP"))) == 0
                         && Shared.getMyMainWindows() instanceof MainWindows ){
                     
                     ClosingDay c = new ClosingDay(Constants.sdfDay2DB.format(ConnectionDrivers.getDate()), false);
                     c.doIt();
-                }
+                }*/
 
                 if ( Calendar.getInstance().getTimeInMillis() - lastOperationTime > Long.valueOf(Shared.getConfig("idleTime"))){
 

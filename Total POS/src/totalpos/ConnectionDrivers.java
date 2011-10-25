@@ -3311,9 +3311,14 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (Movement movement : movements) {
-            PreparedStatement stmt = c.prepareStatement("delete from movimiento_inventario where identificador = ?");
-            stmt.setString(1, movement.getId());
-            stmt.executeUpdate();
+            PreparedStatement stmt = c.prepareStatement("select * from movimiento_inventario where codigo=?");
+            stmt.setString(1, movement.getCode());
+            ResultSet rs = stmt.executeQuery();
+            if ( rs.next() ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Traslado con código " + movement.getCode() + " ya fue cargado, será ignorado.");
+                msb.show(Shared.getMyMainWindows());
+                continue;
+            }
             stmt = c.prepareStatement("insert into movimiento_inventario "
                     + "( identificador , fecha , descripcion, codigo, almacen ) values( ? , ? , ? , ? , ? )");
             stmt.setString(1, movement.getId());
@@ -3324,10 +3329,6 @@ public class ConnectionDrivers {
             stmt.executeUpdate();
             for (ItemQuant itemMovement : movement.getItems()) {
                 if ( newItemMapping.get(itemMovement.getItemId()) != null ){
-                    stmt = c.prepareStatement("delete from detalles_movimientos where identificador_movimiento = ? and codigo_articulo = ? ");
-                    stmt.setString(1, movement.getId());
-                    stmt.setString(2, itemMovement.getItemId());
-                    stmt.executeUpdate();
                     stmt = c.prepareStatement("insert into detalles_movimientos "
                         + "( identificador_movimiento , codigo_articulo , cantidad_articulo ) values( ? , ? , ? )");
                     stmt.setString(1, movement.getId());
@@ -3345,6 +3346,9 @@ public class ConnectionDrivers {
                         stmt.setInt(1, itemMovement.getQuant());
                         stmt.executeUpdate();
                     }
+                }else{
+                    MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Objeto en el traslado que no contiene descripción: " + itemMovement.getItemId() );
+                    msb.show(Shared.getMyMainWindows());
                 }
             }
             

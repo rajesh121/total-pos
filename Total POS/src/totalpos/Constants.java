@@ -80,7 +80,7 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = false;
+    protected static final boolean isPos = true;
 
     protected static String maximunId = "9999999999999999999999999";
     protected static String minimunId = "";

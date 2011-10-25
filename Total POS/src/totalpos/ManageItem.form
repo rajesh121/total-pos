@@ -112,10 +112,10 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="codigoField" alignment="0" pref="473" max="32767" attributes="0"/>
-                      <Component id="modeloField" alignment="0" pref="473" max="32767" attributes="0"/>
-                      <Component id="descriptionField" alignment="0" pref="473" max="32767" attributes="0"/>
-                      <Component id="barCodeField" alignment="0" pref="473" max="32767" attributes="0"/>
+                      <Component id="codigoField" alignment="0" pref="515" max="32767" attributes="0"/>
+                      <Component id="modeloField" alignment="0" pref="515" max="32767" attributes="0"/>
+                      <Component id="descriptionField" alignment="0" pref="515" max="32767" attributes="0"/>
+                      <Component id="barCodeField" alignment="0" pref="515" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -249,7 +249,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="imageLabel" alignment="1" pref="297" max="32767" attributes="0"/>
+              <Component id="imageLabel" alignment="1" pref="339" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -285,11 +285,11 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane2" alignment="1" pref="277" max="32767" attributes="1"/>
+                      <Component id="jScrollPane2" alignment="1" pref="319" max="32767" attributes="1"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="deleteAll" min="-2" pref="103" max="-2" attributes="0"/>
+                          <Component id="deleteAll" min="-2" pref="119" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="deleteItem" pref="75" max="32767" attributes="0"/>
+                          <Component id="deleteItem" pref="101" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="printLabels" min="-2" pref="87" max="-2" attributes="0"/>
                       </Group>
@@ -431,8 +431,14 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jScrollPane1" alignment="0" pref="693" max="32767" attributes="1"/>
-                      <Component id="addSticker" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="jScrollPane1" alignment="0" pref="735" max="32767" attributes="1"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="clearFields" min="-2" pref="170" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="addQuant1" min="-2" pref="162" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="addSticker" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -444,7 +450,11 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" pref="285" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="addSticker" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="addSticker" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="addQuant1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="clearFields" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -549,11 +559,32 @@
         </Container>
         <Component class="javax.swing.JButton" name="addSticker">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Agregar a las etiquetas"/>
+            <Property name="text" type="java.lang.String" value=" F8 / Agregar a las etiquetas"/>
+            <Property name="focusable" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="addSticker" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addStickerActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="addQuant1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="F7 / Agregar 1 etiqueta"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="name" type="java.lang.String" value="addQuant1" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addQuant1ActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="clearFields">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="F12 / Limpiar Campos"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="name" type="java.lang.String" value="clearFields" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearFieldsActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

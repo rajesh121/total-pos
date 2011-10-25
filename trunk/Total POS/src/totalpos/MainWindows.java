@@ -261,8 +261,8 @@ public class MainWindows extends javax.swing.JFrame {
                 }
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
-            } else if ( ed.getFuncion().equals("updateStock") ) {
-                UpdateStock us = new UpdateStock();
+            } else if ( ed.getFuncion().substring(0, "updateStock".length()).equals("updateStock") ) {
+                UpdateStock us = new UpdateStock(ed.getFuncion().substring("updateStock".length()));
                 us.updateStock();
             }else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");

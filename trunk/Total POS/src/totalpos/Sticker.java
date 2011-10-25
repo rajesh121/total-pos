@@ -17,8 +17,8 @@ import javax.print.SimpleDoc;
  */
 public class Sticker {
 
-    private static int offset = 430;
-    private static int pixA[] = {160,170,215,130,180,20,20,235,228,20};
+    private static int offset = 440;
+    private static int pixA[] = {160,170,215,130,180,20,20,235,228,30};
     private static int pixB[] = {0,15,40,45,-1,100,115,140,160,130};
     private static String header[] = {"A","A","A","A","A","A","A","A","A","B"};
     private static boolean inicialized = false;
@@ -62,7 +62,9 @@ public class Sticker {
             String description = a.getDescription();
             String mark = a.getMark();
             String barCode = a.getMainBarcode();
-            String price = a.getLastPrice().plusIva().toString();
+            Double disc = (100.0-a.getDescuento())/100.0;
+            
+            String price = (new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).toString();
             
             String description2 = "";
             if (a.getDescription().length() > 34) {
@@ -117,7 +119,8 @@ public class Sticker {
         String description = a.getDescription();
         String mark = a.getMark();
         String barCode = a.getMainBarcode();
-        String price = a.getLastPrice().plusIva().toString();
+        Double disc = (100.0-a.getDescuento())/100.0;
+        String price = (new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).toString();
 
         String description2 = "";
         
@@ -164,12 +167,14 @@ public class Sticker {
         String description = a.getDescription();
         String mark = a.getMark();
         String barCode = a.getMainBarcode();
-        String price = a.getLastPrice().plusIva().toString();
+        Double disc = (100.0-a.getDescuento())/100.0;
+        String price = (new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).toString();
 
         String descriptionB = b.getDescription();
         String markB = b.getMark();
         String barCodeB = b.getMainBarcode();
-        String priceB = b.getLastPrice().plusIva().toString();
+        Double discB = (100.0-b.getDescuento())/100.0;
+        String priceB = (new Price(null,b.getLastPrice().plusIva().getQuant()*discB)).toString();
 
         String description2 = "";
 

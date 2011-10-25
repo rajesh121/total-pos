@@ -16,6 +16,11 @@ import org.jfree.ui.ExtensionFileFilter;
 public class UpdateStock implements Doer{
 
     public Working workingFrame;
+    private String mode;
+
+    UpdateStock(String mode) {
+        this.mode = mode;
+    }
 
     public void updateStock(){
         workingFrame = new Working((Window) Shared.getMyMainWindows());
@@ -32,7 +37,7 @@ public class UpdateStock implements Doer{
         try {
             Shared.createBackup("articulo precio codigo_de_barras costo movimiento_inventario detalles_movimientos");
 
-            try{
+            if ( mode.equals("FTP") ){
                 FTPClient client = new FTPClient();
                 client.connect(Constants.ftpHost);
                 client.login(Constants.ftpUser, Constants.ftpPass);
@@ -41,10 +46,7 @@ public class UpdateStock implements Doer{
                 client.download("GT99_A09.rar", ff );
                 client.disconnect(false);
                 Shared.prepareMovements( ff );
-            }catch ( Exception ex){
-                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Ha ocurrido un error al conectarse al FTP. "
-                        + "Se puede cargar el archivo localmente" , ex);
-                msg.show(Shared.getMyMainWindows());
+            }else if ( mode.equals("File") ) {
                 JFileChooser jfc = new JFileChooser();
                 FileFilter f = new ExtensionFileFilter("Traslados de Total Pos","rar");
                 jfc.setFileFilter(f);

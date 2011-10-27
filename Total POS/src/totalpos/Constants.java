@@ -80,10 +80,10 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = true;
+    protected static final boolean isPos = false;
 
-    protected static String maximunId = "9999999999999999999999999";
-    protected static String minimunId = "";
+    protected static String maximunId = "999999999";
+    protected static String minimunId = "0";
 
     protected static final int secondsToCheckTurn = 30;
     protected static final int secondsToUpdateCountdown = 10;
@@ -120,7 +120,7 @@ public class Constants {
                              .setVerticalAlignment(VerticalAlignment.MIDDLE)
                              .setFontSize(15);
 
-    protected static final String mant = "400";
+    protected static final String mant = "250";
     protected static final String genericBank = "BGENE";
 
     protected static final String addrForIncome = ".\\traslados\\";

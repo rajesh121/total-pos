@@ -1297,7 +1297,10 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 zfhe.setMANDT(of.createZFISHISTENVIOSMANDT(Constants.mant));
                 zfhe.setIDTIENDA(of.createZFISHISTENVIOSIDTIENDA(Constants.storePrefix + Shared.getConfig("storeName")));
                 zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO(date4sap));
-                zfhe.setTOTALVENTASDIA(new BigDecimal(totalInCard + totalInCash));
+                //////////
+                //zfhe.setTOTALVENTASDIA(new BigDecimal(totalInCard + totalInCash));
+                
+                zfhe.setTOTALVENTASDIA(new BigDecimal((ConnectionDrivers.getTotalDeclared(myDay)*(Shared.getIva()+100.0)/100.0)));
                 zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES(noteField.getText()));
                 zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
                 zfhe.setFONDOCAJA(BigDecimal.ZERO);

@@ -134,66 +134,76 @@ public class FiscalPrinter {
                     }
                 }
             }
-            printer.SendCmd(a, b, "3");
-            if ( b.getValue() != 0 ){
-                // Fiscal Number has been generated.
-                //System.out.println("RECUPERANDO NUMERO FISCAL!!");
+            try{
+                printer.SendCmd(a, b, "3");
+                if ( b.getValue() != 0 ){
+                    // Fiscal Number has been generated.
+                    //System.out.println("RECUPERANDO NUMERO FISCAL!!");
+                    lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
+                    everythingCool = false;
+                }
+
+                if ( everythingCool ){
+                    printer.SendCmd(a, b, "y" + ticketId);// + Shared.formatDoubleToPrintDiscount(globalDiscount));
+                    if ( b.getValue() != 0 ){
+                        lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
+                        everythingCool = false;
+                    }
+
+                    if ( globalDiscount != null && globalDiscount > 0 ){
+                        printer.SendCmd(a, b, "p-" + Shared.formatDoubleToPrintDiscount(globalDiscount));
+                        if ( b.getValue() != 0 ){
+                            lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
+                            everythingCool = false;
+                        }
+                    }
+                    for (PayForm pf : pfs) {
+                        //TODO Put it in the configuracion database.
+                        /**
+                         * Put it in the configuracion file.
+                         */
+                        String cmd = "01";
+                        if ( pf.getFormWay().equals("Efectivo") ){
+                            cmd = "01";
+                        }else if ( pf.getFormWay().equals("Nota de Credito") ){
+                            cmd = "02";
+                        }else if ( pf.getFormWay().equals("Credito") ){
+                            cmd = "09";
+                        }else if ( pf.getFormWay().equals("Debito") ){
+                            cmd = "10";
+                        }
+                        printer.SendCmd(a, b, "2" + cmd + Shared.formatDoubleToSpecifyMoneyInPrinter(pf.getQuant()));
+                        if ( b.getValue() != 0 ){
+                            lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
+                            everythingCool = false;
+                        }
+                    }
+                }
+            }catch(Exception ex){
                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                 everythingCool = false;
-            }
-
-            if ( everythingCool ){
-                printer.SendCmd(a, b, "y" + ticketId);// + Shared.formatDoubleToPrintDiscount(globalDiscount));
-                if ( b.getValue() != 0 ){
-                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
-                }
-
-                if ( globalDiscount != null && globalDiscount > 0 ){
-                    printer.SendCmd(a, b, "p-" + Shared.formatDoubleToPrintDiscount(globalDiscount));
-                    if ( b.getValue() != 0 ){
-                        throw new Exception(Shared.getErrMapping().get(b.getValue()));
-                    }
-                }
-                for (PayForm pf : pfs) {
-                    //TODO Put it in the configuracion database.
-                    /**
-                     * Put it in the configuracion file.
-                     */
-                    String cmd = "01";
-                    if ( pf.getFormWay().equals("Efectivo") ){
-                        cmd = "01";
-                    }else if ( pf.getFormWay().equals("Nota de Credito") ){
-                        cmd = "02";
-                    }else if ( pf.getFormWay().equals("Credito") ){
-                        cmd = "09";
-                    }else if ( pf.getFormWay().equals("Debito") ){
-                        cmd = "10";
-                    }
-                    printer.SendCmd(a, b, "2" + cmd + Shared.formatDoubleToSpecifyMoneyInPrinter(pf.getQuant()));
-                    if ( b.getValue() != 0 ){
-                        throw new Exception(Shared.getErrMapping().get(b.getValue()));
-                    }
-                }
             }
             
         }
         if ( everythingCool ){
             printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
             if ( b.getValue() != 0 ){
-                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
+                everythingCool = false;
             }
+            if ( everythingCool ){
+                File file = new File(Constants.tmpFileName);
 
-            File file = new File(Constants.tmpFileName);
+                Scanner sc = new Scanner(file);
 
-            Scanner sc = new Scanner(file);
+                boolean ansT = sc.hasNext();
+                assert(ansT);
+                String s = sc.next().substring(21, 29);
 
-            boolean ansT = sc.hasNext();
-            assert(ansT);
-            String s = sc.next().substring(21, 29);
-
-            lastReceipt = s;
-            sc.close();
-            file.delete();
+                lastReceipt = s;
+                sc.close();
+                file.delete();
+            }
         }
         printer.CloseFpctrl();
         isOk = true;
@@ -367,40 +377,54 @@ public class FiscalPrinter {
                     }
                 }
             }
-            printer.SendCmd(a, b, "3");
-            if ( b.getValue() != 0 ){
-                // Fiscal Number has been generated.
-                //System.out.println("RECUPERANDO NUMERO FISCAL!!");
+            try{
+                printer.SendCmd(a, b, "3");
+                if ( b.getValue() != 0 ){
+                    // Fiscal Number has been generated.
+                    //System.out.println("RECUPERANDO NUMERO FISCAL!!");
+                    lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
+                    everythingCool = false;
+                }
+
+                if ( everythingCool ){
+                    printer.SendCmd(a, b, "y" + ticketId);// + Shared.formatDoubleToPrintDiscount(globalDiscount));
+                    if ( b.getValue() != 0 ){
+                        lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
+                        everythingCool = false;
+                    }
+                    printer.SendCmd(a, b, "f11000000000000");
+                }
+            }catch(Exception ex){
                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                 everythingCool = false;
             }
-
-            if ( everythingCool ){
-                printer.SendCmd(a, b, "y" + ticketId);// + Shared.formatDoubleToPrintDiscount(globalDiscount));
-                if ( b.getValue() != 0 ){
-                    // Nothing to do... lets continue;
-                }
-                printer.SendCmd(a, b, "f11000000000000");
-            }
         }
 
-        if ( everythingCool ){
-            printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
-            if ( b.getValue() != 0 ){
-                // Nothing to do... lets continue;
+        try{
+            if ( everythingCool ){
+                printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
+                if ( b.getValue() != 0 ){
+                    lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
+                    everythingCool = false;
+                }
+
+                if ( everythingCool ){
+                    File file = new File(Constants.tmpFileName);
+
+                    Scanner sc = new Scanner(file);
+
+                    boolean ansT = sc.hasNext();
+                    assert(ansT);
+                    String s = sc.next().substring(168);
+
+                    lastReceipt = s;
+                    sc.close();
+                    file.delete();
+                }
             }
-
-            File file = new File(Constants.tmpFileName);
-
-            Scanner sc = new Scanner(file);
-
-            boolean ansT = sc.hasNext();
-            assert(ansT);
-            String s = sc.next().substring(168);
-
-            lastReceipt = s;
-            sc.close();
-            file.delete();
+        }catch(Exception ex){
+            lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
+            everythingCool = false;
         }
         printer.CloseFpctrl();
         isOk = true;

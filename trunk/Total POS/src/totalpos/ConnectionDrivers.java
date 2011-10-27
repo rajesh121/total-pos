@@ -3032,7 +3032,7 @@ public class ConnectionDrivers {
             zfdf.setIDTIENDA(Constants.of.createZFISDATAFISCALIDTIENDA(Constants.storePrefix+Shared.getConfig("storeName")));
             zfdf.setIDIMPFISCAL(Constants.of.createZFISDATAFISCALIDIMPFISCAL(rs.getString("impresora")));
             zfdf.setFECHA(Constants.of.createZFISDATAFISCALFECHA(day.replace("-", "")));
-            zfdf.setMONTO(new BigDecimal(rs.getString("total_ventas")));
+            zfdf.setMONTO(new BigDecimal(Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2)));
             zfdf.setNUMREPZ(Constants.of.createZFISDATAFISCALNUMREPZ(rs.getString("numero_reporte_z")));
             zfdf.setULTFACTURA(Constants.of.createZFISDATAFISCALULTFACTURA(rs.getString("codigo_ultima_factura")));
             zfdf.setNUMFACD(Constants.of.createZFISDATAFISCALNUMFACD(rs.getString("num_facturas")));
@@ -3053,7 +3053,7 @@ public class ConnectionDrivers {
                 + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
                 + "descuento_global, iva, impresora, numero_fiscal, "
                 + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno , codigo_interno_alternativo "
-                + "from factura where estado='Facturada' and datediff(fecha_creacion,?) = 0 order by impresora , numero_fiscal ");
+                + "from factura where estado='Facturada' and datediff(fecha_creacion,?) = 0 order by impresora , cast(numero_fiscal as signed)");
 
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
@@ -3097,7 +3097,7 @@ public class ConnectionDrivers {
                 + "nc.iva, nc.impresora, nc.numero_fiscal, "
                 + "nc.numero_reporte_z, nc.codigo_de_usuario, nc.cantidad_de_articulos , nc.identificador_turno , nc.codigo_interno_alternativo "
                 + "from nota_de_credito nc , factura fac where nc.codigo_factura = fac.codigo_interno and nc.estado='Nota' "
-                + "and datediff(nc.fecha_creacion,?) = 0 order by nc.impresora , nc.numero_fiscal ");
+                + "and datediff(nc.fecha_creacion,?) = 0 order by nc.impresora , cast(nc.numero_fiscal as signed)");
 
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();

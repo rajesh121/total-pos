@@ -38,11 +38,11 @@ public class ReceiptSap {
             id = r.getInternId();
         }
 
-        if ( r.getFiscalNumber().compareTo(maxFiscalId) > 0 ){
+        if ( Integer.parseInt( r.getFiscalNumber() ) > Integer.parseInt(maxFiscalId) ){
             maxFiscalId = r.getFiscalNumber();
         }
 
-        if ( r.getFiscalNumber().compareTo(minFiscalId) < 0 ){
+        if ( Integer.parseInt( r.getFiscalNumber() ) < Integer.parseInt(minFiscalId) ){
             minFiscalId = r.getFiscalNumber();
         }
 

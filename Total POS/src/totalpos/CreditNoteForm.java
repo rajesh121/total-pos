@@ -88,7 +88,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
                     totally = false;
                 }
 
-                Object[] s = {"0",item2r.getQuant(),item2r.getAntiQuant(),item.getDescription(), item.getModel(), item.getDescuento()+"", item.getLastPrice().toString(), item.getLastPrice().getIva().toString(), item.getLastPrice().plusIva().toString()};
+                Object[] s = {"0",item2r.getQuant(),item2r.getAntiQuant(),item.getDescription(), item.getModel(), item2r.getSellDiscount()+"", new Price(null,item2r.getSellPrice()).toString(), new Price(null,item2r.getSellPrice()).getIva().toString(), new Price(null,item2r.getSellPrice()).plusIva().toString()};
                 model.addRow(s);
             }
             table.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
@@ -587,7 +587,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
                         return;
                     }
                     if ( antiquant > 0 ) {
-                        items.add(new Item2Receipt(receipt.getItems().get(i).getItem(),antiquant,0));
+                        items.add(new Item2Receipt(receipt.getItems().get(i).getItem(),antiquant, 0 , Double.parseDouble(table.getValueAt(i, 6).toString().replace(',', '.')), Double.parseDouble(table.getValueAt(i, 5).toString().replace(',', '.'))));
                     }
                 }catch ( NumberFormatException ex){
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Cantidad inválida! Item " + (i+1) + "!");

@@ -359,16 +359,16 @@ public class FiscalPrinter {
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }
             }
-
+            
             for (Item2Receipt item2r : items) {
                 Item item = item2r.getItem();
-                printer.SendCmd(a, b, "d1" + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
+                printer.SendCmd(a, b, "d1" + ( Shared.formatDoubleToPrint( item2r.getSellPrice() ) ) +
                         Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 37)));
                 if ( b.getValue() != 0 ){
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }
-                if ( item.getDescuento() != .0 ){
-                    Double finalDiscount = item.getDescuento();
+                if ( item2r.getSellDiscount() != .0 ){
+                    Double finalDiscount = ConnectionDrivers.getDiscount( item.getCode(),ticketId );
                     if ( finalDiscount > .0 ){
                         printer.SendCmd(a, b, "p-"+Shared.formatDoubleToPrintDiscount(finalDiscount/100.0));
                         if ( b.getValue() != 0 ){

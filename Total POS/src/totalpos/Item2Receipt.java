@@ -1,18 +1,24 @@
 package totalpos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Saúl Hidalgo
  */
-public class Item2Receipt {
+public class Item2Receipt implements Serializable{
     private Item item;
     private Integer quant;
     private Integer antiQuant;
+    private Double sellPrice;
+    private Double sellDiscount;
 
-    public Item2Receipt(Item item, Integer quant, Integer antiQuant) {
+    public Item2Receipt(Item item, Integer quant, Integer antiQuant, Double sellPrice, Double sellDiscount) {
         this.item = item;
         this.quant = quant;
         this.antiQuant = antiQuant;
+        this.sellPrice = sellPrice;
+        this.sellDiscount = sellDiscount;
     }
 
     public Integer getAntiQuant() {
@@ -26,6 +32,16 @@ public class Item2Receipt {
     public Integer getQuant() {
         return quant;
     }
+
+    public Double getSellDiscount() {
+        return sellDiscount;
+    }
+
+    public Double getSellPrice() {
+        return sellPrice;
+    }
+
+    
 
     @Override
     public boolean equals(Object obj) {

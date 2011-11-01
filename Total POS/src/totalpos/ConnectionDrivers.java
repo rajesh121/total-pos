@@ -826,11 +826,13 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura_contiene"
-                + " ( codigo_interno_factura, codigo_de_articulo, cantidad) "
-                + "values ( ? , ? , ? )");
+                + " ( codigo_interno_factura, codigo_de_articulo, cantidad, precio_venta, descuento) "
+                + "values ( ? , ? , ? , ? , ?)");
         stmt.setString(1, receiptId);
         stmt.setString(2, item.getCode());
         stmt.setInt(3, quant);
+        stmt.setDouble(4, item.getLastPrice().getQuant());
+        stmt.setDouble(5, item.getDescuento());
         stmt.executeUpdate();
 
         changeItemStock(item.getCode(), -1*quant);
@@ -1199,7 +1201,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
-                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento , fc.cantidad , fc.devuelto "
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento , fc.cantidad , fc.devuelto, fc.precio_venta , fc.descuento "
                 + "from articulo a , nota_de_credito_contiene fc where fc.codigo_interno_nota_de_credito = ? and fc.codigo_de_articulo = a.codigo");
         stmt.setString(1, CNId);
         ResultSet rs = stmt.executeQuery();
@@ -1226,7 +1228,9 @@ public class ConnectionDrivers {
                             rs.getString("descuento")
                         ),
                         rs.getInt("cantidad"),
-                        rs.getInt("devuelto"))
+                        rs.getInt("devuelto"),
+                        rs.getDouble("fc.precio_venta"),
+                        rs.getDouble("fc.descuento"))
                     );
         }
         c.close();
@@ -1240,7 +1244,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
-                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento , fc.cantidad , fc.devuelto "
+                + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento , fc.cantidad , fc.devuelto, fc.precio_venta , fc.descuento "
                 + "from articulo a , factura_contiene fc where fc.codigo_interno_factura = ? and fc.codigo_de_articulo = a.codigo");
         stmt.setString(1, receiptID);
         ResultSet rs = stmt.executeQuery();
@@ -1267,7 +1271,9 @@ public class ConnectionDrivers {
                             rs.getString("descuento")
                         ),
                         rs.getInt("cantidad"),
-                        rs.getInt("devuelto"))
+                        rs.getInt("devuelto"),
+                        rs.getDouble("fc.precio_venta"),
+                        rs.getDouble("fc.descuento"))
                     );
         }
         c.close();
@@ -1799,8 +1805,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         double subT = .0 , ivaT = .0 , total = .0 ;
         for (Item2Receipt item2r : items) {
-            Item item = item2r.getItem();
-            subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant(), 2 )*item2r.getQuant();
+            subT += Shared.round( new Price(null,item2r.getSellPrice()).withDiscount(item2r.getSellDiscount()).getQuant(), 2 )*item2r.getQuant();
         }
         ivaT = new Price(null, subT).getIva().getQuant();
         total = subT + ivaT;
@@ -1825,9 +1830,43 @@ public class ConnectionDrivers {
         c.close();
 
         for (Item2Receipt item2r : items) {
-            addItem2CreditNote(myId, item2r);
+            addItem2CreditNote(myId, item2r, getPrice(item2r.getItem().getCode(),idReceipt) , getDiscount( item2r.getItem().getCode(),idReceipt ) );
             deleteItemFromReceipt(item2r,idReceipt);
         }
+    }
+
+    protected static Double getPrice(String itemId , String receiptId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select precio_venta from factura_contiene where"
+                + " codigo_interno_factura=? and codigo_de_articulo=?");
+        stmt.setString(1, receiptId);
+        stmt.setString(2, itemId);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        Double ans = rs.getDouble(1);
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static Double getDiscount(String itemId , String receiptId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select descuento from factura_contiene where"
+                + " codigo_interno_factura=? and codigo_de_articulo=?");
+        stmt.setString(1, receiptId);
+        stmt.setString(2, itemId);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        assert(ok);
+        Double ans = rs.getDouble(1);
+        c.close();
+        rs.close();
+
+        return ans;
     }
 
     protected static int lastCreditNoteToday() throws SQLException, Exception{
@@ -1891,15 +1930,17 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static void addItem2CreditNote(String receiptId, Item2Receipt item) throws SQLException, Exception{
+    protected static void addItem2CreditNote(String receiptId, Item2Receipt item, Double sellPrice, Double discount) throws SQLException, Exception{
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into nota_de_credito_contiene"
-                + " ( codigo_interno_nota_de_credito, codigo_de_articulo , cantidad, devuelto) "
-                + "values ( ? , ? , ? , 0 )");
+                + " ( codigo_interno_nota_de_credito, codigo_de_articulo , cantidad, devuelto , precio_venta , descuento) "
+                + "values ( ? , ? , ? , 0 , ? , ? )");
         stmt.setString(1, receiptId);
         stmt.setString(2, item.getItem().getCode());
         stmt.setInt(3, item.getQuant());
+        stmt.setDouble(4, sellPrice);
+        stmt.setDouble(5, discount);
         stmt.executeUpdate();
 
         changeItemStock(item.getItem().getCode(), 1*item.getQuant());
@@ -2352,13 +2393,14 @@ public class ConnectionDrivers {
                 PreparedStatement stmt2 =  c.prepareStatement(
                         "insert into pagos_punto_de_venta_banco(fecha," +
                         "punto_de_venta_de_banco,lote,medio,declarado," +
-                        "monto_real) values(curdate(),?,?,?,?,?)");
+                        "monto_real) values(?,?,?,?,?,?)");
 
-                stmt2.setString(1, rs.getString("codigo_punto_de_venta_de_banco") );
-                stmt2.setString(2, rs.getString("lote"));
-                stmt2.setString(3, rs.getString("tipo"));
-                stmt2.setString(4, rs.getString("monto"));
+                stmt2.setString(1, day);
+                stmt2.setString(2, rs.getString("codigo_punto_de_venta_de_banco") );
+                stmt2.setString(3, rs.getString("lote"));
+                stmt2.setString(4, rs.getString("tipo"));
                 stmt2.setString(5, rs.getString("monto"));
+                stmt2.setString(6, rs.getString("monto"));
                 stmt2.executeUpdate();
 
             }
@@ -3026,19 +3068,31 @@ public class ConnectionDrivers {
                 + "from dia_operativo where datediff(fecha,?) = 0");
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
+        System.out.println("MANDT\tIDTIENDA\tIDIMPFISCAL\tFECHA\tMONTO\tNUMREPZ\tULTFACTURA\tNUMFACD\tULTNOTACREDITO\tNUMNCD");
         while( rs.next() ){
             ZFISDATAFISCAL zfdf = new ZFISDATAFISCAL();
             zfdf.setMANDT(Constants.of.createZFISDATAFISCALMANDT(Constants.mant));
+            System.out.print(Constants.mant + "\t");
             zfdf.setIDTIENDA(Constants.of.createZFISDATAFISCALIDTIENDA(Constants.storePrefix+Shared.getConfig("storeName")));
+            System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\t");
             zfdf.setIDIMPFISCAL(Constants.of.createZFISDATAFISCALIDIMPFISCAL(rs.getString("impresora")));
+            System.out.print(rs.getString("impresora") + "\t");
             zfdf.setFECHA(Constants.of.createZFISDATAFISCALFECHA(day.replace("-", "")));
+            System.out.print(day.replace("-", ""));
             zfdf.setMONTO(new BigDecimal(Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2)));
+            System.out.print(Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2) + "\t");
             zfdf.setNUMREPZ(Constants.of.createZFISDATAFISCALNUMREPZ(rs.getString("numero_reporte_z")));
+            System.out.print(rs.getString("numero_reporte_z") + "\t");
             zfdf.setULTFACTURA(Constants.of.createZFISDATAFISCALULTFACTURA(rs.getString("codigo_ultima_factura")));
+            System.out.print(rs.getString("codigo_ultima_factura") + "\t");
             zfdf.setNUMFACD(Constants.of.createZFISDATAFISCALNUMFACD(rs.getString("num_facturas")));
+            System.out.print(rs.getString("num_facturas") + "\t");
             zfdf.setULTNOTACREDITO(Constants.of.createZFISDATAFISCALULTNOTACREDITO(rs.getString("codigo_ultima_nota_credito")));
+            System.out.print(rs.getString("codigo_ultima_nota_credito") + "\t");
             zfdf.setNUMNCD(Constants.of.createZFISDATAFISCALNUMNCD(rs.getString("numero_notas_credito")));
+            System.out.print(rs.getString("numero_notas_credito"));
             ans.add(zfdf);
+            System.out.println("");
         }
         c.close();
 
@@ -3480,12 +3534,13 @@ public class ConnectionDrivers {
         for (int i = 0; i < model.getRowCount(); i++) {
             PreparedStatement stmt = c.prepareStatement(
                 "insert into pagos_punto_de_venta_banco ( fecha, punto_de_venta_de_banco "
-                + ", lote , medio , declarado , monto_real ) values( curdate(),?,?,?,?,?)");
-            stmt.setString(1, (String) model.getValueAt(i, 0));
-            stmt.setString(2, (String) model.getValueAt(i, 1));
-            stmt.setString(3, (String) model.getValueAt(i, 2));
-            stmt.setString(4, (String) model.getValueAt(i, 3));
-            stmt.setDouble(5, (Double) model.getValueAt(i, 4));
+                + ", lote , medio , declarado , monto_real ) values( ?,?,?,?,?,?)");
+            stmt.setString(1, myDay);
+            stmt.setString(2, (String) model.getValueAt(i, 0));
+            stmt.setString(3, (String) model.getValueAt(i, 1));
+            stmt.setString(4, (String) model.getValueAt(i, 2));
+            stmt.setString(5, (String) model.getValueAt(i, 3));
+            stmt.setDouble(6, (Double) model.getValueAt(i, 4));
             stmt.executeUpdate();
         }
 

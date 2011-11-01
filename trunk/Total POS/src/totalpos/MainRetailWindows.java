@@ -990,7 +990,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             Shared.centerFrame(em);
             em.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_F3 ){
-            String id = JOptionPane.showInputDialog(this, "Nota de crédito", "");
+            String id = JOptionPane.showInputDialog(this, "Factura a Devolver", "");
             if ( id != null ){
                 try {
                     Receipt r = ConnectionDrivers.getReceiptToDev(id.substring(0, 12));
@@ -1187,7 +1187,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             get.getLastPrice().getIva().toString(), Constants.df.format(get.getLastPrice().plusIva().getQuant()*quant)};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
-            items.add(new Item2Receipt(get, quant,0));
+            items.add(new Item2Receipt(get, quant,0,get.getLastPrice().getQuant(),get.getDescuento()));
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
             msb.show(this);

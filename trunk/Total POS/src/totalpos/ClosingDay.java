@@ -38,7 +38,9 @@ import srvSap.SrvSap;
 import srvSap.ZFISCOBRANZA;
 import srvSap.ZFISDATAFISCAL;
 import srvSap.ZFISHISTENVIOS;
+import srvSap.ZSDSCABDEV;
 import srvSap.ZSDSCLIENT;
+import srvSap.ZSDSPOSDEV;
 import srvSap.ZSDSVENDFACT;
 
 /**
@@ -60,6 +62,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     protected boolean isOk = false;
     private Double totalpcn;
     private String date4sap = "";
+    private Double receiptTotal;
 
     static class DecimalFormatRenderer extends DefaultTableCellRenderer {
         @Override
@@ -204,7 +207,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private void updateAll() throws SQLException{
         Shared.getScreenSaver().actioned();
         updateBankTable();
-        Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true, null) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false,null);
+        receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true, null) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false,null);
         Double totalDeclared = ConnectionDrivers.getTotalDeclared(myDay);
         updateDeposits();
         updateExpense();
@@ -1295,15 +1298,27 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 ArrayOfZFISCOBRANZA lzfc = new ArrayOfZFISCOBRANZA();
                 ArrayOfZFISDATAFISCAL aozfdf = new ArrayOfZFISDATAFISCAL();
                 zfhe.setMANDT(of.createZFISHISTENVIOSMANDT(Constants.mant));
+                System.out.println("MANDT\tIDTIENDA\tFECHAPROCESADO\tTOTALVENTASDIA\tOBSERVACIONES\tMODIFICAR\tFONDOCAJA\tBLOQUEAR\t");
+                System.out.print(Constants.mant+"\t");
                 zfhe.setIDTIENDA(of.createZFISHISTENVIOSIDTIENDA(Constants.storePrefix + Shared.getConfig("storeName")));
+                System.out.print(Constants.storePrefix + Shared.getConfig("storeName") + "\t");
                 zfhe.setFECHAPROCESADO(of.createZFISHISTENVIOSFECHAPROCESADO(date4sap));
+                System.out.print(date4sap+"\t");
                 //////////
                 //zfhe.setTOTALVENTASDIA(new BigDecimal(totalInCard + totalInCash));
                 
-                zfhe.setTOTALVENTASDIA(new BigDecimal((ConnectionDrivers.getTotalDeclared(myDay)*(Shared.getIva()+100.0)/100.0)));
+                //zfhe.setTOTALVENTASDIA(new BigDecimal(Shared.round(ConnectionDrivers.getTotalDeclared(myDay)*(Shared.getIva()+100.0)/100.0,2)));
+                zfhe.setTOTALVENTASDIA(new BigDecimal( Shared.round((receiptTotal*(Shared.getIva()+100.0)/100.0),2)));
+                System.out.print(Shared.round((receiptTotal*(Shared.getIva()+100.0)/100.0),2) + "\t");
+                //zfhe.setTOTALVENTASDIA(new BigDecimal( "12450.57" ));
                 zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES(noteField.getText()));
-                zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
+                System.out.print(noteField.getText() + "\t");
+                zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("S"));
+                System.out.print("S\t");
                 zfhe.setFONDOCAJA(BigDecimal.ZERO);
+                System.out.print("0\t");
+                zfhe.setBLOQUEAR(of.createZFISHISTENVIOSBLOQUEAR("N"));
+                System.out.print("N\t\n");
                 fillBanks(lzfc.getZFISCOBRANZA());
                 fillExpenses(lzfc.getZFISCOBRANZA());
                 fillDeposits(lzfc.getZFISCOBRANZA());
@@ -1311,12 +1326,22 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 for (ZFISDATAFISCAL zfdf : ConnectionDrivers.getOperativeDays(myDay)) {
                     zFISDATAFISCAL.add(zfdf);
                 }
+                //TODO HERE
                 Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
                 ansMoney = sss.getMensaje().getValue();
                 if ( sss.getCodigoError() == 0 ){
                     ansMoney = "OK";
+                }else{
+                    ansMoney = "ERROR";
                 }
             }
+
+
+            
+
+            return;
+            /*
+            List<String> ansS = new LinkedList<String>();
 
             ArrayOfZSDSCABDEV aozsdscd = new ArrayOfZSDSCABDEV();
             ArrayOfZSDSVENDFACT aozsdsvf = new ArrayOfZSDSVENDFACT();
@@ -1345,8 +1370,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         && receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
                     rs.add(receipt);
                 }else{
-                    aozsdscd.getZSDSCABDEV().add(rs.getHeader(myDay));
-                    aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails(myDay));
+                    //aozsdscd.getZSDSCABDEV().add(rs.getHeader(myDay));
+                    //aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails(myDay));
+                    Resultado sss = isrvs.sapInsertDev(rs.getHeader(myDay), rs.getDetails(myDay));
+                    System.out.println("Resultado = " + sss.getMensaje().getValue());
+                    ansS.add(sss.getMensaje().getValue());
                     rs = new ReceiptSap();
                     rs.add(receipt);
                 }
@@ -1354,8 +1382,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 previousCli = receipt.getClientId();
             }
             if ( rs.getSize() > 0 ){
-                aozsdscd.getZSDSCABDEV().add(rs.getHeader(myDay));
-                aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails(myDay));
+                //aozsdscd.getZSDSCABDEV().add(rs.getHeader(myDay));
+                //aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails(myDay));
+                Resultado sss = isrvs.sapInsertDev(rs.getHeader(myDay), rs.getDetails(myDay));
+                System.out.println("Resultado = " + sss.getMensaje().getValue());
+                ansS.add(sss.getMensaje().getValue());
             }
 
             receipts = ConnectionDrivers.listOkReceipts(myDay);
@@ -1387,8 +1418,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         ( Math.abs(receipt.getGlobalDiscount() - previousDis) < Constants.exilon || previousDis == -1.0 )){
                     rs.add(receipt);
                 }else{
-                    aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
-                    aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF(myDay));
+                    //aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
+                    //aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF(myDay));
+                    Resultado sss = isrvs.sapInsertFact(rs.getHeaderF(myDay), rs.getDetailsF(myDay));
+                    System.out.println("Resultado = " + sss.getMensaje().getValue());
+                    ansS.add(sss.getMensaje().getValue());
                     rs = new ReceiptSap();
                     rs.add(receipt);
                 }
@@ -1397,8 +1431,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 previousDis = receipt.getGlobalDiscount();
             }
             if ( rs.getSize() > 0 ){
-                aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
-                aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF(myDay));
+                //aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
+                //aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF(myDay));
+                Resultado sss = isrvs.sapInsertFact(rs.getHeaderF(myDay), rs.getDetailsF(myDay));
+                System.out.println("Resultado = " + sss.getMensaje().getValue());
+                ansS.add(sss.getMensaje().getValue());
             }
             
             ZSDSVENDFACT zsdsvfi = new ZSDSVENDFACT();
@@ -1438,19 +1475,29 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 System.out.print(clientL.getAddress() + " " + clientL.getPhone() + "\t");
                 aozsdsc.getZSDSCLIENT().add(cli);
             }
-            
-            Resultado sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
-            String ansSells = sss.getMensaje().getValue();
+            isrvs.sapInsertVend(aozsdsvf);
+            isrvs.sapInsertCliente(aozsdsc);
+            //Resultado sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
+            //String ansSells = sss.getMensaje().getValue();
 
             if ( showReport ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansSells + " </html>");
+                String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " ;
+                String finalAa = "OK";
+                for (String a : ansS) {
+                    if ( !a.equals("OK") ){
+                        finalAa = "ERROR";
+                        break;
+                    }
+                }
+                msgT += finalAa + " </html>";
+                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
                 msg.show(this);
 
                 ConnectionDrivers.closeThisDay(myDay);
                 new CreateClosingDayReport(myDay,noteField.getText());
             }else{
                 System.out.println("Sincronización exitosa!!");
-            }
+            }*/
 
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos.",ex);
@@ -1527,22 +1574,36 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private void fillBanks(List<ZFISCOBRANZA> zFISCOBRANZA) {
         for ( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
+            System.out.println("ID\tMANDT\tFECHA\tWERKS\tWAERS\tSIMBO\tMPAGO\tBPAGO\tLOTE\tMONTO\tITEMTEXT");
             zfc.setID(1);
+            System.out.print("1\t");
             zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
+            System.out.print(Constants.mant + "\t");
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
+            System.out.print(date4sap + "\t");
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
+            System.out.print(Constants.storePrefix + Shared.getConfig("storeName") + "\t");
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
+            System.out.print(Constants.waerks + "\t");
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
+            System.out.print((bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()  + "\t");
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 2).equals("Credito")?"B":"D" ) );
+            System.out.print(bankTable.getValueAt(i, 2).equals("Credito")?"B":"D" + "\t");
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
+            System.out.print((bankTable.getValueAt(i, 0).toString().split("-")[0]).trim() + "\t");
             zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 1)));
+            System.out.print((String)bankTable.getValueAt(i, 1) + "\t");
             if ( !bankTable.getValueAt(i, 4).equals("0") ) {
                 zfc.setMONTO(new BigDecimal((Double)bankTable.getValueAt(i, 4)));
+                System.out.print((Double)bankTable.getValueAt(i, 4) + "\t");
             }else{
                 zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 3)));
+                System.out.print((String)bankTable.getValueAt(i, 3) + "\t");
             }
-            zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
+            zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT(""));
+            System.out.print("\t");
             zFISCOBRANZA.add(zfc);
+            System.out.println();
         }
     }
 
@@ -1550,18 +1611,32 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         for ( int i = 0 ; i < expenseTable.getRowCount() ; i++ ){
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
+            System.out.print(1+ "\t");
             zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
+            System.out.print(Constants.mant+"\t");
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
+            System.out.print(date4sap+"\t");
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
+            System.out.print(Constants.storePrefix + Shared.getConfig("storeName")+"\t");
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
+            System.out.print(Constants.waerks+"\t");
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO(Constants.genericBank));
+            System.out.print(Constants.genericBank+"\t");
             String tmp = expenseTable.getValueAt(i, 0).toString().split("-")[0];
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( tmp.substring(0, tmp.length() - 1) ) );
+            System.out.print(tmp.substring(0, tmp.length() - 1)+"\t");
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO(Constants.genericBank));
-            zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
+            System.out.print(Constants.genericBank+"\t");
+            String[] md = myDay.split("-");
+            zfc.setLOTE(of.createZFISCOBRANZALOTE(md[2] + md[1] + md[0] + Shared.getConfig("storeName")));
+            //zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
+            System.out.print(md[2] + md[1] + md[0] + Shared.getConfig("storeName")+"\t");
             zfc.setMONTO(new BigDecimal(((String)expenseTable.getValueAt(i, 1)).replace(',', '.')));
+            System.out.print(((String)expenseTable.getValueAt(i, 1)).replace(',', '.')+"\t");
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT((String)expenseTable.getValueAt(i, 2)));
+            System.out.print((String)expenseTable.getValueAt(i, 2)+"\t");
             zFISCOBRANZA.add(zfc);
+            System.out.println("");
         }
     }
 
@@ -1569,18 +1644,30 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         for ( int i = 0 ; i < depositTable.getRowCount() ; i++ ){
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
+            System.out.print("1\t");
             zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
+            System.out.print(Constants.mant+ "\t");
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
+            System.out.print(date4sap+ "\t");
             zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
+            System.out.print(Constants.storePrefix + Shared.getConfig("storeName")+ "\t");
             zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
+            System.out.print(Constants.waerks+"\t");
             String bancoId = ((String)depositTable.getValueAt(i, 0)).split("-")[0].trim();
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO(bancoId));
+            System.out.print(bancoId+"\t");
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( "E" ) );
+            System.out.print("E"+"\t");
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO(bancoId));
+            System.out.print(bancoId+"\t");
             zfc.setLOTE(of.createZFISCOBRANZALOTE(((String)depositTable.getValueAt(i, 1))));
+            System.out.print(((String)depositTable.getValueAt(i, 1))+"\t");
             zfc.setMONTO(new BigDecimal(((String)depositTable.getValueAt(i, 2)).replace(',','.')));
-            zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT("No hay Observaciones"));
+            System.out.print(((String)depositTable.getValueAt(i, 2)).replace(',','.')+"\t");
+            zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT(""));
+            System.out.print(""+"\t");
             zFISCOBRANZA.add(zfc);
+            System.out.println("");
         }
     }
 }

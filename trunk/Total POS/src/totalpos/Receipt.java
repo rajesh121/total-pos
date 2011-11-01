@@ -1,5 +1,6 @@
 package totalpos;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  *
  * @author Saúl Hidalgo xD
  */
-public class Receipt {
+public class Receipt implements Serializable{
     private String internId;
     private String status;
     private Timestamp creationDate;

@@ -120,7 +120,7 @@ public class Constants {
                              .setVerticalAlignment(VerticalAlignment.MIDDLE)
                              .setFontSize(15);
 
-    protected static final String mant = "250";
+    protected static final String mant = "400";
     protected static final String genericBank = "BGENE";
 
     protected static final String addrForIncome = ".\\traslados\\";
@@ -140,4 +140,8 @@ public class Constants {
     protected static String changeQuant = "quant";
     protected static String changeReceipt = "cn";
     protected static String tmpFtpFileName = "file.rar";
+
+    private static int rmiPort = 9090;
+    private static String serverRmi = "localhost";
+    private static String rmiServiceName = "TotalPosRMI";
 }

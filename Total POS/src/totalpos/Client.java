@@ -1,10 +1,12 @@
 package totalpos;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Saúl Hidalgo
  */
-public class Client {
+public class Client implements Serializable {
     private String id;
     private String name;
     private String address;

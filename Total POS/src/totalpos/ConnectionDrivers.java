@@ -3365,11 +3365,11 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (Movement movement : movements) {
-            PreparedStatement stmt = c.prepareStatement("select * from movimiento_inventario where codigo=?");
+            PreparedStatement stmt = c.prepareStatement("select * from movimiento_inventario where codigo>=?");
             stmt.setString(1, movement.getCode());
             ResultSet rs = stmt.executeQuery();
             if ( rs.next() ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Traslado con código " + movement.getCode() + " ya fue cargado, será ignorado.");
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Traslado con código " + movement.getCode() + " ya fue cargado o traslados posteriores se cargaron anteriormente, será ignorado.");
                 msb.show(Shared.getMyMainWindows());
                 continue;
             }

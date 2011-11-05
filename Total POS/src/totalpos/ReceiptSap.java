@@ -1,6 +1,7 @@
 
 package totalpos;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -19,7 +20,7 @@ import srvSap.ZSDSPOSFACT;
  *
  * @author Saúl Hidalgo
  */
-public class ReceiptSap {
+public class ReceiptSap implements Serializable {
     List<Receipt> receipts = new LinkedList<Receipt>();
     private String id = Constants.maximunId; // is it really INF??
     private String maxFiscalId = Constants.minimunId;
@@ -28,12 +29,46 @@ public class ReceiptSap {
     private String kind = "";
     private String printerId;
     private String client = "";
+    private String myDay = "";
 
     private static ObjectFactory of = Constants.of;
 
-    public ReceiptSap() {
+    public ReceiptSap(String day) {
+        myDay = day.replace("-", "");
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public String getMyDay() {
+        return myDay;
+    }
+
+    public String getPrinterId() {
+        return printerId;
+    }
+
+    public String getZ() {
+        return z;
+    }
+
+    public String getMaxFiscalId() {
+        return maxFiscalId;
+    }
+
+    public String getMinFiscalId() {
+        return minFiscalId;
+    }
+    
     public void add(Receipt r){
         receipts.add(r);
         if ( r.getInternId().compareTo(id) < 0 ){
@@ -121,62 +156,6 @@ public class ReceiptSap {
     public ArrayOfZSDSPOSDEV getDetails(String myDay){
         ArrayOfZSDSPOSDEV ansP = new ArrayOfZSDSPOSDEV();
         List<ZSDSPOSDEV> ans = ansP.getZSDSPOSDEV();
-        
-        /**
-         * I am not proud about this code xDDD
-         * But, it is simply fast!
-         */
-
-        /*TreeMap<String,String> units = new TreeMap<String, String>();
-        TreeMap<String,Integer> quant = new TreeMap<String, Integer>();
-        TreeMap<String,Double> price = new TreeMap<String, Double>();
-        TreeMap<String,Double> disc = new TreeMap<String, Double>();
-        for (Receipt receipt : receipts) {
-            for (Item2Receipt item2Receipt : receipt.getItems()) {
-                if ( item2Receipt.getQuant() > 0 ){
-                    String idd = item2Receipt.getItem().getCode();
-                    if ( !units.containsKey(idd) ){
-                        units.put(idd, item2Receipt.getItem().getSellUnits());
-                        quant.put(idd, item2Receipt.getQuant());
-                        price.put(idd, item2Receipt.getItem().getLastPrice().getQuant());
-                        disc.put(idd, (item2Receipt.getItem().getDescuento()/100.0)*item2Receipt.getItem().getLastPrice().getQuant());
-                    }else{
-                        quant.put(idd, quant.get(idd) + item2Receipt.getQuant());
-                    }
-                }
-            }
-        }
-        System.out.println("MANDT\tFKDAT\tVBELN\tPOSNR\tEAN11\tKWMENG\tVRKME\tCHARG\tKBETP\tKBETD\tPERNR\tWERKS");
-        int position = 1;
-        for (Iterator<String> it = (units.keySet().iterator()); it.hasNext();) {
-            String idd = it.next();
-            ZSDSPOSDEV zdpd = new ZSDSPOSDEV();
-            zdpd.setMANDT(of.createZSDSPOSDEVMANDT(Constants.mant));
-            System.out.print(Constants.mant + "\t");
-            zdpd.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
-            System.out.print(myDay.replace("-", "") + "\t");
-            zdpd.setVBELN(of.createZSDSPOSDEVVBELN("D" + id ));
-            System.out.print("D" + id + "\t");
-            zdpd.setPOSNR(of.createZSDSPOSDEVPOSNR(Constants.df2intSAP.format(position++)));
-            System.out.print(Constants.df2intSAP.format(position-1) + "\t");
-            zdpd.setEAN11(of.createZSDSPOSDEVEAN11(idd));
-            System.out.print(idd + "\t");
-            zdpd.setKWMENG(new BigDecimal(quant.get(idd)));
-            System.out.print(quant.get(idd) + "\t");
-            zdpd.setVRKME(of.createZSDSPOSDEVVRKME(units.get(idd)));
-            System.out.print(units.get(idd) + "\t");
-            zdpd.setCHARG(of.createZSDSPOSDEVCHARG(""));
-            System.out.print("" + "\t");
-            zdpd.setKBETP(new BigDecimal(price.get(idd)));
-            System.out.print(price.get(idd) + "\t");
-            zdpd.setKBETD(new BigDecimal(disc.get(idd)));
-            System.out.print(disc.get(idd) + "\t");
-            zdpd.setPERNR(of.createZSDSPOSDEVPERNR("999999"));
-            System.out.print("999999" + "\t");
-            zdpd.setWERKS(of.createZSDSPOSDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
-            System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\n");
-            ans.add(zdpd);
-        }*/
 
         int position = 1;
         for (Receipt receipt : receipts) {
@@ -224,61 +203,6 @@ public class ReceiptSap {
          * I am not proud about this code xDDD
          * But, it is simply fast!
          */
-
-        /*TreeMap<String,String> units = new TreeMap<String, String>();
-        TreeMap<String,Integer> quant = new TreeMap<String, Integer>();
-        TreeMap<String,Double> price = new TreeMap<String, Double>();
-        TreeMap<String,Double> disc = new TreeMap<String, Double>();
-        Double gDisc = .0;
-        for (Receipt receipt : receipts) {
-            for (Item2Receipt item2Receipt : receipt.getItems()) {
-                if ( item2Receipt.getQuant() > 0 ){
-                    String idd = item2Receipt.getItem().getCode();
-                    if ( !units.containsKey(idd) ){
-                        units.put(idd, item2Receipt.getItem().getSellUnits());
-                        quant.put(idd, item2Receipt.getQuant() );
-                        price.put(idd, item2Receipt.getItem().getLastPrice().getQuant());
-                        disc.put(idd, (item2Receipt.getItem().getDescuento()/100.0)*item2Receipt.getItem().getLastPrice().getQuant());
-
-                    }else{
-                        quant.put(idd, quant.get(idd) + item2Receipt.getQuant());
-                    }
-                }
-            }
-            gDisc = receipt.getGlobalDiscount();
-        }
-
-        System.out.println("MANDT\tFKDAT\tVBELN\tPOSNR\tEAN11\tKWMENG\tVRKME\tCHARG\tKBETP\tKBETD\tPERNR\tWERKS");
-        int position = 1;
-        for (Iterator<String> it = (units.keySet().iterator()); it.hasNext();) {
-            String idd = it.next();
-            ZSDSPOSFACT zdpd = new ZSDSPOSFACT();
-            zdpd.setMANDT(of.createZSDSPOSDEVMANDT(Constants.mant));
-            System.out.print(Constants.mant + "\t");
-            zdpd.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
-            System.out.print(myDay.replace("-", "") + "\t");
-            zdpd.setVBELN(of.createZSDSPOSDEVVBELN("F" + id ));
-            System.out.print("F" + id + "\t");
-            zdpd.setPOSNR(of.createZSDSPOSDEVPOSNR(Constants.df2intSAP.format(position++)));
-            System.out.print(Constants.df2intSAP.format(position-1) + "\t");
-            zdpd.setEAN11(of.createZSDSPOSDEVEAN11(idd));
-            System.out.print(idd + "\t");
-            zdpd.setKWMENG(new BigDecimal(quant.get(idd)));
-            System.out.print(quant.get(idd) + "\t");
-            zdpd.setVRKME(of.createZSDSPOSDEVVRKME(units.get(idd)));
-            System.out.print(units.get(idd) + "\t");
-            zdpd.setCHARG(of.createZSDSPOSDEVCHARG(""));
-            System.out.print("" + "\t");
-            zdpd.setKBETP(new BigDecimal(price.get(idd)));
-            System.out.print(price.get(idd) + "\t");
-            zdpd.setKBETD(new BigDecimal(disc.get(idd)+gDisc*(price.get(idd)-disc.get(idd))));
-            System.out.print((disc.get(idd)+gDisc*(price.get(idd)-disc.get(idd))) + "\t");
-            zdpd.setPERNR(of.createZSDSPOSDEVPERNR("999999"));
-            System.out.print("999999" + "\t");
-            zdpd.setWERKS(of.createZSDSCABDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
-            System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\n");
-            ans.add(zdpd);
-        }*/
 
         int position = 1;
         for (Receipt receipt : receipts) {

@@ -1,12 +1,13 @@
 package totalpos;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author Saúl Hidalgo
  */
-public class Price {
+public class Price implements Serializable {
     private Date date;
     private Double quant;
 

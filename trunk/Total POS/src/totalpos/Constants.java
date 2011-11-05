@@ -5,6 +5,7 @@ import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import java.awt.Color;
 import java.awt.Font;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -122,6 +123,8 @@ public class Constants {
 
     protected static final String mant = "400";
     protected static final String genericBank = "BGENE";
+    protected static final String pernr = "999999";
+    protected static final String vbeln = "999999";
 
     protected static final String addrForIncome = ".\\traslados\\";
     protected static final String photoPrefix = ".\\fotos\\";
@@ -141,7 +144,22 @@ public class Constants {
     protected static String changeReceipt = "cn";
     protected static String tmpFtpFileName = "file.rar";
 
-    private static int rmiPort = 9090;
-    private static String serverRmi = "localhost";
-    private static String rmiServiceName = "TotalPosRMI";
+    protected static int rmiPort = 9090;
+    //protected static String serverRmi = "186.24.10.122";
+    protected static String serverRmi = "190.78.226.145";
+    //protected static String serverRmi = "192.168.0.16";
+    protected static String rmiServiceName = "TotalPosRMI";
+
+    protected static String serverSQLServerAdd = "192.168.0.237";
+    //protected static String serverSQLServerAdd = "192.168.0.236";
+    protected static String portSqlServer = "1433";
+    protected static String dbRMIName = "P01";
+    //protected static String dbRMIName = "D01";
+    protected static String dbRMIUser = "p02";
+    //protected static String dbRMIUser = "d02";
+    protected static String dbHeader = "p01";
+    //protected static String dbHeader = "d01";
+    protected static String dbRMIPass = "adminsqlp03";
+    //protected static String dbRMIPass = "adminsqld03";
+    protected static Connection connection;
 }

@@ -10,10 +10,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Window;
 import java.math.BigDecimal;
+import java.rmi.Naming;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
@@ -1310,7 +1313,6 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 //zfhe.setTOTALVENTASDIA(new BigDecimal(Shared.round(ConnectionDrivers.getTotalDeclared(myDay)*(Shared.getIva()+100.0)/100.0,2)));
                 zfhe.setTOTALVENTASDIA(new BigDecimal( Shared.round((receiptTotal*(Shared.getIva()+100.0)/100.0),2)));
                 System.out.print(Shared.round((receiptTotal*(Shared.getIva()+100.0)/100.0),2) + "\t");
-                //zfhe.setTOTALVENTASDIA(new BigDecimal( "12450.57" ));
                 zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES(noteField.getText()));
                 System.out.print(noteField.getText() + "\t");
                 zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("S"));
@@ -1327,38 +1329,31 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     zFISDATAFISCAL.add(zfdf);
                 }
                 //TODO HERE
-                Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
+                /*Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
                 ansMoney = sss.getMensaje().getValue();
                 if ( sss.getCodigoError() == 0 ){
                     ansMoney = "OK";
                 }else{
                     ansMoney = "ERROR";
-                }
+                }*/
             }
 
+            Services service = (Services) Naming.lookup("rmi://" + Constants.serverRmi + ":" + 9090 + "/" + Constants.rmiServiceName);
+            service.initialize(myDay, Shared.getConfig("storeName"));
+            System.out.println("Inicializado!");
+            service.deleteDataFrom();
+            System.out.println("Eliminado!");
 
-            
-
-            return;
-            /*
-            List<String> ansS = new LinkedList<String>();
-
-            ArrayOfZSDSCABDEV aozsdscd = new ArrayOfZSDSCABDEV();
-            ArrayOfZSDSVENDFACT aozsdsvf = new ArrayOfZSDSVENDFACT();
-            ArrayOfZSDSCABFACT aozsdscf = new ArrayOfZSDSCABFACT();
-            ArrayOfZSDSPOSDEV aozsdspd = new ArrayOfZSDSPOSDEV();
-            ArrayOfZSDSPOSFACT aozsdspf = new ArrayOfZSDSPOSFACT();
-            ArrayOfZSDSCLIENT aozsdsc = new ArrayOfZSDSCLIENT();
-
-
+            List< ReceiptSap > CreditNoteGroup = new LinkedList<ReceiptSap>();
             // CN
             List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
+            
             if ( receipts.isEmpty() ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una nota de crédito.");
                 msg.show(this);
                 return;
             }
-            ReceiptSap rs = new ReceiptSap();
+            ReceiptSap rs = new ReceiptSap(myDay);
             int previousId = -1;
             String previousCli = "Contado";
             for (Receipt receipt : receipts) {
@@ -1370,25 +1365,18 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         && receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
                     rs.add(receipt);
                 }else{
-                    //aozsdscd.getZSDSCABDEV().add(rs.getHeader(myDay));
-                    //aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails(myDay));
-                    Resultado sss = isrvs.sapInsertDev(rs.getHeader(myDay), rs.getDetails(myDay));
-                    System.out.println("Resultado = " + sss.getMensaje().getValue());
-                    ansS.add(sss.getMensaje().getValue());
-                    rs = new ReceiptSap();
+                    CreditNoteGroup.add(rs);
+                    rs = new ReceiptSap(myDay);
                     rs.add(receipt);
                 }
                 previousId = Integer.parseInt(receipt.getFiscalNumber());
                 previousCli = receipt.getClientId();
             }
             if ( rs.getSize() > 0 ){
-                //aozsdscd.getZSDSCABDEV().add(rs.getHeader(myDay));
-                //aozsdspd.getZSDSPOSDEV().addAll(rs.getDetails(myDay));
-                Resultado sss = isrvs.sapInsertDev(rs.getHeader(myDay), rs.getDetails(myDay));
-                System.out.println("Resultado = " + sss.getMensaje().getValue());
-                ansS.add(sss.getMensaje().getValue());
+                CreditNoteGroup.add(rs);
             }
 
+            List< ReceiptSap > receiptGroup = new LinkedList<ReceiptSap>();
             receipts = ConnectionDrivers.listOkReceipts(myDay);
 
             if ( receipts.isEmpty() ){
@@ -1396,7 +1384,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 msg.show(this);
                 return;
             }
-            rs = new ReceiptSap();
+            rs = new ReceiptSap(myDay);
             previousId = -1;
             previousCli = "Contado";
             Double previousDis = -1.0;
@@ -1418,12 +1406,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         ( Math.abs(receipt.getGlobalDiscount() - previousDis) < Constants.exilon || previousDis == -1.0 )){
                     rs.add(receipt);
                 }else{
-                    //aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
-                    //aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF(myDay));
-                    Resultado sss = isrvs.sapInsertFact(rs.getHeaderF(myDay), rs.getDetailsF(myDay));
-                    System.out.println("Resultado = " + sss.getMensaje().getValue());
-                    ansS.add(sss.getMensaje().getValue());
-                    rs = new ReceiptSap();
+                    receiptGroup.add(rs);
+                    rs = new ReceiptSap(myDay);
                     rs.add(receipt);
                 }
                 previousId = Integer.parseInt(receipt.getFiscalNumber());
@@ -1431,73 +1415,21 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 previousDis = receipt.getGlobalDiscount();
             }
             if ( rs.getSize() > 0 ){
-                //aozsdscf.getZSDSCABFACT().add(rs.getHeaderF(myDay));
-                //aozsdspf.getZSDSPOSFACT().addAll(rs.getDetailsF(myDay));
-                Resultado sss = isrvs.sapInsertFact(rs.getHeaderF(myDay), rs.getDetailsF(myDay));
-                System.out.println("Resultado = " + sss.getMensaje().getValue());
-                ansS.add(sss.getMensaje().getValue());
+                receiptGroup.add(rs);
             }
-            
-            ZSDSVENDFACT zsdsvfi = new ZSDSVENDFACT();
-            System.out.println("FKDAT\tMANDT\tPARTNNUMB\tPARTNROLE\tPOSNR\tVBELN\tWERKS");
-            zsdsvfi.setFKDAT(of.createZSDSVENDFACTFKDAT(date4sap));
-            System.out.print(date4sap + "\t");
-            zsdsvfi.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
-            System.out.print(Constants.mant + "\t");
-            zsdsvfi.setPARTNNUMB(of.createZSDSVENDFACTPARTNNUMB("999999"));
-            System.out.print("999999" + "\t");
-            zsdsvfi.setPARTNROLE(of.createZSDSVENDFACTPARTNROLE("999999"));
-            System.out.print("999999" + "\t");
-            zsdsvfi.setPOSNR(of.createZSDSVENDFACTPOSNR("000001"));
-            System.out.print("000001" + "\t");
-            zsdsvfi.setVBELN(of.createZSDSVENDFACTVBELN("999999"));
-            System.out.print("999999" + "\t");
-            zsdsvfi.setWERKS(of.createZSDSVENDFACTWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
-            System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\t");
 
-            aozsdsvf.getZSDSVENDFACT().add(zsdsvfi);
-
-            System.out.println("MANDT\tFKDAT\tNAME1\tKUNNR\tWAERS\tADRNR");
+            List<Client> clientC = new LinkedList<Client>();
             for (String c : clients) {
-                Client clientL = ConnectionDrivers.listClients(c).get(0);
-                ZSDSCLIENT cli = new ZSDSCLIENT();
-                cli.setMANDT(of.createZSDSVENDFACTMANDT(Constants.mant));
-                System.out.print(Constants.mant + "\t");
-                cli.setFKDAT(of.createZSDSVENDFACTFKDAT(date4sap));
-                System.out.print(date4sap + "\t");
-                cli.setNAME1(of.createZSDSCLIENTNAME1(clientL.getName()));
-                System.out.print(clientL.getName() + "\t");
-                cli.setKUNNR(of.createZSDSCLIENTKUNNR(clientL.getId()));
-                System.out.print(clientL.getId() + "\t");
-                cli.setWAERS(of.createZSDSCLIENTWAERS(Constants.waerks));
-                System.out.print(Constants.waerks + "\t");
-                cli.setADRNR(of.createZSDSCLIENTADRNR(clientL.getAddress() + " " + clientL.getPhone()));
-                System.out.print(clientL.getAddress() + " " + clientL.getPhone() + "\t");
-                aozsdsc.getZSDSCLIENT().add(cli);
+                clientC.add( ConnectionDrivers.listClients(c).get(0));
             }
-            isrvs.sapInsertVend(aozsdsvf);
-            isrvs.sapInsertCliente(aozsdsc);
-            //Resultado sss = isrvs.sapInsertVentas(aozsdscd, aozsdscf, aozsdspd, aozsdspf, aozsdsc, aozsdsvf);
-            //String ansSells = sss.getMensaje().getValue();
 
-            if ( showReport ){
-                String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " ;
-                String finalAa = "OK";
-                for (String a : ansS) {
-                    if ( !a.equals("OK") ){
-                        finalAa = "ERROR";
-                        break;
-                    }
-                }
-                msgT += finalAa + " </html>";
-                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
-                msg.show(this);
+            service.sendCreditNotesReceipt(CreditNoteGroup, receiptGroup, clientC);
 
-                ConnectionDrivers.closeThisDay(myDay);
-                new CreateClosingDayReport(myDay,noteField.getText());
-            }else{
-                System.out.println("Sincronización exitosa!!");
-            }*/
+            service.createDummySeller();
+
+            String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: OK </html>" ;
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
+            msg.show(this);
 
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos.",ex);
@@ -1506,6 +1438,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         } catch (Exception ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error en el envío del cierre del día. Debe intentar de nuevo.",ex);
             msg.show(this);
+            System.out.println(ex.getMessage() + ex.getStackTrace());
         }
     }
 

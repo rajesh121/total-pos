@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -422,7 +423,11 @@ public class Shared {
             if ( !t.containsKey(toks[0]) ){
                 t.put(toks[0], new LinkedList<ItemQuant>());
             }
-            t.get(toks[0]).add(new ItemQuant(myTrim(toks[3]), (int) Double.parseDouble(toks[4])));
+            int mul = 1;
+            if ( toks[2].equals("\"TSAL\"") ){
+                mul = -1;
+            }
+            t.get(toks[0]).add(new ItemQuant(myTrim(toks[3]), ((int) Double.parseDouble(toks[4])) * mul ));
         }
 
         while( (line = brM.readLine()) != null ){
@@ -569,6 +574,14 @@ public class Shared {
     protected static void checkVisibility(JTable table) {
         Rectangle rect = table.getCellRect(table.getSelectedRow(), 0, true);
         table.scrollRectToVisible(rect);
+    }
+
+    public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+
+    public static String now() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
+        return sdf.format(cal.getTime());
     }
 
 }

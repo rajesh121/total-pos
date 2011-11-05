@@ -1,5 +1,6 @@
 package totalpos;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
  *
  * @author Saul Hidalgo.
  */
-public class Item {
+public class Item implements Serializable{
     private String code;
     private String description;
     private Date registerDate;

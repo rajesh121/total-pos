@@ -9,6 +9,7 @@ package totalpos;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Window;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.rmi.Naming;
 import java.sql.SQLException;
@@ -26,6 +27,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import net.n3.nanoxml.IXMLElement;
+import net.n3.nanoxml.XMLElement;
+import net.n3.nanoxml.XMLWriter;
+import org.apache.xerces.util.XML11Char;
 import srvSap.ArrayOfZFISCOBRANZA;
 import srvSap.ArrayOfZFISDATAFISCAL;
 import srvSap.ArrayOfZSDSCABDEV;
@@ -45,6 +50,8 @@ import srvSap.ZSDSCABDEV;
 import srvSap.ZSDSCLIENT;
 import srvSap.ZSDSPOSDEV;
 import srvSap.ZSDSVENDFACT;
+import ws.WS;
+import ws.WSService;
 
 /**
  *
@@ -119,7 +126,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             conceptColumn.setCellRenderer(renderer);
             conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
             bankTable.getColumnModel().getColumn(4).setCellRenderer(new DecimalFormatRenderer() );
-            
+
+            jcb = new JComboBox();
+            for (BankPOS bankPOS : ConnectionDrivers.listBPos()) {
+                jcb.addItem(bankPOS.getId() + " - " + bankPOS.getDescripcion());
+            }
+            conceptColumn = bankTable.getColumnModel().getColumn(0);
+            conceptColumn.setCellRenderer(renderer);
+            conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
             updateAll();
             if ( sr &&  ConnectionDrivers.wasClosed(day) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Este día ha sido cerrado anteriormente!");
@@ -1315,7 +1329,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 System.out.print(Shared.round((receiptTotal*(Shared.getIva()+100.0)/100.0),2) + "\t");
                 zfhe.setOBSERVACIONES(of.createZFISHISTENVIOSOBSERVACIONES(noteField.getText()));
                 System.out.print(noteField.getText() + "\t");
-                zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("S"));
+                zfhe.setMODIFICAR(of.createZFISHISTENVIOSMODIFICAR("N"));
                 System.out.print("S\t");
                 zfhe.setFONDOCAJA(BigDecimal.ZERO);
                 System.out.print("0\t");
@@ -1329,30 +1343,26 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     zFISDATAFISCAL.add(zfdf);
                 }
                 //TODO HERE
-                /*Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
+                Resultado sss = isrvs.sapInsertCobranza(lzfc, aozfdf, zfhe);
+                System.out.println(sss.getMensaje().getValue());
                 ansMoney = sss.getMensaje().getValue();
                 if ( sss.getCodigoError() == 0 ){
                     ansMoney = "OK";
                 }else{
-                    ansMoney = "ERROR";
-                }*/
+                    ansMoney = "ERROR " + ansMoney;
+                }
+                System.out.println("ansMoney = " + ansMoney);
             }
-
-            Services service = (Services) Naming.lookup("rmi://" + Constants.serverRmi + ":" + 9090 + "/" + Constants.rmiServiceName);
-            service.initialize(myDay, Shared.getConfig("storeName"));
-            System.out.println("Inicializado!");
-            service.deleteDataFrom();
-            System.out.println("Eliminado!");
 
             List< ReceiptSap > CreditNoteGroup = new LinkedList<ReceiptSap>();
             // CN
             List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
             
-            if ( receipts.isEmpty() ){
+            /*if ( receipts.isEmpty() ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una nota de crédito.");
                 msg.show(this);
                 return;
-            }
+            }*/
             ReceiptSap rs = new ReceiptSap(myDay);
             int previousId = -1;
             String previousCli = "Contado";
@@ -1376,6 +1386,34 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 CreditNoteGroup.add(rs);
             }
 
+            IXMLElement xmlCN = new XMLElement("Notas");
+
+            for (ReceiptSap receiptSap : CreditNoteGroup) {
+                IXMLElement child = xmlCN.createElement("CN");
+                xmlCN.addChild(child);
+                child.setAttribute("getId", receiptSap.getId());
+                child.setAttribute("getKind", receiptSap.getKind());
+                child.setAttribute("getClient", receiptSap.getClient());
+                child.setAttribute("range", receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+                child.setAttribute("getZ", receiptSap.getZ());
+                child.setAttribute("getPrinterId", receiptSap.getPrinterId());
+                int position = 1;
+                for (Receipt receipt : receiptSap.receipts) {
+                    for (Item2Receipt item2Receipt : receipt.getItems()) {
+                        IXMLElement childchild = child.createElement("CND");
+                        child.addChild(childchild);
+                        childchild.setAttribute("id", "D" + receiptSap.getId());
+                        childchild.setAttribute("position", Constants.df2intSAP.format(position++));
+                        childchild.setAttribute("barcode", item2Receipt.getItem().getBarcodes().get(0));
+                        childchild.setAttribute("quant", item2Receipt.getQuant().toString());
+                        childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
+                        childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
+                        childchild.setAttribute("discount", (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice()+"");
+                    }
+
+                }
+                System.out.println("child = " + receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+            }
             List< ReceiptSap > receiptGroup = new LinkedList<ReceiptSap>();
             receipts = ConnectionDrivers.listOkReceipts(myDay);
 
@@ -1418,19 +1456,75 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 receiptGroup.add(rs);
             }
 
-            List<Client> clientC = new LinkedList<Client>();
-            for (String c : clients) {
-                clientC.add( ConnectionDrivers.listClients(c).get(0));
+            IXMLElement xmlRe = new XMLElement("Facturas");
+
+            for (ReceiptSap receiptSap : receiptGroup) {
+                IXMLElement child = xmlRe.createElement("Re");
+                xmlRe.addChild(child);
+                child.setAttribute("getId", receiptSap.getId());
+                child.setAttribute("getKind", receiptSap.getKind());
+                child.setAttribute("getClient", receiptSap.getClient());
+                child.setAttribute("range", receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+                child.setAttribute("getZ", receiptSap.getZ());
+                child.setAttribute("getPrinterId", receiptSap.getPrinterId());
+
+                int position = 1;
+                for (Receipt receipt : receiptSap.receipts) {
+                    Double gDisc = receipt.getGlobalDiscount();
+                    for (Item2Receipt item2Receipt : receipt.getItems()) {
+                        IXMLElement childchild = child.createElement("CND");
+                        child.addChild(childchild);
+                        childchild.setAttribute("id", "F" + receiptSap.getId());
+                        childchild.setAttribute("position", Constants.df2intSAP.format(position++));
+                        childchild.setAttribute("barcode", item2Receipt.getItem().getBarcodes().get(0));
+                        childchild.setAttribute("quant", item2Receipt.getQuant().toString());
+                        childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
+                        childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
+                        Double tmpD = (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice();
+                        childchild.setAttribute("discount", tmpD + gDisc*(item2Receipt.getSellDiscount()-tmpD) +"");
+                    }
+
+                }
+                System.out.println("child = " +receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
             }
 
-            service.sendCreditNotesReceipt(CreditNoteGroup, receiptGroup, clientC);
+            XMLElement clienXML = new XMLElement("Clientes");
+            
 
-            service.createDummySeller();
+            List<Object> clientC = new LinkedList<Object>();
+            for (String c : clients) {
+                Client cc = ConnectionDrivers.listClients(c).get(0);
+                IXMLElement client = clienXML.createElement("C");
+                client.setAttribute("ID", cc.getId());
+                client.setAttribute("Name", cc.getName());
+                client.setAttribute("Addr", cc.getAddress() + " Tlf: " + cc.getPhone());
+                clienXML.addChild(client);
+            }
+
+            System.out.println("Comienzo de envio");
+            WS ws = new WSService().getWSPort();
+            System.out.println("Inicializar = " + ws.initialize(myDay, Shared.getConfig("storeName")));
+            System.out.println("Eliminar = " +ws.deleteDataFrom());;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            XMLWriter xmlw = new XMLWriter(baos);
+            xmlw.write(xmlCN);
+            System.out.println("Nota de Credito = " + ws.sendCreditNotes(baos.toString()));
+            ByteArrayOutputStream baosF = new ByteArrayOutputStream();
+            XMLWriter xmlwF = new XMLWriter(baosF);
+            xmlwF.write(xmlRe);
+            System.out.println("Facturas = " + ws.sendReceipts(baosF.toString()));
+            ByteArrayOutputStream baosC = new ByteArrayOutputStream();
+            XMLWriter xmlwC = new XMLWriter(baosC);
+            xmlwC.write(clienXML);
+            System.out.println("Clientes = " +ws.sendClients(baosC.toString()));
+            System.out.println("Vend = " + ws.createDummySeller());
 
             String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: OK </html>" ;
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
             msg.show(this);
 
+            ConnectionDrivers.closeThisDay(myDay);
+            new CreateClosingDayReport(myDay,noteField.getText(), Shared.round((receiptTotal*(Shared.getIva()+100.0)/100.0),2));
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos.",ex);
             msg.show(this);
@@ -1526,13 +1620,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             System.out.print((bankTable.getValueAt(i, 0).toString().split("-")[0]).trim() + "\t");
             zfc.setLOTE(of.createZFISCOBRANZALOTE((String)bankTable.getValueAt(i, 1)));
             System.out.print((String)bankTable.getValueAt(i, 1) + "\t");
-            if ( !bankTable.getValueAt(i, 4).equals("0") ) {
+            //if ( !bankTable.getValueAt(i, 4).equals("0") ) {
                 zfc.setMONTO(new BigDecimal((Double)bankTable.getValueAt(i, 4)));
                 System.out.print((Double)bankTable.getValueAt(i, 4) + "\t");
-            }else{
+            /*}else{
                 zfc.setMONTO(new BigDecimal((String)bankTable.getValueAt(i, 3)));
                 System.out.print((String)bankTable.getValueAt(i, 3) + "\t");
-            }
+            }*/
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT(""));
             System.out.print("\t");
             zFISCOBRANZA.add(zfc);

@@ -476,8 +476,11 @@ public class Shared {
 
     public static void updateMovements() throws FileNotFoundException, SQLException, ParseException, IOException{
         hadMovements = false;
+        System.out.println("Parse Items");
         List<Item> items = parseItems(Constants.addrForIncome + "art.txt");
+        System.out.println("Listo\nActualizar Items");
         ConnectionDrivers.updateItems(items);
+        System.out.println("Actualizar Movimientos");
         List<Movement> movements = parseMovements(Constants.addrForIncome + "ajuste.txt", Constants.addrForIncome + "reng_aju.txt");
         ConnectionDrivers.updateMovements(movements, newItemMapping);
         parseDiscounts(Constants.addrForIncome + "descuen.txt");

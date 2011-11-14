@@ -26,10 +26,12 @@ public class CreateClosingDayReport {
 
     private String myDay = "";
     private String note = "";
+    private Double total;
 
-    public CreateClosingDayReport(String myDay, String obs) {
+    public CreateClosingDayReport(String myDay, String obs, Double ltotal) {
         this.myDay = myDay;
         this.note = obs;
+        this.total = ltotal;
         build();
     }
 
@@ -68,19 +70,20 @@ public class CreateClosingDayReport {
               .setTemplate(Templates.reportTemplate);
 
             if(masterRowNumber == 1){
-                try {
+                //try {
                     String[] toks = myDay.split("-");
                     report.title(cmp.text("Correspondiente al " + toks[2] + "-"+ toks[1] + "-" + toks[0] + "\n\n" +
                             "Total ventas del día (B): "
-                            + Constants.df.format(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0)
+                            //+ Constants.df.format(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0)
+                            + total
                             + " Bs" + "\n\nFondos de Caja (A)").setStyle(Templates.bold12CenteredStyle));
                     TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());
                     report.addColumn(col.column("Caja", "0", type.stringType()));
                     report.addColumn(col.column("Fecha", "1", type.stringType()));
                     report.addColumn(tcb);
-                } catch (SQLException ex) {
+                /*} catch (SQLException ex) {
                     Logger.getLogger(CreateClosingDayReport.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                }*/
             }else if ( masterRowNumber == 2 ){
                 report.title(cmp.text("Gastos (C)").setStyle(Templates.bold12CenteredStyle));
                 TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());
@@ -100,14 +103,15 @@ public class CreateClosingDayReport {
                 try {
                     Double receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true , null) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false, null);
                     Double income = ConnectionDrivers.getTotalIncomming(myDay);
+                    System.out.println(income);
                     Double amc = ConnectionDrivers.getTotalAMinusC(myDay);
                     /*System.out.println(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0);
                     System.out.println(ConnectionDrivers.getTotalPrinter(myDay));*/
                     report.title(cmp.text(
-                            Shared.formatIt("Cuadre de Cajas (B-D):",Constants.df.format(Shared.round(receiptTotal*(Shared.getIva()+100.0)/100.0-income,2))) + "\n" +
-                            Shared.formatIt("Cuadre de Cajas del Día (A+B-C-D): ",Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0-income+amc)) + "\n"
+                            Shared.formatIt("Cuadre de Cajas (B-D):",Constants.df.format(Shared.round(total-income,2))) + "\n" +
+                            Shared.formatIt("Cuadre de Cajas del Día (A+B-C-D): ",Constants.df.format(total-income+amc)) + "\n"
 
-                            + Shared.formatIt("Diff entre Impresoras Fiscales y Sistema (B-E) ", Constants.df.format(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0 - ConnectionDrivers.getTotalPrinter(myDay)))+
+                            + Shared.formatIt("Diff entre Impresoras Fiscales y Sistema (B-E) ", Constants.df.format(total - ConnectionDrivers.getTotalPrinter(myDay)))+
                             "\n\nObservaciones: Cantidad de Notas de Créditos: " +
                             ConnectionDrivers.getQuantCN(myDay) + "      Monto: " +
                             Constants.df.format((ConnectionDrivers.getTotalCN(myDay) *(Shared.getIva()+100.0)/100.0))

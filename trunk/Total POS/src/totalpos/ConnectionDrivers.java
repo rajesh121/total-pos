@@ -873,7 +873,7 @@ public class ConnectionDrivers {
 
         changeItemStock(item.getCode(), 1*quant);
 
-        double withoutTax = -1*(item.getLastPrice().getQuant());
+        double withoutTax = -1*(item.getLastPrice().withDiscount(item.getDescuento()).getQuant())*quant;
         double subT = accumulatedInReceipt(receiptId) - withoutTax;
         stmt = c.prepareStatement("update factura "
                 + "set total_sin_iva = total_sin_iva + ? " +
@@ -2379,17 +2379,20 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
         
         if ( wereCalculatedBanks(day) ){
+            System.out.println("Ya fue calculado!");
             ;// Just load it!! It was calculated
         }else{
+            System.out.println("Calculadndo...");
             PreparedStatement stmt = c.prepareStatement("select concat(concat(a.codigo_punto_de_venta_de_banco,' - ') , b.descripcion) as codigo_punto_de_venta_de_banco , a.lote,"
                 + "a.tipo , sum(monto) as monto from forma_de_pago a,"
                 + "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and "
-                + "datediff(?,fecha) = 0 group by a.codigo_punto_de_venta_de_banco");
+                + "datediff(?,fecha) = 0 group by a.codigo_punto_de_venta_de_banco , a.tipo");
 
             stmt.setString(1, day);
             ResultSet rs = stmt.executeQuery();
 
             while ( rs.next() ){
+                System.out.println("Detalle");
                 PreparedStatement stmt2 =  c.prepareStatement(
                         "insert into pagos_punto_de_venta_banco(fecha," +
                         "punto_de_venta_de_banco,lote,medio,declarado," +
@@ -2430,16 +2433,9 @@ public class ConnectionDrivers {
 
         Double ans = .0;
         while( rs.next() ){
-            Double desc = rs.getDouble("declarado");
-            Double modi = rs.getDouble("monto_real");
-            if ( modi == .0 ){
-                ans += desc;
-            }else{
-                ans += modi;
-            }
+            ans += rs.getDouble("monto_real");
         }
         
-
         c.close();
         rs.close();
         return ans;
@@ -3302,71 +3298,42 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static void updateItemsDetails(Item item) throws SQLException{
-        Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("delete from codigo_de_barras where codigo_de_articulo = ? and"
-                + " codigo_de_barras = ? ");
+    protected static void updateItemsDetails(Item item, Connection c) throws SQLException{
+        PreparedStatement stmt = c.prepareStatement("insert IGNORE into codigo_de_barras( codigo_de_articulo , codigo_de_barras ) values ( ? , ? )");
         stmt.setString(1, item.getCode());
         stmt.setString(2, item.getMainBarcode());
         stmt.executeUpdate();
-        // TODO It should'nt be here
-        stmt = c.prepareStatement("delete from codigo_de_barras where codigo_de_articulo = ? and codigo_de_barras = ? ");
-        stmt.setString(1, item.getCode());
-        stmt.setString(2, item.getMainBarcode());
-        stmt.executeUpdate();
-        stmt = c.prepareStatement("insert into codigo_de_barras( codigo_de_articulo , codigo_de_barras ) values ( ? , ? )");
-        stmt.setString(1, item.getCode());
-        stmt.setString(2, item.getMainBarcode());
-        stmt.executeUpdate();
-        stmt = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = curdate()");
-        stmt.setString(1, item.getCode());
-        stmt.executeUpdate();
-        stmt = c.prepareStatement("insert into precio( codigo_de_articulo , monto , fecha  ) values ( ? , ? , curdate() )");
+        stmt = c.prepareStatement("insert IGNORE into precio( codigo_de_articulo , monto , fecha  ) values ( ? , ? , curdate() )");
         stmt.setString(1, item.getCode());
         stmt.setDouble(2, item.getPrice().get(0).getQuant());
         stmt.executeUpdate();
-        stmt = c.prepareStatement("delete from costo where codigo_de_articulo = ? and fecha = curdate()");
-        stmt.setString(1, item.getCode());
-        stmt.executeUpdate();
-        stmt = c.prepareStatement("insert into costo( codigo_de_articulo , monto , fecha  ) values ( ? , ? , curdate() )");
-        stmt.setString(1, item.getCode());
-        stmt.setDouble(2, item.getCost().get(0).getQuant());
-        stmt.executeUpdate();
-        c.close();
     }
 
     protected static void updateItems(List<Item> items) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
-
+        Connection c2 = ConnectionDrivers.cpds.getConnection();
         for (Item item : items) {
-            PreparedStatement stmt = c.prepareStatement("update articulo set descripcion = ? , marca = ? , sector = ? "
-                    + ", codigo_sublinea = ? , codigo_de_barras = ? , modelo = ? , unidad_venta = ? , unidad_compra = ? , "
-                    + " bloqueado = ? where codigo = ? ");
-            stmt.setString(1, item.getDescription());
-            stmt.setString(2, item.getMark());
-            stmt.setString(3, item.getSector());
-            stmt.setString(4, item.getSublineCode());
-            stmt.setString(5, item.getMainBarcode());
-            stmt.setString(6, item.getModel());
-            stmt.setString(7, item.getSellUnits());
-            stmt.setString(8, item.getBuyUnits());
-            stmt.setBoolean(9, item.isStatus());
-            stmt.setString(10, item.getCode());
+            PreparedStatement stmt = c.prepareStatement("update articulo set "
+                    + "codigo_de_barras = ? "
+                    + "where codigo = ? ");
+            stmt.setString(1, item.getMainBarcode());
+            stmt.setString(2, item.getCode());
             int ans = stmt.executeUpdate();
             if ( ans > 0 ){
-                updateItemsDetails(item);
+                updateItemsDetails(item, c2);
             }
         }
 
         c.close();
+        c2.close();
     }
 
     protected static void updateMovements(List<Movement> movements, TreeMap<String, Item> newItemMapping) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (Movement movement : movements) {
-            PreparedStatement stmt = c.prepareStatement("select * from movimiento_inventario where codigo>=?");
-            stmt.setString(1, movement.getCode());
+            PreparedStatement stmt = c.prepareStatement("select * from movimiento_inventario where identificador>=? and length(identificador)=5");
+            stmt.setString(1, movement.getId());
             ResultSet rs = stmt.executeQuery();
             if ( rs.next() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Traslado con código " + movement.getCode() + " ya fue cargado o traslados posteriores se cargaron anteriormente, será ignorado.");
@@ -3429,8 +3396,8 @@ public class ConnectionDrivers {
         stmt.setString(11, Constants.photoPrefix + item.getCode() + ".JPG");
         stmt.setString(12, "0");
         stmt.executeUpdate();
+        updateItemsDetails(item, c );
         c.close();
-        updateItemsDetails(item);
 
     }
 
@@ -3482,8 +3449,8 @@ public class ConnectionDrivers {
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto"
-                + " from (select sum(monto) as monto from forma_de_pago where datediff(?,fecha)=0"
-                + " and tipo != 'Efectivo' and tipo != 'Nota de Credito' union select sum(monto) "
+                + " from (select sum(monto_real) as monto from pagos_punto_de_venta_banco where datediff(?,fecha)=0"
+                + " union select sum(monto) "
                 + "as monto from deposito where datediff(fecha,?)=0) as myTable");
         stmt.setString(1, myDay);
         stmt.setString(2, myDay);

@@ -117,9 +117,9 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jScrollPane1" alignment="1" min="-2" pref="344" max="-2" attributes="1"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="-2" pref="110" max="-2" attributes="0"/>
@@ -138,11 +138,20 @@
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="subTotalLabel" alignment="0" max="32767" attributes="0"/>
                                           <Component id="discountLabel" alignment="0" pref="105" max="32767" attributes="0"/>
+                                          <Component id="quantItemsLabel" alignment="0" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="subTotalLabelResult" pref="119" max="32767" attributes="1"/>
-                                          <Component id="discountResult" alignment="0" pref="119" max="32767" attributes="1"/>
+                                          <Group type="102" attributes="0">
+                                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="subTotalLabelResult" pref="119" max="32767" attributes="1"/>
+                                                  <Component id="discountResult" alignment="0" pref="119" max="32767" attributes="1"/>
+                                              </Group>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="quantItemField" pref="123" max="32767" attributes="1"/>
+                                          </Group>
                                       </Group>
                                   </Group>
                               </Group>
@@ -159,7 +168,12 @@
                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                       <Component id="barcodeField" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="335" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="310" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="quantItemsLabel" min="-2" max="-2" attributes="1"/>
+                          <Component id="quantItemField" min="-2" pref="19" max="-2" attributes="1"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="subTotalLabelResult" min="-2" pref="19" max="-2" attributes="1"/>
@@ -372,6 +386,31 @@
                 <Property name="horizontalAlignment" type="int" value="4"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="TotalLabelResult" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="quantItemsLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Courier New" size="12" style="0"/>
+                </Property>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Cantidad"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="quantItemsLabel" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="quantItemField">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Courier New" size="14" style="0"/>
+                </Property>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="quantItemField" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>

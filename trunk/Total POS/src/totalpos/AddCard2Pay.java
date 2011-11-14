@@ -166,7 +166,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
         bposCombo.removeAll();
         bpos = ConnectionDrivers.listBPos(reason);
         for (BankPOS bankPOS : bpos) {
-            bposCombo.add(bankPOS.getId() + " - " + bankPOS.getLot() );
+            bposCombo.add(bankPOS.getId() + " - " + bankPOS.getDescripcion() + " - " + bankPOS.getLot() );
         }
     }
 

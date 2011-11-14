@@ -149,6 +149,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
         descriptionLabel.setText("Bievenido a Mundo Total");
         currentPrice.setText("");
+        quantItemField.setText("0");
         ivaLabelResult.setText("0.00 Bs");
         TotalLabelResult.setText("0.00 Bs");
         subTotalLabelResult.setText("0.00 Bs");
@@ -272,6 +273,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         ivaLabel = new javax.swing.JLabel();
         totalLabel = new javax.swing.JLabel();
         TotalLabelResult = new javax.swing.JLabel();
+        quantItemsLabel = new javax.swing.JLabel();
+        quantItemField = new javax.swing.JLabel();
         jPanel1 = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Area-descripcion-articulo.jpg"))).getImage());
         descriptionLabel = new javax.swing.JLabel();
         currentPrice = new javax.swing.JLabel();
@@ -408,15 +411,28 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         TotalLabelResult.setFocusable(false);
         TotalLabelResult.setName("TotalLabelResult"); // NOI18N
 
+        quantItemsLabel.setFont(new java.awt.Font("Courier New", 0, 12));
+        quantItemsLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        quantItemsLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        quantItemsLabel.setText("Cantidad");
+        quantItemsLabel.setFocusable(false);
+        quantItemsLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        quantItemsLabel.setName("quantItemsLabel"); // NOI18N
+
+        quantItemField.setFont(new java.awt.Font("Courier New", 0, 14));
+        quantItemField.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        quantItemField.setFocusable(false);
+        quantItemField.setName("quantItemField"); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(110, 110, 110)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -430,12 +446,18 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(subTotalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(discountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE))
-                                .addGap(10, 10, 10)
+                                    .addComponent(discountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                                    .addComponent(quantItemsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(subTotalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                                    .addComponent(discountResult, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)))))
-                    .addComponent(barcodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(subTotalLabelResult, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                                            .addComponent(discountResult, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(quantItemField, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))))))
+                    .addComponent(barcodeField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -444,7 +466,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(barcodeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(quantItemsLabel)
+                    .addComponent(quantItemField, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(subTotalLabelResult, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1141,6 +1167,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     private javax.swing.JLabel msg2user2;
     private javax.swing.JLabel offlineLabel;
     private javax.swing.JLabel posID;
+    private javax.swing.JLabel quantItemField;
+    private javax.swing.JLabel quantItemsLabel;
     private javax.swing.JLabel subTotalLabel;
     private javax.swing.JLabel subTotalLabelResult;
     private javax.swing.JLabel totalLabel;
@@ -1215,6 +1243,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant()*(1.0-globalDiscount) , 2 )*item2r.getQuant();
         }
 
+        int quantItems = 0;
+        for (Item2Receipt item2Receipt : items) {
+            quantItems += item2Receipt.getQuant();
+        }
+        quantItemField.setText(quantItems+"");
         subTotalLabelResult.setText(Constants.df.format(subTwithoutD) + " Bs");
         if ( !globalDiscount.equals(.0) ){
             discountLabel.setText("Desc (" + Constants.df.format(globalDiscount*100.0) + "%):");

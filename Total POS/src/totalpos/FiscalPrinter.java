@@ -227,6 +227,7 @@ public class FiscalPrinter {
 
         List<String> buffer = new ArrayList<String>();
         buffer.add("800 Retiro de Efectivo  " +  Constants.df.format(quant));
+        buffer.add("800 Caja " + Shared.getFileConfig("myId"));
         buffer.add("800 ");
         buffer.add("800                 _______________________");
         buffer.add("800                   Firma del encargado");

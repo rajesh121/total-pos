@@ -57,7 +57,7 @@ public class ManageItem extends JInternalFrame implements Doer {
         model.setRowCount(0);
 
         for (Item item : items) {
-            String s[] = {item.getCode(),item.getDescription(),item.getMark(),item.getSector(),item.getModel(),new Price(null, item.getLastPrice().getQuant()).toString(),item.getLastPrice().plusIva().toString(),item.getDescuento()+"",item.getCurrentStock()+""};
+            String s[] = {item.getCode(),item.getDescription(),item.getModel(),item.getLastPrice().plusIva().withDiscount(item.getDescuento()).toString(),item.getDescuento()+"",item.getCurrentStock()+""};
             model.addRow(s);
         }
         
@@ -265,7 +265,7 @@ public class ManageItem extends JInternalFrame implements Doer {
                 {null, null, null, null}
             },
             new String [] {
-                "Código", "Descripción", "Precio Actual", "Cantidad Etiquetas"
+                "Código", "Modelo", "Precio Actual", "Cantidad Etiquetas"
             }
         ) {
             Class[] types = new Class [] {
@@ -382,20 +382,20 @@ public class ManageItem extends JInternalFrame implements Doer {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        itemTable.setFont(new java.awt.Font("Courier New", 0, 11));
+        itemTable.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Código", "Descripción", "Marca", "Sector", "Modelo", "Precio Sin Iva", "Precio Actual", "Descuento", "Existencia"
+                "Código", "Descripción", "Modelo", "Precio Venta", "Descuento", "Existencia"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -429,9 +429,11 @@ public class ManageItem extends JInternalFrame implements Doer {
             }
         });
         jScrollPane1.setViewportView(itemTable);
-        itemTable.getColumnModel().getColumn(1).setPreferredWidth(200);
-        itemTable.getColumnModel().getColumn(7).setPreferredWidth(50);
-        itemTable.getColumnModel().getColumn(8).setPreferredWidth(50);
+        itemTable.getColumnModel().getColumn(1).setPreferredWidth(300);
+        itemTable.getColumnModel().getColumn(2).setPreferredWidth(50);
+        itemTable.getColumnModel().getColumn(3).setPreferredWidth(20);
+        itemTable.getColumnModel().getColumn(4).setPreferredWidth(20);
+        itemTable.getColumnModel().getColumn(5).setPreferredWidth(20);
 
         addSticker.setText(" F8 / Agregar a las etiquetas");
         addSticker.setFocusable(false);
@@ -826,7 +828,7 @@ public class ManageItem extends JInternalFrame implements Doer {
         model.setRowCount(0);
 
         for ( int i = 0 ; i < toPrint.size() && i < quantToPrint.size() ; i++ ){
-            String s[] = {toPrint.get(i).getCode(),toPrint.get(i).getDescription(),toPrint.get(i).getLastPrice().plusIva().getQuant().toString(), quantToPrint.get(i).toString() };
+            String s[] = {toPrint.get(i).getCode(),toPrint.get(i).getModel(),toPrint.get(i).getLastPrice().plusIva().withDiscount(toPrint.get(i).getDescuento()).getQuant().toString(), quantToPrint.get(i).toString() };
             model.addRow(s);
         }
     }

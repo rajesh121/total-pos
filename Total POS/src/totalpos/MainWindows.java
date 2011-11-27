@@ -261,10 +261,16 @@ public class MainWindows extends javax.swing.JFrame {
                 }
             } else if ( ed.getFuncion().equals("exit") ) {
                 logout();
-            } else if ( ed.getFuncion().substring(0, "updateStock".length()).equals("updateStock") ) {
+            } else if ( ed.getFuncion().substring(0, Math.min("updateStock".length(),ed.getFuncion().length())).equals("updateStock") ) {
                 UpdateStock us = new UpdateStock(ed.getFuncion().substring("updateStock".length()));
                 us.updateStock();
-            }else if (ed.getFuncion().isEmpty()) {
+            } else if ( ed.getFuncion().equals("updateMM")) {
+                UpdateStockFromSAP usfs = new UpdateStockFromSAP("MM");
+                usfs.updateStockFromSAP();
+            } else if ( ed.getFuncion().equals("updatePrices")) {
+                UpdateStockFromSAP usfs = new UpdateStockFromSAP("Prices");
+                usfs.updateStockFromSAP();
+            } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);
             }else{

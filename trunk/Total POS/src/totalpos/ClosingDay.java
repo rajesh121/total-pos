@@ -1404,7 +1404,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         child.addChild(childchild);
                         childchild.setAttribute("id", "D" + receiptSap.getId());
                         childchild.setAttribute("position", Constants.df2intSAP.format(position++));
-                        childchild.setAttribute("barcode", item2Receipt.getItem().getBarcodes().get(0));
+                        childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
                         childchild.setAttribute("quant", item2Receipt.getQuant().toString());
                         childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
                         childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
@@ -1476,7 +1476,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         child.addChild(childchild);
                         childchild.setAttribute("id", "F" + receiptSap.getId());
                         childchild.setAttribute("position", Constants.df2intSAP.format(position++));
-                        childchild.setAttribute("barcode", item2Receipt.getItem().getBarcodes().get(0));
+                        childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
                         childchild.setAttribute("quant", item2Receipt.getQuant().toString());
                         childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
                         childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
@@ -1654,10 +1654,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             System.out.print(tmp.substring(0, tmp.length() - 1)+"\t");
             zfc.setBPAGO(of.createZFISCOBRANZABPAGO(Constants.genericBank));
             System.out.print(Constants.genericBank+"\t");
-            String[] md = myDay.split("-");
-            zfc.setLOTE(of.createZFISCOBRANZALOTE(md[2] + md[1] + md[0] + Shared.getConfig("storeName")));
+            //String[] md = myDay.split("-");
+            //zfc.setLOTE(of.createZFISCOBRANZALOTE(md[2] + md[1] + md[0] + Shared.getConfig("storeName")));
             //zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
-            System.out.print(md[2] + md[1] + md[0] + Shared.getConfig("storeName")+"\t");
+            zfc.setLOTE(of.createZFISCOBRANZALOTE(i+""));
+            //System.out.print(md[2] + md[1] + md[0] + Shared.getConfig("storeName")+"\t");
             zfc.setMONTO(new BigDecimal(((String)expenseTable.getValueAt(i, 1)).replace(',', '.')));
             System.out.print(((String)expenseTable.getValueAt(i, 1)).replace(',', '.')+"\t");
             zfc.setITEMTEXT(of.createZFISCOBRANZAITEMTEXT((String)expenseTable.getValueAt(i, 2)));

@@ -81,7 +81,7 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = false;
+    protected static final boolean isPos = true;
 
     protected static String maximunId = "999999999";
     protected static String minimunId = "0";
@@ -139,6 +139,11 @@ public class Constants {
     protected static final String scriptConfig = "config.bat";
     protected static final String fileName4Report = "report.txt";
     protected static final String[] forbiddenWords = {"delete","upgrade","insert","drop", "create"};
+
+    protected static final String[] outcomingItems = {"906" , "551" , "905" , "702" , "302"};
+    protected static final String[] incomingItems = {"904" , "301" , "701" , "907"};
+    protected static final String bwartMovement = "309";
+
     protected static double exilon = .0001;
     protected static String changeQuant = "quant";
     protected static String changeReceipt = "cn";

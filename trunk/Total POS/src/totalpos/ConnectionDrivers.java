@@ -4,6 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,15 +22,25 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import net.n3.nanoxml.IXMLElement;
+import net.n3.nanoxml.IXMLParser;
+import net.n3.nanoxml.IXMLReader;
+import net.n3.nanoxml.StdXMLReader;
+import net.n3.nanoxml.XMLElement;
+import net.n3.nanoxml.XMLException;
+import net.n3.nanoxml.XMLParserFactory;
+import net.n3.nanoxml.XMLWriter;
 import net.sf.jasperreports.engine.JRDataSource;
 import srvSap.ZFISDATAFISCAL;
 
@@ -3607,4 +3618,185 @@ public class ConnectionDrivers {
         rs.close();
         return ans;
     }
+
+    protected static String getLastMM() throws SQLException{
+        String ans = null;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("select max(codigo) from movimiento_inventario");
+        ResultSet rs = stmt.executeQuery();
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString(1);
+        }
+
+        c.close();
+        String[] ansA = ans.split("-");
+
+        return ansA[ansA.length-1];
+    }
+
+    protected static String createNewMovement(String xmlMovement) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, IOException{
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        Shared.itemsNeeded = new LinkedList<XMLElement>();
+
+        IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+        IXMLReader reader = StdXMLReader.stringReader(xmlMovement);
+        parser.setReader(reader);
+        IXMLElement xml = (IXMLElement) parser.parse();
+
+        System.out.println(xml.getName());
+        TreeSet<String> movements = new TreeSet<String>();
+
+        for (Object x : xml.getChildren()) {
+            XMLElement xmlI = (XMLElement)x;
+
+            int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
+
+            PreparedStatement stmt = c.prepareStatement("insert into detalles_movimientos"
+                    + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( ? , ? , ? , ? )");
+            stmt.setString(1, xmlI.getAttribute("MBLNR"));
+            stmt.setString(2, xmlI.getAttribute("MATNR"));
+            stmt.setInt(3, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+            stmt.setString(4, xmlI.getAttribute("BWART"));
+            stmt.executeUpdate();
+
+            movements.add(xmlI.getAttribute("MBLNR"));
+
+
+            if ( reason == 0 ){
+                // we are in problems... =(
+            }else{
+                stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
+                stmt.setString(2, xmlI.getAttribute("MATNR"));
+                stmt.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+                int ans = stmt.executeUpdate();
+                if ( ans == 0 ){
+                    Shared.itemsNeeded.add(xmlI);
+                }
+            }
+        }
+
+        Iterator<String> itrs = movements.iterator();
+        while(itrs.hasNext()){
+            String id = itrs.next();
+            PreparedStatement stmt = c.prepareStatement("insert into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
+                    + "values (? , now() , ? , ? , ?)");
+            stmt.setString(1, id);
+            stmt.setString(2, "Nuevo Movimiento Inventario");
+            stmt.setString(3, id);
+            stmt.setString(4, "");
+            stmt.executeUpdate();
+        }
+        
+
+        XMLElement ans = new XMLElement("ITEMSNEEDED");
+
+        for( XMLElement it : Shared.itemsNeeded){
+            IXMLElement ansi = ans.createElement("ITEM");
+            ans.addChild(ansi);
+            ansi.setContent( it.getAttribute("MATNR") );
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLWriter xmlw = new XMLWriter(baos);
+        xmlw.write(ans);
+        return baos.toString();
+    }
+
+    static void createItems(String ansDescriptions) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+        IXMLReader reader = StdXMLReader.stringReader(ansDescriptions);
+        parser.setReader(reader);
+        IXMLElement xml = (IXMLElement) parser.parse();
+
+        TreeSet<String> itemsNeededJustOnce = new TreeSet<String>();
+
+        for (Object x : xml.getChildren()) {
+            XMLElement xmlI = (XMLElement)x;
+            if ( !itemsNeededJustOnce.contains(xmlI.getAttribute("MATNR")) ){
+                PreparedStatement stmt = c.prepareStatement("insert into articulo ( codigo , descripcion , fecha_registro , "
+                    + "codigo_de_barras , modelo , unidad_venta, "
+                    + "existencia_actual, bloqueado, imagen, descuento ) values (?,?,now(),?,?,?,0,0,?,?)");
+
+                stmt.setString(1, xmlI.getAttribute("MATNR"));
+                stmt.setString(2, xmlI.getAttribute("MAKTG"));
+                stmt.setString(3, xmlI.getAttribute("EAN11"));
+                stmt.setString(4, xmlI.getAttribute("MATKL"));
+                stmt.setString(5, xmlI.getAttribute("MSEH3"));
+                stmt.setString(6, Constants.photoPrefix + xmlI.getAttribute("MATNR") + ".JPG");
+                stmt.setString(7, "0");
+                stmt.executeUpdate();
+
+                itemsNeededJustOnce.add(xmlI.getAttribute("MATNR"));
+            }
+        }
+
+        Iterator<XMLElement> itr = Shared.itemsNeeded.iterator();
+        while ( itr.hasNext() ){
+            XMLElement xmlI = itr.next();
+            int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
+            if ( reason == 0 ){
+                // we are in problems... =(
+            }else{
+                PreparedStatement stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
+                stmt.setString(2, xmlI.getAttribute("MATNR"));
+                stmt.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+                int ans = stmt.executeUpdate();
+                if ( ans == 0 ){
+                    // We are in problemas again... ='(
+                }
+            }
+        }
+
+        c.close();
+    }
+
+    static void setPrices(String ansPricesDiscounts) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+        IXMLReader reader = StdXMLReader.stringReader(ansPricesDiscounts);
+        parser.setReader(reader);
+        IXMLElement xml = (IXMLElement) parser.parse();
+
+        for (Object x : xml.getChildren()) {
+            XMLElement xmlI = (XMLElement)x;
+
+            PreparedStatement stmt = null;
+            if ( xmlI.getAttribute("KONWA").equals("%") ) {
+                Double dis = -1*Double.parseDouble(xmlI.getAttribute("KBETR"))/10;
+                stmt = c.prepareStatement("update articulo set descuento = ? where codigo = ? ");
+                stmt.setString(1, dis+"");
+                stmt.setString(2, xmlI.getAttribute("VAKEY").substring(4));
+                stmt.executeUpdate();
+            }else{
+                stmt = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = ? ");
+                stmt.setString(1, xmlI.getAttribute("VAKEY").substring(6));
+                stmt.setString(2, xmlI.getAttribute("DATAB"));
+                stmt.executeUpdate();
+                stmt = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , ? ) ");
+                stmt.setString(1, xmlI.getAttribute("VAKEY").substring(6));
+                stmt.setString(2, Double.parseDouble(xmlI.getAttribute("KBETR"))+"");
+                stmt.setString(3, xmlI.getAttribute("DATAB"));
+                stmt.executeUpdate();
+            }
+
+        }
+
+        c.close();
+    }
+
+    static void setLastUpdateNow() throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = replace(curdate(),'-','') where `Key` = 'lastPriceUpdate'");
+        stmt.executeUpdate();
+        initializeConfig();
+        c.close();
+    }
+
 }

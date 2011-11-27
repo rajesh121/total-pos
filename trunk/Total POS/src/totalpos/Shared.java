@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -33,6 +34,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import net.n3.nanoxml.XMLElement;
 import srvEntidades.BNKA;
 import srvEntidades.DD07T;
 import srvEntidades.IsrvEntidades;
@@ -54,6 +56,7 @@ public class Shared {
     protected static boolean isOffline = false;
     private static TreeMap<String , Item > newItemMapping;
     private static boolean hadMovements;
+    protected static List< XMLElement > itemsNeeded;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -585,6 +588,30 @@ public class Shared {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
         return sdf.format(cal.getTime());
+    }
+
+    public static int calculateReason(String bwart, String shkzg){
+        int reason = 0;
+        for (String ii : Constants.incomingItems) {
+            if ( bwart.equals(ii) ){
+                reason = 1;
+            }
+        }
+
+        for (String oi : Constants.outcomingItems) {
+            if ( bwart.equals(oi) ){
+                reason = -1;
+            }
+        }
+
+        if ( bwart.equals(Constants.bwartMovement) ){
+            if ( shkzg.equals("H") ){
+                reason = -1;
+            }else if ( shkzg.equals("S") ){
+                reason = 1;
+            }
+        }
+        return reason;
     }
 
 }

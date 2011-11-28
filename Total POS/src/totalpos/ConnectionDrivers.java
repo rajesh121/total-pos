@@ -3623,7 +3623,7 @@ public class ConnectionDrivers {
         String ans = null;
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select max(codigo) from movimiento_inventario");
+        PreparedStatement stmt = c.prepareStatement("select max(identificador) from movimiento_inventario");
         ResultSet rs = stmt.executeQuery();
         boolean ok = rs.next();
         if ( ok ){
@@ -3770,19 +3770,21 @@ public class ConnectionDrivers {
             PreparedStatement stmt = null;
             if ( xmlI.getAttribute("KONWA").equals("%") ) {
                 Double dis = -1*Double.parseDouble(xmlI.getAttribute("KBETR"))/10;
+                String disS = (dis+"").substring(0,Math.min((dis+"").length(), 5));
+
                 stmt = c.prepareStatement("update articulo set descuento = ? where codigo = ? ");
-                stmt.setString(1, dis+"");
+                stmt.setString(1, disS);
                 stmt.setString(2, xmlI.getAttribute("VAKEY").substring(4));
                 stmt.executeUpdate();
+                System.out.println("Fijar Descuento = " + disS + " articulo = "+ xmlI.getAttribute("VAKEY").substring(4));
             }else{
                 stmt = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = ? ");
                 stmt.setString(1, xmlI.getAttribute("VAKEY").substring(6));
                 stmt.setString(2, xmlI.getAttribute("DATAB"));
                 stmt.executeUpdate();
-                stmt = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , ? ) ");
+                stmt = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , now() ) ");
                 stmt.setString(1, xmlI.getAttribute("VAKEY").substring(6));
                 stmt.setString(2, Double.parseDouble(xmlI.getAttribute("KBETR"))+"");
-                stmt.setString(3, xmlI.getAttribute("DATAB"));
                 stmt.executeUpdate();
             }
 

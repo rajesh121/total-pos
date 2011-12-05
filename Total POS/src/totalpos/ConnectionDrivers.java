@@ -3778,11 +3778,10 @@ public class ConnectionDrivers {
                 stmt.executeUpdate();
                 System.out.println("Fijar Descuento = " + disS + " articulo = "+ xmlI.getAttribute("VAKEY").substring(4));
             }else{
-                stmt = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = ? ");
+                stmt = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = curdate() ");
                 stmt.setString(1, xmlI.getAttribute("VAKEY").substring(6));
-                stmt.setString(2, xmlI.getAttribute("DATAB"));
                 stmt.executeUpdate();
-                stmt = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , now() ) ");
+                stmt = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , curdate() ) ");
                 stmt.setString(1, xmlI.getAttribute("VAKEY").substring(6));
                 stmt.setString(2, Double.parseDouble(xmlI.getAttribute("KBETR"))+"");
                 stmt.executeUpdate();

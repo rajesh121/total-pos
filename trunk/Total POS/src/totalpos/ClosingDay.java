@@ -1497,29 +1497,56 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 IXMLElement client = clienXML.createElement("C");
                 client.setAttribute("ID", cc.getId());
                 client.setAttribute("Name", cc.getName());
-                client.setAttribute("Addr", cc.getAddress() + " Tlf: " + cc.getPhone());
+                String tc = cc.getAddress() + " Tlf: " + cc.getPhone();
+                client.setAttribute("Addr", (tc).substring(0, Math.min(30,tc.length())));
                 clienXML.addChild(client);
             }
 
+            String ansTP = "OK";
             System.out.println("Comienzo de envio");
             WS ws = new WSService().getWSPort();
-            System.out.println("Inicializar = " + ws.initialize(myDay, Shared.getConfig("storeName")));
-            System.out.println("Eliminar = " +ws.deleteDataFrom());;
+            String ansI = ws.initialize(myDay, Shared.getConfig("storeName"));
+            System.out.println("Inicializar = " + ansI);
+            if ( !ansI.isEmpty() ) {
+                ansTP = ansI;
+            }
+            ansI = ws.deleteDataFrom();
+            System.out.println("Eliminar = " + ansI);
+            if ( !ansI.isEmpty() ) {
+                ansTP = ansI;
+            }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             XMLWriter xmlw = new XMLWriter(baos);
             xmlw.write(xmlCN);
-            System.out.println("Nota de Credito = " + ws.sendCreditNotes(baos.toString()));
+            ansI = ws.sendCreditNotes(baos.toString());
+            System.out.println("Nota de Credito = " + ansI );
+            if ( !ansI.isEmpty() ) {
+                ansTP = ansI;
+            }
             ByteArrayOutputStream baosF = new ByteArrayOutputStream();
             XMLWriter xmlwF = new XMLWriter(baosF);
             xmlwF.write(xmlRe);
-            System.out.println("Facturas = " + ws.sendReceipts(baosF.toString()));
+            ansI =  ws.sendReceipts(baosF.toString());
+            System.out.println("Facturas = " + ansI );
+            if ( !ansI.isEmpty() ) {
+                ansTP = ansI;
+            }
             ByteArrayOutputStream baosC = new ByteArrayOutputStream();
             XMLWriter xmlwC = new XMLWriter(baosC);
             xmlwC.write(clienXML);
-            System.out.println("Clientes = " +ws.sendClients(baosC.toString()));
-            System.out.println("Vend = " + ws.createDummySeller());
+            ansI = ws.sendClients(baosC.toString());
+            System.out.println("Clientes = " + ansI);
+            if ( !ansI.isEmpty() ) {
+                ansTP = ansI;
+            }
+            ansI = ws.createDummySeller();
+            System.out.println("Vend = " + ansI );
 
-            String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: OK </html>" ;
+            if ( !ansI.isEmpty() ) {
+                ansTP = ansI;
+            }
+
+            String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansTP + " </html>" ;
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
             msg.show(this);
 

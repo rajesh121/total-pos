@@ -607,9 +607,9 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
                 return;
             }
             actualId = Shared.nextIdCN(0);
-            ConnectionDrivers.createCreditNote(actualId, receipt.getInternId(), myParent.getUser().getLogin(), myParent.getAssign(), items);
             myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client, receipt.getAlternativeID());
-
+            ConnectionDrivers.createCreditNote(actualId, receipt.getInternId(), myParent.getUser().getLogin(), myParent.getAssign(), items);
+            
             ConnectionDrivers.setFiscalDataCN(actualId, myParent.printer.getSerial() , myParent.printer.getZ() , myParent.printer.getLastFiscalNumber());
             ConnectionDrivers.setPritingHour(actualId, "nota_de_credito");
             ConnectionDrivers.updateLastCN(myParent.printer.getLastFiscalNumber());
@@ -623,10 +623,9 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
             myParent.dispose();
             Shared.reload();
         } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter);
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter , ex);
             msb.show(this);
-            myParent.dispose();
-            Shared.reload();
+            this.dispose();
         } 
     }
 

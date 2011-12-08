@@ -2393,7 +2393,7 @@ public class ConnectionDrivers {
             System.out.println("Ya fue calculado!");
             ;// Just load it!! It was calculated
         }else{
-            System.out.println("Calculadndo...");
+            System.out.println("Calculando...");
             PreparedStatement stmt = c.prepareStatement("select concat(concat(a.codigo_punto_de_venta_de_banco,' - ') , b.descripcion) as codigo_punto_de_venta_de_banco , a.lote,"
                 + "a.tipo , sum(monto) as monto from forma_de_pago a,"
                 + "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and "
@@ -3797,6 +3797,27 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = replace(curdate(),'-','') where `Key` = 'lastPriceUpdate'");
         stmt.executeUpdate();
         initializeConfig();
+        c.close();
+    }
+
+    static void ensureTotalReceipt(String actualId) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select sum(precio_venta - precio_venta*descuento/100) as total from factura_contiene where codigo_interno_factura = ? ");
+        stmt.setString(1, actualId);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+
+        Double total_sin_iva = rs.getDouble("total");
+        Double iva = new Price(null,total_sin_iva).getIva().getQuant();
+        Double total_con_iva = new Price(null , total_sin_iva).plusIva().getQuant();
+        stmt = c.prepareStatement("update factura set total_sin_iva = ? , total_con_iva = ? , iva = ? where codigo_interno = ?");
+        stmt.setDouble(1, total_sin_iva);
+        stmt.setDouble(2, total_con_iva);
+        stmt.setDouble(3, iva);
+        stmt.setString(4, actualId);
+
+        stmt.executeUpdate();
+
         c.close();
     }
 

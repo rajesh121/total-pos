@@ -62,8 +62,6 @@ public class ManageClient extends javax.swing.JDialog {
         idField = new javax.swing.JTextField();
         nameField = new javax.swing.JTextField();
         phoneField = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        addressField = new javax.swing.JTextArea();
         cancelButton = new javax.swing.JButton();
         acceptButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -73,6 +71,7 @@ public class ManageClient extends javax.swing.JDialog {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         comboKind = new javax.swing.JComboBox();
+        addressField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Clientes");
@@ -96,7 +95,7 @@ public class ManageClient extends javax.swing.JDialog {
 
         addressLabel.setFont(new java.awt.Font("Courier New", 0, 12));
         addressLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        addressLabel.setText("Dirección");
+        addressLabel.setText("Ciudad");
         addressLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         addressLabel.setName("addressLabel"); // NOI18N
 
@@ -106,8 +105,13 @@ public class ManageClient extends javax.swing.JDialog {
         phoneLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         phoneLabel.setName("phoneLabel"); // NOI18N
 
-        idField.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        idField.setFont(new java.awt.Font("Courier New", 0, 12));
         idField.setName("idField"); // NOI18N
+        idField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idFieldActionPerformed(evt);
+            }
+        });
         idField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 idFieldFocusLost(evt);
@@ -147,18 +151,6 @@ public class ManageClient extends javax.swing.JDialog {
                 phoneFieldKeyPressed(evt);
             }
         });
-
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        addressField.setColumns(20);
-        addressField.setRows(5);
-        addressField.setName("addressField"); // NOI18N
-        addressField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                addressFieldKeyPressed(evt);
-            }
-        });
-        jScrollPane1.setViewportView(addressField);
 
         cancelButton.setText("Cancelar");
         cancelButton.setName("cancelButton"); // NOI18N
@@ -207,6 +199,13 @@ public class ManageClient extends javax.swing.JDialog {
             }
         });
 
+        addressField.setName("addressField"); // NOI18N
+        addressField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                addressFieldKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,9 +214,8 @@ public class ManageClient extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(cirifLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -234,10 +232,11 @@ public class ManageClient extends javax.swing.JDialog {
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(addressLabel)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel12))))
+                                    .addComponent(jLabel12)))
+                            .addComponent(jLabel1))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(modifyClient, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -245,19 +244,19 @@ public class ManageClient extends javax.swing.JDialog {
                                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(nameField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .addComponent(phoneField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(comboKind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)))))
+                                .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
+                            .addComponent(addressField, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(titleLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cirifLabel)
                     .addComponent(idField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -274,18 +273,17 @@ public class ManageClient extends javax.swing.JDialog {
                     .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(addressLabel)
-                        .addComponent(jLabel12)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addressLabel)
+                    .addComponent(jLabel12)
+                    .addComponent(addressField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton)
                     .addComponent(acceptButton)
                     .addComponent(jLabel1)
-                    .addComponent(modifyClient))
-                .addContainerGap())
+                    .addComponent(modifyClient)
+                    .addComponent(cancelButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -359,15 +357,6 @@ public class ManageClient extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_phoneFieldKeyPressed
 
-    private void addressFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyPressed
-        Shared.getScreenSaver().actioned();
-        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            this.dispose();
-        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            doIt();
-        }
-    }//GEN-LAST:event_addressFieldKeyPressed
-
     private void modifyClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyClientActionPerformed
         modified = true;
         nameField.setEditable(true);
@@ -416,10 +405,22 @@ public class ManageClient extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_comboKindKeyPressed
 
+    private void idFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_idFieldActionPerformed
+
+    private void addressFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyReleased
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            acceptButton.requestFocus();
+        }
+    }//GEN-LAST:event_addressFieldKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Nombre;
     private javax.swing.JButton acceptButton;
-    private javax.swing.JTextArea addressField;
+    private javax.swing.JTextField addressField;
     private javax.swing.JLabel addressLabel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel cirifLabel;
@@ -430,7 +431,6 @@ public class ManageClient extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton modifyClient;
     private javax.swing.JTextField nameField;
     private javax.swing.JTextField phoneField;

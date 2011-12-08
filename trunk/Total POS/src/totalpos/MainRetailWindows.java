@@ -1083,6 +1083,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         }
         ConnectionDrivers.setPritingHour(actualId, "factura");
         ConnectionDrivers.finishReceipt(actualId);
+        ConnectionDrivers.ensureTotalReceipt(actualId);
         updateAll();
     }
 
@@ -1397,7 +1398,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public void increaseShiftValue(){
         if ( !msg2user2.getText().isEmpty() ){
             String s = msg2user2.getText();
-            msg2user2.setText(s.substring(s.length()-1) + s.substring(0,s.length()-1));
+            msg2user2.setText(s.substring(1) + s.substring(0,1));
         }
     }
 

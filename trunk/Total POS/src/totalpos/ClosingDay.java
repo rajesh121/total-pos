@@ -1496,7 +1496,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 Client cc = ConnectionDrivers.listClients(c).get(0);
                 IXMLElement client = clienXML.createElement("C");
                 client.setAttribute("ID", cc.getId());
-                client.setAttribute("Name", cc.getName());
+                String tname = cc.getName();
+                client.setAttribute("Name", tname.substring(0,Math.min(35, tname.length())));
                 String tc = cc.getAddress() + " Tlf: " + cc.getPhone();
                 client.setAttribute("Addr", (tc).substring(0, Math.min(30,tc.length())));
                 clienXML.addChild(client);

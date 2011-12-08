@@ -13,6 +13,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -34,6 +35,10 @@ import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.view.JasperViewer;
 
 /**
@@ -257,6 +262,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
             jrb = jrb.setColumnTitleStyle(Constants.columnTitleStyle);
             jrb = jrb.addColumn(createColumns(columns));
             jrb = jrb.setDataSource(ConnectionDrivers.createDataSource(parameters, sql, columnsTD));
+            jrb = jrb.setIgnorePagination(true);
             if ( title != null ){/*
                 jrb = jrb.addTitle(cmp.horizontalList().add(
                         cmp.text(title).setStyle(Constants.titleStyle).setHorizontalAlignment(HorizontalAlignment.LEFT))
@@ -276,6 +282,24 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
             jrb = jrb.highlightDetailEvenRows();
             jv = new JasperViewer(jrb.toJasperPrint(), false);
             jv.setTitle(Constants.appName);
+           /* JRXlsExporter exporter = new JRXlsExporter();
+
+            File outputFile = new File("C:\\test.xls");
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(outputFile);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(ParameteringReport.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jrb);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, fos); //and output stream
+
+            //Excel specific parameter
+            exporter.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+            exporter.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+            exporter.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);*/
+
             jv.setVisible(true);
         } catch (DRException ex) {
             Logger.getLogger(ParameteringReport.class.getName()).log(Level.SEVERE, null, ex);

@@ -1557,8 +1557,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void setFiscalData(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    protected static void setFiscalData(Connection c, String actualId, String serial, String z, String fiscalNumber) throws SQLException {
         PreparedStatement stmt = c.prepareStatement("update factura set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
                 + "where " + (Shared.isOffline?"codigo_interno_alternativo ":"codigo_interno ") + " = ? ");
         stmt.setString(1, serial);
@@ -1566,12 +1565,9 @@ public class ConnectionDrivers {
         stmt.setString(3, z);
         stmt.setString(4, actualId);
         stmt.executeUpdate();
-
-        c.close();
     }
 
-    protected static void setFiscalDataCN(String actualId, String serial, String z, String fiscalNumber) throws SQLException {
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    protected static void setFiscalDataCN(Connection c, String actualId, String serial, String z, String fiscalNumber) throws SQLException {
         PreparedStatement stmt = c.prepareStatement("update nota_de_credito set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
                 + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, serial);
@@ -1579,18 +1575,13 @@ public class ConnectionDrivers {
         stmt.setString(3, z);
         stmt.setString(4, actualId);
         stmt.executeUpdate();
-
-        c.close();
     }
 
-    protected static void finishReceipt(String receiptId) throws SQLException{
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    protected static void finishReceipt(Connection c, String receiptId) throws SQLException{
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Facturada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
-
-        c.close();
     }
 
     protected static void setGlobalDiscount(String receiptId , Double d) throws SQLException{
@@ -1600,29 +1591,23 @@ public class ConnectionDrivers {
         stmt.setDouble(1, d);
         stmt.setString(2, receiptId);
         stmt.executeUpdate();
-
+        
         c.close();
     }
 
-    protected static void setClient(Client cu, String actualId) throws SQLException {
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    protected static void setClient(Connection c, Client cu, String actualId) throws SQLException {
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  codigo_de_cliente = ? where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, cu.getId());
         stmt.setString(2, actualId);
         stmt.executeUpdate();
-
-        c.close();
     }
 
-    protected static void setPritingHour(String actualId, String table) throws SQLException {
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    protected static void setPritingHour(Connection c, String actualId, String table) throws SQLException {
         PreparedStatement stmt = c.prepareStatement("update " + table + " set "
                 + "  fecha_impresion = now() where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, actualId);
         stmt.executeUpdate();
-
-        c.close();
     }
 
     protected static boolean hasMovements() throws SQLException{
@@ -3265,14 +3250,11 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void updateLastCN(String lastCN) throws SQLException {
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    protected static void updateLastCN(Connection c, String lastCN) throws SQLException {
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_nota_de_credito = ? where identificador = ? ");
         stmt.setString(1, lastCN);
         stmt.setString(2, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
-
-        c.close();
     }
 
     protected static String getLastReceipt() throws SQLException {
@@ -3655,6 +3637,7 @@ public class ConnectionDrivers {
 
             int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
 
+            System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR"));
             PreparedStatement stmt = c.prepareStatement("insert into detalles_movimientos"
                     + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( ? , ? , ? , ? )");
             stmt.setString(1, xmlI.getAttribute("MBLNR"));
@@ -3800,8 +3783,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void ensureTotalReceipt(String actualId) throws SQLException {
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    static void ensureTotalReceipt(Connection c, String actualId) throws SQLException {
         PreparedStatement stmt = c.prepareStatement("select sum(precio_venta - precio_venta*descuento/100) as total from factura_contiene where codigo_interno_factura = ? ");
         stmt.setString(1, actualId);
         ResultSet rs = stmt.executeQuery();
@@ -3817,8 +3799,54 @@ public class ConnectionDrivers {
         stmt.setString(4, actualId);
 
         stmt.executeUpdate();
+    }
+
+    static void setAllFiscalData(String actualId, String serial, String z, String lastFiscalNumber, Client client) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        ConnectionDrivers.setFiscalData(c, actualId, serial , z , lastFiscalNumber);
+        if ( client != null ){
+            ConnectionDrivers.setClient(c,client,actualId);
+        }
+        ConnectionDrivers.setPritingHour(c,actualId, "factura");
+        ConnectionDrivers.finishReceipt(c, actualId);
+        ConnectionDrivers.ensureTotalReceipt(c, actualId);
 
         c.close();
+    }
+
+    static void setAllFiscalDataCN(String actualId, String serial, String z, String lastFiscalNumber) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        ConnectionDrivers.setFiscalDataCN(c, actualId, serial, z , lastFiscalNumber);
+        ConnectionDrivers.setPritingHour(c, actualId, "nota_de_credito");
+        ConnectionDrivers.updateLastCN(c,lastFiscalNumber);
+        c.close();
+    }
+
+    static void fixWrongReceipts() throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("update factura set estado=\'Facturada\' where numero_fiscal is not null and estado=\'Pedido\'");
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
+    static String getDate4NCR() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        String ans = null;
+
+        PreparedStatement stmt = c.prepareStatement("select date_format(now(),'%d %m %Y %h %i %s %p')");
+        ResultSet rs = stmt.executeQuery();
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString(1);
+        }
+
+        c.close();
+
+        return ans;
     }
 
 }

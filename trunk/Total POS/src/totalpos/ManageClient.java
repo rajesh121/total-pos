@@ -142,6 +142,9 @@ public class ManageClient extends javax.swing.JDialog {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 nameFieldKeyPressed(evt);
             }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nameFieldKeyReleased(evt);
+            }
         });
 
         phoneField.setFont(new java.awt.Font("Courier New", 0, 12));
@@ -410,12 +413,27 @@ public class ManageClient extends javax.swing.JDialog {
     }//GEN-LAST:event_idFieldActionPerformed
 
     private void addressFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyReleased
+
+        if ( addressField.getText().length() > 30 ){
+            addressField.setText(addressField.getText().substring(0,30));
+        }
+
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             acceptButton.requestFocus();
         }
     }//GEN-LAST:event_addressFieldKeyReleased
+
+    private void nameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyReleased
+
+        if ( idField.getText().length() > 9 ){
+            idField.setText(idField.getText().substring(0, 9));
+        }
+        if ( nameField.getText().length() > 35 ){
+            nameField.setText(nameField.getText().substring(0,35));
+        }
+    }//GEN-LAST:event_nameFieldKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Nombre;

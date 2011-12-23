@@ -176,6 +176,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             msg2user.setVisible(true);
             msg2user.setText("Tiene " + idleReceipts.size() + " pedidos en espera.");
         }
+        ConnectionDrivers.fixWrongReceipts();
         List<Receipt> uncompletedReceipts = ConnectionDrivers.listUncompletedReceiptToday();
         
         if ( uncompletedReceipts.isEmpty() ){
@@ -1077,13 +1078,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
     public void print(List<PayForm> l) throws SQLException, FileNotFoundException, Exception{
         printer.printTicket(items, client, globalDiscount, actualId, user , l);
-        ConnectionDrivers.setFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber());
-        if ( client != null ){
-            ConnectionDrivers.setClient(client,actualId);
-        }
-        ConnectionDrivers.setPritingHour(actualId, "factura");
-        ConnectionDrivers.finishReceipt(actualId);
-        ConnectionDrivers.ensureTotalReceipt(actualId);
+        ConnectionDrivers.setAllFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber(), client);
         updateAll();
     }
 

@@ -44,7 +44,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
         passwordField = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Report Z");
+        setTitle("Reportes");
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 18));
         titleLabel.setText("Imprimir Reporte");

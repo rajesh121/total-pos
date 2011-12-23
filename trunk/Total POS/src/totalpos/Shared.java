@@ -1,5 +1,10 @@
 package totalpos;
 
+import it.sauronsoftware.ftp4j.FTPAbortedException;
+import it.sauronsoftware.ftp4j.FTPClient;
+import it.sauronsoftware.ftp4j.FTPDataTransferException;
+import it.sauronsoftware.ftp4j.FTPException;
+import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -53,6 +58,7 @@ public class Shared {
     private static User user;
     private static UpdateClock screenSaver;
     private static TreeMap<Integer, String> errMapping = new TreeMap<Integer, String>();
+    protected static TreeMap<Integer, String> ncrErrMapping = new TreeMap<Integer, String>();
     protected static boolean isOffline = false;
     private static TreeMap<String , Item > newItemMapping;
     private static boolean hadMovements;
@@ -76,6 +82,105 @@ public class Shared {
         errMapping.put(new Integer(144), "Error LRC");
         errMapping.put(new Integer(145), "Error con el API");
         errMapping.put(new Integer(153), "Error al crear el archivo");
+        ncrErrMapping.put(new Integer(1), "La fecha enviada en el comando es anterior a la ultima utilizada");
+        ncrErrMapping.put(new Integer(2), "No hay transacciones por cancelar");
+        ncrErrMapping.put(new Integer(3), "Error en operación aritmética");
+        ncrErrMapping.put(new Integer(4), "Error en los parámetros del comando");
+        ncrErrMapping.put(new Integer(5), "El parámetro límite de la configuración ha sido alcanzado");
+        ncrErrMapping.put(new Integer(6), "Falta papel");
+        ncrErrMapping.put(new Integer(7), "El comando no puede ser ejecutado, hay una transaccion pendiente");
+        ncrErrMapping.put(new Integer(8), "Memoria fiscal vacía");
+        ncrErrMapping.put(new Integer(9), "Memoria fiscal llena");
+        ncrErrMapping.put(new Integer(10), "Error de comunicación con la impresora fiscal");
+        ncrErrMapping.put(new Integer(11), "Impresora fiscal no autenticada");
+        ncrErrMapping.put(new Integer(12), "El cheque no ha sido colocado o la información para imprimirse no ha sido enviada");
+        ncrErrMapping.put(new Integer(13), "Comando previo en curso");
+        ncrErrMapping.put(new Integer(14), "Hay un cheque en curso");
+        ncrErrMapping.put(new Integer(16), "Error of leyendo o escribiendo memoria fiscal (CRC error)");
+        ncrErrMapping.put(new Integer(249), "Memoria fiscal procesando transacciones");
+        ncrErrMapping.put(new Integer(250), "Error en secuencia de paquetes");
+        ncrErrMapping.put(new Integer(251), "Error en el contador de secuencia de paquetes");
+        ncrErrMapping.put(new Integer(252), "Error en la cabecera de paquetes");
+        ncrErrMapping.put(new Integer(253), "Error de paquetes CRC");
+        ncrErrMapping.put(new Integer(254), "Time out de paquetes");
+        ncrErrMapping.put(new Integer(255), "Número de comando inválido");
+        ncrErrMapping.put(new Integer(301),"Error in Reception");
+        ncrErrMapping.put(new Integer(302),"Error in Transmission");
+        ncrErrMapping.put(new Integer(303),"Invalid command");
+        ncrErrMapping.put(new Integer(304),"Repeated Packaged");
+        ncrErrMapping.put(new Integer(305),"Fiscal memory does not respond");
+        ncrErrMapping.put(new Integer(306),"Error Opening the Historical Transactions Log");
+        ncrErrMapping.put(new Integer(307),"Error Recording in the Historical Transactions Log");
+        ncrErrMapping.put(new Integer(308),"Invalid Type of Report");
+        ncrErrMapping.put(new Integer(309),"TimeOut in Communication");
+        ncrErrMapping.put(new Integer(310),"Invalid Date format");
+        ncrErrMapping.put(new Integer(311),"Invalid Hour format");
+        ncrErrMapping.put(new Integer(312),"Closing error at the Historical Transactions Log");
+        ncrErrMapping.put(new Integer(313),"The Amount Cannot Be Zero");
+        ncrErrMapping.put(new Integer(314),"The Price Cannot Be Zero");
+        ncrErrMapping.put(new Integer(315),"The Amount Cannot to be Greater to 12 Digits");
+        ncrErrMapping.put(new Integer(316),"The Price Cannot be Greater to 12 Digits");
+        ncrErrMapping.put(new Integer(317),"Item ‘s Description Cannot Be Empty");
+        ncrErrMapping.put(new Integer(318),"Global Surcharge , payment types and Discount of Documents Cannot to be Greater to 14 Digits");
+        ncrErrMapping.put(new Integer(319),"Length of Client’s Name Cannot Be Greater to 106 Characters");
+        ncrErrMapping.put(new Integer(320),"Invalid Operation Type");
+        ncrErrMapping.put(new Integer(321),"Invalid IVA Type");
+        ncrErrMapping.put(new Integer(322),"The Amount Cannot Be Zero");
+        ncrErrMapping.put(new Integer(323),"The Amount Cannot to be Greater to 12 Digit");
+        ncrErrMapping.put(new Integer(324),"Length of the Barcode Cannot Be Greater to 12 Digits");
+        ncrErrMapping.put(new Integer(325),"Operation’s Description Cannot Be In Empty");
+        ncrErrMapping.put(new Integer(326),"Length of Client’s ID Cannot Be Greater to 30 Characters");
+        ncrErrMapping.put(new Integer(327),"The Printer is Not Online");
+        ncrErrMapping.put(new Integer(328),"The Check’s Amount Cannot Be Zero");
+        ncrErrMapping.put(new Integer(329),"The Maximum Length of nonFiscal Text Is 38 Characters");
+        ncrErrMapping.put(new Integer(330),"The Check’s Amount Cannot be Greater to 12 Digits");
+        ncrErrMapping.put(new Integer(331),"The Check ‘s Amount In Letters Exceeds the 120 Characters");
+        ncrErrMapping.put(new Integer(332),"The Year‘s Validation Paramter is Optional and Only accepts Value 1");
+        ncrErrMapping.put(new Integer(333),"The Type of Report by Intervals Z Must Be Only 0 = Month to Month or 1= Day to Day");
+        ncrErrMapping.put(new Integer(334),"Invalid Line Number");
+        ncrErrMapping.put(new Integer(335),"The Header ‘s Maximum Length is 38 Characters");
+        ncrErrMapping.put(new Integer(336),"The Payment Types Maximum Length is 15 Characters");
+        ncrErrMapping.put(new Integer(337),"The Products Item Maximum Length is 190 Characters");
+        ncrErrMapping.put(new Integer(338),"Invalid IVA length [Max. 2 integers and 2 Decimal");
+        ncrErrMapping.put(new Integer(339),"Client’s Name Cannot Be Empty");
+        ncrErrMapping.put(new Integer(340),"Fiscal Memory ID Cannot Be Empty");
+        ncrErrMapping.put(new Integer(341),"Document Number Cannot Be Zero or Empty");
+        ncrErrMapping.put(new Integer(342),"The Initial Date Cannot Be Greater to the Final Date");
+        ncrErrMapping.put(new Integer(343),"The Cancellations/Surcharges’ Descriptions Maximum Length Is 190 Characters");
+        ncrErrMapping.put(new Integer(344),"Invalid Type of Check Process");
+        ncrErrMapping.put(new Integer(345),"The IVA Amount Cannot Be Empty");
+        ncrErrMapping.put(new Integer(346),"There is a Transaction In Process In the Fiscal Memory");
+        ncrErrMapping.put(new Integer(347),"Pay to the Order of Cannot Be Empty");
+        ncrErrMapping.put(new Integer(348),"Account Number Cannot Be Empty");
+        ncrErrMapping.put(new Integer(349),"Account Number Cannot Be Alphanumeric");
+        ncrErrMapping.put(new Integer(350),"Length of Account Number Must Be 10 Min and Max 72 Digits");
+        ncrErrMapping.put(new Integer(351),"To Account’s title Cannot Be Empty");
+        ncrErrMapping.put(new Integer(352),"Bank of Cuenta Cannot Be Empty");
+        ncrErrMapping.put(new Integer(353),"Transactions Log Activated");
+        ncrErrMapping.put(new Integer(354),"Historical Transactions Log Deactivated");
+        ncrErrMapping.put(new Integer(355),"[Create|Delete] Transactions Log Error");
+        ncrErrMapping.put(new Integer(356),"Historical Transactions Log Erased");
+        ncrErrMapping.put(new Integer(357),"Historical Transactions Log does not exist in the PATH of the DLL");
+        ncrErrMapping.put(new Integer(358),"Parameter Buffer of PrintTextNoFiscal 0 Unbuffered, 1 Buffered");
+        ncrErrMapping.put(new Integer(359),"Invalid Type Document");
+        ncrErrMapping.put(new Integer(360),"The Allowed Rank of Consultation of RptZ in Memory is from 1 to 1825");
+        ncrErrMapping.put(new Integer(361),"Fiscal Memory ID Must Be of 10 Characters");
+        ncrErrMapping.put(new Integer(362),"Invalid Type Fonts");
+        ncrErrMapping.put(new Integer(363),"Length of Memory ID Cannot Be Greater to 10 Characters");
+        ncrErrMapping.put(new Integer(364),"Length of Pay to Order of Cannot Be Greater to 70 Characters");
+        ncrErrMapping.put(new Integer(365),"Length of Voucher Cannot Be Greater to 6 Characters");
+        ncrErrMapping.put(new Integer(366),"Length of Cashier’s Name Cannot Be Greater to 20 Characters");
+        ncrErrMapping.put(new Integer(367),"Length of Title’s Account Cannot Be Greater to 73 Characters");
+        ncrErrMapping.put(new Integer(368),"Length of Bank’s Account Cannot Be Greater to 70 Characters");
+        ncrErrMapping.put(new Integer(369),"The Serial Port is not Enabled");
+        ncrErrMapping.put(new Integer(370),"SetMsgErr Config Error, Only allows 0=Disabled, 1=Enabled");
+        ncrErrMapping.put(new Integer(371),"Function Win32 API Error");
+        ncrErrMapping.put(new Integer(372),"Invalid Configuration Bps Value 0=9600 Bps, 1=19200 Bps");
+        ncrErrMapping.put(new Integer(373),"Invalid Serial Port");
+        ncrErrMapping.put(new Integer(374),"Bps Configuration Error");
+        ncrErrMapping.put(new Integer(375),"Fiscal Memory fault at Internal Level or Electrical Energy");
+
+
     }
 
     protected static void centerFrame(javax.swing.JFrame frame){
@@ -604,7 +709,13 @@ public class Shared {
             }
         }
 
-        if ( bwart.equals(Constants.bwartMovement) ){
+        boolean isEqual = false;
+        for (String bMovement : Constants.bwartMovement) {
+            if ( bwart.equals(bMovement) ){
+                isEqual = true;
+            }
+        }
+        if ( isEqual ){
             if ( shkzg.equals("H") ){
                 reason = -1;
             }else if ( shkzg.equals("S") ){
@@ -612,6 +723,51 @@ public class Shared {
             }
         }
         return reason;
+    }
+
+    protected static String now4backup(){
+        return Constants.sdf4backup.format(Calendar.getInstance().getTime()) + ".rar";
+    }
+
+    protected static void createBackup() throws IOException, IllegalStateException, FTPIllegalReplyException, FTPException, FileNotFoundException, FTPDataTransferException, FTPAbortedException{
+        String cmd = "mysqldump -u " + Constants.dbUser + " -p" + Constants.dbPassword + " " + Constants.dbName  +
+                " > " + Constants.tmpDir + "Backup.sql";
+
+        FileWriter fstream = new FileWriter(Constants.tmpDir + Constants.tmpScript);
+        BufferedWriter out = new BufferedWriter(fstream);
+
+        out.write(cmd);
+        out.close();
+
+        Process process = Runtime.getRuntime().exec(Constants.tmpDir + Constants.tmpScript);
+        InputStream is = process.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        while ( br.readLine() != null) {
+            ;
+        }
+
+        String fileName = now4backup();
+        cmd = "\"C:\\Archivos de programa\\WinRAR\\Rar.exe\" a -m5 -ed " + Constants.tmpDir
+                + fileName + " " + Constants.tmpDir + "Backup.sql";
+        process = Runtime.getRuntime().exec(cmd);
+        is = process.getInputStream();
+        isr = new InputStreamReader(is);
+        br = new BufferedReader(isr);
+
+        while ( br.readLine() != null) {
+            ;
+        }
+
+        FTPClient client = new FTPClient();
+        client.connect(Constants.ftpBackupAddr);
+        client.login(Constants.ftpBackupUser, Constants.ftpBackupPassword);
+        client.changeDirectory("/" + Shared.getConfig("storeName"));
+        File f = new File(Constants.tmpDir + fileName);
+        client.upload(f);
+        client.disconnect(false);
+
     }
 
 }

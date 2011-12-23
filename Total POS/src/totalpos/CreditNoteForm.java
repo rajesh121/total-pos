@@ -609,10 +609,8 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
             actualId = Shared.nextIdCN(0);
             myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client, receipt.getAlternativeID());
             ConnectionDrivers.createCreditNote(actualId, receipt.getInternId(), myParent.getUser().getLogin(), myParent.getAssign(), items);
-            
-            ConnectionDrivers.setFiscalDataCN(actualId, myParent.printer.getSerial() , myParent.printer.getZ() , myParent.printer.getLastFiscalNumber());
-            ConnectionDrivers.setPritingHour(actualId, "nota_de_credito");
-            ConnectionDrivers.updateLastCN(myParent.printer.getLastFiscalNumber());
+
+            ConnectionDrivers.setAllFiscalDataCN(actualId, myParent.printer.getSerial() , myParent.printer.getZ() , myParent.printer.getLastFiscalNumber());
 
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Recuerde no botar la factura ni la nota de crédito, ambas deben ser enviadas a la oficina principal.");
             msb.show(this);

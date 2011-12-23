@@ -11,13 +11,10 @@ import java.awt.Component;
 import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
-import java.rmi.Naming;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
@@ -30,15 +27,8 @@ import javax.swing.table.TableColumn;
 import net.n3.nanoxml.IXMLElement;
 import net.n3.nanoxml.XMLElement;
 import net.n3.nanoxml.XMLWriter;
-import org.apache.xerces.util.XML11Char;
 import srvSap.ArrayOfZFISCOBRANZA;
 import srvSap.ArrayOfZFISDATAFISCAL;
-import srvSap.ArrayOfZSDSCABDEV;
-import srvSap.ArrayOfZSDSCABFACT;
-import srvSap.ArrayOfZSDSCLIENT;
-import srvSap.ArrayOfZSDSPOSDEV;
-import srvSap.ArrayOfZSDSPOSFACT;
-import srvSap.ArrayOfZSDSVENDFACT;
 import srvSap.IsrvSap;
 import srvSap.ObjectFactory;
 import srvSap.Resultado;
@@ -46,10 +36,6 @@ import srvSap.SrvSap;
 import srvSap.ZFISCOBRANZA;
 import srvSap.ZFISDATAFISCAL;
 import srvSap.ZFISHISTENVIOS;
-import srvSap.ZSDSCABDEV;
-import srvSap.ZSDSCLIENT;
-import srvSap.ZSDSPOSDEV;
-import srvSap.ZSDSVENDFACT;
 import ws.WS;
 import ws.WSService;
 
@@ -237,7 +223,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         payWithCreditNoteField.setText( Constants.df.format( totalpcn = ConnectionDrivers.getTotalPCN(myDay) ));
         creditNoteField.setText(Constants.df.format(totalCN = (ConnectionDrivers.getTotalCN(myDay)*(Shared.getIva()+100.0)/100.0)));
         totalTotalField.setText(Constants.df.format(totalInCard + totalInCash));
-        expensesTodayField.setText(Constants.df.format(expensesD));
+        expensesTodayField.setText( Constants.df.format(totalExpenses = expensesD) );
         totalDeclaredField.setText(Constants.df.format(totalDeclared*(Shared.getIva()+100.0)/100.0));
         expensesMinusDeclaredField.setText(Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0));
         totalField.setText(Constants.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 + totalCN - totalInCard - totalInCash-expensesD-totalpcn)));
@@ -1307,6 +1293,22 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     public void doIt(){
 
         try {
+            Double diffe = Math.abs(totalInCard + totalInCash + totalExpenses - (new Price(null,receiptTotal).plusIva().getQuant()));
+            if ( diffe > Constants.moneyExilon){
+
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se puede enviar el cierre administrativo. "
+                        + (totalInCard + totalInCash + totalExpenses - (new Price(null,receiptTotal).plusIva().getQuant()) < 0 ? "Faltan" : "Sobran")
+                        + " " + Constants.df.format(diffe) + " bs ");
+                msg.show(this);
+                return;
+            }
+
+            if ( Math.abs(ConnectionDrivers.getTotalDeclared(myDay) - receiptTotal) > Constants.moneyExilon ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se puede enviar el cierre administrativo. Lo total declarado no coincide con lo facturado.");
+                msg.show(this);
+                return;
+            }
+
             String ansMoney = "";
             SrvSap ss = new SrvSap();
             IsrvSap isrvs = ss.getBasicHttpBindingIsrvSap();
@@ -1357,12 +1359,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             List< ReceiptSap > CreditNoteGroup = new LinkedList<ReceiptSap>();
             // CN
             List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
-            
+
             /*if ( receipts.isEmpty() ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una nota de crédito.");
                 msg.show(this);
                 return;
             }*/
+            // TODO UNCOMMENT THIS
             ReceiptSap rs = new ReceiptSap(myDay);
             int previousId = -1;
             String previousCli = "Contado";
@@ -1546,6 +1549,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             if ( !ansI.isEmpty() ) {
                 ansTP = ansI;
             }
+
+            //String ansTP = "";
+            // UNCOMMENT THIS
+            /*try{
+                Shared.createBackup();
+            }catch( Exception ex ){
+                ansTP = "File Error";
+            }*/
 
             String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansTP + " </html>" ;
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);

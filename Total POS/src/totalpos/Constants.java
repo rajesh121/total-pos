@@ -21,7 +21,7 @@ public class Constants {
     protected static final String companyName = "Grupo Total 99";
     protected static final String appName = "Total POS";
 
-    protected static final int numberConnection = 5;
+    protected static final int numberConnection = 1;
 
     //protected static final String dbHost = "localhost";
     protected static final String dbName = "gt99";
@@ -43,13 +43,16 @@ public class Constants {
     protected static final String ftpUser = "gt99";
     protected static final String ftpPass = "X)!<jeS-8.;";
     protected static final String ftpDir = "/www/gtotal99/datos/gt99";
+    protected static final String ftpBackupAddr = "192.168.0.78";
+    protected static final String ftpBackupUser = "tienda";
+    protected static final String ftpBackupPassword = "Admingt.99Administrador";
 
     protected static final String[] tablesToMirrorAtBegin = {"articulo","usuario","codigo_de_barras","costo",
         "precio","tipo_de_usuario","tipo_de_usuario_puede","asigna","configuracion","nodo","punto_de_venta","cliente"};
     protected static final String[] tablesToMirrorAtDay = {"articulo","precio"};
     protected static final String[] tablesToCleanMirror = {"forma_de_pago","factura_contiene","factura","nota_de_credito_contiene","nota_de_credito"};
 
-    protected static final String[] var2check = {"Server","ServerMirror","myId","printerPort"};
+    protected static final String[] var2check = {"Server","ServerMirror","myId","printerPort", "printerDriver"};
 
     protected static final String scriptReplicateName = "replicate.bat";
     protected static final String rootDir = "./";
@@ -72,6 +75,8 @@ public class Constants {
     protected static final SimpleDateFormat sdfDay2DB = new SimpleDateFormat("yyyy-MM-dd");
     protected static final SimpleDateFormat sdfDateHour = new SimpleDateFormat("dd-MM-yyyy / h:mm:ss a");
     protected static final SimpleDateFormat sdfDay2SAP = new SimpleDateFormat("yyyyMMdd");
+    protected static final SimpleDateFormat sdf4backup = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss-a");
+    protected static final SimpleDateFormat sdf4ncr = new SimpleDateFormat("dd MM yyyy hh mm ss a");
     protected static final DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yy");
     protected static final DecimalFormat df = new DecimalFormat("#0.00");
     protected static final DecimalFormat df2z = new DecimalFormat("0000");
@@ -81,7 +86,12 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = false;
+    protected static final boolean isPos = true;
+
+    protected static final byte nonfiscalDoc = 3;
+    protected static final int normalFont = 1;
+    protected static final int bigFont = 49;
+    protected static final int yearMod = 1;
 
     protected static String maximunId = "999999999";
     protected static String minimunId = "0";
@@ -137,14 +147,16 @@ public class Constants {
     protected static final String fileName4ConfigRar = "config.rar";
     protected static final String fileName4Config = "config.txt";
     protected static final String scriptConfig = "config.bat";
+    protected static final String tmpScript = "tmp.bat";
     protected static final String fileName4Report = "report.txt";
     protected static final String[] forbiddenWords = {"delete","upgrade","insert","drop", "create"};
 
-    protected static final String[] outcomingItems = {"906" , "551" , "905" , "702" , "302"};
-    protected static final String[] incomingItems = {"904" , "301" , "701" , "907"};
-    protected static final String bwartMovement = "309";
+    protected static final String[] outcomingItems = {"906" , "551" , "905" , "702" };
+    protected static final String[] incomingItems = {"904" , "701" , "907"};
+    protected static final String[] bwartMovement = {"309" , "302" , "301"};
 
     protected static double exilon = .0001;
+    protected static double moneyExilon = 2.0;
     protected static String changeQuant = "quant";
     protected static String changeReceipt = "cn";
     protected static String tmpFtpFileName = "file.rar";

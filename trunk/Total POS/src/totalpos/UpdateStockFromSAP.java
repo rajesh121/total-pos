@@ -1,10 +1,6 @@
 package totalpos;
 
 import java.awt.Window;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ws.WS;
 import ws.WSService;
 
@@ -46,6 +42,7 @@ public class UpdateStockFromSAP implements Doer{
 
             if ( mode.equals("MM") ){
                 String ansListMM = ws.listMM(ConnectionDrivers.getLastMM());
+                //String ansListMM = ws.listMM("4900392870");
                 System.out.println(" ansListMM = " + ansListMM );
 
                 String itemsNeeded = ConnectionDrivers.createNewMovement(ansListMM);

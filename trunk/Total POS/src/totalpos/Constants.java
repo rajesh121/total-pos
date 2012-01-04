@@ -52,7 +52,8 @@ public class Constants {
     protected static final String[] tablesToMirrorAtDay = {"articulo","precio"};
     protected static final String[] tablesToCleanMirror = {"forma_de_pago","factura_contiene","factura","nota_de_credito_contiene","nota_de_credito"};
 
-    protected static final String[] var2check = {"Server","ServerMirror","myId","printerPort", "printerDriver"};
+    //protected static final String[] var2check = {"Server","ServerMirror","myId","printerPort", "printerDriver"};
+    protected static final String[] var2check = {"Server","ServerMirror","myId","printerPort"};
 
     protected static final String scriptReplicateName = "replicate.bat";
     protected static final String rootDir = "./";
@@ -86,9 +87,13 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = true;
+    protected static final boolean isPos = false;
+
+    protected static final int ncrYearOffset = 10;
 
     protected static final byte nonfiscalDoc = 3;
+    protected static final byte receipt = 0;
+    protected static final byte creditNote = 1;
     protected static final int normalFont = 1;
     protected static final int bigFont = 49;
     protected static final int yearMod = 1;

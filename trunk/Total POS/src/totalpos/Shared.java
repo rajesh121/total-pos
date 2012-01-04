@@ -460,9 +460,9 @@ public class Shared {
         }
     }
 
-    public static void what2DoWithReceipt(MainRetailWindows myParent , String msg){
+    public static void what2DoWithReceipt(MainRetailWindows myParent , Exception msg){
         try{
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter);
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter , msg);
             msb.show(null);
 
             myParent.toWait();
@@ -723,6 +723,14 @@ public class Shared {
             }
         }
         return reason;
+    }
+
+    public static String b2s(byte b[]) {
+        // Converts C string to Java String
+        int len = 0;
+        while (len < b.length && b[len] != 0)
+        ++len;
+        return new String(b, 0, len);
     }
 
     protected static String now4backup(){

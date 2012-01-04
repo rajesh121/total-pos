@@ -1,5 +1,5 @@
 Title==Resumen de Ventas
-Columns==Documento,tipo,String|Nro,codigo_interno,String|Fecha,fc,String|Nro Fiscal,numero_fiscal,String|Nro Fiscal,numero_reporte_z,String|Impresora,impresora,String|Ref.,referencia,String|Monto,total_con_iva,bigDecimalType,1
+Columns==Documento,tipo,String|Nro,codigo_interno,String|Fecha,fc,String|Nro Fiscal,numero_fiscal,String|Nro Reporte Z,numero_reporte_z,String|Impresora,impresora,String|Ref.,referencia,String|Monto,total_con_iva,bigDecimalType,1
 ShowNumbers==True
 Parameters==Fecha Inicial (Obligatorio),,Date,1:3|Fecha Final (Obligatorio),,Date,2:4
 SQL==select "Factura" as tipo, codigo_interno , DATE_FORMAT(fecha_creacion,'%d-%m-%y %h:%i') as fc ,  numero_fiscal , numero_reporte_z , impresora , " - " as referencia , total_con_iva*(1.0-descuento_global) as total_con_iva from factura where ? <= fecha_creacion and fecha_creacion <= adddate(?,1) and estado='Facturada' union select "Nota de Credito" as tipo , codigo_interno , DATE_FORMAT(fecha_creacion,'%d-%m-%y %h:%i') as fc ,  numero_fiscal , numero_reporte_z , impresora , codigo_factura as referencia ,-1*total_con_iva from nota_de_credito where ? <= fecha_creacion and fecha_creacion <= adddate(?,1) and estado='Nota'

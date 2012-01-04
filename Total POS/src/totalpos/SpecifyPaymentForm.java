@@ -342,6 +342,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
                 MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");
                 msb.show(null);
             }else{
+                myParent.printer.isReceipt = true;
                 myParent.printer.printerSerial = null;
                 if (!myParent.printer.checkPrinter()) {
                     MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema. No se puede continuar");
@@ -363,12 +364,12 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
             Shared.reload();
         } catch (FileNotFoundException ex) {
             workingFrame.setVisible(false);
-            Shared.what2DoWithReceipt(myParent, "No se pudo leer el número fiscal");
+            Shared.what2DoWithReceipt(myParent, ex);
             this.dispose();
             myParent.printer.forceClose();
         } catch (Exception ex) {
             workingFrame.setVisible(false);
-            Shared.what2DoWithReceipt(myParent , ex.getMessage());
+            Shared.what2DoWithReceipt(myParent , ex);
             this.dispose();
             myParent.printer.forceClose();
         }

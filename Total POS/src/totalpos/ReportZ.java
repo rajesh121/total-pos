@@ -177,6 +177,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "La cantidad es inválida");
             msg.show(this);
         } catch (Exception ex) {
+            System.out.println("Exception " + ex.getMessage());
             String kindErr = "";
 
             if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {

@@ -3635,6 +3635,10 @@ public class ConnectionDrivers {
         for (Object x : xml.getChildren()) {
             XMLElement xmlI = (XMLElement)x;
 
+            // TODO QUITAR
+            /*if ( !xmlI.getAttribute("MBLNR").equals("4900392898") && !xmlI.getAttribute("MBLNR").equals("4900392871") ){
+                continue;
+            }*/
             int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
 
             System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR"));
@@ -3784,7 +3788,7 @@ public class ConnectionDrivers {
     }
 
     static void ensureTotalReceipt(Connection c, String actualId) throws SQLException {
-        PreparedStatement stmt = c.prepareStatement("select sum(precio_venta - precio_venta*descuento/100) as total from factura_contiene where codigo_interno_factura = ? ");
+        PreparedStatement stmt = c.prepareStatement("select sum((precio_venta - precio_venta*descuento/100)*cantidad) as total from factura_contiene where codigo_interno_factura = ? ");
         stmt.setString(1, actualId);
         ResultSet rs = stmt.executeQuery();
         rs.next();

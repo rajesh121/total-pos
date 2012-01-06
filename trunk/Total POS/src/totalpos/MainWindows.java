@@ -12,17 +12,12 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.GroupLayout;
@@ -269,6 +264,9 @@ public class MainWindows extends javax.swing.JFrame {
                 usfs.updateStockFromSAP();
             } else if ( ed.getFuncion().equals("updatePrices")) {
                 UpdateStockFromSAP usfs = new UpdateStockFromSAP("Prices");
+                usfs.updateStockFromSAP();
+            } else if ( ed.getFuncion().equals("initialStock") ){
+                UpdateStockFromSAP usfs = new UpdateStockFromSAP("initialStock");
                 usfs.updateStockFromSAP();
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");

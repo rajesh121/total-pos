@@ -2296,9 +2296,10 @@ public class ConnectionDrivers {
                 + "do.dinero_efectivo, do.dinero_tarjeta_credito + do.dinero_tarjeta_debito as dinero_tarjeta "
                 + ", do.nota_de_credito , sum(me.monto) as retiros , do.dinero_efectivo+sum(me.monto) as suma from dia_operativo do ,"
                 + " movimiento_efectivo me where datediff( do.fecha , ? ) = 0 and me.identificador_punto_de_venta "
-                + "= do.codigo_punto_de_venta group by codigo_punto_de_venta");
+                + "= do.codigo_punto_de_venta and datediff(me.fecha,?)=0 group by codigo_punto_de_venta");
 
         stmt.setString(1, day);
+        stmt.setString(2, day);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -3257,6 +3258,15 @@ public class ConnectionDrivers {
         stmt.executeUpdate();
     }
 
+    protected static void updateLastCN(String lastCN) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_nota_de_credito = ? where identificador = ? ");
+        stmt.setString(1, lastCN);
+        stmt.setString(2, Shared.getFileConfig("myId"));
+        stmt.executeUpdate();
+        c.close();
+    }
+
     protected static String getLastReceipt() throws SQLException {
         String ans = "";
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -3693,7 +3703,7 @@ public class ConnectionDrivers {
         return baos.toString();
     }
 
-    static void createItems(String ansDescriptions) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
+    static void createItems(String ansDescriptions, boolean checkReason) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
@@ -3726,7 +3736,10 @@ public class ConnectionDrivers {
         Iterator<XMLElement> itr = Shared.itemsNeeded.iterator();
         while ( itr.hasNext() ){
             XMLElement xmlI = itr.next();
-            int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
+            int reason = 1;
+            if ( checkReason ){
+                reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
+            }
             if ( reason == 0 ){
                 // we are in problems... =(
             }else{
@@ -3851,6 +3864,79 @@ public class ConnectionDrivers {
         c.close();
 
         return ans;
+    }
+
+    static String getInitialStock(String xmlMovement) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, IOException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        Shared.itemsNeeded = new LinkedList<XMLElement>();
+
+        IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+        IXMLReader reader = StdXMLReader.stringReader(xmlMovement);
+        parser.setReader(reader);
+        IXMLElement xml = (IXMLElement) parser.parse();
+
+        System.out.println(xml.getName());
+        TreeSet<String> movements = new TreeSet<String>();
+
+        for (Object x : xml.getChildren()) {
+            XMLElement xmlI = (XMLElement)x;
+
+            // TODO QUITAR
+            /*if ( !xmlI.getAttribute("MBLNR").equals("4900392898") && !xmlI.getAttribute("MBLNR").equals("4900392871") ){
+                continue;
+            }*/
+            int reason = 1;
+
+            System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR") + " MENGE = " + xmlI.getAttribute("MENGE"));
+            PreparedStatement stmt = c.prepareStatement("insert into detalles_movimientos"
+                    + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( ? , ? , ? , ? )");
+            stmt.setString(1, xmlI.getAttribute("MBLNR"));
+            stmt.setString(2, xmlI.getAttribute("MATNR"));
+            stmt.setInt(3, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+            stmt.setString(4, xmlI.getAttribute("BWART"));
+            stmt.executeUpdate();
+
+            movements.add(xmlI.getAttribute("MBLNR"));
+
+            if ( reason == 0 ){
+                // we are in problems... =(
+            }else{
+                stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
+                stmt.setString(2, xmlI.getAttribute("MATNR"));
+                stmt.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+                int ans = stmt.executeUpdate();
+                if ( ans == 0 ){
+                    Shared.itemsNeeded.add(xmlI);
+                }
+            }
+        }
+
+        Iterator<String> itrs = movements.iterator();
+        while(itrs.hasNext()){
+            String id = itrs.next();
+            PreparedStatement stmt = c.prepareStatement("insert into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
+                    + "values (? , now() , ? , ? , ?)");
+            stmt.setString(1, id);
+            stmt.setString(2, "Stock Inicial");
+            stmt.setString(3, id);
+            stmt.setString(4, "");
+            stmt.executeUpdate();
+        }
+
+
+        XMLElement ans = new XMLElement("ITEMSNEEDED");
+
+        for( XMLElement it : Shared.itemsNeeded){
+            IXMLElement ansi = ans.createElement("ITEM");
+            ans.addChild(ansi);
+            ansi.setContent( it.getAttribute("MATNR") );
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLWriter xmlw = new XMLWriter(baos);
+        xmlw.write(ans);
+        return baos.toString();
     }
 
 }

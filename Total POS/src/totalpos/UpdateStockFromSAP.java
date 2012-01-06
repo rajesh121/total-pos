@@ -49,7 +49,7 @@ public class UpdateStockFromSAP implements Doer{
                 System.out.println("itemsNeeded = " + itemsNeeded);
                 String ansDescriptions = ws.listDescriptionFromItems(itemsNeeded);
 
-                ConnectionDrivers.createItems(ansDescriptions);
+                ConnectionDrivers.createItems(ansDescriptions, true);
 
                 String ansPricesDiscounts = ws.listPriceFromItemList(itemsNeeded , Shared.getConfig("Z") , Constants.storePrefix+Shared.getConfig("storeName"));
 
@@ -63,6 +63,21 @@ public class UpdateStockFromSAP implements Doer{
                 System.out.println("newPrices = " + newPrices);
                 ConnectionDrivers.setPrices(newPrices);
                 ConnectionDrivers.setLastUpdateNow();
+            }else if ( mode.equals("initialStock") ){
+                String ansListMM = ws.getInitialStock();
+                System.out.println(" ansListMM = " + ansListMM );
+                String itemsNeeded = ConnectionDrivers.getInitialStock(ansListMM);
+                System.out.println("itemsNeeded = " + itemsNeeded);
+                String ansDescriptions = ws.listDescriptionFromItems(itemsNeeded);
+
+                ConnectionDrivers.createItems(ansDescriptions, false);
+
+                String ansPricesDiscounts = ws.listPriceFromItemList(itemsNeeded , Shared.getConfig("Z") , Constants.storePrefix+Shared.getConfig("storeName"));
+
+                System.out.println("ansPricesDiscounts = " + ansPricesDiscounts);
+
+                ConnectionDrivers.setPrices(ansPricesDiscounts);
+                System.out.println("Listo!");
             }
 
 

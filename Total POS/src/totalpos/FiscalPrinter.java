@@ -521,7 +521,7 @@ public class FiscalPrinter {
     }
 
     public void printCreditNote(List<Item2Receipt> items, String ticketId, String myId, User u , Client client, String alternativeId) throws Exception{
-        if ( Constants.withFiscalPrinter ){
+        if ( !Constants.withFiscalPrinter ){
             return;
         }
 
@@ -573,10 +573,11 @@ public class FiscalPrinter {
 
             ans = printer.CloseDoc(.0, new Price(null, subtotal).plusIva().getQuant(), .0, .0,
                     .0, .0, .0, .0, (byte)12 , (byte)69, ticketId);
-            TQueryPrnTransaction tqpr = new TQueryPrnTransaction();
-            //printer.QueryPrnTransaction((byte)1, tqpr);
-            TQueryPrnStatus tqps = new TQueryPrnStatus();
-            //printer.QueryPrnStatus(tqps);
+
+            TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
+            ans = printer.QueryPrnTransaction((byte)1, tqpt);
+
+            lastReceipt = tqpt.VoucherDev + "";
 
             if ( ans != 0 ){
                 System.out.println(Shared.ncrErrMapping.get(ans));
@@ -783,13 +784,19 @@ public class FiscalPrinter {
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
 
-            System.out.println("Casi actualiza...");
             System.out.println(" Pago 1 = " + Double.parseDouble(Shared.b2s(tqpr.FPago1))/100.0);
 
             ConnectionDrivers.updateFiscalNumbers(Double.parseDouble(Shared.b2s(tqpr.FPago1))/100.0,
                     Double.parseDouble(Shared.b2s(tqpr.FPago2))/100.0,
                     Double.parseDouble(Shared.b2s(tqpr.FPago4))/100.0,
                     Double.parseDouble(Shared.b2s(tqpr.FPago3))/100.0);
+
+            System.out.println(" Venta A = " + Double.parseDouble(Shared.b2s(tqpr.VtaA))/100.0);
+            System.out.println(" Dev A = " + Double.parseDouble(Shared.b2s(tqpr.DevA))/100.0);
+
+            Double total = Double.parseDouble(Shared.b2s(tqpr.VtaA))/100.0 - Double.parseDouble(Shared.b2s(tqpr.DevA))/100.0;
+            //tqpr.
+            ConnectionDrivers.updateTotalFromPrinter(total, z ,tqpr.VoucherVta+"",0,tqpr.VoucherDev+"",0);
 
             printer.ClosePort();
             System.out.println("Termino de actualizar valores");
@@ -876,40 +883,98 @@ public class FiscalPrinter {
 
     // Pre: updateValues()
     void printResumeZ() throws Exception{
-        if ( Constants.withFiscalPrinter ){
+        if ( !Constants.withFiscalPrinter ){
             return;
         }
 
-        isOk = false;
-        IntByReference a = new IntByReference();
-        IntByReference b = new IntByReference();
-        printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
+        if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
+            isOk = false;
+            int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
-        List<String> buffer = new ArrayList<String>();
-        buffer.add("800 ");
-        buffer.add("800 Resumen del Reporte Z Nro " + z);
-        buffer.add("800 Impresora Fiscal Serial Nro " + printerSerial );
-        buffer.add("800 ");
-        buffer.add("800 Sucursal: " + Shared.getConfig("storeName"));
-        buffer.add("800 Caja Nro: " + Shared.getFileConfig("myId"));
-        buffer.add("800 Ult Factura:        " + ConnectionDrivers.getLastReceipt());
-        buffer.add("800 Ult Nota de Credito " + ConnectionDrivers.getLastCN());
-        buffer.add("800 Nro de Ventas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas"));
-        buffer.add("800 Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito"));
-        buffer.add("800 ");
-        buffer.add("800 Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"))));
-        buffer.add("800 ");
-        buffer.add("810 Fin de Resumen del Reporte Z Nro " + z);
-
-         for (String bu : buffer) {
-            printer.SendCmd(a, b, bu);
-            if ( b.getValue() != 0 ){
-                throw new Exception(Shared.getErrMapping().get(b.getValue()));
+            if ( ans != 0 ){
+                throw new Exception(Shared.ncrErrMapping.get(ans));
             }
-        }
 
-        printer.CloseFpctrl();
-        isOk = true;
+            Calendar calendar = GregorianCalendar.getInstance();
+            Date dd = Constants.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
+            calendar.setTime(dd);
+
+            ans = printer.NewDoc(Constants.nonfiscalDoc, "SAUL", "123",
+                    Shared.getUser().getLogin(), "", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
+                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
+                    (calendar.get(Calendar.MONTH)+1), 24, (calendar.get(Calendar.HOUR)+12)%13,
+                    calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
+                    ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendar.get(Calendar.DAY_OF_MONTH)),
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
+                    calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
+                    ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+
+            if ( ans != 0 ){
+                throw new Exception(Shared.ncrErrMapping.get(ans));
+            }
+
+            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",1,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Resumen del Reporte Z Nro " + z ,2,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Impresora Fiscal Serial Nro " + printerSerial,1,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," ",3,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Sucursal: " + Shared.getConfig("storeName"),4,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Caja Nro: " + Shared.getFileConfig("myId"),5,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Ult Factura:        " + ConnectionDrivers.getLastReceipt(),6,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Ult Nota de Credito " + ConnectionDrivers.getLastCN(),7,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas"),8,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito"),9,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"))),11,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," ",12,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Fin de Resumen del Reporte Z Nro " + z,13,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",14,(byte)0);
+
+            if ( ans != 0 ){
+                throw new Exception(Shared.ncrErrMapping.get(ans));
+            }
+
+            ans = printer.CloseDoc(.0, .0, .0, .0, .0, .0, .0, .0, (byte)0, (byte)0, "");
+
+            if ( ans != 0 ){
+                throw new Exception(Shared.ncrErrMapping.get(ans));
+            }
+
+            printer.ClosePort();
+            isOk = true;
+        }else if ( Shared.getFileConfig("printerDriver").equals("tfhkaif") ){
+
+            isOk = false;
+            IntByReference a = new IntByReference();
+            IntByReference b = new IntByReference();
+            printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
+
+            List<String> buffer = new ArrayList<String>();
+            buffer.add("800 ");
+            buffer.add("800 Resumen del Reporte Z Nro " + z);
+            buffer.add("800 Impresora Fiscal Serial Nro " + printerSerial );
+            buffer.add("800 ");
+            buffer.add("800 Sucursal: " + Shared.getConfig("storeName"));
+            buffer.add("800 Caja Nro: " + Shared.getFileConfig("myId"));
+            buffer.add("800 Ult Factura:        " + ConnectionDrivers.getLastReceipt());
+            buffer.add("800 Ult Nota de Credito " + ConnectionDrivers.getLastCN());
+            buffer.add("800 Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas"));
+            buffer.add("800 Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito"));
+            buffer.add("800 ");
+            buffer.add("800 Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"))));
+            buffer.add("800 ");
+            buffer.add("810 Fin de Resumen del Reporte Z Nro " + z);
+
+             for (String bu : buffer) {
+                printer.SendCmd(a, b, bu);
+                if ( b.getValue() != 0 ){
+                    throw new Exception(Shared.getErrMapping().get(b.getValue()));
+                }
+            }
+
+            printer.CloseFpctrl();
+            isOk = true;
+        }else{
+            throw new Exception("Driver de impresora desconocido!");
+        }
     }
     
 }

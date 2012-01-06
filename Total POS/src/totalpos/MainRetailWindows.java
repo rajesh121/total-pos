@@ -107,7 +107,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             
             try {
                 ConnectionDrivers.updateReportZ(printer.getZ());
-                ConnectionDrivers.updateLastReceipt(printer.lastReceipt);
+                //ConnectionDrivers.updateLastReceipt(printer.lastReceipt);
+                printer.updateValues();
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
                 msb.show(myParent);

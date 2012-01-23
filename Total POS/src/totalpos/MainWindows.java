@@ -268,6 +268,10 @@ public class MainWindows extends javax.swing.JFrame {
             } else if ( ed.getFuncion().equals("initialStock") ){
                 UpdateStockFromSAP usfs = new UpdateStockFromSAP("initialStock");
                 usfs.updateStockFromSAP();
+            } else if ( ed.getFuncion().equals("sendSells") ){
+                SendSellsFrom ssf = new SendSellsFrom();
+                mdiPanel.add(ssf);
+                ssf.setVisible(true);
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);

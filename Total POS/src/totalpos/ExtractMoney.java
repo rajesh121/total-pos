@@ -227,6 +227,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
             workingFrame.setVisible(true);
 
             ws.execute();
+            //doIt();
         }
 }//GEN-LAST:event_moneyFieldKeyPressed
 

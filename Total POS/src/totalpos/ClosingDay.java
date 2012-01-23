@@ -226,7 +226,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         expensesTodayField.setText( Constants.df.format(totalExpenses = expensesD) );
         totalDeclaredField.setText(Constants.df.format(totalDeclared*(Shared.getIva()+100.0)/100.0));
         expensesMinusDeclaredField.setText(Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0));
-        totalField.setText(Constants.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 + totalCN - totalInCard - totalInCash-expensesD-totalpcn)));
+        totalField.setText(Constants.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 - totalInCard - totalInCash-expensesD)));
     }
 
     /** This method is called from within the constructor to
@@ -390,7 +390,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -463,7 +463,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveDeposit)
@@ -569,7 +569,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addDeposit1)
@@ -636,7 +636,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(addExpense)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteExpense, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                        .addComponent(deleteExpense, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveExpense)))
                 .addContainerGap())
@@ -644,7 +644,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveExpense)
@@ -695,13 +695,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -751,7 +751,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -850,7 +850,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         totalField.setName("totalField"); // NOI18N
 
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel11.setText("Faltante");
+        jLabel11.setText("Falta(+)/Sobra(-)");
         jLabel11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel11.setName("jLabel11"); // NOI18N
 
@@ -979,7 +979,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(totalField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(updateButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1013,7 +1013,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(noteLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(noteField, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)))
+                        .addComponent(noteField, javax.swing.GroupLayout.DEFAULT_SIZE, 883, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1303,11 +1303,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 return;
             }
 
-            if ( Math.abs(ConnectionDrivers.getTotalDeclared(myDay) - receiptTotal) > Constants.moneyExilon ){
+            /*if ( Math.abs(ConnectionDrivers.getTotalDeclared(myDay) - receiptTotal) > Constants.moneyExilon ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se puede enviar el cierre administrativo. Lo total declarado no coincide con lo facturado.");
                 msg.show(this);
                 return;
-            }
+            }*/
 
             String ansMoney = "";
             SrvSap ss = new SrvSap();
@@ -1356,211 +1356,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 System.out.println("ansMoney = " + ansMoney);
             }
 
-            List< ReceiptSap > CreditNoteGroup = new LinkedList<ReceiptSap>();
-            // CN
-            List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
-
-            /*if ( receipts.isEmpty() ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una nota de crédito.");
-                msg.show(this);
-                return;
-            }*/
-            // TODO UNCOMMENT THIS
-            ReceiptSap rs = new ReceiptSap(myDay);
-            int previousId = -1;
-            String previousCli = "Contado";
-            for (Receipt receipt : receipts) {
-                if ( receipt.getFiscalNumber().isEmpty() ){
-                    System.out.println("Error con la factura " + receipt.getInternId());
-                    continue;
-                }
-                if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) 
-                        && receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
-                    rs.add(receipt);
-                }else{
-                    CreditNoteGroup.add(rs);
-                    rs = new ReceiptSap(myDay);
-                    rs.add(receipt);
-                }
-                previousId = Integer.parseInt(receipt.getFiscalNumber());
-                previousCli = receipt.getClientId();
-            }
-            if ( rs.getSize() > 0 ){
-                CreditNoteGroup.add(rs);
-            }
-
-            IXMLElement xmlCN = new XMLElement("Notas");
-
-            for (ReceiptSap receiptSap : CreditNoteGroup) {
-                IXMLElement child = xmlCN.createElement("CN");
-                xmlCN.addChild(child);
-                child.setAttribute("getId", receiptSap.getId());
-                child.setAttribute("getKind", receiptSap.getKind());
-                child.setAttribute("getClient", receiptSap.getClient());
-                child.setAttribute("range", receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
-                child.setAttribute("getZ", receiptSap.getZ());
-                child.setAttribute("getPrinterId", receiptSap.getPrinterId());
-                int position = 1;
-                for (Receipt receipt : receiptSap.receipts) {
-                    for (Item2Receipt item2Receipt : receipt.getItems()) {
-                        IXMLElement childchild = child.createElement("CND");
-                        child.addChild(childchild);
-                        childchild.setAttribute("id", "D" + receiptSap.getId());
-                        childchild.setAttribute("position", Constants.df2intSAP.format(position++));
-                        childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
-                        childchild.setAttribute("quant", item2Receipt.getQuant().toString());
-                        childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
-                        childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
-                        childchild.setAttribute("discount", (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice()+"");
-                    }
-
-                }
-                System.out.println("child = " + receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
-            }
-            List< ReceiptSap > receiptGroup = new LinkedList<ReceiptSap>();
-            receipts = ConnectionDrivers.listOkReceipts(myDay);
-
-            if ( receipts.isEmpty() ){
-                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una factura.");
-                msg.show(this);
-                return;
-            }
-            rs = new ReceiptSap(myDay);
-            previousId = -1;
-            previousCli = "Contado";
-            Double previousDis = -1.0;
-
-            List<String> clients = new LinkedList<String>();
-
-            for (Receipt receipt : receipts) {
-
-                if ( !receipt.getClientId().equals("Contado") ){
-                    clients.add(receipt.getClientId());
-                }
-
-                if ( receipt.getFiscalNumber().isEmpty() ){
-                    System.out.println("Error con la factura " + receipt.getInternId());
-                    continue;
-                }
-                if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) && 
-                        receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) &&
-                        ( Math.abs(receipt.getGlobalDiscount() - previousDis) < Constants.exilon || previousDis == -1.0 )){
-                    rs.add(receipt);
-                }else{
-                    receiptGroup.add(rs);
-                    rs = new ReceiptSap(myDay);
-                    rs.add(receipt);
-                }
-                previousId = Integer.parseInt(receipt.getFiscalNumber());
-                previousCli = receipt.getClientId();
-                previousDis = receipt.getGlobalDiscount();
-            }
-            if ( rs.getSize() > 0 ){
-                receiptGroup.add(rs);
-            }
-
-            IXMLElement xmlRe = new XMLElement("Facturas");
-
-            for (ReceiptSap receiptSap : receiptGroup) {
-                IXMLElement child = xmlRe.createElement("Re");
-                xmlRe.addChild(child);
-                child.setAttribute("getId", receiptSap.getId());
-                child.setAttribute("getKind", receiptSap.getKind());
-                child.setAttribute("getClient", receiptSap.getClient());
-                child.setAttribute("range", receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
-                child.setAttribute("getZ", receiptSap.getZ());
-                child.setAttribute("getPrinterId", receiptSap.getPrinterId());
-
-                int position = 1;
-                for (Receipt receipt : receiptSap.receipts) {
-                    Double gDisc = receipt.getGlobalDiscount();
-                    for (Item2Receipt item2Receipt : receipt.getItems()) {
-                        IXMLElement childchild = child.createElement("CND");
-                        child.addChild(childchild);
-                        childchild.setAttribute("id", "F" + receiptSap.getId());
-                        childchild.setAttribute("position", Constants.df2intSAP.format(position++));
-                        childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
-                        childchild.setAttribute("quant", item2Receipt.getQuant().toString());
-                        childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
-                        childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
-                        Double tmpD = (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice();
-                        childchild.setAttribute("discount", tmpD + gDisc*(item2Receipt.getSellDiscount()-tmpD) +"");
-                    }
-
-                }
-                System.out.println("child = " +receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
-            }
-
-            XMLElement clienXML = new XMLElement("Clientes");
-            
-
-            List<Object> clientC = new LinkedList<Object>();
-            for (String c : clients) {
-                Client cc = ConnectionDrivers.listClients(c).get(0);
-                IXMLElement client = clienXML.createElement("C");
-                client.setAttribute("ID", cc.getId());
-                String tname = cc.getName();
-                client.setAttribute("Name", tname.substring(0,Math.min(35, tname.length())));
-                String tc = cc.getAddress() + " Tlf: " + cc.getPhone();
-                client.setAttribute("Addr", (tc).substring(0, Math.min(30,tc.length())));
-                clienXML.addChild(client);
-            }
-
-            String ansTP = "OK";
-            System.out.println("Comienzo de envio");
-            WS ws = new WSService().getWSPort();
-            String ansI = ws.initialize(myDay, Shared.getConfig("storeName"));
-            System.out.println("Inicializar = " + ansI);
-            if ( !ansI.isEmpty() ) {
-                ansTP = ansI;
-            }
-            ansI = ws.deleteDataFrom();
-            System.out.println("Eliminar = " + ansI);
-            if ( !ansI.isEmpty() ) {
-                ansTP = ansI;
-            }
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            XMLWriter xmlw = new XMLWriter(baos);
-            xmlw.write(xmlCN);
-            ansI = ws.sendCreditNotes(baos.toString());
-            System.out.println("Nota de Credito = " + ansI );
-            if ( !ansI.isEmpty() ) {
-                ansTP = ansI;
-            }
-            ByteArrayOutputStream baosF = new ByteArrayOutputStream();
-            XMLWriter xmlwF = new XMLWriter(baosF);
-            xmlwF.write(xmlRe);
-            ansI =  ws.sendReceipts(baosF.toString());
-            System.out.println("Facturas = " + ansI );
-            if ( !ansI.isEmpty() ) {
-                ansTP = ansI;
-            }
-            ByteArrayOutputStream baosC = new ByteArrayOutputStream();
-            XMLWriter xmlwC = new XMLWriter(baosC);
-            xmlwC.write(clienXML);
-            ansI = ws.sendClients(baosC.toString());
-            System.out.println("Clientes = " + ansI);
-            if ( !ansI.isEmpty() ) {
-                ansTP = ansI;
-            }
-            ansI = ws.createDummySeller();
-            System.out.println("Vend = " + ansI );
-
-            if ( !ansI.isEmpty() ) {
-                ansTP = ansI;
-            }
-
-            //String ansTP = "";
-            // UNCOMMENT THIS
-            /*try{
-                Shared.createBackup();
-            }catch( Exception ex ){
-                ansTP = "File Error";
-            }*/
-
-            String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansTP + " </html>" ;
-            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
-            msg.show(this);
+            Shared.sendSells(myDay,this,ansMoney);
 
             ConnectionDrivers.closeThisDay(myDay);
             new CreateClosingDayReport(myDay,noteField.getText(), Shared.round((receiptTotal*(Shared.getIva()+100.0)/100.0),2));

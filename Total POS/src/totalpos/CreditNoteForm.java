@@ -607,7 +607,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
                 return;
             }
             actualId = Shared.nextIdCN(0);
-            myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client, receipt.getAlternativeID());
+            myParent.printer.printCreditNote(items, receipt.getInternId(), actualId, myParent.getUser(), client, receipt.getAlternativeID(), receipt.getFiscalNumber(), receipt.getFiscalPrinter() , receipt.getPrintingDate());
             ConnectionDrivers.createCreditNote(actualId, receipt.getInternId(), myParent.getUser().getLogin(), myParent.getAssign(), items);
 
             ConnectionDrivers.setAllFiscalDataCN(actualId, myParent.printer.getSerial() , myParent.printer.getZ() , myParent.printer.getLastFiscalNumber());

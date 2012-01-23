@@ -1907,7 +1907,7 @@ public class ConnectionDrivers {
         }
         
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select " + campoId + " , estado , fecha_creacion , codigo_de_cliente , total_con_iva ,"
+        PreparedStatement stmt = c.prepareStatement("select " + campoId + " , estado , fecha_creacion , fecha_impresion, codigo_de_cliente , total_con_iva ,"
                 + "impresora , numero_fiscal , numero_reporte_z , descuento_global, codigo_interno_alternativo "
                 + " from factura where " + campoIdW + " = ? and estado='Facturada'");
         stmt.setString(1, id);
@@ -1916,7 +1916,7 @@ public class ConnectionDrivers {
 
         Receipt ans = null;
         if ( ok ){
-            ans = new Receipt(rs.getString(campoId), "Facturada",rs.getTimestamp("fecha_creacion"), null, rs.getString("codigo_de_cliente")
+            ans = new Receipt(rs.getString(campoId), "Facturada",rs.getTimestamp("fecha_creacion"), rs.getTimestamp("fecha_impresion"), rs.getString("codigo_de_cliente")
                     , null, rs.getDouble("total_con_iva"), rs.getDouble("descuento_global"), null, rs.getString("impresora"),
                     rs.getString("numero_fiscal"), rs.getString("numero_reporte_z"),
                     null, null, listItems2Receipt(rs.getString(campoId)), null, rs.getString("codigo_interno_alternativo"));
@@ -2905,6 +2905,13 @@ public class ConnectionDrivers {
         stmt.setInt(7, nNC);
         stmt.setString(8, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
+
+        stmt = c.prepareStatement("update punto_de_venta set ultima_factura = ? , ultima_nota_de_credito = ? where identificador = ? ");
+        stmt.setString(1, lReceipt);
+        stmt.setString(2, lastCN);
+        stmt.setString(3, Shared.getFileConfig("myId"));
+        stmt.executeUpdate();
+
         c.close();
     }
 
@@ -3646,10 +3653,12 @@ public class ConnectionDrivers {
             XMLElement xmlI = (XMLElement)x;
 
             // TODO QUITAR
-            /*if ( !xmlI.getAttribute("MBLNR").equals("4900392898") && !xmlI.getAttribute("MBLNR").equals("4900392871") ){
+            /*if ( !xmlI.getAttribute("MBLNR").equals("4900413822") && !xmlI.getAttribute("MBLNR").equals("4900413822")
+                    && !xmlI.getAttribute("MBLNR").equals("4900413824")&& !xmlI.getAttribute("MBLNR").equals("4900414486")){
                 continue;
             }*/
             int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
+            //reason *= -1;
 
             System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR"));
             PreparedStatement stmt = c.prepareStatement("insert into detalles_movimientos"
@@ -3729,7 +3738,14 @@ public class ConnectionDrivers {
                 stmt.setString(7, "0");
                 stmt.executeUpdate();
 
+                stmt = c.prepareStatement("insert IGNORE into codigo_de_barras(codigo_de_articulo,codigo_de_barras) values(?,?)");
+
+                stmt.setString(1, xmlI.getAttribute("MATNR"));
+                stmt.setString(2, xmlI.getAttribute("EAN11"));
+                stmt.executeUpdate();
+
                 itemsNeededJustOnce.add(xmlI.getAttribute("MATNR"));
+
             }
         }
 

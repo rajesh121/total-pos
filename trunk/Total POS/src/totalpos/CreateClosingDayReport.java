@@ -1,4 +1,4 @@
-package totalpos;
+    package totalpos;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;

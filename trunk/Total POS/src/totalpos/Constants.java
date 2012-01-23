@@ -83,6 +83,7 @@ public class Constants {
     protected static final DecimalFormat df2z = new DecimalFormat("0000");
     protected static final DecimalFormat df2int = new DecimalFormat("#00.###");
     protected static final DecimalFormat df2intSAP = new DecimalFormat("#000000.###");
+    protected static final String minimunDate = "20080101";
 
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
@@ -184,4 +185,6 @@ public class Constants {
     protected static String dbRMIPass = "adminsqlp03";
     //protected static String dbRMIPass = "adminsqld03";
     protected static Connection connection;
+
+    protected static int maxNcrDescription = 24;
 }

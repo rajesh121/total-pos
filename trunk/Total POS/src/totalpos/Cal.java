@@ -200,6 +200,8 @@ public class Cal extends JPanel {
         }
         String ans = yy + "-" + Constants.df2int.format(mm+1) + "-" + Constants.df2int.format(dd);
 
+        System.out.println("ans = " + ans);
+
         field.setText( ans );
         parent.dispose();
         if ( isClosingDay ){

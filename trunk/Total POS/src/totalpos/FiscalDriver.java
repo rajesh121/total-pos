@@ -33,4 +33,6 @@ public interface FiscalDriver extends Library{
     public int QueryPrnStatus(Structure PrnStatus);
     public int QueryPrnMemory(int MemRptZ, Structure PrnMem);
     public int OprDoc(byte TipOpr, byte TipIva, double amount, String DscOpr);
+    public int CancelTransaction();
+    public int OpenBox();
 }

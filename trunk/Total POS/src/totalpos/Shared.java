@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,11 +40,15 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import net.n3.nanoxml.IXMLElement;
 import net.n3.nanoxml.XMLElement;
+import net.n3.nanoxml.XMLWriter;
 import srvEntidades.BNKA;
 import srvEntidades.DD07T;
 import srvEntidades.IsrvEntidades;
 import srvEntidades.SrvEntidades;
+import ws.WS;
+import ws.WSService;
 
 /**
  *
@@ -776,6 +781,214 @@ public class Shared {
         client.upload(f);
         client.disconnect(false);
 
+    }
+
+    static void sendSells(String myDay, ClosingDay cd , String ansMoney ) throws SQLException, IOException {
+        List< ReceiptSap > CreditNoteGroup = new LinkedList<ReceiptSap>();
+        // CN
+        List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
+
+        /*if ( receipts.isEmpty() ){
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una nota de crédito.");
+            msg.show(this);
+            return;
+        }*/
+        // TODO UNCOMMENT THIS
+        ReceiptSap rs = new ReceiptSap(myDay);
+        int previousId = -1;
+        String previousCli = "Contado";
+        for (Receipt receipt : receipts) {
+            if ( receipt.getFiscalNumber().isEmpty() ){
+                System.out.println("Error con la factura " + receipt.getInternId());
+                continue;
+            }
+            if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() )
+                    && receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
+                rs.add(receipt);
+            }else{
+                CreditNoteGroup.add(rs);
+                rs = new ReceiptSap(myDay);
+                rs.add(receipt);
+            }
+            previousId = Integer.parseInt(receipt.getFiscalNumber());
+            previousCli = receipt.getClientId();
+        }
+        if ( rs.getSize() > 0 ){
+            CreditNoteGroup.add(rs);
+        }
+
+        IXMLElement xmlCN = new XMLElement("Notas");
+
+        for (ReceiptSap receiptSap : CreditNoteGroup) {
+            IXMLElement child = xmlCN.createElement("CN");
+            xmlCN.addChild(child);
+            child.setAttribute("getId", receiptSap.getId());
+            child.setAttribute("getKind", receiptSap.getKind());
+            child.setAttribute("getClient", receiptSap.getClient());
+            child.setAttribute("range", receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+            child.setAttribute("getZ", receiptSap.getZ());
+            child.setAttribute("getPrinterId", receiptSap.getPrinterId());
+            int position = 1;
+            for (Receipt receipt : receiptSap.receipts) {
+                for (Item2Receipt item2Receipt : receipt.getItems()) {
+                    IXMLElement childchild = child.createElement("CND");
+                    child.addChild(childchild);
+                    childchild.setAttribute("id", "D" + receiptSap.getId());
+                    childchild.setAttribute("position", Constants.df2intSAP.format(position++));
+                    childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
+                    childchild.setAttribute("quant", item2Receipt.getQuant().toString());
+                    childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
+                    childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
+                    childchild.setAttribute("discount", (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice()+"");
+                }
+
+            }
+            System.out.println("child = " + receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+        }
+        List< ReceiptSap > receiptGroup = new LinkedList<ReceiptSap>();
+        receipts = ConnectionDrivers.listOkReceipts(myDay);
+
+        if ( receipts.isEmpty() ){
+            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una factura.");
+            msg.show(cd);
+            return;
+        }
+        rs = new ReceiptSap(myDay);
+        previousId = -1;
+        previousCli = "Contado";
+        Double previousDis = -1.0;
+
+        List<String> clients = new LinkedList<String>();
+
+        for (Receipt receipt : receipts) {
+
+            if ( !receipt.getClientId().equals("Contado") ){
+                clients.add(receipt.getClientId());
+            }
+
+            if ( receipt.getFiscalNumber().isEmpty() ){
+                System.out.println("Error con la factura " + receipt.getInternId());
+                continue;
+            }
+            if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) &&
+                    receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) &&
+                    ( Math.abs(receipt.getGlobalDiscount() - previousDis) < Constants.exilon || previousDis == -1.0 )){
+                rs.add(receipt);
+            }else{
+                receiptGroup.add(rs);
+                rs = new ReceiptSap(myDay);
+                rs.add(receipt);
+            }
+            previousId = Integer.parseInt(receipt.getFiscalNumber());
+            previousCli = receipt.getClientId();
+            previousDis = receipt.getGlobalDiscount();
+        }
+        if ( rs.getSize() > 0 ){
+            receiptGroup.add(rs);
+        }
+
+        IXMLElement xmlRe = new XMLElement("Facturas");
+
+        for (ReceiptSap receiptSap : receiptGroup) {
+            IXMLElement child = xmlRe.createElement("Re");
+            xmlRe.addChild(child);
+            child.setAttribute("getId", receiptSap.getId());
+            child.setAttribute("getKind", receiptSap.getKind());
+            child.setAttribute("getClient", receiptSap.getClient());
+            child.setAttribute("range", receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+            child.setAttribute("getZ", receiptSap.getZ());
+            child.setAttribute("getPrinterId", receiptSap.getPrinterId());
+
+            int position = 1;
+            for (Receipt receipt : receiptSap.receipts) {
+                Double gDisc = receipt.getGlobalDiscount();
+                for (Item2Receipt item2Receipt : receipt.getItems()) {
+                    IXMLElement childchild = child.createElement("CND");
+                    child.addChild(childchild);
+                    childchild.setAttribute("id", "F" + receiptSap.getId());
+                    childchild.setAttribute("position", Constants.df2intSAP.format(position++));
+                    childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
+                    childchild.setAttribute("quant", item2Receipt.getQuant().toString());
+                    childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
+                    childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
+                    Double tmpD = (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice();
+                    childchild.setAttribute("discount", tmpD + gDisc*(item2Receipt.getSellDiscount()-tmpD) +"");
+                }
+
+            }
+            System.out.println("child = " +receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+        }
+
+        XMLElement clienXML = new XMLElement("Clientes");
+
+
+        List<Object> clientC = new LinkedList<Object>();
+        for (String c : clients) {
+            Client cc = ConnectionDrivers.listClients(c).get(0);
+            IXMLElement client = clienXML.createElement("C");
+            client.setAttribute("ID", cc.getId());
+            String tname = cc.getName();
+            client.setAttribute("Name", tname.substring(0,Math.min(35, tname.length())));
+            String tc = cc.getAddress() + " Tlf: " + cc.getPhone();
+            client.setAttribute("Addr", (tc).substring(0, Math.min(30,tc.length())));
+            clienXML.addChild(client);
+        }
+
+        String ansTP = "OK";
+        System.out.println("Comienzo de envio");
+        WS ws = new WSService().getWSPort();
+        String ansI = ws.initialize(myDay, Shared.getConfig("storeName"));
+        System.out.println("Inicializar = " + ansI);
+        if ( !ansI.isEmpty() ) {
+            ansTP = ansI;
+        }
+        ansI = ws.deleteDataFrom();
+        System.out.println("Eliminar = " + ansI);
+        if ( !ansI.isEmpty() ) {
+            ansTP = ansI;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLWriter xmlw = new XMLWriter(baos);
+        xmlw.write(xmlCN);
+        ansI = ws.sendCreditNotes(baos.toString());
+        System.out.println("Nota de Credito = " + ansI );
+        if ( !ansI.isEmpty() ) {
+            ansTP = ansI;
+        }
+        ByteArrayOutputStream baosF = new ByteArrayOutputStream();
+        XMLWriter xmlwF = new XMLWriter(baosF);
+        xmlwF.write(xmlRe);
+        ansI =  ws.sendReceipts(baosF.toString());
+        System.out.println("Facturas = " + ansI );
+        if ( !ansI.isEmpty() ) {
+            ansTP = ansI;
+        }
+        ByteArrayOutputStream baosC = new ByteArrayOutputStream();
+        XMLWriter xmlwC = new XMLWriter(baosC);
+        xmlwC.write(clienXML);
+        ansI = ws.sendClients(baosC.toString());
+        System.out.println("Clientes = " + ansI);
+        if ( !ansI.isEmpty() ) {
+            ansTP = ansI;
+        }
+        ansI = ws.createDummySeller();
+        System.out.println("Vend = " + ansI );
+
+        if ( !ansI.isEmpty() ) {
+            ansTP = ansI;
+        }
+
+        //String ansTP = "";
+        // UNCOMMENT THIS
+        /*try{
+            Shared.createBackup();
+        }catch( Exception ex ){
+            ansTP = "File Error";
+        }*/
+
+        String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansTP + " </html>" ;
+        MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
+        msg.show(cd);
     }
 
 }

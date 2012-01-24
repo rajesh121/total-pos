@@ -187,17 +187,18 @@ public class Login extends JFrame implements Doer{
                     ConnectionDrivers.modifyMoney(currentMoney);
                     currentMoney = .0;
                 }*/
-                
+
+                Double minimumCash = Double.parseDouble(Shared.getConfig("minimunMoney") );
                 while ( currentMoney == -1.0 && !Shared.isOffline ){
                     String cc = JOptionPane.showInputDialog(getParent(),
-                            "Monto Inicial de caja", Constants.df.format(Constants.minimumCash));
+                            "Monto Inicial de caja", Constants.df.format(minimumCash));
 
                     try{
                         if ( cc == null || cc.isEmpty() ){
                             throw new NumberFormatException();
                         }
                         currentMoney = Double.parseDouble(cc.replace(',', '.'));
-                        if ( currentMoney < 150.0 ){
+                        if ( currentMoney < minimumCash ){
                             throw new NumberFormatException();
                         }else{
                             ConnectionDrivers.modifyMoney(currentMoney);
@@ -205,7 +206,7 @@ public class Login extends JFrame implements Doer{
                         }
                     }catch ( NumberFormatException ex){
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
-                                "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(Constants.minimumCash) + " Bs");
+                                "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(minimumCash) + " Bs");
                         msb.show(this);
                         currentMoney = -1.0;
                     }

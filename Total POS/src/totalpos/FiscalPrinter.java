@@ -49,6 +49,8 @@ public class FiscalPrinter {
         if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
             // TODO CODE HERE =D!
 
+            printer.ClosePort();
+
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
             if ( ans != 0 ){
@@ -132,6 +134,7 @@ public class FiscalPrinter {
         if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
             isOk = false;
 
+            printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
             if ( ans != 0 ){
@@ -339,6 +342,7 @@ public class FiscalPrinter {
 
         if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
             isOk = false;
+            printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
             if ( ans != 0 ){
@@ -467,6 +471,7 @@ public class FiscalPrinter {
 
         if ( z == null  ){
             if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
+                printer.ClosePort();
                 int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
                 if ( ans != 0 ){
@@ -545,6 +550,7 @@ public class FiscalPrinter {
 
             System.out.println(printingHour);
             Date printingHourD = new Date(printingHour.getTime());
+            printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
             if ( ans != 0 ){
@@ -737,6 +743,7 @@ public class FiscalPrinter {
         if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
 
             isOk = false;
+            printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
             Calendar calendar = GregorianCalendar.getInstance();
@@ -789,6 +796,7 @@ public class FiscalPrinter {
 
         if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
             isOk = false;
+            printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
             if ( ans != 0 ){
@@ -924,6 +932,7 @@ public class FiscalPrinter {
 
         if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
             isOk = false;
+            printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
 
             if ( ans != 0 ){

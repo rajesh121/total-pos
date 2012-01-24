@@ -88,7 +88,7 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = false;
+    protected static final boolean isPos = true;
 
     protected static final int ncrYearOffset = 10;
 

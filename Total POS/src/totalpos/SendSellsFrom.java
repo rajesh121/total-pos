@@ -152,7 +152,7 @@ public class SendSellsFrom extends javax.swing.JInternalFrame implements Doer{
                     int year = calendar.get(Calendar.YEAR);
                     int month = calendar.get(Calendar.MONTH)+1;
                     int day = calendar.get(Calendar.DAY_OF_MONTH);
-                    String myDay = year + "-" + month + "-" + day;
+                    String myDay = year + "-" + String.format("%02d", month) + "-" + String.format("%02d", day);
                     System.out.println("MyDay = " + myDay);
                     while (ConnectionDrivers.previousClosed(myDay) && !(year == calendarCurTime.get(Calendar.YEAR) &&
                             month ==  calendarCurTime.get(Calendar.MONTH) && day ==  calendarCurTime.get(Calendar.DAY_OF_MONTH)
@@ -164,7 +164,7 @@ public class SendSellsFrom extends javax.swing.JInternalFrame implements Doer{
                         year = calendar.get(Calendar.YEAR);
                         month = calendar.get(Calendar.MONTH)+1;
                         day = calendar.get(Calendar.DAY_OF_MONTH );
-                        myDay = year + "-" + month + "-" + day;
+                        myDay = year + "-" + String.format("%02d", month) + "-" + String.format("%02d", day);
                     }
                     System.out.println("MyDay = " + myDay);
                 } catch (IOException ex) {

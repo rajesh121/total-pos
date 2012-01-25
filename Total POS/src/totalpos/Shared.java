@@ -68,6 +68,7 @@ public class Shared {
     private static TreeMap<String , Item > newItemMapping;
     private static boolean hadMovements;
     protected static List< XMLElement > itemsNeeded;
+    private static int processingWindows = 0;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -989,6 +990,14 @@ public class Shared {
         String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansTP + " </html>" ;
         MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
         msg.show(cd);
+    }
+
+    public static int getProcessingWindows() {
+        return processingWindows;
+    }
+
+    public static void setProcessingWindows(int processingWindows) {
+        Shared.processingWindows = processingWindows;
     }
 
 }

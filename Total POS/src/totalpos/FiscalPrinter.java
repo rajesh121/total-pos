@@ -187,8 +187,10 @@ public class FiscalPrinter {
 
             ans = printer.CloseDoc(buff.get("Efectivo"), buff.get("Nota de Credito"), buff.get("Credito"), buff.get("Debito"),
                     .0, .0, subtotal*globalDiscount, .0, (byte)12 , (byte)69, ticketId);
-            
-            if ( ans != 0 ){
+
+            System.out.println("ans Close Doc = " + ans);
+
+            if ( ans != 0 && ans != 309){
                 printer.CancelTransaction();
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }

@@ -18,12 +18,14 @@ public class WaitSplash extends SwingWorker<Void, Integer>{
 
     @Override
     protected Void doInBackground(){
+        Shared.setProcessingWindows(Shared.getProcessingWindows()+1);
         w.doIt();
         return null;
     }
 
     @Override
     protected void done() {
+        Shared.setProcessingWindows(Shared.getProcessingWindows()-1);
         w.close();
     }
 }

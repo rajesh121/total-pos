@@ -272,6 +272,8 @@ public class MainWindows extends javax.swing.JFrame {
                 SendSellsFrom ssf = new SendSellsFrom();
                 mdiPanel.add(ssf);
                 ssf.setVisible(true);
+            } else if ( ed.getFuncion().equals("reconfigureZebra") ){
+                Sticker.configure();
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);
@@ -295,7 +297,7 @@ public class MainWindows extends javax.swing.JFrame {
         whatTimeIsIt = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle(Shared.getUser().getLogin() + " @ " + Constants.appName);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setFocusable(false);
@@ -385,7 +387,9 @@ public class MainWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_formKeyPressed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        Shared.setUser(null);
+        if ( logout() ){
+            Shared.setUser(null);
+        }
     }//GEN-LAST:event_formWindowClosing
 
     private void jPanel1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseMoved
@@ -400,7 +404,13 @@ public class MainWindows extends javax.swing.JFrame {
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_formMouseMoved
 
-    private void logout(){
+    private boolean logout(){
+
+        if ( Shared.getProcessingWindows() != 0 ){
+            MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "No se puede cerrar mientras está trabajando =(. Por favor, espere.");
+            msg.show(null);
+            return false;
+        }
 
         Object[] options = {"Si","No"};
         int n = JOptionPane.showOptionDialog(this,"¿Desea salir del sistema?",
@@ -415,12 +425,14 @@ public class MainWindows extends javax.swing.JFrame {
             Login l = new Login();
             Shared.centerFrame(l);
             Shared.maximize(l);
-            l.setVisible(true);
             Shared.setUser(null);
 
             setVisible(false);
             dispose();
+            l.setVisible(true);
+            return true;
         }
+        return false;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

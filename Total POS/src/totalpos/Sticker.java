@@ -18,7 +18,7 @@ import javax.print.SimpleDoc;
 public class Sticker {
 
     private static int offset = 440;
-    private static int pixA[] = {160,170,215,130,180,20,20,235,228,30};
+    private static int pixA[] = {160,170,215,150,180,20,20,235,228,30};
     private static int pixB[] = {0,15,40,45,-1,100,115,140,160,130};
     private static String header[] = {"A","A","A","A","A","A","A","A","A","B"};
     private static boolean inicialized = false;
@@ -48,6 +48,25 @@ public class Sticker {
             }
         }
 
+    }
+
+    public static void configure(){
+        inicialize();
+        
+        try{
+            DocPrintJob job = psZebra.createPrintJob();
+
+            String buff = "ZB\nR0,20\n";
+
+            DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
+            Doc doc = new SimpleDoc(buff.getBytes(), flavor, null);
+            job.print(doc, null);
+            MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Se enviaron los comandos de configuración satisfactoriamente.");
+            msb.show(Shared.getMyMainWindows());
+        }catch (PrintException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la impresora.",ex);
+            msb.show(Shared.getMyMainWindows());
+        }
     }
 
     public static void print(Item a_, int na){

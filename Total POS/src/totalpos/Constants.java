@@ -88,7 +88,7 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = true;
+    protected static final boolean isPos = false;
 
     protected static final int ncrYearOffset = 10;
 
@@ -122,7 +122,6 @@ public class Constants {
     protected static final Color lightBlue = new Color(184,207,229);
     protected static final Color lightGreen = new Color(150,255,150);
 
-    protected static final Double minimumCash = 150.0;
     protected static final String[] kindOfBPOS={"Debito","Credito","Ambas"};
 
     protected static final String reportFolder = "./reports";

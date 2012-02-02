@@ -470,6 +470,11 @@ public class ConnectionDrivers {
         }
         c.close();
         rs.close();
+
+        // backward compatible
+        if ( !Shared.getConfig().containsKey("minimunMoney") ){
+            Shared.getConfig().put("minimunMoney", ".0");
+        }
     }
 
     protected static void saveConfig(String k, String v) throws SQLException {
@@ -3653,8 +3658,9 @@ public class ConnectionDrivers {
             XMLElement xmlI = (XMLElement)x;
 
             // TODO QUITAR
-            /*if ( !xmlI.getAttribute("MBLNR").equals("4900413822") && !xmlI.getAttribute("MBLNR").equals("4900413822")
-                    && !xmlI.getAttribute("MBLNR").equals("4900413824")&& !xmlI.getAttribute("MBLNR").equals("4900414486")){
+            /*if ( !xmlI.getAttribute("MBLNR").equals("4900438026") && !xmlI.getAttribute("MBLNR").equals("4900438027")
+                    && !xmlI.getAttribute("MBLNR").equals("4900438028")&& !xmlI.getAttribute("MBLNR").equals("4900438029")
+                    && !xmlI.getAttribute("MBLNR").equals("4900438030") && !xmlI.getAttribute("MBLNR").equals("4900427425")){
                 continue;
             }*/
             int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));

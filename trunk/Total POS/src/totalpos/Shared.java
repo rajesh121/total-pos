@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -322,6 +324,11 @@ public class Shared {
         }
         sc.close();
         f.delete();
+
+        // Backward compatible D=
+        if ( !fileConfig.containsKey("printerDriver") ){
+            fileConfig.put("printerDriver", "tfhkaif");
+        }
     }
 
     public static String getFileConfig(String k){
@@ -1000,4 +1007,31 @@ public class Shared {
         Shared.processingWindows = processingWindows;
     }
 
+    public static void createLockFile(){
+        FileWriter fstream = null;
+        try {
+            fstream = new FileWriter(".lock");
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write("");
+            out.close();
+        } catch (IOException ex) {
+            //Don't do anything!
+        } finally {
+            try {
+                fstream.close();
+            } catch (IOException ex) {
+                //Don't do anything!
+            }
+        }
+    }
+
+    public static void removeLockFile(){
+        File f = new File(".lock");
+        f.delete();
+    }
+
+    public static boolean isLockFile(){
+        File f = new File(".lock");
+        return f.canRead();
+    }
 }

@@ -24,6 +24,12 @@ public class Main {
         splash.setVisible(true);
 
         UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
+
+        if ( Shared.isLockFile() ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_NOTICE, "Total Pos ha sido cerrado repentinamente mientras trabajaba. Se pudo haber perdido información.");
+            msb.show(splash);
+            Shared.removeLockFile();
+        }
         
         try {
             Shared.loadFileConfig();
@@ -93,7 +99,7 @@ public class Main {
             }
         }
 
-       splash.changeStatus("Creando ventana de login...", 95);
+        splash.changeStatus("Creando ventana de login...", 95);
         Login login = new Login();
         Shared.centerFrame(login);
         login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);

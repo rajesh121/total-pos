@@ -19,6 +19,7 @@ public class WaitSplash extends SwingWorker<Void, Integer>{
     @Override
     protected Void doInBackground(){
         Shared.setProcessingWindows(Shared.getProcessingWindows()+1);
+        Shared.createLockFile();
         w.doIt();
         return null;
     }
@@ -26,6 +27,9 @@ public class WaitSplash extends SwingWorker<Void, Integer>{
     @Override
     protected void done() {
         Shared.setProcessingWindows(Shared.getProcessingWindows()-1);
+        if ( Shared.getProcessingWindows() == 0 ){
+            Shared.removeLockFile();
+        }
         w.close();
     }
 }

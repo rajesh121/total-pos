@@ -52,6 +52,7 @@ public class FiscalPrinter {
             printer.ClosePort();
 
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+            printer.CancelTransaction();
 
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -136,6 +137,7 @@ public class FiscalPrinter {
 
             printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+            printer.CancelTransaction();
 
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -346,6 +348,7 @@ public class FiscalPrinter {
             isOk = false;
             printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+            printer.CancelTransaction();
 
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -475,6 +478,7 @@ public class FiscalPrinter {
             if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
                 printer.ClosePort();
                 int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+                printer.CancelTransaction();
 
                 if ( ans != 0 ){
                     throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -554,6 +558,7 @@ public class FiscalPrinter {
             Date printingHourD = new Date(printingHour.getTime());
             printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+            printer.CancelTransaction();
 
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -747,6 +752,7 @@ public class FiscalPrinter {
             isOk = false;
             printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+            printer.CancelTransaction();
 
             Calendar calendar = GregorianCalendar.getInstance();
             Date dd = Constants.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
@@ -800,6 +806,7 @@ public class FiscalPrinter {
             isOk = false;
             printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+            printer.CancelTransaction();
 
             if ( ans != 0 ){
                 System.out.println(Shared.ncrErrMapping.get(ans));
@@ -843,6 +850,7 @@ public class FiscalPrinter {
 
             ConnectionDrivers.updateTotalFromPrinter(total, z ,tqpr.VoucherVta+"",tqpr.VoucherVta-Integer.parseInt(Shared.b2s(tqpm.CounterLastVta)),tqpr.VoucherDev+"",tqpr.VoucherDev-Integer.parseInt(Shared.b2s(tqpm.CounterLastDev)));
 
+            System.out.println("Total = " + Double.parseDouble(Shared.b2s(tqpr.VtaA))/100.0 + " - " + Double.parseDouble(Shared.b2s(tqpr.DevA))/100.0);
             printer.ClosePort();
             System.out.println("Termino de actualizar valores. Ultima venta = " + tqpr.VoucherVta + " Ultima Devolucion = " + tqpr.VoucherDev);
             isOk = true;
@@ -936,6 +944,7 @@ public class FiscalPrinter {
             isOk = false;
             printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+            printer.CancelTransaction();
 
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));

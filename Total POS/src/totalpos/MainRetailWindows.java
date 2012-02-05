@@ -94,6 +94,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     msb.show(myParent);
                     this.dispose();
                     Shared.reload();
+                    myParent.dispose();
                     return;
                 }
             }catch ( Exception ex ){
@@ -101,6 +102,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 msb.show(myParent);
                 this.dispose();
                 Shared.reload();
+                myParent.dispose();
                 printer.forceClose();
                 return;
             }

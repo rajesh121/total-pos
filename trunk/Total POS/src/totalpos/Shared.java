@@ -71,6 +71,7 @@ public class Shared {
     private static boolean hadMovements;
     protected static List< XMLElement > itemsNeeded;
     private static int processingWindows = 0;
+    public static FiscalPrinter printer;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");

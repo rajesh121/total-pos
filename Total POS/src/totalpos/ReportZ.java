@@ -18,14 +18,16 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
     private String kindOfReport;
     MainRetailWindows myParent;
     private Working workingFrame;
+    private String day;
 
     /** Creates new form ReportZ */
-    public ReportZ(java.awt.Frame parent, boolean modal, String kind) {
+    public ReportZ(java.awt.Frame parent, boolean modal, String kind, String mDay) {
         super(parent, modal);
         initComponents();
         kindOfReport = kind;
         myParent = (MainRetailWindows) parent;
         titleLabel.setText(titleLabel.getText() + " " + kind);
+        day = mDay;
     }
 
     /** This method is called from within the constructor to
@@ -154,15 +156,17 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
 
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), userField.getText());
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "report" + kindOfReport) ){
-                myParent.printer.updateValues();
-                myParent.printer.printResumeZ();
+                myParent.printer.updateValues(day);
+                myParent.printer.printResumeZ(day);
                 myParent.printer.report(kindOfReport);
                 if ( kindOfReport.equals("Z") ){
-                    ConnectionDrivers.setAssignOpen(((MainRetailWindows)Shared.getMyMainWindows()).getAssign(), false);
-                    ConnectionDrivers.setZDone();
-                    MessageBox msg = new MessageBox(MessageBox.SGN_NOTICE, "Se ha culminado satisfactoriamente el día operativo de esta caja.");
-                    msg.show(this);
-                    Shared.reload();
+                    ConnectionDrivers.setZDone(day);
+                    if ( day.equals("curdate()") ){
+                        ConnectionDrivers.setAssignOpen(((MainRetailWindows)Shared.getMyMainWindows()).getAssign(), false);
+                        MessageBox msg = new MessageBox(MessageBox.SGN_NOTICE, "Se ha culminado satisfactoriamente el día operativo de esta caja.");
+                        msg.show(this);
+                        Shared.reload();
+                    }
                 }
             }else{
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para calcular el reporte " + kindOfReport);

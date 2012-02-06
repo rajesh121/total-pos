@@ -193,6 +193,25 @@ public class Login extends JFrame implements Doer{
                     String cc = JOptionPane.showInputDialog(getParent(),
                             "Monto Inicial de caja", Constants.df.format(minimumCash));
 
+                    System.out.println("Ultimo Reporte Z = "  + Shared.printer.getZ());
+                    String tDate = ConnectionDrivers.checkAllZReport(Shared.printer.printerSerial, Shared.printer.getZ());
+                    System.out.println("tDate = " + tDate);
+                    if (tDate != null){
+                        Object[] options = {"Si","No"};
+                        int n = JOptionPane.showOptionDialog(this,"Esta caja no ha sido cerrada. Desea cerrarla ahora?",
+                                Constants.appName,
+                                JOptionPane.YES_NO_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                options,
+                                null);
+
+                        if ( n == 0 ){
+                            ReportZ rz = new ReportZ(mrw, true, "Z","\'" + tDate + "\'");
+                            Shared.centerFrame(rz);
+                            rz.setVisible(true);
+                        }
+                    }
                     try{
                         if ( cc == null || cc.isEmpty() ){
                             throw new NumberFormatException();

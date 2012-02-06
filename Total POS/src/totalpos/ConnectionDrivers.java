@@ -2895,12 +2895,13 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void updateTotalFromPrinter(Double total, String z, String lReceipt, int quantReceiptsToday, String lastCN, int nNC) throws SQLException {
+    protected static void updateTotalFromPrinter(Double total, String z, String lReceipt, int quantReceiptsToday, String lastCN, int nNC, String day) throws SQLException {
+        System.out.println("Dia Recibido = " + day);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores = 0 , total_ventas = ? , "
                 + "numero_reporte_z = ? , impresora = ? , codigo_ultima_factura = ? , ultima_actualizacion = now() , num_facturas = ? , "
                 + "codigo_ultima_nota_credito = ? , numero_notas_credito = ? "
-                + "where datediff(curdate(),fecha) = 0 and codigo_punto_de_venta = ? ");
+                + "where datediff(" + day + ",fecha) = 0 and codigo_punto_de_venta = ? ");
         stmt.setDouble(1, total);
         stmt.setString(2, z);
         stmt.setString(3, getMyPrinter());
@@ -3200,12 +3201,12 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    protected static void setZDone() throws SQLException {
+    protected static void setZDone(String day) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
                 + "set reporteZ = 1 "
-                + "where codigo_punto_de_venta = ? and datediff( curdate() , fecha ) = 0 ");
+                + "where codigo_punto_de_venta = ? and datediff( "+ day +" , fecha ) = 0 ");
 
         stmt.setString(1, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
@@ -3586,10 +3587,10 @@ public class ConnectionDrivers {
     }
 
     // WARNING NON_ESCAPE QUERY
-    static Integer getQuant( String pos, String field) throws SQLException {
+    static Integer getQuant( String pos, String field, String day) throws SQLException {
         Integer ans = 0;
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select " + field + " as ans from dia_operativo where datediff( curdate() , fecha ) = 0 "
+        PreparedStatement stmt = c.prepareStatement("select " + field + " as ans from dia_operativo where datediff( "+ day + " , fecha ) = 0 "
                 + "and codigo_punto_de_venta = ? ");
         stmt.setString(1, pos);
         ResultSet rs = stmt.executeQuery();
@@ -3604,11 +3605,11 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static Double getTotalDeclaredPos( String pos) throws SQLException{
+    static Double getTotalDeclaredPos( String pos, String day) throws SQLException{
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select total_ventas as ans from dia_operativo "
-                + "where codigo_punto_de_venta = ? and datediff(fecha,curdate())=0");
+                + "where codigo_punto_de_venta = ? and datediff(fecha,"+day+")=0");
         stmt.setString(1, pos);
         ResultSet rs = stmt.executeQuery();
 
@@ -3959,6 +3960,31 @@ public class ConnectionDrivers {
         XMLWriter xmlw = new XMLWriter(baos);
         xmlw.write(ans);
         return baos.toString();
+    }
+
+    static String checkAllZReport(String printerId , String zReportId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        String ans = null;
+
+        PreparedStatement stmt = c.prepareStatement("select distinct fecha, "
+                + "factura.numero_reporte_z from dia_operativo, factura where reporteZ=0 "
+                + "and codigo_punto_de_venta = ? and datediff(fecha,fecha_creacion)=0 and "
+                + "identificador_pos=codigo_punto_de_venta and estado='Facturada' and"
+                + " factura.numero_reporte_z=? and factura.impresora=? order "
+                + "by fecha desc");
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        stmt.setString(2, zReportId);
+        stmt.setString(3, printerId);
+        ResultSet rs = stmt.executeQuery();
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString(1);
+        }
+
+        c.close();
+
+        return ans;
     }
 
 }

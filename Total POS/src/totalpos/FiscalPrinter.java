@@ -797,7 +797,7 @@ public class FiscalPrinter {
         printer.CloseFpctrl();
     }
 
-    void updateValues() throws Exception {
+    void updateValues(String day) throws Exception {
         if ( !Constants.withFiscalPrinter ){
             return;
         }
@@ -848,7 +848,7 @@ public class FiscalPrinter {
 
             System.out.println("Anterior ultima venta = " + Shared.b2s(tqpm.CounterLastVta) + " " + Shared.b2s(tqpm.CounterLastDev) );
 
-            ConnectionDrivers.updateTotalFromPrinter(total, z ,tqpr.VoucherVta+"",tqpr.VoucherVta-Integer.parseInt(Shared.b2s(tqpm.CounterLastVta)),tqpr.VoucherDev+"",tqpr.VoucherDev-Integer.parseInt(Shared.b2s(tqpm.CounterLastDev)));
+            ConnectionDrivers.updateTotalFromPrinter(total, z ,tqpr.VoucherVta+"",tqpr.VoucherVta-Integer.parseInt(Shared.b2s(tqpm.CounterLastVta)),tqpr.VoucherDev+"",tqpr.VoucherDev-Integer.parseInt(Shared.b2s(tqpm.CounterLastDev)), day);
 
             System.out.println("Total = " + Double.parseDouble(Shared.b2s(tqpr.VtaA))/100.0 + " - " + Double.parseDouble(Shared.b2s(tqpr.DevA))/100.0);
             printer.ClosePort();
@@ -926,7 +926,7 @@ public class FiscalPrinter {
 
             String pLastCN = line.substring(168);
             int nNC = (Integer.parseInt(lastCN)-Integer.parseInt(pLastCN));
-            ConnectionDrivers.updateTotalFromPrinter(total, z ,lReceipt,quantReceiptsToday,lastCN,nNC);
+            ConnectionDrivers.updateTotalFromPrinter(total, z ,lReceipt,quantReceiptsToday,lastCN,nNC, day);
 
             printer.CloseFpctrl();
         }else{
@@ -935,7 +935,7 @@ public class FiscalPrinter {
     }
 
     // Pre: updateValues()
-    void printResumeZ() throws Exception{
+    void printResumeZ(String day) throws Exception{
         if ( !Constants.withFiscalPrinter ){
             return;
         }
@@ -977,9 +977,9 @@ public class FiscalPrinter {
             ans = printer.PrintTextNoFiscal(Constants.normalFont," Caja Nro: " + Shared.getFileConfig("myId"),5,(byte)0);
             ans = printer.PrintTextNoFiscal(Constants.normalFont," Ult Factura:        " + ConnectionDrivers.getLastReceipt(),6,(byte)0);
             ans = printer.PrintTextNoFiscal(Constants.normalFont," Ult Nota de Credito " + ConnectionDrivers.getLastCN(),7,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas"),8,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito"),9,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"))),11,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas", day),8,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito", day),9,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont," Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"), day)),11,(byte)0);
             ans = printer.PrintTextNoFiscal(Constants.normalFont," ",12,(byte)0);
             ans = printer.PrintTextNoFiscal(Constants.normalFont," Fin de Resumen del Reporte Z Nro " + z,13,(byte)0);
             ans = printer.PrintTextNoFiscal(Constants.normalFont,"",14,(byte)0);
@@ -1012,10 +1012,10 @@ public class FiscalPrinter {
             buffer.add("800 Caja Nro: " + Shared.getFileConfig("myId"));
             buffer.add("800 Ult Factura:        " + ConnectionDrivers.getLastReceipt());
             buffer.add("800 Ult Nota de Credito " + ConnectionDrivers.getLastCN());
-            buffer.add("800 Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas"));
-            buffer.add("800 Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito"));
+            buffer.add("800 Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas", day));
+            buffer.add("800 Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito", day));
             buffer.add("800 ");
-            buffer.add("800 Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"))));
+            buffer.add("800 Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"), day)));
             buffer.add("800 ");
             buffer.add("810 Fin de Resumen del Reporte Z Nro " + z);
 

@@ -70,6 +70,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             user = u;
             try{
                 printer = new FiscalPrinter();
+                Shared.printer = printer;
             }catch( Exception ex ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se pudo cargar el controlador de la impresora. No se puede continuar",ex);
                 msb.show(myParent);
@@ -110,7 +111,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             try {
                 ConnectionDrivers.updateReportZ(printer.getZ());
                 //ConnectionDrivers.updateLastReceipt(printer.lastReceipt);
-                printer.updateValues();
+                printer.updateValues("curdate()");
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
                 msb.show(myParent);
@@ -189,7 +190,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
             if ( ConnectionDrivers.isNeededtoUpdate() ){
                 try {
-                    printer.updateValues();
+                    printer.updateValues("curdate()");
                 } catch (Exception ex) {
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter ,ex);
                     msb.show(this);
@@ -1063,7 +1064,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     loadThisReceipt(receipt);
                     deleteCurrent();
                 }
-                ReportZ rz = new ReportZ(this, true, "Z");
+                ReportZ rz = new ReportZ(this, true, "Z", "curdate()");
                 Shared.centerFrame(rz);
                 rz.setVisible(true);
             } catch (SQLException ex) {
@@ -1073,7 +1074,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 Shared.reload();
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_F7 ){
-            ReportZ rz = new ReportZ(this, true, "X");
+            ReportZ rz = new ReportZ(this, true, "X", "curdate()");
             Shared.centerFrame(rz);
             rz.setVisible(true);
         }

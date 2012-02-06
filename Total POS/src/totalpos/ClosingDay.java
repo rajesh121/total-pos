@@ -8,6 +8,7 @@ package totalpos;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
@@ -946,8 +947,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(totalCashField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)))
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)))
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(payWithCreditNoteField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1173,8 +1173,18 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
         try {
             if (!ConnectionDrivers.allZready(myDay)) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se puede hacer el cierre administrativo. Hay cajas sin cerrar.");
-                msb.show(this);
+                SellWithoutStock sws = new SellWithoutStock((Frame) Shared.getMyMainWindows(), true, "Hay cajas sin cerrar.", "sendODWithoutZ");
+                Shared.centerFrame(sws);
+                sws.setVisible(true);
+                if ( sws.authorized ){
+                    workingFrame = new Working((Window) Shared.getMyMainWindows());
+
+                    WaitSplash ws = new WaitSplash(this);
+
+                    Shared.centerFrame(workingFrame);
+                    workingFrame.setVisible(true);
+                    ws.execute();
+                }
             }else{
                 workingFrame = new Working((Window) Shared.getMyMainWindows());
 

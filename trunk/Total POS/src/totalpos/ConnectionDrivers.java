@@ -3065,12 +3065,31 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
+    protected static String getThisPrinterId(String posId) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        String ans = null;
+
+        PreparedStatement stmt = c.prepareStatement("select impresora from "
+                + "punto_de_venta where identificador = ? ");
+        stmt.setString(1, posId);
+        ResultSet rs = stmt.executeQuery();
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString(1);
+        }
+
+        c.close();
+
+        return ans;
+    }
+
     protected static List<ZFISDATAFISCAL> getOperativeDays(String day) throws SQLException {
         List<ZFISDATAFISCAL> ans = new ArrayList<ZFISDATAFISCAL>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select total_ventas , impresora , numero_reporte_z ,"
-                + " codigo_ultima_factura, num_facturas, codigo_ultima_nota_credito, numero_notas_credito "
+                + " codigo_ultima_factura, num_facturas, codigo_ultima_nota_credito, numero_notas_credito, reporteZ, codigo_punto_de_venta "
                 + "from dia_operativo where datediff(fecha,?) = 0");
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
@@ -3081,23 +3100,44 @@ public class ConnectionDrivers {
             System.out.print(Constants.mant + "\t");
             zfdf.setIDTIENDA(Constants.of.createZFISDATAFISCALIDTIENDA(Constants.storePrefix+Shared.getConfig("storeName")));
             System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\t");
-            zfdf.setIDIMPFISCAL(Constants.of.createZFISDATAFISCALIDIMPFISCAL(rs.getString("impresora")));
-            System.out.print(rs.getString("impresora") + "\t");
-            zfdf.setFECHA(Constants.of.createZFISDATAFISCALFECHA(day.replace("-", "")));
-            System.out.print(day.replace("-", ""));
-            zfdf.setMONTO(new BigDecimal(Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2)));
-            System.out.print(Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2) + "\t");
-            zfdf.setNUMREPZ(Constants.of.createZFISDATAFISCALNUMREPZ(rs.getString("numero_reporte_z")));
-            System.out.print(rs.getString("numero_reporte_z") + "\t");
-            zfdf.setULTFACTURA(Constants.of.createZFISDATAFISCALULTFACTURA(rs.getString("codigo_ultima_factura")));
-            System.out.print(rs.getString("codigo_ultima_factura") + "\t");
-            zfdf.setNUMFACD(Constants.of.createZFISDATAFISCALNUMFACD(rs.getString("num_facturas")));
-            System.out.print(rs.getString("num_facturas") + "\t");
-            zfdf.setULTNOTACREDITO(Constants.of.createZFISDATAFISCALULTNOTACREDITO(rs.getString("codigo_ultima_nota_credito")));
-            System.out.print(rs.getString("codigo_ultima_nota_credito") + "\t");
-            zfdf.setNUMNCD(Constants.of.createZFISDATAFISCALNUMNCD(rs.getString("numero_notas_credito")));
-            System.out.print(rs.getString("numero_notas_credito"));
-            ans.add(zfdf);
+            if ( rs.getString("reporteZ").equals("0") ){
+                System.out.println("No se ha sacado el reporte Z de la impresora de la caja " + rs.getString("codigo_punto_de_venta"));
+                zfdf.setIDIMPFISCAL(Constants.of.createZFISDATAFISCALIDIMPFISCAL(ConnectionDrivers.getThisPrinterId( rs.getString("codigo_punto_de_venta"))));
+                //System.out.print(rs.getString("impresora") + "\t");
+                zfdf.setFECHA(Constants.of.createZFISDATAFISCALFECHA(day.replace("-", "")));
+                System.out.print(day.replace("-", ""));
+                zfdf.setMONTO(BigDecimal.ZERO);
+                System.out.print(0 + "\t");
+                zfdf.setNUMREPZ(Constants.of.createZFISDATAFISCALNUMREPZ("0"));
+                System.out.print("0" + "\t");
+                zfdf.setULTFACTURA(Constants.of.createZFISDATAFISCALULTFACTURA("0"));
+                System.out.print("0" + "\t");
+                zfdf.setNUMFACD(Constants.of.createZFISDATAFISCALNUMFACD("0"));
+                System.out.print("0" + "\t");
+                zfdf.setULTNOTACREDITO(Constants.of.createZFISDATAFISCALULTNOTACREDITO("0"));
+                System.out.print("0" + "\t");
+                zfdf.setNUMNCD(Constants.of.createZFISDATAFISCALNUMNCD("0"));
+                System.out.print("0");
+                ans.add(zfdf);
+            }else{
+                zfdf.setIDIMPFISCAL(Constants.of.createZFISDATAFISCALIDIMPFISCAL(rs.getString("impresora")));
+                System.out.print(rs.getString("impresora") + "\t");
+                zfdf.setFECHA(Constants.of.createZFISDATAFISCALFECHA(day.replace("-", "")));
+                System.out.print(day.replace("-", ""));
+                zfdf.setMONTO(new BigDecimal(Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2)));
+                System.out.print(Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2) + "\t");
+                zfdf.setNUMREPZ(Constants.of.createZFISDATAFISCALNUMREPZ(rs.getString("numero_reporte_z")));
+                System.out.print(rs.getString("numero_reporte_z") + "\t");
+                zfdf.setULTFACTURA(Constants.of.createZFISDATAFISCALULTFACTURA(rs.getString("codigo_ultima_factura")));
+                System.out.print(rs.getString("codigo_ultima_factura") + "\t");
+                zfdf.setNUMFACD(Constants.of.createZFISDATAFISCALNUMFACD(rs.getString("num_facturas")));
+                System.out.print(rs.getString("num_facturas") + "\t");
+                zfdf.setULTNOTACREDITO(Constants.of.createZFISDATAFISCALULTNOTACREDITO(rs.getString("codigo_ultima_nota_credito")));
+                System.out.print(rs.getString("codigo_ultima_nota_credito") + "\t");
+                zfdf.setNUMNCD(Constants.of.createZFISDATAFISCALNUMNCD(rs.getString("numero_notas_credito")));
+                System.out.print(rs.getString("numero_notas_credito"));
+                ans.add(zfdf);
+            }
             System.out.println("");
         }
         c.close();

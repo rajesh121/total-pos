@@ -1,6 +1,7 @@
 package totalpos;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -16,6 +17,15 @@ public class Main {
     public static void main(String[] args) {        
         splash = new StartSplash();
         splash.changeStatus("Leyendo archivo de configuración...", 10);
+        try {
+            if ( Constants.isPos ){
+                new ServerSocket(Constants.lockingPort);
+            }
+        } catch (IOException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Ya existe otra instancia de Total Pos en esta computadora! No se puede continuar");
+            msb.show(splash);
+            System.exit(0);
+        }
         Shared.centerFrame(splash);
         splash.setVisible(true);
 

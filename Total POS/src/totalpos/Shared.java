@@ -921,7 +921,7 @@ public class Shared {
                     childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
                     childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
                     Double tmpD = (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice();
-                    childchild.setAttribute("discount", tmpD + gDisc*(item2Receipt.getSellDiscount()-tmpD) +"");
+                    childchild.setAttribute("discount", tmpD + gDisc*(item2Receipt.getSellPrice()-tmpD) +"");
                 }
 
             }

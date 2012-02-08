@@ -217,7 +217,7 @@ public class Login extends JFrame implements Doer{
                             throw new NumberFormatException();
                         }
                         currentMoney = Double.parseDouble(cc.replace(',', '.'));
-                        if ( currentMoney < minimumCash ){
+                        if ( currentMoney < minimumCash || currentMoney < .0 ){
                             throw new NumberFormatException();
                         }else{
                             ConnectionDrivers.modifyMoney(currentMoney);

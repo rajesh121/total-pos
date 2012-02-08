@@ -225,7 +225,7 @@ public class Login extends JFrame implements Doer{
                         }
                     }catch ( NumberFormatException ex){
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
-                                "Monto incorrecto. Intente de nuevo. Mínimo " + Constants.df.format(minimumCash) + " Bs");
+                                "Monto incorrecto. Intente de nuevo. El monto debe ser mayor o igual a " + Constants.df.format(minimumCash) + " Bs y mayor o igual a 0 Bs");
                         msb.show(this);
                         currentMoney = -1.0;
                     }

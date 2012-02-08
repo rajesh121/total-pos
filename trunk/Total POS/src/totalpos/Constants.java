@@ -186,4 +186,6 @@ public class Constants {
     protected static Connection connection;
 
     protected static int maxNcrDescription = 24;
+
+    protected static int lockingPort = 54320;
 }

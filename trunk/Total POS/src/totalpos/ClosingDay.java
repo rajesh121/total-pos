@@ -10,10 +10,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Window;
-import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -25,9 +23,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import net.n3.nanoxml.IXMLElement;
-import net.n3.nanoxml.XMLElement;
-import net.n3.nanoxml.XMLWriter;
 import srvSap.ArrayOfZFISCOBRANZA;
 import srvSap.ArrayOfZFISDATAFISCAL;
 import srvSap.IsrvSap;
@@ -37,8 +32,6 @@ import srvSap.SrvSap;
 import srvSap.ZFISCOBRANZA;
 import srvSap.ZFISDATAFISCAL;
 import srvSap.ZFISHISTENVIOS;
-import ws.WS;
-import ws.WSService;
 
 /**
  *

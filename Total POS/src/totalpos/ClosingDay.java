@@ -54,6 +54,110 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private String date4sap = "";
     private Double receiptTotal;
 
+    private String getExpensesTable() {
+        String ans = "";
+        for( int i = 0 ; i < expenseTable.getRowCount() ; i++ ){
+            ans += "<tr>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)expenseTable.getValueAt(i, 0)).split("-")[1].trim();
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)expenseTable.getValueAt(i, 1));
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)expenseTable.getValueAt(i, 2));
+            ans += "</td>";
+            ans += "</tr>";
+        }
+        return ans;
+    }
+
+    private String getPaymentsTable() {
+        String ans = "";
+        for( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
+            ans += "<tr>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)bankTable.getValueAt(i, 2));
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)bankTable.getValueAt(i, 0)).split("-")[1].trim();
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)bankTable.getValueAt(i, 1));
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += (bankTable.getValueAt(i, 4))+"";
+            ans += "</td>";
+            ans += "</tr>";
+        }
+
+        int j = bankTable.getRowCount();
+        for( int i = 0 ; i < depositTable.getRowCount() ; i++ ){
+            ans += "<tr>";
+            if ( (j+i)%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += "Efectivo";
+            ans += "</td>";
+            if ( (j+i)%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)depositTable.getValueAt(i, 0)).split("-")[1].trim();
+            ans += "</td>";
+            if ( (j+i)%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)depositTable.getValueAt(i, 1));
+            ans += "</td>";
+            if ( (j+i)%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += ((String)depositTable.getValueAt(i, 2));
+            ans += "</td>";
+            ans += "</tr>";
+        }
+        return ans;
+    }
+
+    private String getZTable() throws SQLException {
+        return ConnectionDrivers.getOperativeDaysHtml(myDay);
+    }
+
     static class DecimalFormatRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(
@@ -1312,6 +1416,45 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 msg.show(this);
                 return;
             }*/
+
+            String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
+            String emailMsg = "<html>\n"
+                    + "<b><u>RESUMEN DIARIO DE VENTAS</u><br><br></b>\n"
+                    + "Dia: " + formatDay + "<br>\n"
+                    + "Agencia: " +  Shared.getConfig("storeName") + " <br>"
+                    + "Descripcion: " +  Shared.getConfig("storeDescription") + " <br><br>"
+                    + "\n"
+                    + "Total Ingresos: " + totalTotalField.getText() + "<br>\n"
+                    + "Total Gastos: " + expensesTodayField.getText() + "<br>\n"
+                    + "Total General: <b>" + expensesMinusDeclaredField.getText() + "</b><br><br>\n"
+                    + "<b>Gastos<br></b>"
+                    + "<table width=\"600\" cellpadding=\"3\" cellspacing=\"3\">"
+                    + "<tr>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Tipo de Gasto</td>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Monto</td>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Observaciones</td>"
+                    + "</tr>"
+                    + getExpensesTable()
+                    + "<tr>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Total</td>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">" + expensesTodayField.getText() + "</td>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\"></td>"
+                    + "</tr>"
+                    + "</table><br><br><b>Ingresos<br></b><table width=\"800\" cellpadding=\"3\" cellspacing=\"3\"><tr>"
+                    + "<td bordercolor=\"#79BAEC\" style=\"background-color:#79BAEC\">Tipo de Ingreso</td><td bordercolor"
+                    + "=\"#79BAEC\" style=\"background-color:#79BAEC\">Banco</td><td bordercolor=\"#79BAEC\" style=\"background-"
+                    + "color:#79BAEC\">Lote</td><td bordercolor=\"#79BAEC\" style=\"background-color:#79BAEC\">Monto</td></tr>"
+                    + getPaymentsTable()
+                    + "<tr><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Total</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\"></td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\"></td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">" + totalTotalField.getText() + "</td></tr></table><br><br><b>Informacion Fiscal<br></b><table width=\"800\" cellpadding=\"3\" cellspacing=\"3\"><tr><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Serial Impresora</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Monto</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Reporte Z</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Ultima Factura</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Cantidad Facturas</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Ultima Devolucion</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Cantidad Devolucion</td></tr>"
+                    + getZTable()
+                    + "<tr><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Total</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">" + totalDeclaredField.getText() + "</td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\"></td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\"></td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\"></td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\"></td><td bordercolor=\"#000066\" style=\"background-color:#79BAEC\"></td></tr></table><br>"
+                    + "<br>Diferencia entre reportes Z y ordenes del dia: " + Shared.round((Double.parseDouble(totalDeclaredField.getText().replace(',', '.')) - Double.parseDouble(expensesMinusDeclaredField.getText().replace(',', '.'))),2) + "<br>Cuadre de Caja: "+totalField.getText()+"<br><br>"
+                    + "</html>";
+
+            Shared.sendMail(Shared.getConfig("sendEmail"), emailMsg, "Cierre del dia " + formatDay + " Agencia " + Shared.getConfig("storeName"));
+            if ( Constants.justEmail ){
+                return;
+            }
 
             String ansMoney = "";
             SrvSap ss = new SrvSap();

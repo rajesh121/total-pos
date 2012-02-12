@@ -1387,7 +1387,8 @@ public class ConnectionDrivers {
         // for performace;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement(
-                "update factura set estado = 'Anulada' where estado = 'Pedido'");
+                "update factura set estado = 'Anulada' where estado = 'Pedido' and identificador_pos = ? ");
+        stmt.setString(1, Shared.getFileConfig("myId"));
         stmt.executeUpdate();
         c.close();
     }
@@ -3084,6 +3085,76 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static String getOperativeDaysHtml(String day) throws SQLException{
+        String ans = "";
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select total_ventas , impresora , numero_reporte_z ,"
+                + " codigo_ultima_factura, num_facturas, codigo_ultima_nota_credito, numero_notas_credito, reporteZ, codigo_punto_de_venta "
+                + "from dia_operativo where datediff(fecha,?) = 0");
+        stmt.setString(1, day);
+        ResultSet rs = stmt.executeQuery();
+
+        int i = 0;
+        while( rs.next() ){
+            ans += "<tr>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#000066\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += rs.getString("impresora");
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#000066\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2);
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#000066\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += rs.getString("numero_reporte_z");
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#000066\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += rs.getString("codigo_ultima_factura");
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#000066\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += rs.getString("num_facturas");
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#000066\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += rs.getString("codigo_ultima_nota_credito");
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#000066\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += rs.getString("numero_notas_credito");
+            ans += "</td>";
+            ans += "</tr>";
+            ++i;
+        }
+
+        c.close();
+
+        return ans;
+    }
+
     protected static List<ZFISDATAFISCAL> getOperativeDays(String day) throws SQLException {
         List<ZFISDATAFISCAL> ans = new ArrayList<ZFISDATAFISCAL>();
 
@@ -3699,9 +3770,14 @@ public class ConnectionDrivers {
             XMLElement xmlI = (XMLElement)x;
 
             // TODO QUITAR
-            /*if ( !xmlI.getAttribute("MBLNR").equals("4900438026") && !xmlI.getAttribute("MBLNR").equals("4900438027")
-                    && !xmlI.getAttribute("MBLNR").equals("4900438028")&& !xmlI.getAttribute("MBLNR").equals("4900438029")
-                    && !xmlI.getAttribute("MBLNR").equals("4900438030") && !xmlI.getAttribute("MBLNR").equals("4900427425")){
+            /*if ( !xmlI.getAttribute("MBLNR").equals("4900447350") && !xmlI.getAttribute("MBLNR").equals("4900447351")
+                    && !xmlI.getAttribute("MBLNR").equals("4900447579")&& !xmlI.getAttribute("MBLNR").equals("4900447580")
+                    && !xmlI.getAttribute("MBLNR").equals("4900447581")){
+                continue;
+            }*/
+            /*if (
+                    !xmlI.getAttribute("MBLNR").equals("4900447579")&& !xmlI.getAttribute("MBLNR").equals("4900447580")
+                    && !xmlI.getAttribute("MBLNR").equals("4900447581")){
                 continue;
             }*/
             int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
@@ -3718,7 +3794,7 @@ public class ConnectionDrivers {
 
             movements.add(xmlI.getAttribute("MBLNR"));
 
-
+            System.out.println("Movimiento " + reason + " articulo " + xmlI.getAttribute("MATNR"));
             if ( reason == 0 ){
                 // we are in problems... =(
             }else{

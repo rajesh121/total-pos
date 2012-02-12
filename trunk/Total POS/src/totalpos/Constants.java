@@ -88,7 +88,7 @@ public class Constants {
     protected static final String storePrefix = "";
     protected static final String waerks = "VEF";
 
-    protected static final boolean isPos = true;
+    protected static final boolean isPos = false;
 
     protected static final int ncrYearOffset = 10;
 
@@ -188,4 +188,8 @@ public class Constants {
     protected static int maxNcrDescription = 24;
 
     protected static int lockingPort = 54320;
+    static boolean justEmail = false;
+
+    static String email = "ventasdiariasgt99";
+    static String passEmail = "gt99server.99";
 }

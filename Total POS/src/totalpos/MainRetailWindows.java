@@ -818,6 +818,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 Shared.centerFrame(ab);
                 ab.setVisible(true);
                 return;
+            }else if ( myBarcode.equals("version") ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Total Pos Version " + Constants.version);
+                msb.show(this);
+                return;
             }
             if ( myBarcode.isEmpty() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");

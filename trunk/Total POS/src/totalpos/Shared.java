@@ -529,7 +529,7 @@ public class Shared {
                     myTrim(toks[1]) , Constants.dateFormatter.parse(toks[2].split(" ")[0]) , myTrim(toks[4]),
                     "",  myTrim(toks[6]), myTrim(toks[9]), myTrim(toks[10]), myTrim(toks[14]),
                     myTrim(toks[15]), Integer.parseInt(toks[19].split("\\.")[0]), lp, lc, barcodes,
-                    toks[85].equals("T"), Constants.photoPrefix + myTrim(toks[0]) + ".JPG", "0");
+                    toks[85].equals("T"), Shared.getConfig("photoDir") + myTrim(toks[0]) + ".JPG", "0");
             ans.add(i);
             newItemMapping.put(i.getCode(), i);
         }

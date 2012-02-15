@@ -3520,7 +3520,7 @@ public class ConnectionDrivers {
         stmt.setString(8, item.getSellUnits());
         stmt.setString(9, item.getBuyUnits());
         stmt.setBoolean(10, item.isStatus());
-        stmt.setString(11, Constants.photoPrefix + item.getCode() + ".JPG");
+        stmt.setString(11, Shared.getConfig("photoDir") + item.getCode() + ".JPG");
         stmt.setString(12, "0");
         stmt.executeUpdate();
         updateItemsDetails(item, c );
@@ -3857,7 +3857,7 @@ public class ConnectionDrivers {
                 stmt.setString(3, xmlI.getAttribute("EAN11"));
                 stmt.setString(4, xmlI.getAttribute("MATKL"));
                 stmt.setString(5, xmlI.getAttribute("MSEH3"));
-                stmt.setString(6, Constants.photoPrefix + xmlI.getAttribute("MATNR") + ".JPG");
+                stmt.setString(6, Shared.getConfig("photoDir") + xmlI.getAttribute("MATNR") + ".JPG");
                 stmt.setString(7, "0");
                 stmt.executeUpdate();
 

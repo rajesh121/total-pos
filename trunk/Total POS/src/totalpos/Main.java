@@ -13,13 +13,15 @@ import javax.swing.UIManager;
 public class Main {
 
     protected static StartSplash splash;
+    private static ServerSocket serverSkt;
 
     public static void main(String[] args) {        
         splash = new StartSplash();
         splash.changeStatus("Leyendo archivo de configuración...", 10);
         try {
             if ( Constants.isPos ){
-                new ServerSocket(Constants.lockingPort);
+                serverSkt = new ServerSocket(Constants.lockingPort);
+                System.out.println("Puerto abierto = " + Constants.lockingPort);
             }
         } catch (IOException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Ya existe otra instancia de Total Pos en esta computadora! No se puede continuar");

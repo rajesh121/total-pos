@@ -913,7 +913,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
-                options[1]);
+                options[0]);
 
             if ( n == 0 ){
                 deleteItem();

@@ -2995,7 +2995,7 @@ public class ConnectionDrivers {
         return dataSource;
     }
 
-    protected static Double getTotalPrinter(String day) throws SQLException{
+    protected static Double getTotalPrinters(String day) throws SQLException{
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_ventas)*1.12 as total from dia_operativo where datediff(?,fecha)=0");
@@ -3330,11 +3330,10 @@ public class ConnectionDrivers {
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_sin_iva " + (withDiscount?"-total_sin_iva*descuento_global":"") + ")"
-                + " as total from " + table + " where datediff(?,fecha_creacion) = 0 and estado = ? " + (pos==null?"":"and identificador_pos = ? ") );
-        stmt.setString(1, myDay);
-        stmt.setString(2, status);
+                + " as total from " + table + " where datediff(" + myDay + ",fecha_creacion) = 0 and estado = ? " + (pos==null?"":"and identificador_pos = ? ") );
+        stmt.setString(1, status);
         if ( pos != null ){
-            stmt.setString(3,pos);
+            stmt.setString(2,pos);
         }
         ResultSet rs = stmt.executeQuery();
 
@@ -4100,6 +4099,26 @@ public class ConnectionDrivers {
 
         c.close();
 
+        return ans;
+    }
+
+    static double getTotalPrinter(String day , String pos) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        double ans = .0;
+
+        PreparedStatement stmt = c.prepareStatement("select total_ventas from dia_operativo where fecha = " + day + " and codigo_punto_de_venta = ? ");
+
+        stmt.setString(1, pos);
+
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getDouble(1);
+        }
+
+        c.close();
         return ans;
     }
 

@@ -350,6 +350,7 @@ public class Shared {
 
     public static void loadPhoto(JLabel imageLabel , String addr, int x, int y){
         if ( addr != null ){
+            System.out.println("Cargando Imagen: " + addr);
             ImageIcon image = new ImageIcon(addr);
             ImageIcon imageIcon = new ImageIcon(image.getImage().getScaledInstance( x, y, Image.SCALE_AREA_AVERAGING));
             imageLabel.setIcon(imageIcon);

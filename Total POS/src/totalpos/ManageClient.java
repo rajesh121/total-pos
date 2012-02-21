@@ -204,6 +204,9 @@ public class ManageClient extends javax.swing.JDialog {
 
         addressField.setName("addressField"); // NOI18N
         addressField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                addressFieldKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 addressFieldKeyReleased(evt);
             }
@@ -339,6 +342,10 @@ public class ManageClient extends javax.swing.JDialog {
             nameField.requestFocus();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
+            comboKind.requestFocus();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_DOWN ){
+            nameField.requestFocus();
         }
     }//GEN-LAST:event_idFieldKeyPressed
 
@@ -348,6 +355,10 @@ public class ManageClient extends javax.swing.JDialog {
             this.dispose();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
             phoneField.requestFocus();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
+            idField.requestFocus();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_DOWN ){
+            phoneField.requestFocus();
         }
     }//GEN-LAST:event_nameFieldKeyPressed
 
@@ -356,6 +367,10 @@ public class ManageClient extends javax.swing.JDialog {
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            addressField.requestFocus();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
+            nameField.requestFocus();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_DOWN ){
             addressField.requestFocus();
         }
     }//GEN-LAST:event_phoneFieldKeyPressed
@@ -414,15 +429,6 @@ public class ManageClient extends javax.swing.JDialog {
 
     private void addressFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyReleased
 
-        if ( addressField.getText().length() > 30 ){
-            addressField.setText(addressField.getText().substring(0,30));
-        }
-
-        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            this.dispose();
-        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            acceptButton.requestFocus();
-        }
     }//GEN-LAST:event_addressFieldKeyReleased
 
     private void nameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyReleased
@@ -434,6 +440,23 @@ public class ManageClient extends javax.swing.JDialog {
             nameField.setText(nameField.getText().substring(0,35));
         }
     }//GEN-LAST:event_nameFieldKeyReleased
+
+    private void addressFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyPressed
+
+        if ( addressField.getText().length() > 30 ){
+            addressField.setText(addressField.getText().substring(0,30));
+        }
+
+        if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            acceptButton.requestFocus();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
+            phoneField.requestFocus();
+        }else if ( evt.getKeyCode() == KeyEvent.VK_DOWN ){
+            acceptButton.requestFocus();
+        }
+    }//GEN-LAST:event_addressFieldKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Nombre;

@@ -126,17 +126,20 @@ public class FiscalPrinter {
         return getSerial().equals(serial);
     }
 
+    // TODO Check difference between predicted and everythingCool
     public void printTicket(List<Item2Receipt> items , Client client, Double globalDiscount, String ticketId, User u , List<PayForm> pfs) throws Exception{
         if ( !Constants.withFiscalPrinter ){
             return;
         }
         boolean everythingCool = true;
+        boolean predicted = false;
         
         if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
             isOk = false;
 
             printer.ClosePort();
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+            printer.OpenBox();
             printer.CancelTransaction();
 
             if ( ans != 0 ){
@@ -153,17 +156,17 @@ public class FiscalPrinter {
 
             int hour = calendar.get(Calendar.HOUR) == 0?12:calendar.get(Calendar.HOUR);
 
-            System.out.println("Hora = " +  hour);
+            System.out.println("Anyo = " +  calendar.get(Calendar.YEAR)%100);
             System.out.println("Fecha enviada: " + calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH)+1) + "/"
-                    + (byte)(calendar.get(Calendar.YEAR)+Constants.ncrYearOffset)+ " " + hour + ":" + calendar.get(Calendar.MINUTE)
+                    + (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset)+ " " + hour + ":" + calendar.get(Calendar.MINUTE)
                     + ":" + calendar.get(Calendar.SECOND) + " " + ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
             ans = printer.NewDoc(Constants.receipt, client.getName(), client.getId(),
                     Shared.getUser().getLogin(), "ABC", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
-                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
-                    (calendar.get(Calendar.MONTH)+1), 24, hour,
+                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendar.get(Calendar.DAY_OF_MONTH)),
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
@@ -178,7 +181,7 @@ public class FiscalPrinter {
                 if ( ans != 0 ){
                     throw new Exception(Shared.ncrErrMapping.get(ans));
                 }
-                if ( item2r.getItem().getDescuento() != .0 ){
+                if ( Math.abs(item2r.getItem().getDescuento()) > Constants.exilon ){
                     ans = printer.OprDoc((byte)0, (byte)0, Shared.round((item2r.getQuant()+.0)*item2r.getSellPrice()*(item2r.getSellDiscount()/100.0),2), ((item2r.getSellDiscount())+"%").replace(',', '.'));
                 }
                 if ( ans != 0 ){
@@ -194,30 +197,50 @@ public class FiscalPrinter {
             for (PayForm payForm : pfs) {
                 buff.put( payForm.getFormWay() , buff.get(payForm.getFormWay()) + payForm.getQuant());
             }
+            ans = printer.PrintTextNoFiscal(Constants.normalFont,"                                   ",1,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont,"===================================",2,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont,"      CANTIDAD DE ARTICULOS " + items.size(),3,(byte)0);
+            ans = printer.PrintTextNoFiscal(Constants.normalFont,"===================================",4,(byte)0);
 
             ans = printer.CloseDoc(buff.get("Efectivo"), buff.get("Nota de Credito"), buff.get("Credito"), buff.get("Debito"),
                     .0, .0, subtotal*globalDiscount, .0, (byte)12 , (byte)69, ticketId);
 
             System.out.println("ans Close Doc = " + ans);
+            printer.ClosePort();
 
-            if ( ans != 0 && ans != 309){
+            boolean found = false;
+
+            for ( int i = 0 ; i < Constants.triesWithPrinter && !found; i++ ){
+                System.out.println("Intento = " + i );
+                printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
                 printer.CancelTransaction();
+
+                TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
+                ans = printer.QueryPrnTransaction((byte)1, tqpt);
+
+                if ( ans != 0 || tqpt.VoucherVta < 0 || tqpt.VoucherVta > Constants.maximumFiscalNumber ){
+                    lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
+                    predicted = true;
+                }else{
+                    lastReceipt = tqpt.VoucherVta + "";
+                    predicted = false;
+                    found = true;
+                }
+
+                ans = printer.ClosePort();
+            }
+            if ( !found ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Impresora no responde correctamente. Se intento 5 veces, la factura será guardada.");
+                msb.show(null);
+            }
+
+            if ( lastReceipt == Integer.parseInt(ConnectionDrivers.getLastReceipt())+"" ){
+                throw new Exception("La factura NUNCA salio.");
+            }
+
+            /*if ( compareComputerPrinter( subtotal ) != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
-            }
-
-            TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
-            ans = printer.QueryPrnTransaction((byte)1, tqpt);
-
-            boolean predicted = false;
-            if ( ans != 0 ){
-                lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
-                predicted = true;
-            }else{
-                lastReceipt = tqpt.VoucherVta + "";
-            }
-            ans = printer.OpenBox();
-
-            ans = printer.ClosePort();
+            }*/
 
             if ( predicted ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La factura fue guardada satisfactoriamente!!");
@@ -282,6 +305,7 @@ public class FiscalPrinter {
                         //System.out.println("RECUPERANDO NUMERO FISCAL!!");
                         lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                         everythingCool = false;
+                        predicted = true;
                     }
 
                     if ( everythingCool ){
@@ -289,6 +313,7 @@ public class FiscalPrinter {
                         if ( b.getValue() != 0 ){
                             lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                             everythingCool = false;
+                            predicted = true;
                         }
 
                         if ( globalDiscount != null && globalDiscount > 0 ){
@@ -296,6 +321,7 @@ public class FiscalPrinter {
                             if ( b.getValue() != 0 ){
                                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                                 everythingCool = false;
+                                predicted = true;
                             }
                         }
                         for (PayForm pf : pfs) {
@@ -317,12 +343,14 @@ public class FiscalPrinter {
                             if ( b.getValue() != 0 ){
                                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                                 everythingCool = false;
+                                predicted = true;
                             }
                         }
                     }
                 }catch(Exception ex){
                     lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                     everythingCool = false;
+                    predicted = true;
                 }
 
             }
@@ -331,6 +359,7 @@ public class FiscalPrinter {
                 if ( b.getValue() != 0 ){
                     lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                     everythingCool = false;
+                    predicted = true;
                 }
                 if ( everythingCool ){
                     File file = new File(Constants.tmpFileName);
@@ -348,6 +377,11 @@ public class FiscalPrinter {
             }
             printer.CloseFpctrl();
             isOk = true;
+
+            if ( predicted ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La factura fue guardada satisfactoriamente!!");
+                msb.show(null);
+            }
         } else{
             throw new Exception("Driver de impresora desconocido!");
         }
@@ -376,11 +410,11 @@ public class FiscalPrinter {
 
             ans = printer.NewDoc(Constants.nonfiscalDoc, "SAUL", "123",
                     Shared.getUser().getLogin(), "", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
-                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
-                    (calendar.get(Calendar.MONTH)+1), 24, hour,
+                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendar.get(Calendar.DAY_OF_MONTH)),
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
@@ -560,6 +594,7 @@ public class FiscalPrinter {
         return lastReceipt;
     }
 
+    // TODO Check difference between predicted and everythingCool
     public void printCreditNote(List<Item2Receipt> items, String ticketId, String myId, User u , Client client, String alternativeId, String fiscalTicketId, String receiptPrinter , Timestamp printingHour) throws Exception{
         if ( !Constants.withFiscalPrinter ){
             return;
@@ -577,6 +612,7 @@ public class FiscalPrinter {
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
+            ans = printer.OpenBox();
 
             Calendar calendar = GregorianCalendar.getInstance();
             Date dd = Constants.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
@@ -595,11 +631,11 @@ public class FiscalPrinter {
             System.out.println("Hora = " + hour + " _ " + hour);
             ans = printer.NewDoc(Constants.creditNote, client.getName(), client.getId(),
                     Shared.getUser().getLogin(), receiptPrinter, new NativeLong(Long.parseLong(fiscalTicketId)), (calendar.get(Calendar.DAY_OF_MONTH)),
-                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
-                    (calendar.get(Calendar.MONTH)+1), 24, hour,
+                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendarCN.get(Calendar.DAY_OF_MONTH)),
-                    (calendarCN.get(Calendar.MONTH)+1), 24, hourCN,
+                    (calendarCN.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hourCN,
                     calendarCN.get(Calendar.MINUTE), calendarCN.get(Calendar.SECOND),
                     ((calendarCN.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
@@ -615,7 +651,9 @@ public class FiscalPrinter {
                 if ( ans != 0 ){
                     throw new Exception(Shared.ncrErrMapping.get(ans));
                 }
-                ans = printer.OprDoc((byte)0, (byte)0, Shared.round((item2r.getQuant()+.0)*item2r.getSellPrice()*(item2r.getSellDiscount()/100.0),2), ((item2r.getSellDiscount())+"%").replace(',', '.'));
+                if ( Math.abs(item2r.getItem().getDescuento()) > Constants.exilon ){
+                    ans = printer.OprDoc((byte)0, (byte)0, Shared.round((item2r.getQuant()+.0)*item2r.getSellPrice()*(item2r.getSellDiscount()/100.0),2), ((item2r.getSellDiscount())+"%").replace(',', '.'));
+                }
 
                 if ( ans != 0 ){
                     throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -631,36 +669,50 @@ public class FiscalPrinter {
             ans = printer.CloseDoc(.0, new Price(null, subtotal).plusIva().getQuant(), .0, .0,
                     .0, .0, .0, .0, (byte)12 , (byte)69, ticketId);
 
-            if ( ans != 0 && ans != 309 ){
-                printer.CancelTransaction();
-                throw new Exception(Shared.ncrErrMapping.get(ans));
-            }
+            System.out.println("ans Close Doc = " + ans);
+            printer.ClosePort();
 
-            TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
-            ans = printer.QueryPrnTransaction((byte)1, tqpt);
-
-            System.out.println("Ans Query Prn = " + ans);
+            boolean found = false;
             boolean predicted = false;
-            if ( ans != 0 ){
-                lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
-                predicted = true;
-            }else{
-                lastReceipt = tqpt.VoucherDev + "";
+
+            for ( int i = 0 ; i < Constants.triesWithPrinter && !found; i++ ){
+                System.out.println("Intento = " + i );
+                printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+
+                TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
+                ans = printer.QueryPrnTransaction((byte)1, tqpt);
+
+                System.out.println("Ans Query Prn = " + ans);
+                if ( ans != 0 || tqpt.VoucherDev < 0 || tqpt.VoucherDev > Constants.maximumFiscalNumber ){
+                    lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
+                    predicted = true;
+                }else{
+                    lastReceipt = tqpt.VoucherDev + "";
+                    found = true;
+                }
+                ans = printer.ClosePort();
             }
-
-
-            if ( predicted ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La factura fue guardada satisfactoriamente!!");
+            if ( !found ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Impresora no responde correctamente. Se intento 5 veces, la nota de crédito será guardada.");
                 msb.show(null);
             }
 
-            ans = printer.OpenBox();
+            if ( lastReceipt == Integer.parseInt(ConnectionDrivers.getLastCN())+"" ){
+                throw new Exception("La nota de crédito NUNCA salio.");
+            }
+
+            if ( predicted ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La nota de crédito fue guardada satisfactoriamente!!");
+                msb.show(null);
+            }
+
             ans = printer.ClosePort();
 
             isOk = true;
         }else if ( Shared.getFileConfig("printerDriver").equals("tfhkaif") ){
 
             boolean everythingCool = true;
+            boolean predicted = false;
 
             isOk = false;
             IntByReference a = new IntByReference();
@@ -724,6 +776,7 @@ public class FiscalPrinter {
                         //System.out.println("RECUPERANDO NUMERO FISCAL!!");
                         lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                         everythingCool = false;
+                        predicted = true;
                     }
 
                     if ( everythingCool ){
@@ -731,12 +784,14 @@ public class FiscalPrinter {
                         if ( b.getValue() != 0 ){
                             lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                             everythingCool = false;
+                            predicted = true;
                         }
                         printer.SendCmd(a, b, "f11000000000000");
                     }
                 }catch(Exception ex){
                     lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                     everythingCool = false;
+                    predicted = true;
                 }
             }
 
@@ -746,6 +801,7 @@ public class FiscalPrinter {
                     if ( b.getValue() != 0 ){
                         lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                         everythingCool = false;
+                        predicted = true;
                     }
 
                     if ( everythingCool ){
@@ -765,9 +821,15 @@ public class FiscalPrinter {
             }catch(Exception ex){
                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                 everythingCool = false;
+                predicted = true;
             }
             printer.CloseFpctrl();
             isOk = true;
+
+            if ( predicted ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La nota de crédito fue guardada satisfactoriamente!!");
+                msb.show(null);
+            }
         }
     }
 
@@ -789,15 +851,15 @@ public class FiscalPrinter {
             calendar.setTime(dd);
             int hour = calendar.get(Calendar.HOUR) == 0?12:calendar.get(Calendar.HOUR);
 
-            System.out.println(calendar.get(Calendar.DAY_OF_MONTH) + " " + (calendar.get(Calendar.MONTH)+1) + " " + calendar.get(Calendar.YEAR) + " " + hour + " " + calendar.get(Calendar.MINUTE) + " " + calendar.get(Calendar.SECOND) + " " + ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
-            System.out.println((byte)calendar.get(Calendar.DAY_OF_MONTH) + " " + (byte)(calendar.get(Calendar.MONTH)+1) + " " + (byte)calendar.get(Calendar.YEAR) + " " + (byte)hour + " " + (byte)calendar.get(Calendar.MINUTE) + " " + (byte)calendar.get(Calendar.SECOND) + " " + (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+            System.out.println(calendar.get(Calendar.DAY_OF_MONTH) + " " + (calendar.get(Calendar.MONTH)+1) + " " + calendar.get(Calendar.YEAR)%100 + " " + hour + " " + calendar.get(Calendar.MINUTE) + " " + calendar.get(Calendar.SECOND) + " " + ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+            System.out.println((byte)calendar.get(Calendar.DAY_OF_MONTH) + " " + (byte)(calendar.get(Calendar.MONTH)+1) + " " + (byte)calendar.get(Calendar.YEAR)%100 + " " + (byte)hour + " " + (byte)calendar.get(Calendar.MINUTE) + " " + (byte)calendar.get(Calendar.SECOND) + " " + (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
             if ( r.equals("X") ){
-                //ans = printer.RptX((byte)(calendar.get(Calendar.DAY_OF_MONTH)), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)+Constants.ncrYearOffset), (byte)((calendar.get(Calendar.HOUR)+12)%13), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1), "Caja" + Shared.getFileConfig("myId"));
-                ans = printer.RptX((byte)(calendar.get(Calendar.DAY_OF_MONTH)), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(24), (byte)(hour), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1), "Caja" + Shared.getFileConfig("myId"));
+                //ans = printer.RptX((byte)(calendar.get(Calendar.DAY_OF_MONTH)), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset), (byte)((calendar.get(Calendar.HOUR)+12)%13), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1), "Caja" + Shared.getFileConfig("myId"));
+                ans = printer.RptX((byte)(calendar.get(Calendar.DAY_OF_MONTH)), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset), (byte)(hour), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1), "Caja" + Shared.getFileConfig("myId"));
             }else{
-                //ans = printer.GenRptZ((byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)+Constants.ncrYearOffset), (byte)((calendar.get(Calendar.HOUR)+12)%13), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
-                ans = printer.GenRptZ((byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)24, (byte)(hour), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+                //ans = printer.GenRptZ((byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset), (byte)((calendar.get(Calendar.HOUR)+12)%13), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+                ans = printer.GenRptZ((byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset), (byte)(hour), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
             }
 
             printer.ClosePort();
@@ -987,11 +1049,11 @@ public class FiscalPrinter {
 
             ans = printer.NewDoc(Constants.nonfiscalDoc, "SAUL", "123",
                     Shared.getUser().getLogin(), "", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
-                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
-                    (calendar.get(Calendar.MONTH)+1), 24, hour,
+                    //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendar.get(Calendar.DAY_OF_MONTH)),
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
@@ -1060,6 +1122,26 @@ public class FiscalPrinter {
             isOk = true;
         }else{
             throw new Exception("Driver de impresora desconocido!");
+        }
+    }
+
+    private int compareComputerPrinter(double currentReceipt) throws SQLException, Exception {
+        double computer = ConnectionDrivers.getSumTotalWithIva("curdate()","factura","Facturada", true , Shared.getFileConfig("myId"))
+                - ConnectionDrivers.getSumTotalWithIva("curdate()","nota_de_credito","Nota",false, Shared.getFileConfig("myId") );
+
+        updateValues("curdate()");
+
+        double printer = ConnectionDrivers.getTotalPrinter("curdate()", Shared.getFileConfig("myId"));
+
+        System.out.println(" Computer = " + (computer + currentReceipt));
+        System.out.println(" Printer = " + printer );
+        printer = ConnectionDrivers.getTotalPrinter("curdate()", Shared.getFileConfig("myId"));
+        if ( Math.abs( computer + currentReceipt - printer ) < Constants.printerExilon ){
+            return 0;
+        }else if ( computer < printer ){
+            return -1;
+        }else{
+            return 1;
         }
     }
     

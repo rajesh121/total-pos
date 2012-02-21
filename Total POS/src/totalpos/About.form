@@ -25,12 +25,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="panel2" alignment="0" max="32767" attributes="0"/>
                   <Component id="panel1" alignment="0" max="32767" attributes="0"/>
                   <Component id="title" alignment="0" pref="471" max="32767" attributes="0"/>
-                  <Component id="panel2" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -44,8 +44,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="panel1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="panel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="panel2" min="-2" pref="186" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -53,7 +53,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="title">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="18" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Cr&#xe9;ditos:"/>
@@ -92,7 +92,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="aboutLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;b&gt;Natalio Farah:&lt;/b&gt; Creador del Proyecto&lt;br&gt;&lt;b&gt;Kenyer Dom&#xed;nguez:&lt;/b&gt; Asesor Metodol&#xf3;gico&lt;br&gt;&lt;b&gt;Aurora Anaya:&lt;/b&gt; Solicitud de requerimientos y Probador.&lt;br&gt;&lt;b&gt;Angel Ramos:&lt;/b&gt; Artista Gr&#xe1;fico&lt;br&gt;&lt;b&gt;Yolivet Rond&#xf3;n:&lt;/b&gt; Desarrollador de Cursos&lt;br&gt;&lt;b&gt;Fredy Ojeda:&lt;/b&gt; Probador&lt;br&gt;&lt;b&gt;Oswaldo Hern&#xe1;ndez:&lt;/b&gt; Probador&lt;br&gt;&lt;b&gt;Frank Miranda:&lt;/b&gt; Probador&lt;br&gt;&lt;b&gt;Sa&#xfa;l Hidalgo:&lt;/b&gt; Arquitecto de Software, dise&#xf1;ador, Especificador de requerimientos, Especialista de Herramientas, Analista de Pruebas, Implementador e Integrador.&lt;br&gt;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;b&gt;Natalio Farah:&lt;/b&gt; Creador del Proyecto&lt;br&gt;&lt;b&gt;Kenyer Dom&#xed;nguez:&lt;/b&gt; Asesor Metodol&#xf3;gico&lt;br&gt;&lt;b&gt;Giuseppina Dimar&#xed;a:&lt;/b&gt; Especificador de requerimientos&lt;br&gt;&lt;b&gt;Aurora Anaya:&lt;/b&gt; Especificador de requerimientos y Probador.&lt;br&gt;&lt;b&gt;Angel Ramos:&lt;/b&gt; Artista Gr&#xe1;fico&lt;br&gt;&lt;b&gt;Yolivet Rond&#xf3;n:&lt;/b&gt; Desarrollador de Cursos&lt;br&gt;&lt;b&gt;Fredy Ojeda:&lt;/b&gt; Probador&lt;br&gt;&lt;b&gt;Oswaldo Hern&#xe1;ndez:&lt;/b&gt; Probador&lt;br&gt;&lt;b&gt;Frank Miranda:&lt;/b&gt; Probador&lt;br&gt;&lt;b&gt;Sa&#xfa;l Hidalgo:&lt;/b&gt; Arquitecto de Software, dise&#xf1;ador, Especificador de requerimientos, Especialista de Herramientas, Analista de Pruebas, Implementador e Integrador.&lt;br&gt;&lt;/html&gt;"/>
             <Property name="name" type="java.lang.String" value="aboutLabel" noResource="true"/>
           </Properties>
         </Component>
@@ -121,7 +121,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="detailLabel" pref="92" max="32767" attributes="0"/>
+                  <Component id="detailLabel" pref="82" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -130,7 +130,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="detailLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;b&gt;Versi&#xf3;n del Producto:&lt;/b&gt; 0.1-rc1&lt;br&gt;&lt;b&gt;Nombre del Producto:&lt;/b&gt; Total Pos &lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;b&gt;Versi&#xf3;n del Producto:&lt;/b&gt; 1.0.301&lt;br&gt;&lt;b&gt;Nombre del Producto:&lt;/b&gt; Total Pos &lt;/html&gt;"/>
             <Property name="name" type="java.lang.String" value="detailLabel" noResource="true"/>
           </Properties>
         </Component>

@@ -40,14 +40,14 @@ public class About extends javax.swing.JDialog {
             }
         });
 
-        title.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        title.setFont(new java.awt.Font("Courier New", 1, 18));
         title.setText("Créditos:");
         title.setName("title"); // NOI18N
 
         panel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Autores"));
         panel2.setName("panel2"); // NOI18N
 
-        aboutLabel.setText("<html><b>Natalio Farah:</b> Creador del Proyecto<br><b>Kenyer Domínguez:</b> Asesor Metodológico<br><b>Aurora Anaya:</b> Solicitud de requerimientos y Probador.<br><b>Angel Ramos:</b> Artista Gráfico<br><b>Yolivet Rondón:</b> Desarrollador de Cursos<br><b>Fredy Ojeda:</b> Probador<br><b>Oswaldo Hernández:</b> Probador<br><b>Frank Miranda:</b> Probador<br><b>Saúl Hidalgo:</b> Arquitecto de Software, diseñador, Especificador de requerimientos, Especialista de Herramientas, Analista de Pruebas, Implementador e Integrador.<br></html>");
+        aboutLabel.setText("<html><b>Natalio Farah:</b> Creador del Proyecto<br><b>Kenyer Domínguez:</b> Asesor Metodológico<br><b>Giuseppina Dimaría:</b> Especificador de requerimientos<br><b>Aurora Anaya:</b> Especificador de requerimientos y Probador.<br><b>Angel Ramos:</b> Artista Gráfico<br><b>Yolivet Rondón:</b> Desarrollador de Cursos<br><b>Fredy Ojeda:</b> Probador<br><b>Oswaldo Hernández:</b> Probador<br><b>Frank Miranda:</b> Probador<br><b>Saúl Hidalgo:</b> Arquitecto de Software, diseñador, Especificador de requerimientos, Especialista de Herramientas, Analista de Pruebas, Implementador e Integrador.<br></html>");
         aboutLabel.setName("aboutLabel"); // NOI18N
 
         javax.swing.GroupLayout panel2Layout = new javax.swing.GroupLayout(panel2);
@@ -69,7 +69,7 @@ public class About extends javax.swing.JDialog {
         panel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Detalles del Producto"));
         panel1.setName("panel1"); // NOI18N
 
-        detailLabel.setText("<html><b>Versión del Producto:</b> 0.1-rc1<br><b>Nombre del Producto:</b> Total Pos </html>");
+        detailLabel.setText("<html><b>Versión del Producto:</b> 1.0.301<br><b>Nombre del Producto:</b> Total Pos </html>");
         detailLabel.setName("detailLabel"); // NOI18N
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
@@ -84,7 +84,7 @@ public class About extends javax.swing.JDialog {
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
-                .addComponent(detailLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                .addComponent(detailLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -92,12 +92,12 @@ public class About extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
-                    .addComponent(panel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(panel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(title, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -108,7 +108,7 @@ public class About extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 

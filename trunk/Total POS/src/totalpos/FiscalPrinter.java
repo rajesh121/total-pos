@@ -234,7 +234,8 @@ public class FiscalPrinter {
                 msb.show(null);
             }
 
-            if ( lastReceipt == Integer.parseInt(ConnectionDrivers.getLastReceipt())+"" ){
+            System.out.println("Last Receipt = " + Integer.parseInt(ConnectionDrivers.getLastReceipt())+"" );
+            if ( lastReceipt.equals(Integer.parseInt(ConnectionDrivers.getLastReceipt())+"") ){
                 throw new Exception("La factura NUNCA salio.");
             }
 

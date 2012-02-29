@@ -274,6 +274,13 @@ public class MainWindows extends javax.swing.JFrame {
                 ssf.setVisible(true);
             } else if ( ed.getFuncion().equals("reconfigureZebra") ){
                 Sticker.configure();
+            } else if ( ed.getFuncion().equals("createCapture") ){
+                String id = JOptionPane.showInputDialog(null, "Código de empleado", "");
+                if ( id != null ){
+                    createCapture cc = new createCapture(id);
+                    mdiPanel.add(cc);
+                    cc.setVisible(true);
+                }
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);

@@ -2322,6 +2322,7 @@ public class ConnectionDrivers {
     protected static void listFiscalZ(DefaultTableModel ans, String day) throws SQLException{
         ans.setRowCount(0);
 
+        System.out.println("Day = " + day);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select do.codigo_punto_de_venta , pos.impresora , "
                 + "do.dinero_tarjeta_credito + do.dinero_efectivo+ do.dinero_tarjeta_debito as facturado, "
@@ -2334,6 +2335,7 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
+            System.out.println("Numero: " + Constants.df.format((ConnectionDrivers.getSumTotalWithIva(day,"factura","Facturada", true , rs.getString("codigo_punto_de_venta")))));
             Object[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
                     , Constants.df.format((ConnectionDrivers.getSumTotalWithIva(day,"factura","Facturada", true , rs.getString("codigo_punto_de_venta"))
                         - ConnectionDrivers.getSumTotalWithIva(day,"nota_de_credito","Nota",false, rs.getString("codigo_punto_de_venta")))
@@ -3330,7 +3332,7 @@ public class ConnectionDrivers {
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_sin_iva " + (withDiscount?"-total_sin_iva*descuento_global":"") + ")"
-                + " as total from " + table + " where datediff(" + myDay + ",fecha_creacion) = 0 and estado = ? " + (pos==null?"":"and identificador_pos = ? ") );
+                + " as total from " + table + " where datediff(\'" + myDay + "\',fecha_creacion) = 0 and estado = ? " + (pos==null?"":"and identificador_pos = ? ") );
         stmt.setString(1, status);
         if ( pos != null ){
             stmt.setString(2,pos);
@@ -3338,12 +3340,15 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         boolean ok = rs.next();
+        System.out.println("Ok = " + ok );
         if ( ok ){
             ans = rs.getDouble("total");
+            System.out.println("Ans = " + ans);
         }
 
         c.close();
         rs.close();
+        System.out.println("Respuesta : = " + ans);
         return ans;
     }
 

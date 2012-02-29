@@ -268,6 +268,9 @@ public class MainWindows extends javax.swing.JFrame {
             } else if ( ed.getFuncion().equals("initialStock") ){
                 UpdateStockFromSAP usfs = new UpdateStockFromSAP("initialStock");
                 usfs.updateStockFromSAP();
+            } else if ( ed.getFuncion().equals("udpateEmployees") ){
+                UpdateStockFromSAP usfs = new UpdateStockFromSAP("profitWorkers");
+                usfs.updateStockFromSAP();
             } else if ( ed.getFuncion().equals("sendSells") ){
                 SendSellsFrom ssf = new SendSellsFrom();
                 mdiPanel.add(ssf);
@@ -279,7 +282,12 @@ public class MainWindows extends javax.swing.JFrame {
                 if ( id != null ){
                     createCapture cc = new createCapture(id);
                     mdiPanel.add(cc);
-                    cc.setVisible(true);
+                    if ( cc.isOk ){
+                        cc.setVisible(true);
+                    }else{
+                        MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Código de empleado no existente!");
+                        msg.show(mainWindows);
+                    }
                 }
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");

@@ -157,7 +157,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), userField.getText());
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "report" + kindOfReport) ){
                 myParent.printer.updateValues(day);
-                myParent.printer.printResumeZ(day);
+                myParent.printer.printResumeZ(day, kindOfReport);
                 myParent.printer.report(kindOfReport);
                 if ( kindOfReport.equals("Z") ){
                     ConnectionDrivers.setZDone(day);

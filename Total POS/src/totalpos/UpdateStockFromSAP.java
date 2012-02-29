@@ -38,9 +38,10 @@ public class UpdateStockFromSAP implements Doer{
 
             WS ws = new WSService().getWSPort();
 
-            ws.initialize("2011-11-11", Constants.storePrefix+Shared.getConfig("storeName"));
 
             if ( mode.equals("MM") ){
+                ws.initialize("2011-11-11", Constants.storePrefix+Shared.getConfig("storeName"));
+                
                 String ansListMM = ws.listMM(ConnectionDrivers.getLastMM());
                 //String ansListMM = ws.listMM("4900447349");
                 System.out.println(" ansListMM = " + ansListMM );
@@ -58,12 +59,16 @@ public class UpdateStockFromSAP implements Doer{
                 ConnectionDrivers.setPrices(ansPricesDiscounts);
                 System.out.println("Listo!");
             }else if ( mode.equals("Prices")){
+                ws.initialize("2011-11-11", Constants.storePrefix+Shared.getConfig("storeName"));
+
                 String myDay = Shared.getConfig("lastPriceUpdate");
                 String newPrices = ws.listNewPriceFromDate(myDay, Constants.storePrefix+Shared.getConfig("storeName"), Shared.getConfig("Z"));
                 System.out.println("newPrices = " + newPrices);
                 ConnectionDrivers.setPrices(newPrices);
                 ConnectionDrivers.setLastUpdateNow();
             }else if ( mode.equals("initialStock") ){
+
+                ws.initialize("2011-11-11", Constants.storePrefix+Shared.getConfig("storeName"));
                 String ansListMM = ws.getInitialStock();
                 System.out.println(" ansListMM = " + ansListMM );
                 String itemsNeeded = ConnectionDrivers.getInitialStock(ansListMM);
@@ -79,6 +84,12 @@ public class UpdateStockFromSAP implements Doer{
 
                 ConnectionDrivers.setPrices(ansPricesDiscounts);
                 System.out.println("Listo!");
+            }else if ( mode.equals("profitWorkers")){
+                String ans = ws.initializeConnectionProfit();
+                System.out.println("Initialize = " + ans);
+                ans = ws.listEmployCode(Shared.getConfig("storeNameProfit"));
+                System.out.println("Ans = " + ans);
+                ConnectionDrivers.updateEmployees(ans);
             }
 
 

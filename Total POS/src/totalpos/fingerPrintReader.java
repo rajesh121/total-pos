@@ -154,11 +154,11 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setTitle("Capta Huellas");
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 36)); // NOI18N
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 36));
         titleLabel.setText("HIDALGO AULAR");
         titleLabel.setName("titleLabel"); // NOI18N
 
-        employName.setFont(new java.awt.Font("Courier New", 1, 36)); // NOI18N
+        employName.setFont(new java.awt.Font("Courier New", 1, 36));
         employName.setText("SAUL SAMIR");
         employName.setName("employName"); // NOI18N
 
@@ -183,7 +183,7 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        operationLabel.setFont(new java.awt.Font("Courier New", 1, 36)); // NOI18N
+        operationLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
         operationLabel.setText("SALIDA O ENTRADA");
         operationLabel.setName("operationLabel"); // NOI18N
 
@@ -219,6 +219,10 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+    public void setFontSize2Name(int n){
+        employName.setFont(new java.awt.Font("Courier New", 1, n));
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel employName;

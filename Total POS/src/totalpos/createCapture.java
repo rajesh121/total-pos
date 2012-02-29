@@ -7,6 +7,7 @@ import com.digitalpersona.onetouch.DPFPGlobal;
 import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.processing.DPFPEnrollment;
 import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
+import java.sql.SQLException;
 
 /**
  *
@@ -15,14 +16,22 @@ import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
 public class createCapture extends fingerPrintReader{
 
     private DPFPEnrollment enroller = DPFPGlobal.getEnrollmentFactory().createEnrollment();
-    private String employId = null;
+    public boolean isOk = false;
+    private Employ employ;
 
     public createCapture(String employId) {
         super();
-        super.setState("Captura de Nueva Huella");
-        super.setNameLabel("");
-        updateStatus();
-        this.employId = employId;
+        try {
+            super.setState("Captura de Nueva Huella");
+            updateStatus();
+            employ = ConnectionDrivers.getEmploy(employId);
+            isOk = (employ != null);
+            super.setNameLabel(employ.getName());
+            super.setFontSize2Name(20);
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido", ex);
+            msb.show(Shared.getMyMainWindows());
+        }
     }
 
     @Override
@@ -38,26 +47,27 @@ public class createCapture extends fingerPrintReader{
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha guardado la huella", ex);
             msb.show(this);
         }finally{
-            updateStatus();
-
-
-            switch(enroller.getTemplateStatus()){
-                case TEMPLATE_STATUS_READY:
-                    stop();
-
-                    // TODO GUARDAR EN BASE DE DATOS.
-
-                    MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
-                    msb.show(this);
-                    this.dispose();
-                break;
-
-                case TEMPLATE_STATUS_FAILED:
-                    enroller.clear();
-                    stop();
-                    updateStatus();
-                    start();
-                break;
+            try {
+                updateStatus();
+                switch (enroller.getTemplateStatus()) {
+                    case TEMPLATE_STATUS_READY:
+                        stop();
+                        byte[] template = enroller.getTemplate().serialize();
+                        ConnectionDrivers.saveTemplate(employ.getCode(), template);
+                        MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
+                        msb.show(this);
+                        this.dispose();
+                        break;
+                    case TEMPLATE_STATUS_FAILED:
+                        enroller.clear();
+                        stop();
+                        updateStatus();
+                        start();
+                        break;
+                }
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Error al guardar la huella");
+                msb.show(this);
             }
         }
 
@@ -71,7 +81,5 @@ public class createCapture extends fingerPrintReader{
             super.setTitleLabel("Faltan " + enroller.getFeaturesNeeded() + " Captaciones.");
         }
     }
-
-    
 
 }

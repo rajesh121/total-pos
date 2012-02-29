@@ -4127,4 +4127,76 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    static void updateEmployees(String xmlEmployees) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+        IXMLReader reader = StdXMLReader.stringReader(xmlEmployees);
+        parser.setReader(reader);
+        IXMLElement xml = (IXMLElement) parser.parse();
+
+        PreparedStatement stmt = c.prepareStatement("delete from empleado");
+        stmt.executeUpdate();
+        for (Object x : xml.getChildren()) {
+            XMLElement xmlI = (XMLElement)x;
+
+            stmt = c.prepareStatement("insert into empleado (codigo,nombre_completo) values(?,?)");
+            stmt.setString(1, xmlI.getAttribute("c"));
+            stmt.setString(2, xmlI.getAttribute("n"));
+            stmt.executeUpdate();
+        }
+
+        c.close();
+
+    }
+
+    static boolean existsEmployCode(String employId) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement pstmt = c.prepareStatement("select * from empleado where codigo = ? ");
+        pstmt.setString(1, employId);
+        ResultSet rs = pstmt.executeQuery();
+
+        if ( ! rs.next() ){
+            rs.close();
+            c.close();
+            return false;
+        }
+
+        c.close();
+        rs.close();
+        return true;
+    }
+
+    static Employ getEmploy(String employId) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement pstmt = c.prepareStatement("select codigo, nombre_completo from empleado where codigo = ? ");
+        pstmt.setString(1, employId);
+        ResultSet rs = pstmt.executeQuery();
+
+        if ( ! rs.next() ){
+            rs.close();
+            c.close();
+            return null;
+        }
+
+        Employ ans = new Employ(rs.getString("codigo"), rs.getString("nombre_completo"));
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static void saveTemplate(String code, byte[] template) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("delete from huella where codigo_empleado = ? ");
+        stmt.setString(1, code);
+        stmt.executeUpdate();
+        stmt = c.prepareStatement("insert into huella (codigo_empleado,imagen) values(?,?)");
+        stmt.setString(1, code);
+        stmt.setBytes(2, template);
+        stmt.executeUpdate();
+
+        c.close();
+    }
+
 }

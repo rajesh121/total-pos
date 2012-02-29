@@ -4199,4 +4199,20 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    static List<FingerPrint> getAllFingerPrints() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , imagen from huella");
+        ResultSet rs = stmt.executeQuery();
+
+        List<FingerPrint> ans = new LinkedList<FingerPrint>();
+
+        while( rs.next() ){
+            ans.add(new FingerPrint(rs.getString("codigo_empleado"), rs.getBytes("imagen")));
+        }
+
+        c.close();
+        return ans;
+    }
+
 }

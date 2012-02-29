@@ -107,10 +107,12 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
     }
 
     protected void start(){
+        System.out.println("Iniciado");
         capturer.startCapture();
     }
 
     protected void stop(){
+        System.out.println("Detenido");
         capturer.stopCapture();
     }
 
@@ -153,6 +155,24 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setTitle("Capta Huellas");
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
+        });
 
         titleLabel.setFont(new java.awt.Font("Courier New", 1, 36));
         titleLabel.setText("HIDALGO AULAR");
@@ -218,6 +238,15 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        --Shared.isFingerOpened;
+        capturer.stopCapture();
+    }//GEN-LAST:event_formInternalFrameClosed
+
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        ++Shared.isFingerOpened;
+    }//GEN-LAST:event_formInternalFrameOpened
 
 
     public void setFontSize2Name(int n){

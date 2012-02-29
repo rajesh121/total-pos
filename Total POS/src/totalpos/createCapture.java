@@ -26,8 +26,10 @@ public class createCapture extends fingerPrintReader{
             updateStatus();
             employ = ConnectionDrivers.getEmploy(employId);
             isOk = (employ != null);
-            super.setNameLabel(employ.getName());
-            super.setFontSize2Name(20);
+            if ( isOk ){
+                super.setNameLabel(employ.getName());
+                super.setFontSize2Name(20);
+            }
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido", ex);
             msb.show(Shared.getMyMainWindows());
@@ -44,7 +46,7 @@ public class createCapture extends fingerPrintReader{
                 enroller.addFeatures(features);            
             }
         } catch (DPFPImageQualityException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha guardado la huella", ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha guardado la huella. Intente de nuevo", ex);
             msb.show(this);
         }finally{
             try {

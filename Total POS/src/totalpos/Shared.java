@@ -80,6 +80,7 @@ public class Shared {
     protected static List< XMLElement > itemsNeeded;
     private static int processingWindows = 0;
     public static FiscalPrinter printer;
+    public static int isFingerOpened = 0;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");

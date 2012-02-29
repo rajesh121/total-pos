@@ -278,15 +278,31 @@ public class MainWindows extends javax.swing.JFrame {
             } else if ( ed.getFuncion().equals("reconfigureZebra") ){
                 Sticker.configure();
             } else if ( ed.getFuncion().equals("createCapture") ){
-                String id = JOptionPane.showInputDialog(null, "Código de empleado", "");
-                if ( id != null ){
-                    createCapture cc = new createCapture(id);
-                    mdiPanel.add(cc);
-                    if ( cc.isOk ){
-                        cc.setVisible(true);
-                    }else{
-                        MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Código de empleado no existente!");
-                        msg.show(mainWindows);
+                if ( Shared.isFingerOpened > 0 ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Existe otra ventana para huellas abierta. Solo debe haber máximo 1");
+                    msb.show(mainWindows);
+                }else{
+                    String id = JOptionPane.showInputDialog(null, "Código de empleado", "");
+                    if ( id != null ){
+                        createCapture cc = new createCapture(id);
+                        if ( cc.isOk ){
+                            mdiPanel.add(cc);
+                            cc.setVisible(true);
+                        }else{
+                            MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Código de empleado no existente!");
+                            msg.show(mainWindows);
+                        }
+                    }
+                }
+            } else if ( ed.getFuncion().equals("verifyCapture") ){
+                if ( Shared.isFingerOpened > 0 ){
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Existe otra ventana para huellas abierta. Solo debe haber máximo 1");
+                    msb.show(mainWindows);
+                }else{
+                    CheckFingerprint cfp = new CheckFingerprint();
+                    if ( cfp.isOk ){
+                        mdiPanel.add(cfp);
+                        cfp.setVisible(true);
                     }
                 }
             } else if (ed.getFuncion().isEmpty()) {

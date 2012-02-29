@@ -1234,9 +1234,6 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     return;
                 }
                 Double m = Double.parseDouble(((String) model.getValueAt(i, 1)).replace(',', '.'));
-                if ( m <= .0 ){
-                    throw new NumberFormatException();
-                }
             }catch (NumberFormatException ex){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido. Debe ser positivo");
                 msg.show(this);

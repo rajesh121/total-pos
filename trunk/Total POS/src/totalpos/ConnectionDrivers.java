@@ -4325,10 +4325,16 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void saveFingerPrint(Employ e) throws SQLException, Exception{
+    static String saveFingerPrint(Employ e) throws SQLException, Exception{
         Presence p = listAllFingerPrintMarks("curdate()", e);
+
+        String t = ConnectionDrivers.getLastMark(e);
+
+        if ( t != null && Constants.halfHour.compareTo(t) >= 0 && p.getFingerPrints().size() < 4 ){
+            return "HUELLA REPETIDA";
+        }
+
         Connection c = ConnectionDrivers.cpds.getConnection();
-        boolean isb4halfDay = isBeforeHalfDay();
 
         if ( p.getFingerPrints().isEmpty() ){
 
@@ -4341,7 +4347,7 @@ public class ConnectionDrivers {
             stmt.setString(1, Shared.getConfig("storeName"));
             stmt.setString(2, e.getCode());
             stmt.executeUpdate();
-        }else if ( isb4halfDay && p.getFingerPrints().size() == 1){
+        }else if ( p.getFingerPrints().size() == 1){
             PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
             stmt.setString(1, Shared.getConfig("storeName"));
             stmt.setString(2, e.getCode());
@@ -4351,27 +4357,16 @@ public class ConnectionDrivers {
             stmt.setString(1, Shared.getConfig("storeName"));
             stmt.setString(2, e.getCode());
             stmt.executeUpdate();
-        }else if ( isb4halfDay && p.getFingerPrints().size() == 2){
-            deleteLastFingerPrint(e, "curdate()");
+        }else if ( p.getFingerPrints().size() == 2){
             PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
             stmt.setString(1, Shared.getConfig("storeName"));
             stmt.setString(2, e.getCode());
             stmt.executeUpdate();
-            stmt = c.prepareStatement("update asistencia set marcacion2=now() where agencia=? and fecha=curdate() and codigo_empleado=?");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
-            stmt.executeUpdate();
-        }else if ( !isb4halfDay && p.getFingerPrints().size() == 2){
-            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
-            stmt.executeUpdate();
-
             stmt = c.prepareStatement("update asistencia set marcacion3=now() where agencia=? and fecha=curdate() and codigo_empleado=?");
             stmt.setString(1, Shared.getConfig("storeName"));
             stmt.setString(2, e.getCode());
             stmt.executeUpdate();
-        }else if ( !isb4halfDay && p.getFingerPrints().size() == 3 ){
+        }else if ( p.getFingerPrints().size() == 3 ){
             PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
             stmt.setString(1, Shared.getConfig("storeName"));
             stmt.setString(2, e.getCode());
@@ -4393,9 +4388,9 @@ public class ConnectionDrivers {
             stmt.executeUpdate();
         }
 
-
-
         c.close();
+
+        return "ACEPTADO";
     }
 
     static String currentHour() throws SQLException{
@@ -4479,6 +4474,36 @@ public class ConnectionDrivers {
         while( rs.next() ){
             ans.addFingerPrint(rs.getTimestamp("hora"));
         }
+
+        c.close();
+        return ans;
+    }
+
+    static String getLastMark(Employ e) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("select hora from marcacion where hora=(select max(hora) from marcacion where codigo_empleado=?)");
+        stmt.setString(1, e.getCode());
+        ResultSet rs = stmt.executeQuery();
+
+        boolean n = rs.next();
+
+        if ( !n ){
+            c.close();
+            return null;
+        }
+
+        String tmp = rs.getString("hora");
+
+        stmt = c.prepareStatement("select timediff(now() , ? ) as diffe");
+        stmt.setString(1, tmp);
+        rs = stmt.executeQuery();
+
+        n = rs.next();
+        assert( n );
+
+        String ans = rs.getString("diffe");
+        
 
         c.close();
         return ans;

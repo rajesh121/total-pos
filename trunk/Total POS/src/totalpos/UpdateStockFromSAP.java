@@ -43,7 +43,7 @@ public class UpdateStockFromSAP implements Doer{
                 ws.initialize("2011-11-11", Constants.storePrefix+Shared.getConfig("storeName"));
                 
                 String ansListMM = ws.listMM(ConnectionDrivers.getLastMM());
-                //String ansListMM = ws.listMM("4900447349");
+                //String ansListMM = ws.listMM("4900458128");
                 System.out.println(" ansListMM = " + ansListMM );
 
                 String itemsNeeded = ConnectionDrivers.createNewMovement(ansListMM);

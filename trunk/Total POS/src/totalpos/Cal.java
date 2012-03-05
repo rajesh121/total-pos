@@ -93,13 +93,13 @@ public class Cal extends JPanel {
 
   private JInternalFrame parent;
 
-  private boolean isClosingDay;
+  private int kindOfWindows;
 
   /**
    * Construct a Cal, starting with today.
    */
-  Cal(JTextField finish, JInternalFrame myParent, boolean isClosingDay) {
-    this.isClosingDay = isClosingDay;
+  Cal(JTextField finish, JInternalFrame myParent, int kindOfWindows) {
+    this.kindOfWindows = kindOfWindows;
     setYYMMDD(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH));
     buildGUI();
@@ -204,8 +204,10 @@ public class Cal extends JPanel {
 
         field.setText( ans );
         parent.dispose();
-        if ( isClosingDay ){
+        if ( kindOfWindows == 1 ){
             ((MainWindows)Shared.getMyMainWindows()).createClosingDay(ans);
+        }else if ( kindOfWindows == 2 ){
+            ((MainWindows)Shared.getMyMainWindows()).createManualHR(ans);
         }
       }
     };

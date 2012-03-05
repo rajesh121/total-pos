@@ -29,4 +29,8 @@ public class Employ {
         this.name = name;
     }
 
+    public String getName4Menu(){
+        return this.getCode() + " - " + this.getName().split(",")[0];
+    }
+
 }

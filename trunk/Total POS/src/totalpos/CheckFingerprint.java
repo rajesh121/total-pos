@@ -8,6 +8,7 @@ import com.digitalpersona.onetouch.DPFPSample;
 import com.digitalpersona.onetouch.DPFPTemplate;
 import com.digitalpersona.onetouch.verification.DPFPVerification;
 import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
+import java.awt.Color;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -52,29 +53,44 @@ public class CheckFingerprint extends fingerPrintReader{
                 DPFPVerificationResult result = verificator.verify(features, t );
                 if (result.isVerified()){
                     try {
-                        String[] names = ConnectionDrivers.getEmploy(f.getEmployId()).getName().split(",");
-                        super.setState("Aceptado");
-                        super.setTitleLabel(names[0]);
-                        super.setNameLabel(names[1]);
-                        isOk = true;
+                        Employ e = ConnectionDrivers.getEmploy(f.getEmployId());
+                        if ( e == null ){
+                            super.setState("Empleado no registrado");
+                            super.setTitleLabel("");
+                            super.setNameLabel("");
+                        }else{
+                            String[] names = e.getName().split(",");
+                            ConnectionDrivers.saveFingerPrint(e);
+                            super.setState("Aceptado " + ConnectionDrivers.currentHour());
+                            super.setTitleLabel(names[0]);
+                            super.setNameLabel(names[1]);
+                            super.setColorState(new Color(0, 182, 255));
+                            isOk = true;
+                        }
                         break;
                     } catch (SQLException ex) {
                         MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido", ex);
                         msb.show(Shared.getMyMainWindows());
-                    }
+                    } catch (Exception ex) {
+                        MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido", ex);
+                        msb.show(Shared.getMyMainWindows());
+                    } 
                 }
             }
 
             if (!isOk){
                 super.setState("No Reconocido");
+                super.setColorState(Color.RED);
                 super.setTitleLabel("");
                 super.setNameLabel("");
             }
             
                 
         }else{
-            super.setTitleLabel("IMAGEN DE MALA CALIDAD!");
-            super.setNameLabel("");
+            super.setTitleLabel("Imagen");
+            super.setColorState(Color.RED);
+            super.setNameLabel("Mala Calidad");
+            super.setState("");
         }
     }
 

@@ -233,7 +233,7 @@ public class MainWindows extends javax.swing.JFrame {
                 md.setVisible(true);
             } else if ( ed.getFuncion().equals("closingDay") ) {
                 JTextField textField = new JTextField();
-                ChooseDate cal = new ChooseDate(Constants.appName,textField,true);
+                ChooseDate cal = new ChooseDate(Constants.appName,textField,1);
                 mdiPanel.add(cal);
                 cal.setVisible(true);
             } else if ( ed.getFuncion().equals("sellWithoutStockAd") ) {
@@ -275,6 +275,11 @@ public class MainWindows extends javax.swing.JFrame {
                 SendSellsFrom ssf = new SendSellsFrom();
                 mdiPanel.add(ssf);
                 ssf.setVisible(true);
+            } else if ( ed.getFuncion().equals("manualHR") ){
+                JTextField textField = new JTextField();
+                ChooseDate cal = new ChooseDate(Constants.appName,textField,2);
+                mdiPanel.add(cal);
+                cal.setVisible(true);
             } else if ( ed.getFuncion().equals("reconfigureZebra") ){
                 Sticker.configure();
             } else if ( ed.getFuncion().equals("createCapture") ){
@@ -407,6 +412,16 @@ public class MainWindows extends javax.swing.JFrame {
             if ( cd.isOk ){
                 mdiPanel.add(cd);
                 cd.setVisible(true);
+            }
+        }
+    }
+
+    public void createManualHR(String day){
+        if ( !day.isEmpty() ){
+            EmployStateTable est = new EmployStateTable(day);
+            if ( est.isOk ){
+                mdiPanel.add(est);
+                est.setVisible(true);
             }
         }
     }

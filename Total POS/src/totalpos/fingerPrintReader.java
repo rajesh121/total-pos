@@ -22,6 +22,7 @@ import com.digitalpersona.onetouch.capture.event.DPFPSensorEvent;
 import com.digitalpersona.onetouch.capture.event.DPFPSensorListener;
 import com.digitalpersona.onetouch.processing.DPFPFeatureExtraction;
 import com.digitalpersona.onetouch.processing.DPFPImageQualityException;
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -174,11 +175,11 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
             }
         });
 
-        titleLabel.setFont(new java.awt.Font("Courier New", 1, 36));
+        titleLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
         titleLabel.setText("HIDALGO AULAR");
         titleLabel.setName("titleLabel"); // NOI18N
 
-        employName.setFont(new java.awt.Font("Courier New", 1, 36));
+        employName.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
         employName.setText("SAUL SAMIR");
         employName.setName("employName"); // NOI18N
 
@@ -203,7 +204,8 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        operationLabel.setFont(new java.awt.Font("Courier New", 1, 24)); // NOI18N
+        operationLabel.setBackground(new java.awt.Color(0, 255, 0));
+        operationLabel.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
         operationLabel.setText("SALIDA O ENTRADA");
         operationLabel.setName("operationLabel"); // NOI18N
 
@@ -215,10 +217,10 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
-                    .addComponent(employName, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
-                    .addComponent(operationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                    .addComponent(operationLabel)
+                    .addComponent(employName, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -228,10 +230,11 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(operationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(employName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(employName, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -248,6 +251,10 @@ public class fingerPrintReader extends javax.swing.JInternalFrame {
         ++Shared.isFingerOpened;
     }//GEN-LAST:event_formInternalFrameOpened
 
+    public void setColorState(Color c){
+        operationLabel.setOpaque(true);
+        operationLabel.setBackground(c);
+    }
 
     public void setFontSize2Name(int n){
         employName.setFont(new java.awt.Font("Courier New", 1, n));

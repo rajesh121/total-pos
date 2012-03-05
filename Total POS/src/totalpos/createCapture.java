@@ -46,7 +46,7 @@ public class createCapture extends fingerPrintReader{
                 enroller.addFeatures(features);            
             }
         } catch (DPFPImageQualityException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha guardado la huella. Intente de nuevo", ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se ha guardado la huella. Intente de nuevo", ex);
             msb.show(this);
         }finally{
             try {

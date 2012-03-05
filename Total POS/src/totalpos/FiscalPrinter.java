@@ -269,7 +269,10 @@ public class FiscalPrinter {
 
                 for (Item2Receipt item2r : items) {
                     Item item = item2r.getItem();
-                    printer.SendCmd(a, b, "!" + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
+                    // TODO OJO!
+                    // " " EXENTO!
+                    // "!" Tasa de Iva 1
+                    printer.SendCmd(a, b, " " + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
                             Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 37)));
                     if ( b.getValue() != 0 ){
                         throw new Exception(Shared.getErrMapping().get(b.getValue()));
@@ -725,7 +728,10 @@ public class FiscalPrinter {
 
                 for (Item2Receipt item2r : items) {
                     Item item = item2r.getItem();
-                    printer.SendCmd(a, b, "d1" + ( Shared.formatDoubleToPrint( item2r.getSellPrice() ) ) +
+                    // TODO OJO!!!!!!!!!!!!!!!!!!!
+                    // "d0 -> exento.
+                    // "d1 -> Tasa de iva 1
+                    printer.SendCmd(a, b, "d0" + ( Shared.formatDoubleToPrint( item2r.getSellPrice() ) ) +
                             Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 37)));
                     if ( b.getValue() != 0 ){
                         throw new Exception(Shared.getErrMapping().get(b.getValue()));

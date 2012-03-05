@@ -114,7 +114,7 @@ public class SendSellsFrom extends javax.swing.JInternalFrame implements Doer{
     }// </editor-fold>//GEN-END:initComponents
 
     private void chooseDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseDayActionPerformed
-        ChooseDate cal = new ChooseDate(Constants.appName,(JComponent)jtf,false);
+        ChooseDate cal = new ChooseDate(Constants.appName,(JComponent)jtf,0);
         ((MainWindows)Shared.getMyMainWindows()).mdiPanel.add(cal);
         cal.setVisible(true);
         System.out.println("text Field = " + jtf.getText());

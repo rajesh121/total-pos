@@ -11,8 +11,6 @@ import com.digitalpersona.onetouch.verification.DPFPVerificationResult;
 import java.awt.Color;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -60,8 +58,7 @@ public class CheckFingerprint extends fingerPrintReader{
                             super.setNameLabel("");
                         }else{
                             String[] names = e.getName().split(",");
-                            ConnectionDrivers.saveFingerPrint(e);
-                            super.setState("Aceptado " + ConnectionDrivers.currentHour());
+                            super.setState(ConnectionDrivers.saveFingerPrint(e) + " " + ConnectionDrivers.currentHour());
                             super.setTitleLabel(names[0]);
                             super.setNameLabel(names[1]);
                             super.setColorState(new Color(0, 182, 255));

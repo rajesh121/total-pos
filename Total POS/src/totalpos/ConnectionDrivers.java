@@ -3024,7 +3024,7 @@ public class ConnectionDrivers {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select identificador_punto_de_venta, fecha , monto from movimiento_efectivo"
-                + " where monto > 0 and datediff(fecha,?) = 0");
+                + " where monto >= 0 and datediff(fecha,?) = 0");
         stmt.setString(1, day);
         ResultSet rs = stmt.executeQuery();
 
@@ -4482,7 +4482,7 @@ public class ConnectionDrivers {
     static String getLastMark(Employ e) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select hora from marcacion where hora=(select max(hora) from marcacion where codigo_empleado=?)");
+        PreparedStatement stmt = c.prepareStatement("select hora from marcacion where hora=(select max(hora) from marcacion where codigo_empleado=?) and datediff(hora, curdate())=0");
         stmt.setString(1, e.getCode());
         ResultSet rs = stmt.executeQuery();
 

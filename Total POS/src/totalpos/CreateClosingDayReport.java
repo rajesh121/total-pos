@@ -72,7 +72,7 @@ public class CreateClosingDayReport {
             if(masterRowNumber == 1){
                 //try {
                     String[] toks = myDay.split("-");
-                    report.title(cmp.text("Correspondiente al " + toks[2] + "-"+ toks[1] + "-" + toks[0] + "\n\n" +
+                    report.title(cmp.text("Agencia "+ Shared.getConfig("storeName") + "\nCorrespondiente al " + toks[2] + "-"+ toks[1] + "-" + toks[0] + "\n\n" +
                             "Total ventas del día (B): "
                             //+ Constants.df.format(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0)
                             + total

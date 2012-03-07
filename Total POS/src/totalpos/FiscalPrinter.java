@@ -272,7 +272,7 @@ public class FiscalPrinter {
                     // TODO OJO!
                     // " " EXENTO!
                     // "!" Tasa de Iva 1
-                    printer.SendCmd(a, b, " " + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
+                    printer.SendCmd(a, b, Shared.getConfig("tfhkaifKindTaxReceipt") + ( Shared.formatDoubleToPrint(item.getLastPrice().getQuant()) ) +
                             Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 37)));
                     if ( b.getValue() != 0 ){
                         throw new Exception(Shared.getErrMapping().get(b.getValue()));
@@ -731,7 +731,7 @@ public class FiscalPrinter {
                     // TODO OJO!!!!!!!!!!!!!!!!!!!
                     // "d0 -> exento.
                     // "d1 -> Tasa de iva 1
-                    printer.SendCmd(a, b, "d0" + ( Shared.formatDoubleToPrint( item2r.getSellPrice() ) ) +
+                    printer.SendCmd(a, b, "d" + Shared.getConfig("tfhkaifKindTaxCN") + ( Shared.formatDoubleToPrint( item2r.getSellPrice() ) ) +
                             Shared.formatQuantToPrint(item2r.getQuant()+.0) + item.getDescription().substring(0, Math.min(item.getDescription().length(), 37)));
                     if ( b.getValue() != 0 ){
                         throw new Exception(Shared.getErrMapping().get(b.getValue()));
@@ -999,7 +999,13 @@ public class FiscalPrinter {
 
             String lastCN = line.substring(168);
             //System.out.println("line = " + line );
-            Double total = Double.parseDouble(line.substring(39,39+9))/100.0 - Double.parseDouble(line.substring(109, 109+9))/100.0;
+
+            Double total = .0;
+            if ( Double.parseDouble(Shared.getConfig("iva") ) <= .0 ){
+                total = Double.parseDouble(line.substring(29,29+9))/100.0 - Double.parseDouble(line.substring(99, 99+9))/100.0;
+            }else{
+                total = Double.parseDouble(line.substring(39,39+9))/100.0 - Double.parseDouble(line.substring(109, 109+9))/100.0;
+            }
 
             sc.close();
             file.delete();
@@ -1014,7 +1020,7 @@ public class FiscalPrinter {
 
             line = sc.next();
 
-            String pLastCN = line.substring(168);
+            String pLastCN = "0";//line.substring(168);
             int nNC = (Integer.parseInt(lastCN)-Integer.parseInt(pLastCN));
             ConnectionDrivers.updateTotalFromPrinter(total, z ,lReceipt,quantReceiptsToday,lastCN,nNC, day);
 

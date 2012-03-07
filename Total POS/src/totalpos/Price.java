@@ -44,20 +44,20 @@ public class Price implements Serializable {
     public Price plusIva(){
         return new Price(
                 getDate(),
-                getQuant()*(Double.valueOf(Shared.getConfig().get("iva"))+1.0));
+                Shared.round(getQuant()*(Double.valueOf(Shared.getConfig().get("iva"))+1.0),2));
     }
 
     public Price getIva(){
         return new Price(
                 getDate(),
-                getQuant()*(Double.valueOf(Shared.getConfig().get("iva"))));
+                Shared.round(getQuant()*(Double.valueOf(Shared.getConfig().get("iva"))),2));
     }
 
     public Price withDiscount(Double p){
         // TODO Parse discount like expressions;
         return new Price(
                 getDate(),
-                getQuant()*(100.0-p)/100.0);
+                Math.round(getQuant()*(100.0-p)/100.0) + .0);
     }
 
 }

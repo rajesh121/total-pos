@@ -1245,6 +1245,9 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         for (Item2Receipt item2r : items) {
             Item item = item2r.getItem();
             subTwithoutD += item.getLastPrice().withDiscount(item.getDescuento()).getQuant()*item2r.getQuant();
+            System.out.println("Articulo vale " + item.getLastPrice().withDiscount(item.getDescuento()).getQuant());
+            System.out.println("Articulo Precio " + item.getLastPrice().getQuant());
+            System.out.println("Articulo Descuento " + item.getDescuento());
             subT += Shared.round( item.getLastPrice().withDiscount(item.getDescuento()).getQuant()*(1.0-globalDiscount) , 2 )*item2r.getQuant();
         }
 

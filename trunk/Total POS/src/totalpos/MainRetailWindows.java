@@ -1269,7 +1269,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         subtotal = subTwithoutD;
 
         ivaT = new Price(null, subT).getIva().getQuant();
-        total = subT + ivaT;
+        total = Math.round(subT + ivaT)+.0;
 
         ivaLabelResult.setText(Constants.df.format(ivaT) + " Bs");
         TotalLabelResult.setText(Constants.df.format(total) + " Bs");

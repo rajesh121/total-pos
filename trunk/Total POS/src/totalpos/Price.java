@@ -57,7 +57,7 @@ public class Price implements Serializable {
         // TODO Parse discount like expressions;
         return new Price(
                 getDate(),
-                Math.round(getQuant()*(100.0-p)/100.0) + .0);
+                (getQuant()*(100.0-p)/100.0));
     }
 
 }

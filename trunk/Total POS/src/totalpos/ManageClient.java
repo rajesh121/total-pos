@@ -329,7 +329,16 @@ public class ManageClient extends javax.swing.JDialog {
     }
 
     private void idFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idFieldFocusLost
-        
+        if ( validateRif()){
+            try {
+                searchIt(comboKind.getSelectedItem().toString() + idField.getText());
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
+        }
     }//GEN-LAST:event_idFieldFocusLost
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
@@ -376,11 +385,11 @@ public class ManageClient extends javax.swing.JDialog {
     }//GEN-LAST:event_phoneFieldKeyPressed
 
     private void modifyClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyClientActionPerformed
+        nameField.requestFocus();
         modified = true;
         nameField.setEditable(true);
         phoneField.setEditable(true);
         addressField.setEditable(true);
-        nameField.requestFocus();
     }//GEN-LAST:event_modifyClientActionPerformed
 
     private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameFieldActionPerformed
@@ -388,16 +397,7 @@ public class ManageClient extends javax.swing.JDialog {
     }//GEN-LAST:event_nameFieldActionPerformed
 
     private void nameFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameFieldFocusGained
-        if ( validateRif() ){
-            try {
-                searchIt(comboKind.getSelectedItem().toString() + idField.getText());
-            } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-                msb.show(this);
-                this.dispose();
-                Shared.reload();
-            }
-        }
+        
     }//GEN-LAST:event_nameFieldFocusGained
 
     private void idFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idFieldKeyReleased

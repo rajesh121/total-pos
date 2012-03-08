@@ -206,7 +206,7 @@ public class FiscalPrinter {
 
             System.out.println("Código de barras 69");
             ans = printer.CloseDoc(buff.get("Efectivo"), buff.get("Nota de Credito"), buff.get("Credito"), buff.get("Debito"),
-                    .0, .0, subtotal*globalDiscount, .0, (byte)12 , (byte)69, ticketId);
+                    .0, .0, subtotal*globalDiscount, .0, (byte)12 , (byte)70, ticketId);
 
             System.out.println("ans Close Doc = " + ans);
 
@@ -219,7 +219,7 @@ public class FiscalPrinter {
             ans = printer.QueryPrnTransaction((byte)1, tqpt);
 
             predicted = false;
-            if ( ans != 0 ){
+            if ( ans != 0 || tqpt.VoucherVta < 0 || tqpt.VoucherVta > Constants.maximumFiscalNumber ){
                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                 predicted = true;
             }else{
@@ -656,7 +656,7 @@ public class FiscalPrinter {
             buff.put("Debito", .0);
 
             ans = printer.CloseDoc(.0, new Price(null, subtotal).plusIva().getQuant(), .0, .0,
-                    .0, .0, .0, .0, (byte)12 , (byte)69, ticketId);
+                    .0, .0, .0, .0, (byte)12 , (byte)70, ticketId);
 
             if ( ans != 0 && ans != 309 ){
                 printer.CancelTransaction();
@@ -668,7 +668,7 @@ public class FiscalPrinter {
 
             System.out.println("Ans Query Prn = " + ans);
             boolean predicted = false;
-            if ( ans != 0 ){
+            if ( ans != 0 || tqpt.VoucherDev < 0 || tqpt.VoucherDev > Constants.maximumFiscalNumber ){
                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                 predicted = true;
             }else{

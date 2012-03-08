@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
 public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
 
     public Working workingFrame;
-    public Price total;
+    public double total;
     private List<PayForm> payForms = new ArrayList<PayForm>();
     private String receiptID;
     private MainRetailWindows myParent;
@@ -31,7 +31,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
     SpecifyPaymentForm(MainRetailWindows aThis, boolean b, double subtotal, String receipt) {
         super(aThis, b);
         initComponents();
-        total = new Price(null, subtotal).plusIva();
+        total = Math.round((new Price(null, subtotal).plusIva()).getQuant())+.0;
         receiptID = receipt;
         myParent = aThis;
 
@@ -53,7 +53,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
         if ( payForms.size() > 0 ){
             table.setRowSelectionInterval(table.getRowCount()-1, table.getRowCount()-1);
         }
-        change = sum-total.getQuant();
+        change = sum-total;
         moneyResult.setText(Constants.df.format(sum));
         ChangeResult.setText(Constants.df.format(change));
     }

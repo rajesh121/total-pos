@@ -22,10 +22,10 @@ public class AddCard2Pay extends javax.swing.JDialog {
     SpecifyPaymentForm myParent;
     List<BankPOS> bpos = new ArrayList<BankPOS>();
     protected boolean isOk = false;
-    Price total;
+    double total;
     
     /** Creates new form AddCard2Pay */
-    protected AddCard2Pay(SpecifyPaymentForm parent, boolean modal, String reasonI, Price total) {
+    protected AddCard2Pay(SpecifyPaymentForm parent, boolean modal, String reasonI, double total) {
         super(parent, modal);
         try {
             initComponents();
@@ -244,8 +244,8 @@ public class AddCard2Pay extends javax.swing.JDialog {
             msb.show(this);
             return;
         }
-        if ( d > total.getQuant() ){
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser máximo " + total.getQuant());
+        if ( d > total ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser máximo " + total);
             msb.show(this);
             return;
         }

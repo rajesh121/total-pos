@@ -288,7 +288,7 @@ public class Shared {
     public static void userTrying(String l) throws Exception{
         if ( !tries.containsKey(l) ){
             getTries().put(l, new Integer(1));
-        }else if ( getTries().get(l).compareTo(new Integer(1)) > 0 ){
+        }else if ( getTries().get(l).compareTo(new Integer(Constants.triesWithPassword-2)) > 0 ){
             try {
                 ConnectionDrivers.lockUser(l);
             } catch (SQLException ex1) {

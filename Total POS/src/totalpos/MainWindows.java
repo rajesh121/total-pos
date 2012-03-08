@@ -310,6 +310,12 @@ public class MainWindows extends javax.swing.JFrame {
                         cfp.setVisible(true);
                     }
                 }
+            } else if ( ed.getFuncion().equals("manualPresence") ){
+                AnalizePresence ap = new AnalizePresence("Agencia","2012-03-01", "2012-03-10");
+                if ( ap.isOk ){
+                    mdiPanel.add(ap);
+                    ap.setVisible(true);
+                }
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);

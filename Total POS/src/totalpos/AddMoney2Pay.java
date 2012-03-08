@@ -16,10 +16,10 @@ public class AddMoney2Pay extends javax.swing.JDialog {
 
     private String reason;
     SpecifyPaymentForm myParent;
-    private Price price;
+    private double price;
 
     /** Creates new form AddMoney2Pay */
-    public AddMoney2Pay(SpecifyPaymentForm parent, boolean modal , String reasonI , Price price) {
+    public AddMoney2Pay(SpecifyPaymentForm parent, boolean modal , String reasonI , double price) {
         super(parent, modal);
         initComponents();
         reason = reasonI;
@@ -145,7 +145,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
             msb.show(this);
             return;
         }
-        if ( d > price.getQuant() + 100 ){
+        if ( d > price + 100 ){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Monto muy alto");
             msb.show(this);
             return;

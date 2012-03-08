@@ -6,6 +6,11 @@
 
 package totalpos;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  *
  * @author Saúl Hidalgo.
@@ -13,15 +18,39 @@ package totalpos;
 public class AnalizePresence extends javax.swing.JInternalFrame {
 
     String storeName;
-    String fromDate;
-    String untilDate;
+    Date fromDate;
+    Date untilDate;
+    public boolean isOk = false;
 
     /** Creates new form AnalizePresence */
     public AnalizePresence(String sn, String fd, String ud) {
-        initComponents();
-        this.storeName = sn;
-        this.fromDate = fd;
-        this.untilDate = ud;
+        try {
+            initComponents();
+            this.storeName = sn;
+            fromDate = Constants.sdfDay2DB.parse(fd);
+            untilDate = Constants.sdfDay2DB.parse(ud);
+            updateAll();
+            System.out.println("Termino");
+            isOk = true;
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void updateAll(){
+        List<String> header = new LinkedList<String>();
+        header.add("Código");
+        header.add("Empleado");
+        header.add("Horas");
+        header.add("Bono Nocturno");
+        header.add("Bono de Asistencia");
+        header.add("Bono Produccion");
+        Date t = fromDate;
+        
+        while(t.before(untilDate)){
+            header.add(Constants.dayName[t.getDay()]);
+            
+        }
     }
 
     /** This method is called from within the constructor to

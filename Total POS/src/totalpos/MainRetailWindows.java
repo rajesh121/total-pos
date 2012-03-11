@@ -821,6 +821,24 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Total Pos Version " + Constants.version);
                 msb.show(this);
                 return;
+            }else if ( myBarcode.split("=")[0].equals("reimprimir") ){
+                ChangeQuantItems cqi = new ChangeQuantItems(this, true, -1, "Reimprimir factura " + myBarcode.split("=")[1], Constants.reprint);
+                Shared.centerFrame(cqi);
+                cqi.setVisible(true);
+                if ( cqi.passOk ){
+                    List<Receipt> receiptMatched = ConnectionDrivers.listThisReceipt(myBarcode.split("=")[1]);
+                    if ( receiptMatched.isEmpty() ){
+                        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se ha conseguido la factura!");
+                        msb.show(this);
+                        return;
+                    }else if ( receiptMatched.size() == 1){
+                        deleteCurrent();
+                        loadThisReceipt(receiptMatched.get(0));
+                        ConnectionDrivers.putToNormal(receiptMatched.get(0).getInternId());
+                    }
+
+                }
+
             }
             if ( myBarcode.isEmpty() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");

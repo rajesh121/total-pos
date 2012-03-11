@@ -118,7 +118,7 @@ public class Login extends JFrame implements Doer{
     }
 
     public void doItNow() throws SQLException, Exception{
-        
+        System.out.println("ANTES DE VERIFICAR USUARIO...");
         if ( !ConnectionDrivers.existsUser(loginText.getText().trim()) ){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
             msg.show(this);
@@ -126,15 +126,20 @@ public class Login extends JFrame implements Doer{
             return;
         }
 
+        System.out.println("El usuario existe...");
         if ( ConnectionDrivers.isLocked(loginText.getText().trim()) ){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario bloqueado");
             msg.show(this);
             passwordText.setEnabled(true);
             return;
         }
+        System.out.println("El usuario no esta bloqueado...");
         ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
 
+        System.out.println("El usuario se loggeao bien...");
         User u = Shared.giveUser(ConnectionDrivers.listUsers(), loginText.getText());
+
+        System.out.println("Ya tengo el objeto usuario...");
         if ( u.getDebeCambiarPassword() ){
             //ws.close();
             ChangePassword cp = new ChangePassword(this, true, u);
@@ -148,12 +153,15 @@ public class Login extends JFrame implements Doer{
             }
         }
         Shared.userInsertedPasswordOk(loginText.getText());
+        System.out.println("Ya se resentearon los intentos malos...");
         UpdateClock uc = new UpdateClock();
         Shared.setScreenSaver(uc);
+        System.out.println("Ya se creo el protector de pantallas...");
 
         if ( Constants.isPos ){
 
             List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
+            System.out.println("Ya se listaron los turnos...");
             boolean toContinue = false;
 
             Assign a = null;
@@ -179,9 +187,11 @@ public class Login extends JFrame implements Doer{
             uc.start(); //Start the screensaver xDD
             Shared.setUser(u);
             MainRetailWindows mrw = new MainRetailWindows(u, a, this);
+            System.out.println("Ya se creo la pantalla...");
             if ( mrw.isOk ){
                 workingFrame.setVisible(false);
                 Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
+                System.out.println("Dinero actual de caja ... ");
 
                 /*if ( currentMoney == -1.0 && Shared.isOffline ){
                     ConnectionDrivers.modifyMoney(currentMoney);
@@ -258,7 +268,8 @@ public class Login extends JFrame implements Doer{
         workingFrame.setVisible(true);
         
         passwordText.setEnabled(false);
-        
+
+        System.out.println("ANTES DE COMENZAR TODO!!");
         ws.execute();
         
     }
@@ -269,6 +280,7 @@ public class Login extends JFrame implements Doer{
 
     public void doIt(){
         try {
+            System.out.println("Justo comenzando ... ");
             doItNow();
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);

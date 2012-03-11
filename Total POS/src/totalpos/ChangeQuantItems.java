@@ -26,6 +26,8 @@ public class ChangeQuantItems extends javax.swing.JDialog {
             titleLabel.setText(title);
         }else if ( function.equals(Constants.changeQuant) ){
             titleLabel.setText(title + " " + quant);
+        }else if ( function.equals(Constants.reprint)){
+            titleLabel.setText(title);
         }
     }
 

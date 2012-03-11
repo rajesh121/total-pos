@@ -1408,6 +1408,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 return;
             }
 
+            ConnectionDrivers.recalculateStock();
+            System.out.println("Stock recalculado!");
+
             /*if ( Math.abs(ConnectionDrivers.getTotalDeclared(myDay) - receiptTotal) > Constants.moneyExilon ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se puede enviar el cierre administrativo. Lo total declarado no coincide con lo facturado.");
                 msg.show(this);

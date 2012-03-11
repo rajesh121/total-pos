@@ -41,6 +41,8 @@
                       <Component id="untilLabelDate" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="storeNameLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="storeNameLabeLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="send2ProfitButton" min="-2" pref="119" max="-2" attributes="0"/>
@@ -64,6 +66,7 @@
                   <Component id="fromLabelDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="untilLabelDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="storeNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="storeNameLabeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" pref="394" max="32767" attributes="0"/>
@@ -91,54 +94,11 @@
         <Component class="javax.swing.JTable" name="presenceTable">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="7" rowCount="4">
-                <Column editable="true" title="C&#xf3;digo" type="java.lang.Object"/>
-                <Column editable="true" title="Empleado" type="java.lang.Object"/>
-                <Column editable="true" title="Horas" type="java.lang.Object"/>
-                <Column editable="true" title="Bono Nocturno" type="java.lang.Object"/>
-                <Column editable="true" title="Bono de Asistencia" type="java.lang.Object"/>
-                <Column editable="true" title="Bono Produccion" type="java.lang.Object"/>
-                <Column editable="true" title="Dia 1" type="java.lang.Object"/>
-              </Table>
+              <Table columnCount="0" rowCount="4"/>
             </Property>
+            <Property name="autoResizeMode" type="int" value="0"/>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
-              <TableColumnModel selectionModel="0">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-              </TableColumnModel>
+              <TableColumnModel selectionModel="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="presenceTable" noResource="true"/>
             <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
@@ -162,7 +122,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="fromLabel">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="14" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="N&#xf3;mina desde:"/>
@@ -171,7 +131,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="untilLabel">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="14" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Hasta"/>
@@ -180,7 +140,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="fromLabelDate">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="14" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="N&#xf3;mina desde:"/>
@@ -189,7 +149,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="untilLabelDate">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="14" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="N&#xf3;mina desde:"/>
@@ -198,10 +158,10 @@
     </Component>
     <Component class="javax.swing.JLabel" name="storeNameLabel">
       <Properties>
-        <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.beaninfo.editors.FontEditor">
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="14" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="N&#xf3;mina desde:"/>
+        <Property name="text" type="java.lang.String" value="Agencia"/>
         <Property name="name" type="java.lang.String" value="storeNameLabel" noResource="true"/>
       </Properties>
     </Component>
@@ -218,6 +178,15 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Enviar a Profit"/>
         <Property name="name" type="java.lang.String" value="send2ProfitButton" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="storeNameLabeLabel">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Courier New" size="14" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="N&#xf3;mina desde:"/>
+        <Property name="name" type="java.lang.String" value="storeNameLabeLabel" noResource="true"/>
       </Properties>
     </Component>
   </SubComponents>

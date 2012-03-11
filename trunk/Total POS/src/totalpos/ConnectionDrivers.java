@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -1309,6 +1310,49 @@ public class ConnectionDrivers {
                 + "from factura where estado='Espera' and datediff(fecha_creacion,now()) = 0 and identificador_pos = ? ");
 
         stmt.setString(1, Shared.getFileConfig("myId"));
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                    new Receipt(
+                            rs.getString("codigo_interno"),
+                            rs.getString("estado"),
+                            rs.getTimestamp("fecha_creacion"),
+                            rs.getTimestamp("fecha_impresion"),
+                            rs.getString("codigo_de_cliente"),
+                            rs.getDouble("total_sin_iva"),
+                            rs.getDouble("total_con_iva"),
+                            rs.getDouble("descuento_global"),
+                            rs.getDouble("iva"),
+                            rs.getString("impresora"),
+                            rs.getString("numero_fiscal"),
+                            rs.getString("numero_reporte_z"),
+                            rs.getString("codigo_de_usuario"),
+                            rs.getInt("cantidad_de_articulos"),
+                            listItems2Receipt(rs.getString("codigo_interno")),
+                            rs.getString("identificador_turno"),
+                            rs.getString("codigo_interno_alternativo")
+                        )
+                    );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static List<Receipt> listThisReceipt(String internal_code) throws SQLException{
+        List<Receipt> ans = new ArrayList<Receipt>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_interno, estado, fecha_creacion, "
+                + "fecha_impresion, codigo_de_cliente , total_sin_iva, total_con_iva, "
+                + "descuento_global, iva, impresora, numero_fiscal, "
+                + "numero_reporte_z, codigo_de_usuario, cantidad_de_articulos , identificador_turno , codigo_interno_alternativo "
+                + "from factura where estado='Facturada' and datediff(fecha_creacion,now()) = 0 and identificador_pos = ? and codigo_interno = ? ");
+
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        stmt.setString(2, internal_code);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -4464,7 +4508,7 @@ public class ConnectionDrivers {
     static Presence listAllFingerPrintMarks(String myDay, Employ e) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select codigo_empleado, hora from marcacion where agencia=? and datediff("+ myDay +",hora)=0 and codigo_empleado=?");
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado, hora from marcacion where agencia=? and datediff("+ myDay +",hora)=0 and codigo_empleado=? order by hora");
         stmt.setString(1,Shared.getConfig("storeName"));
         stmt.setString(2, e.getCode());
         ResultSet rs = stmt.executeQuery();
@@ -4509,4 +4553,111 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    public static void recalculateStock() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update articulo , existencia_desde_movimientos set articulo.existencia_actual = existencia_desde_movimientos.cantidad where articulo.codigo=existencia_desde_movimientos.codigo_de_articulo");
+        stmt.executeUpdate();
+        c.close();
+    }
+
+    public static List<Employ> getAllEmployBetween(String from, String until, String store) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        List<Employ> ans = new LinkedList<Employ>();
+
+        PreparedStatement stmt = c.prepareStatement("select distinct codigo_empleado, nombre_completo from asistencia , empleado where ? <= fecha and fecha <= ? and empleado.codigo=asistencia.codigo_empleado and asistencia.agencia= ? ");
+        stmt.setString(1, from);
+        stmt.setString(2, until);
+        stmt.setString(3, store);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(new Employ(rs.getString("codigo_empleado"),rs.getString("nombre_completo")));
+        }
+
+        c.close();
+        
+
+        return ans;
+    }
+
+    static void fillPresence(DefaultTableModel model, String from , String until, String store, Map<String, Integer> employRow, int offset) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , datediff(fecha,?) as diff from asistencia, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and empleado.codigo=asistencia.codigo_empleado and empleado.agencia=?");
+        stmt.setString(1, from);
+        stmt.setString(2, from);
+        stmt.setString(3, until);
+        stmt.setString(4, store);
+
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            model.setValueAt("S", employRow.get(rs.getString("codigo_empleado")), offset + rs.getInt("diff"));
+        }
+
+        stmt = c.prepareStatement("select datediff(fecha,?) as diff , codigo_empleado, concepto from inasistencia where agencia=? and concepto!=' ' and  datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0");
+        stmt.setString(3, from);
+        stmt.setString(4, until);
+        stmt.setString(2, store);
+        stmt.setString(1, from);
+        rs = stmt.executeQuery();
+        while ( rs.next() ){
+            System.out.println("Empleado " + rs.getString("codigo_empleado") + " " + rs.getString("concepto") );
+            model.setValueAt(rs.getString("concepto"), employRow.get(rs.getString("codigo_empleado")), offset + rs.getInt("diff"));
+        }
+
+        for ( int i = 0 ; i < model.getRowCount() ; i++ ){
+            model.setValueAt("0", i, 2);
+        }
+
+        stmt = c.prepareStatement("select codigo_empleado, sum(cantidad_horas) as sch from horas_extra where agencia=? and datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 group by codigo_empleado having sch > 0");
+        stmt.setString(2, from);
+        stmt.setString(3, until);
+        stmt.setString(1, store);
+        rs = stmt.executeQuery();
+        while ( rs.next() ){
+            model.setValueAt(rs.getString("sch"), employRow.get(rs.getString("codigo_empleado")), 2);
+        }
+        stmt = c.prepareStatement("select codigo_empleado, concat(sec_to_time(sum(secondsbyday)),'') as extrahours from (select codigo_empleado , Time_to_Sec(timediff(max(t),?)) as secondsbyday, datediff(fecha,?) as diff from (select codigo_empleado, timediff(marcacion4, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion3, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion2, marcacion1) as t, fecha from asistencia having t is not NULL) as t where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 group by codigo_empleado , fecha ) as sbt , empleado where sbt.codigo_empleado=empleado.codigo and empleado.agencia=? group by codigo_empleado");
+        stmt.setString(1, Constants.workingHours);
+        stmt.setString(2, from);
+        stmt.setString(3, from);
+        stmt.setString(4, until);
+        stmt.setString(5, store);
+        rs = stmt.executeQuery();
+        while ( rs.next() ){
+            System.out.println(rs.getString("extrahours") + " "+ employRow.get(rs.getString("codigo_empleado")));
+            model.setValueAt(rs.getString("extrahours"), employRow.get(rs.getString("codigo_empleado")), 6);
+        }
+
+        stmt = c.prepareStatement("select codigo_empleado, time(hora) as th, concat(timediff(?,time(hora)),'') as diff from marcacion, empleado where datediff(hora, ?) >= 0 and datediff(hora, ?)<=0 and empleado.codigo=marcacion.codigo_empleado and empleado.agencia=? having th > ?");
+        stmt.setString(5, Constants.beginOfNightBonus);
+        stmt.setString(1, Constants.beginOfNightBonus);
+        stmt.setString(2, from);
+        stmt.setString(3, until);
+        stmt.setString(4, store);
+        rs = stmt.executeQuery();
+        while ( rs.next() ){
+            model.setValueAt(rs.getString("diff"), employRow.get(rs.getString("codigo_empleado")), 3);
+        }
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+
+            boolean isOk = true;
+            for (int j = offset; j < model.getColumnCount() && isOk ; j++) {
+                if ( model.getValueAt(i, j) == null  || (!model.getValueAt(i, j).equals("S") && !model.getValueAt(i, j).equals("L") && !model.getValueAt(i, j).equals("R") && !model.getValueAt(i, j).equals("ML"))){
+                    isOk = false;
+                }
+            }
+
+            if ( isOk ){
+                model.setValueAt(Shared.getConfig("presenceBonus"), i, 4);
+            }else{
+                model.setValueAt(.0, i, 4);
+            }
+        }
+        
+        c.close();
+    }
 }

@@ -32,7 +32,7 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) freeDayTable.getModel();
         model.setRowCount(0);
 
-        JComboBox jcb = new JComboBox();
+        /*JComboBox jcb = new JComboBox();
         List<Employ> employs = ConnectionDrivers.getAllEmployees();
         for (Employ employ : employs) {
             jcb.addItem( employ.getName4Menu() );
@@ -43,7 +43,7 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
         renderer.setToolTipText("Click para ver las opciones");
         TableColumn conceptColumn = freeDayTable.getColumnModel().getColumn(0);
         conceptColumn.setCellRenderer(renderer);
-        conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
+        conceptColumn.setCellEditor(new DefaultCellEditor(jcb));*/
 
         JComboBox jcbConcept = new JComboBox();
         String[] allConcepts = Shared.getConfig("freeDayConcept").split(",");
@@ -52,10 +52,10 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
             jcbConcept.addItem(concept);
         }
 
-        renderer =
+        DefaultTableCellRenderer renderer =
                 new DefaultTableCellRenderer();
         renderer.setToolTipText("Click para ver las opciones");
-        conceptColumn = freeDayTable.getColumnModel().getColumn(1);
+        TableColumn conceptColumn = freeDayTable.getColumnModel().getColumn(1);
         conceptColumn.setCellRenderer(renderer);
         conceptColumn.setCellEditor(new DefaultCellEditor(jcbConcept));
 

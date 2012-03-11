@@ -6,10 +6,17 @@
 
 package totalpos;
 
+import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -20,6 +27,8 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
     String storeName;
     Date fromDate;
     Date untilDate;
+    String fromDateString;
+    String untilDateString;
     public boolean isOk = false;
 
     /** Creates new form AnalizePresence */
@@ -29,15 +38,28 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
             this.storeName = sn;
             fromDate = Constants.sdfDay2DB.parse(fd);
             untilDate = Constants.sdfDay2DB.parse(ud);
+            fromDateString = fd;
+            untilDateString = ud;
             updateAll();
+
+            String[] t = fd.split("-");
+            fromLabelDate.setText(t[2] + "/" + t[1] + "/" + t[0]);
+
+            t = ud.split("-");
+            untilLabelDate.setText(t[2] + "/" + t[1] + "/" + t[0]);
+
+            storeNameLabeLabel.setText(sn);
+
             System.out.println("Termino");
             isOk = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
     }
 
-    private void updateAll(){
+    private void updateAll() throws SQLException{
         List<String> header = new LinkedList<String>();
         header.add("Código");
         header.add("Empleado");
@@ -45,12 +67,33 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         header.add("Bono Nocturno");
         header.add("Bono de Asistencia");
         header.add("Bono Produccion");
+        header.add("Horas trabajadas");
+        int offset = header.size();
         Date t = fromDate;
+        Calendar c = Calendar.getInstance();
+        c.setTime(t);
         
-        while(t.before(untilDate)){
-            header.add(Constants.dayName[t.getDay()]);
-            
+        while(t.before(untilDate) || t.equals(untilDate)){
+            header.add(Constants.dayName[t.getDay()] + " " + t.getDate());
+            c.setTime(t);
+            c.add(Calendar.DATE, 1);
+            t = c.getTime();
         }
+
+        Map<String, Integer> map = new TreeMap<String, Integer>();
+        List<Employ> employs = ConnectionDrivers.getAllEmployBetween(fromDateString, untilDateString, storeName);
+        String[][] tableModel = new String[employs.size()][2];
+        System.out.println("Consegui " + employs.size() + " Empleados");
+        for (int i = 0 ; i < employs.size() ; ++i ) {
+            tableModel[i][0] = employs.get(i).getCode();
+            tableModel[i][1] = employs.get(i).getName();
+            map.put(tableModel[i][0], i);
+        }
+
+        presenceTable.setModel(new DefaultTableModel(tableModel,header.toArray()));
+
+        ConnectionDrivers.fillPresence((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName, map, offset);
+
     }
 
     /** This method is called from within the constructor to
@@ -72,6 +115,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         storeNameLabel = new javax.swing.JLabel();
         closeButton = new javax.swing.JButton();
         send2ProfitButton = new javax.swing.JButton();
+        storeNameLabeLabel = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -83,15 +127,16 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
 
         presenceTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Código", "Empleado", "Horas", "Bono Nocturno", "Bono de Asistencia", "Bono Produccion", "Dia 1"
+
             }
         ));
+        presenceTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         presenceTable.setName("presenceTable"); // NOI18N
         presenceTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         presenceTable.getTableHeader().setReorderingAllowed(false);
@@ -101,24 +146,24 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         titleLabel.setText("Control de Asistencias y Horas Extras");
         titleLabel.setName("titleLabel"); // NOI18N
 
-        fromLabel.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        fromLabel.setFont(new java.awt.Font("Courier New", 1, 14));
         fromLabel.setText("Nómina desde:");
         fromLabel.setName("fromLabel"); // NOI18N
 
-        untilLabel.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        untilLabel.setFont(new java.awt.Font("Courier New", 1, 14));
         untilLabel.setText("Hasta");
         untilLabel.setName("untilLabel"); // NOI18N
 
-        fromLabelDate.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        fromLabelDate.setFont(new java.awt.Font("Courier New", 1, 14));
         fromLabelDate.setText("Nómina desde:");
         fromLabelDate.setName("fromLabelDate"); // NOI18N
 
-        untilLabelDate.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
+        untilLabelDate.setFont(new java.awt.Font("Courier New", 1, 14));
         untilLabelDate.setText("Nómina desde:");
         untilLabelDate.setName("untilLabelDate"); // NOI18N
 
-        storeNameLabel.setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
-        storeNameLabel.setText("Nómina desde:");
+        storeNameLabel.setFont(new java.awt.Font("Courier New", 1, 14));
+        storeNameLabel.setText("Agencia");
         storeNameLabel.setName("storeNameLabel"); // NOI18N
 
         closeButton.setText("Cerrar");
@@ -131,6 +176,10 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
 
         send2ProfitButton.setText("Enviar a Profit");
         send2ProfitButton.setName("send2ProfitButton"); // NOI18N
+
+        storeNameLabeLabel.setFont(new java.awt.Font("Courier New", 1, 14));
+        storeNameLabeLabel.setText("Nómina desde:");
+        storeNameLabeLabel.setName("storeNameLabeLabel"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -150,7 +199,9 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(untilLabelDate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(storeNameLabel))
+                        .addComponent(storeNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(storeNameLabeLabel))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(send2ProfitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -168,7 +219,8 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
                     .addComponent(untilLabel)
                     .addComponent(fromLabelDate)
                     .addComponent(untilLabelDate)
-                    .addComponent(storeNameLabel))
+                    .addComponent(storeNameLabel)
+                    .addComponent(storeNameLabeLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -193,6 +245,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable presenceTable;
     private javax.swing.JButton send2ProfitButton;
+    private javax.swing.JLabel storeNameLabeLabel;
     private javax.swing.JLabel storeNameLabel;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel untilLabel;

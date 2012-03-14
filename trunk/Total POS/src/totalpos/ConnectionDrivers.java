@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -2244,8 +2246,7 @@ public class ConnectionDrivers {
     protected static JRDataSource createDataSource(List<Parameter> parameters, String sql, List<Column> columns) throws SQLException {
         String[] columnsArray = new String[columns.size()];
         for (int i = 0; i < columns.size(); i++) {
-            Column c = columns.get(i);
-            columnsArray[i] = c.getName();
+            columnsArray[i] = columns.get(i).getName();
         }
         DataSource dataSource = new DataSource(columnsArray);
 
@@ -2278,6 +2279,44 @@ public class ConnectionDrivers {
                 }
                 
             }
+            dataSource.add(toAdd);
+        }
+
+        c.close();
+        rs.close();
+
+        return dataSource;
+    }
+
+    protected static JRDataSource createDataSourceHR(List<Parameter> parameters, List<String> columns, String fromDate, String untilDate, String storeName) throws SQLException {
+        String[] columnsArray = new String[columns.size()];
+        for (int i = 0; i < columns.size(); i++) {
+            columnsArray[i] = columns.get(i);
+        }
+        DataSource dataSource = new DataSource(columnsArray);
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        PreparedStatement stmt = c.prepareStatement("select x , y , v  from cuadro_recursos_humanos where fecha_inicio = ? and fecha_fin = ? and agencia = ? order by x, y ");
+        stmt.setString(1, fromDate);
+        stmt.setString(2, untilDate);
+        stmt.setString(3, storeName);
+        ResultSet rs = stmt.executeQuery();
+
+        int x = -1;
+        Object[] toAdd = null ;
+        while ( rs.next() ){
+            if ( x != rs.getInt("x") ){
+                if ( x != -1 ){
+                    dataSource.add(toAdd);
+                }
+                x = rs.getInt("x");
+            }
+            toAdd = new Object[columns.size()];
+
+            toAdd[rs.getInt("y")] = rs.getString("v");
+        }
+        if ( toAdd != null ){
             dataSource.add(toAdd);
         }
 
@@ -4296,7 +4335,7 @@ public class ConnectionDrivers {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
-            String employCode = ((String) model.getValueAt(i, 0)).split("-")[0].trim() ;
+            /*String employCode = ((String) model.getValueAt(i, 0)).split("-")[0].trim() ;
             String concept = (String) model.getValueAt(i, 1) ;
             String hours = model.getValueAt(i, 2)+"" ;
             PreparedStatement stmt = c.prepareStatement(
@@ -4312,12 +4351,30 @@ public class ConnectionDrivers {
             stmt.setString(2, day);
             stmt.setString(3, employCode);
             stmt.setString(4, hours);
-            stmt.executeUpdate();
+            stmt.executeUpdate();*/
+            String employCode = ((String) model.getValueAt(i, 0)).split("-")[0].trim() ;
+            String concept = (String) model.getValueAt(i, 1) ;
+            String hours = model.getValueAt(i, 2)+"" ;
+            PreparedStatement stmt = c.prepareStatement(
+                "insert into inasistencia ( fecha, codigo_empleado, concepto , fecha_cambio) values ( ? , ? , ? , now() )");
+            if ( !concept.equals(" ") || !hours.equals("0") ){
+                stmt.setString(1, day);
+                stmt.setString(2, employCode);
+                stmt.setString(3, concept);
+                stmt.executeUpdate();
+                
+                stmt = c.prepareStatement(
+                    "insert into horas_extra ( fecha_cambio , fecha, codigo_empleado, cantidad_horas ) values ( now() , ? , ? , ? )");
+                stmt.setString(1, day);
+                stmt.setString(2, employCode);
+                stmt.setString(3, hours);
+                stmt.executeUpdate();
+            }
         }
         c.close();
     }
 
-    static void createOverTime(DefaultTableModel model, String day) throws SQLException{
+    /*static void createOverTime(DefaultTableModel model, String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -4332,12 +4389,12 @@ public class ConnectionDrivers {
             stmt.executeUpdate();
         }
         c.close();
-    }
+    }*/
 
     static List<FreeDay> listAllFreeDays(String myDay) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select horas_extra.codigo_empleado , concepto, horas_extra.cantidad_horas from inasistencia, horas_extra where datediff(horas_extra.fecha,?)=0 and horas_extra.codigo_empleado = inasistencia.codigo_empleado and horas_extra.fecha=inasistencia.fecha and horas_extra.agencia=inasistencia.agencia");
+        PreparedStatement stmt = c.prepareStatement("select horas_extra.codigo_empleado , concepto, horas_extra.cantidad_horas from inasistencia, horas_extra where datediff(horas_extra.fecha,?)=0 and horas_extra.codigo_empleado = inasistencia.codigo_empleado and horas_extra.fecha=inasistencia.fecha");
         stmt.setString(1,myDay);
         ResultSet rs = stmt.executeQuery();
 
@@ -4354,7 +4411,7 @@ public class ConnectionDrivers {
     static List<OverTime> listAllOverTime(String myDay) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , cantidad_horas from horas_extra where datediff(fecha,?)=0 and agencia=?");
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , cantidad_horas from horas_extra , empleado where datediff(fecha,?)=0 and empleado.codigo = horas.codigo_empleado and empleado.agencia = ? ");
         stmt.setString(1,myDay);
         stmt.setString(2, Shared.getConfig("storeName"));
         ResultSet rs = stmt.executeQuery();
@@ -4596,14 +4653,13 @@ public class ConnectionDrivers {
             model.setValueAt("S", employRow.get(rs.getString("codigo_empleado")), offset + rs.getInt("diff"));
         }
 
-        stmt = c.prepareStatement("select datediff(fecha,?) as diff , codigo_empleado, concepto from inasistencia where agencia=? and concepto!=' ' and  datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0");
-        stmt.setString(3, from);
-        stmt.setString(4, until);
-        stmt.setString(2, store);
+        stmt = c.prepareStatement("select datediff(fecha,?) as diff , codigo_empleado, concepto from inasistencia , empleado where concepto!=' ' and  datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and inasistencia.codigo_empleado=empleado.codigo and empleado.agencia=?");
+        stmt.setString(2, from);
+        stmt.setString(3, until);
+        stmt.setString(4, store);
         stmt.setString(1, from);
         rs = stmt.executeQuery();
         while ( rs.next() ){
-            System.out.println("Empleado " + rs.getString("codigo_empleado") + " " + rs.getString("concepto") );
             model.setValueAt(rs.getString("concepto"), employRow.get(rs.getString("codigo_empleado")), offset + rs.getInt("diff"));
         }
 
@@ -4611,10 +4667,10 @@ public class ConnectionDrivers {
             model.setValueAt("0", i, 2);
         }
 
-        stmt = c.prepareStatement("select codigo_empleado, sum(cantidad_horas) as sch from horas_extra where agencia=? and datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 group by codigo_empleado having sch > 0");
-        stmt.setString(2, from);
-        stmt.setString(3, until);
-        stmt.setString(1, store);
+        stmt = c.prepareStatement("select codigo_empleado, sum(cantidad_horas) as sch from horas_extra, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and horas_extra.codigo_empleado=empleado.codigo and empleado.agencia=? group by codigo_empleado having sch > 0");
+        stmt.setString(1, from);
+        stmt.setString(2, until);
+        stmt.setString(3, store);
         rs = stmt.executeQuery();
         while ( rs.next() ){
             model.setValueAt(rs.getString("sch"), employRow.get(rs.getString("codigo_empleado")), 2);
@@ -4659,5 +4715,99 @@ public class ConnectionDrivers {
         }
         
         c.close();
+    }
+
+    static void saveTable(DefaultTableModel model, String fromDate, String untilDate, String storeName) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+
+        c.setAutoCommit(false);
+
+        PreparedStatement stmt = c.prepareStatement("delete from cuadro_recursos_humanos where fecha_inicio = ? and fecha_fin = ? and agencia = ? ");
+
+        stmt.setString(1, fromDate);
+        stmt.setString(2, untilDate);
+        stmt.setString(3, storeName);
+        stmt.executeUpdate();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                if (  model.getValueAt(i, j) != null ){
+                    stmt = c.prepareStatement("insert into cuadro_recursos_humanos (fecha_inicio, fecha_fin, agencia, x, y, v) values (?,?,?,?,?,?)");
+                    stmt.setString(1, fromDate);
+                    stmt.setString(2, untilDate);
+                    stmt.setString(3, storeName);
+                    stmt.setString(4, i+"");
+                    stmt.setString(5, j+"");
+                    stmt.setString(6, model.getValueAt(i, j).toString());
+                    stmt.executeUpdate();
+                }
+            }
+
+        }
+
+        try{
+            c.commit();
+        }catch(SQLException ex){
+            c.rollback();
+            c.setAutoCommit(true);
+            c.close();
+            throw ex;
+
+        }
+        
+        c.setAutoCommit(true);
+        c.close();
+    }
+
+    static boolean loadPresence( JTable presenceTable ,String fromDateString, String untilDateString, String storeName, java.util.Date fromDate, java.util.Date untilDate ) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        boolean ans = false;
+
+        List<String> header = new LinkedList<String>();
+        header.add("Código");
+        header.add("Empleado");
+        header.add("Horas");
+        header.add("Bono Nocturno");
+        header.add("Bono de Asistencia");
+        header.add("Bono Produccion");
+        header.add("Horas trabajadas");
+        int offset = header.size();
+        java.util.Date t = fromDate;
+        Calendar calen = Calendar.getInstance();
+        calen.setTime(t);
+
+        while(t.before(untilDate) || t.equals(untilDate)){
+            header.add(Constants.dayName[t.getDay()] + " " + t.getDate());
+            calen.setTime(t);
+            calen.add(Calendar.DATE, 1);
+            t = (java.util.Date) calen.getTime();
+        }
+
+        Map<String, Integer> map = new TreeMap<String, Integer>();
+        List<Employ> employs = ConnectionDrivers.getAllEmployBetween(fromDateString, untilDateString, storeName);
+        String[][] tableModel = new String[employs.size()][2];
+        System.out.println("Consegui " + employs.size() + " Empleados");
+        for (int i = 0 ; i < employs.size() ; ++i ) {
+            tableModel[i][0] = employs.get(i).getCode();
+            tableModel[i][1] = employs.get(i).getName();
+            map.put(tableModel[i][0], i);
+        }
+
+        presenceTable.setModel(new DefaultTableModel(tableModel,header.toArray()));
+        DefaultTableModel model = (DefaultTableModel) presenceTable.getModel();
+
+        PreparedStatement stmt = c.prepareStatement("select x , y , v  from cuadro_recursos_humanos where fecha_inicio = ? and fecha_fin = ? and agencia = ? ");
+        stmt.setString(1, fromDateString);
+        stmt.setString(2, untilDateString);
+        stmt.setString(3, storeName);
+        ResultSet rs = stmt.executeQuery();
+
+        while( rs.next() ){
+            ans = true;
+            model.setValueAt(rs.getString("v"), rs.getInt("x"), rs.getInt("y"));
+        }
+
+        c.close();
+        return ans;
     }
 }

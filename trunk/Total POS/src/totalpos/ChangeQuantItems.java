@@ -237,7 +237,8 @@ public class ChangeQuantItems extends javax.swing.JDialog {
 
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), idField.getText());
             if ( (funct.equals(Constants.changeQuant) && ConnectionDrivers.isAllowed(u.getPerfil(), "setQuant")) ||
-                    (funct.equals(Constants.changeReceipt) && ConnectionDrivers.isAllowed(u.getPerfil(), "createCN")) ){
+                    (funct.equals(Constants.changeReceipt) && ConnectionDrivers.isAllowed(u.getPerfil(), "createCN")) ||
+                      (funct.equals(Constants.reprint) && ConnectionDrivers.isAllowed(u.getPerfil(), Constants.reprint)) ){
                 Shared.userInsertedPasswordOk(idField.getText());
                 passOk = true;
             }else{

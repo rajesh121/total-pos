@@ -835,6 +835,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         deleteCurrent();
                         loadThisReceipt(receiptMatched.get(0));
                         ConnectionDrivers.putToNormal(receiptMatched.get(0).getInternId());
+                        return;
                     }
 
                 }

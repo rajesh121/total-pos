@@ -46,8 +46,12 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="send2ProfitButton" min="-2" pref="119" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="saveButton" min="-2" pref="111" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="closeButton" min="-2" pref="96" max="-2" attributes="0"/>
+                      <Component id="recalcularAllButton" min="-2" pref="118" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="closeButton" min="-2" pref="108" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -73,6 +77,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="send2ProfitButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="saveButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="recalcularAllButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -108,6 +114,9 @@
               <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
             </Property>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){&#xa;        Component comp = super.prepareRenderer(renderer, row, column);&#xa;        if ( presenceTable.getModel().getColumnName(column).split(&quot; &quot;)[0].equals(&quot;Dom&quot;) ){&#xa;            comp.setBackground(Color.YELLOW);&#xa;        }else{&#xa;            comp.setBackground(Constants.transparent);&#xa;        }   &#xa;        return comp;&#xa;    }&#xa;}"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
@@ -188,6 +197,24 @@
         <Property name="text" type="java.lang.String" value="N&#xf3;mina desde:"/>
         <Property name="name" type="java.lang.String" value="storeNameLabeLabel" noResource="true"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="saveButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Guardar"/>
+        <Property name="name" type="java.lang.String" value="saveButton" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="recalcularAllButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Borrar Todo"/>
+        <Property name="name" type="java.lang.String" value="recalcularAllButton" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="recalcularAllButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

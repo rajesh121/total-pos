@@ -6,6 +6,8 @@
 
 package totalpos;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -17,6 +19,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -40,7 +43,10 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
             untilDate = Constants.sdfDay2DB.parse(ud);
             fromDateString = fd;
             untilDateString = ud;
-            updateAll();
+
+            if ( !ConnectionDrivers.loadPresence( presenceTable, fromDateString, untilDateString, storeName, fromDate, untilDate) ){
+                updateAll();
+            }
 
             String[] t = fd.split("-");
             fromLabelDate.setText(t[2] + "/" + t[1] + "/" + t[0]);
@@ -106,7 +112,17 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        presenceTable = new javax.swing.JTable();
+        presenceTable = new javax.swing.JTable(){
+            @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
+                Component comp = super.prepareRenderer(renderer, row, column);
+                if ( presenceTable.getModel().getColumnName(column).split(" ")[0].equals("Dom") ){
+                    comp.setBackground(Color.YELLOW);
+                }else{
+                    comp.setBackground(Constants.transparent);
+                }
+                return comp;
+            }
+        };
         titleLabel = new javax.swing.JLabel();
         fromLabel = new javax.swing.JLabel();
         untilLabel = new javax.swing.JLabel();
@@ -116,6 +132,8 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         closeButton = new javax.swing.JButton();
         send2ProfitButton = new javax.swing.JButton();
         storeNameLabeLabel = new javax.swing.JLabel();
+        saveButton = new javax.swing.JButton();
+        recalcularAllButton = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -181,6 +199,22 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         storeNameLabeLabel.setText("Nómina desde:");
         storeNameLabeLabel.setName("storeNameLabeLabel"); // NOI18N
 
+        saveButton.setText("Guardar");
+        saveButton.setName("saveButton"); // NOI18N
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
+
+        recalcularAllButton.setText("Borrar Todo");
+        recalcularAllButton.setName("recalcularAllButton"); // NOI18N
+        recalcularAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                recalcularAllButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -204,8 +238,12 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
                         .addComponent(storeNameLabeLabel))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(send2ProfitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(recalcularAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -226,6 +264,8 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(send2ProfitButton)
+                    .addComponent(saveButton)
+                    .addComponent(recalcularAllButton)
                     .addComponent(closeButton))
                 .addContainerGap())
         );
@@ -237,6 +277,25 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_closeButtonActionPerformed
 
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        try {
+            ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName);
+            MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado Satisfactoriamente.");
+            msb.show(null);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void recalcularAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recalcularAllButtonActionPerformed
+        try {
+            updateAll();
+        } catch (SQLException ex) {
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha cargado la información correctamente.");
+            msb.show(null);
+        }
+    }//GEN-LAST:event_recalcularAllButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
@@ -244,6 +303,8 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
     private javax.swing.JLabel fromLabelDate;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable presenceTable;
+    private javax.swing.JButton recalcularAllButton;
+    private javax.swing.JButton saveButton;
     private javax.swing.JButton send2ProfitButton;
     private javax.swing.JLabel storeNameLabeLabel;
     private javax.swing.JLabel storeNameLabel;

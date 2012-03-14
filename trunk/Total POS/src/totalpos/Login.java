@@ -220,6 +220,10 @@ public class Login extends JFrame implements Doer{
                             ReportZ rz = new ReportZ(mrw, true, "Z","\'" + tDate + "\'");
                             Shared.centerFrame(rz);
                             rz.setVisible(true);
+                        }else{
+                            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se puede continuar. Debe sacar el Reporte Z del día anterior.");
+                            msg.show(this);
+                            System.exit(0);
                         }
                     }
                     try{

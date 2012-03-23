@@ -83,7 +83,7 @@ public class Sticker {
             String barCode = a.getMainBarcode();
             Double disc = (100.0-a.getDescuento())/100.0;
             
-            String price = (new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).toString();
+            String price = Constants.df.format(Math.round((new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).getQuant()));
             
             String description2 = "";
             if (a.getDescription().length() > 34) {
@@ -139,7 +139,7 @@ public class Sticker {
         String mark = a.getMark();
         String barCode = a.getMainBarcode();
         Double disc = (100.0-a.getDescuento())/100.0;
-        String price = (new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).toString();
+        String price = Constants.df.format(Math.round((new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).getQuant()));
 
         String description2 = "";
         
@@ -187,13 +187,13 @@ public class Sticker {
         String mark = a.getMark();
         String barCode = a.getMainBarcode();
         Double disc = (100.0-a.getDescuento())/100.0;
-        String price = (new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).toString();
+        String price = Constants.df.format(Math.round((new Price(null,a.getLastPrice().plusIva().getQuant()*disc)).getQuant()));
 
         String descriptionB = b.getDescription();
         String markB = b.getMark();
         String barCodeB = b.getMainBarcode();
         Double discB = (100.0-b.getDescuento())/100.0;
-        String priceB = (new Price(null,b.getLastPrice().plusIva().getQuant()*discB)).toString();
+        String priceB = Constants.df.format(Math.round((new Price(null,b.getLastPrice().plusIva().getQuant()*discB)).getQuant()));
 
         String description2 = "";
 

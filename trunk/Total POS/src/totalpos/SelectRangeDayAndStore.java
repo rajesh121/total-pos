@@ -12,9 +12,12 @@ package totalpos;
  */
 public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
 
+    boolean isCestatickets;
+
     /** Creates new form SelectRangeDayAndStore */
-    public SelectRangeDayAndStore() {
+    public SelectRangeDayAndStore(boolean cesta) {
         initComponents();
+        isCestatickets = cesta;
     }
 
     /** This method is called from within the constructor to
@@ -152,13 +155,15 @@ public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
 
     private void seeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seeButtonActionPerformed
         if ( fromTextButton.getText().isEmpty() || untilText.getText().isEmpty() || storeText.getText().isEmpty() ){
-            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
+            MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Todos los campos son obligatorios");
             msg.show(null);
-        }
-        AnalizePresence ap = new AnalizePresence(storeText.getText(),fromTextButton.getText(), untilText.getText());
-        if ( ap.isOk ){
-            ((MainWindows)Shared.getMyMainWindows()).mdiPanel.add(ap);
-            ap.setVisible(true);
+        }else{
+            AnalizePresence ap = new AnalizePresence(storeText.getText(),fromTextButton.getText(), untilText.getText(), isCestatickets);
+            if ( ap.isOk ){
+                ((MainWindows)Shared.getMyMainWindows()).mdiPanel.add(ap);
+                ap.setVisible(true);
+            }
+            this.dispose();
         }
     }//GEN-LAST:event_seeButtonActionPerformed
 

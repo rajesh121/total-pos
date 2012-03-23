@@ -367,10 +367,10 @@ public class FiscalPrinter {
             printer.CloseFpctrl();
             isOk = true;
 
-            if ( predicted ){
+            /*if ( predicted ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La factura fue guardada satisfactoriamente!!");
                 msb.show(null);
-            }
+            }*/
         } else{
             throw new Exception("Driver de impresora desconocido!");
         }

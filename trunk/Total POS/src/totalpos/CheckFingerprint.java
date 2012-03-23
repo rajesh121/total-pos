@@ -58,10 +58,15 @@ public class CheckFingerprint extends fingerPrintReader{
                             super.setNameLabel("");
                         }else{
                             String[] names = e.getName().split(",");
-                            super.setState(ConnectionDrivers.saveFingerPrint(e) + " " + ConnectionDrivers.currentHour());
+                            String state = ConnectionDrivers.saveFingerPrint(e) + " " + ConnectionDrivers.currentHour();
+                            super.setState(state);
                             super.setTitleLabel(names[0]);
                             super.setNameLabel(names[1]);
-                            super.setColorState(new Color(0, 182, 255));
+                            if ( state.equals(Constants.fingerPrintRepeated) ){
+                                super.setColorState(new Color(52, 218, 22));
+                            }else{
+                                super.setColorState(new Color(0, 182, 255));
+                            }
                             isOk = true;
                         }
                         break;

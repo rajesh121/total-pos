@@ -57,7 +57,8 @@ public class ManageItem extends JInternalFrame implements Doer {
         model.setRowCount(0);
 
         for (Item item : items) {
-            String s[] = {item.getCode(),item.getDescription(),item.getModel(),item.getLastPrice().plusIva().withDiscount(item.getDescuento()).toString(),item.getDescuento()+"",item.getCurrentStock()+""};
+            String s[] = {item.getCode(),item.getDescription(),item.getModel(),Constants.df.format(Math.round(item.getLastPrice().plusIva().withDiscount(item.getDescuento()).getQuant())),item.getDescuento()+"",item.getCurrentStock()+""};
+            //System.out.println("Precio = " + Math.round(item.getLastPrice().plusIva().withDiscount(item.getDescuento()).getQuant())+"");
             model.addRow(s);
         }
         

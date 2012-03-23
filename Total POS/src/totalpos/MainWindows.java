@@ -311,7 +311,11 @@ public class MainWindows extends javax.swing.JFrame {
                     }
                 }
             } else if ( ed.getFuncion().equals("manualPresence") ){
-                SelectRangeDayAndStore srds = new SelectRangeDayAndStore();
+                SelectRangeDayAndStore srds = new SelectRangeDayAndStore(false);
+                mdiPanel.add(srds);
+                srds.setVisible(true);
+            } else if ( ed.getFuncion().equals("manualCestatickets") ){
+                SelectRangeDayAndStore srds = new SelectRangeDayAndStore(true);
                 mdiPanel.add(srds);
                 srds.setVisible(true);
             } else if (ed.getFuncion().isEmpty()) {

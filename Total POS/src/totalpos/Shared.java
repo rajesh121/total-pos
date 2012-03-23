@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -32,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -81,6 +83,7 @@ public class Shared {
     private static int processingWindows = 0;
     public static FiscalPrinter printer;
     public static int isFingerOpened = 0;
+    protected static Set<String> holidays = new TreeSet<String>();
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -1050,7 +1053,7 @@ public class Shared {
         return f.canRead();
     }
 
-    public static void sendMail(String to , String msg, String subject) throws MessagingException{
+    public static void sendMail(String to , String msg, String subject) throws MessagingException, UnsupportedEncodingException{
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");
@@ -1067,7 +1070,7 @@ public class Shared {
         });
 
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress("from@no-spam.com"));
+        message.setFrom(new InternetAddress("ventasdiariasgt99@gmail.com", "Agencia " + Shared.getConfig("storeName")));
 
         String addrs[] = to.split(",");
         InternetAddress[] addressTo = new InternetAddress[addrs.length];
@@ -1086,4 +1089,16 @@ public class Shared {
 
         System.out.println("Correo enviado");
     }
+
+    protected static boolean isHoliday(String day){
+        return holidays.contains(day);
+    }
+
+    protected static boolean didItCome(String c){
+        return !(c == null  ||
+                        (!c.equals("S") && !c.equals("L")
+                          && !c.equals("R") && !c.equals("ML")
+                            && !c.equals("V")));
+    }
+
 }

@@ -8,6 +8,8 @@ package totalpos;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Window;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -25,7 +28,7 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Saúl Hidalgo.
  */
-public class AnalizePresence extends javax.swing.JInternalFrame {
+public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
     String storeName;
     Date fromDate;
@@ -33,9 +36,15 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
     String fromDateString;
     String untilDateString;
     public boolean isOk = false;
+    List<String> header;
+    private int offset;
+    Map<String, Integer> map4Employs;
+    protected Working workingFrame;
+    protected boolean isCestaticket;
+    protected boolean isSend2Profit = false;
 
     /** Creates new form AnalizePresence */
-    public AnalizePresence(String sn, String fd, String ud) {
+    public AnalizePresence(String sn, String fd, String ud, boolean isCestaticketA) {
         try {
             initComponents();
             this.storeName = sn;
@@ -43,9 +52,25 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
             untilDate = Constants.sdfDay2DB.parse(ud);
             fromDateString = fd;
             untilDateString = ud;
+            this.isCestaticket = isCestaticketA;
 
-            if ( !ConnectionDrivers.loadPresence( presenceTable, fromDateString, untilDateString, storeName, fromDate, untilDate) ){
-                updateAll();
+            if ( isCestaticket ){
+                createHeaderWithCestatickets();
+            }else{
+                createHeaderWithoutCestatickets();
+            }
+            createMap4Employees();
+            setSizes2Table();
+            if ( !isCestaticket && !ConnectionDrivers.loadHours( presenceTable, fromDateString,
+                    untilDateString, storeName, fromDate, untilDate, this) ){
+                ConnectionDrivers.calculateExtraHours((DefaultTableModel) presenceTable.getModel(),
+                        fromDateString, untilDateString, storeName, map4Employs, offset);
+            }
+
+            if ( !ConnectionDrivers.loadPresence(presenceTable, fromDateString,
+                    untilDateString, storeName, fromDate, untilDate, this, map4Employs, offset) ){
+                ConnectionDrivers.calculatePresence((DefaultTableModel) presenceTable.getModel(),
+                        fromDateString, untilDateString, storeName, map4Employs, offset);
             }
 
             String[] t = fd.split("-");
@@ -65,27 +90,43 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         }
     }
 
-    private void updateAll() throws SQLException{
-        List<String> header = new LinkedList<String>();
-        header.add("Código");
-        header.add("Empleado");
-        header.add("Horas");
-        header.add("Bono Nocturno");
-        header.add("Bono de Asistencia");
-        header.add("Bono Produccion");
-        header.add("Horas trabajadas");
-        int offset = header.size();
-        Date t = fromDate;
-        Calendar c = Calendar.getInstance();
-        c.setTime(t);
-        
-        while(t.before(untilDate) || t.equals(untilDate)){
-            header.add(Constants.dayName[t.getDay()] + " " + t.getDate());
-            c.setTime(t);
-            c.add(Calendar.DATE, 1);
-            t = c.getTime();
-        }
+    @Override
+    public void close() {
+        workingFrame.setVisible(false);
+    }
 
+    @Override
+    public void doIt() {
+        if ( isSend2Profit ){
+            send2Profit();
+        }else{
+            try {
+                ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName, offset, isCestaticket);
+                String[] t = new String[header.size()];
+                int i = 0;
+                for (String tt : header) {
+                    t[i++] = tt;
+                }
+                new CreateReportFromTable(presenceTable, "Control de Asistencias - Agencia " + storeName);
+            } catch (SQLException ex) {
+                Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
+                Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void setSizes2Table(){
+        for ( int i = offset ; i < presenceTable.getColumnModel().getColumnCount() ; i++ ){
+            presenceTable.getColumnModel().getColumn(i).setPreferredWidth(50);
+        }
+        presenceTable.getColumnModel().getColumn(1).setPreferredWidth(250);
+        presenceTable.getColumnModel().getColumn(0).setPreferredWidth(70);
+    }
+
+    private void createMap4Employees() throws SQLException{
         Map<String, Integer> map = new TreeMap<String, Integer>();
         List<Employ> employs = ConnectionDrivers.getAllEmployBetween(fromDateString, untilDateString, storeName);
         String[][] tableModel = new String[employs.size()][2];
@@ -96,10 +137,17 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
             map.put(tableModel[i][0], i);
         }
 
-        presenceTable.setModel(new DefaultTableModel(tableModel,header.toArray()));
+        presenceTable.setModel(new DefaultTableModel(tableModel,header.toArray()){
+            @Override
+             public boolean isCellEditable (int row, int column) {
+               if (column < 2){
+                    return false;
+               }
+               return true;
+            }
+        });
 
-        ConnectionDrivers.fillPresence((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName, map, offset);
-
+        map4Employs = map;
     }
 
     /** This method is called from within the constructor to
@@ -115,7 +163,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         presenceTable = new javax.swing.JTable(){
             @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
                 Component comp = super.prepareRenderer(renderer, row, column);
-                if ( presenceTable.getModel().getColumnName(column).split(" ")[0].equals("Dom") ){
+                if ( presenceTable.getModel().getColumnName(column).split(" ")[0].equals("Dom") || ( presenceTable.getModel().getColumnName(column).split(" ").length > 1 && Shared.isHoliday( presenceTable.getModel().getColumnName(column).split(" ")[1])) ){
                     comp.setBackground(Color.YELLOW);
                 }else{
                     comp.setBackground(Constants.transparent);
@@ -134,12 +182,31 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
         storeNameLabeLabel = new javax.swing.JLabel();
         saveButton = new javax.swing.JButton();
         recalcularAllButton = new javax.swing.JButton();
+        exportButton = new javax.swing.JButton();
 
         setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
         setTitle("Control de Asistencias y Horas Extras");
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -192,14 +259,21 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
             }
         });
 
+        send2ProfitButton.setFont(new java.awt.Font("Courier New", 0, 12));
         send2ProfitButton.setText("Enviar a Profit");
         send2ProfitButton.setName("send2ProfitButton"); // NOI18N
+        send2ProfitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                send2ProfitButtonActionPerformed(evt);
+            }
+        });
 
         storeNameLabeLabel.setFont(new java.awt.Font("Courier New", 1, 14));
         storeNameLabeLabel.setText("Nómina desde:");
         storeNameLabeLabel.setName("storeNameLabeLabel"); // NOI18N
 
-        saveButton.setText("Guardar");
+        saveButton.setFont(new java.awt.Font("Courier New", 0, 12));
+        saveButton.setText("Guardar Cambios");
         saveButton.setName("saveButton"); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -207,11 +281,21 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
             }
         });
 
-        recalcularAllButton.setText("Borrar Todo");
+        recalcularAllButton.setFont(new java.awt.Font("Courier New", 0, 12));
+        recalcularAllButton.setText("Borrar Cambios Horas");
         recalcularAllButton.setName("recalcularAllButton"); // NOI18N
         recalcularAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 recalcularAllButtonActionPerformed(evt);
+            }
+        });
+
+        exportButton.setFont(new java.awt.Font("Courier New", 1, 12));
+        exportButton.setText("Guardar y Exportar");
+        exportButton.setName("exportButton"); // NOI18N
+        exportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportButtonActionPerformed(evt);
             }
         });
 
@@ -222,7 +306,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1055, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1110, Short.MAX_VALUE)
                     .addComponent(titleLabel)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(fromLabel)
@@ -237,12 +321,14 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(storeNameLabeLabel))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(send2ProfitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(send2ProfitButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(saveButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(recalcularAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(recalcularAllButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                            .addComponent(exportButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 651, Short.MAX_VALUE)
                         .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -260,12 +346,15 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
                     .addComponent(storeNameLabel)
                     .addComponent(storeNameLabeLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(send2ProfitButton)
+                    .addComponent(recalcularAllButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
-                    .addComponent(recalcularAllButton)
+                    .addComponent(exportButton)
                     .addComponent(closeButton))
                 .addContainerGap())
         );
@@ -279,26 +368,287 @@ public class AnalizePresence extends javax.swing.JInternalFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
-            ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName);
+            ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName, offset, isCestaticket);
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado Satisfactoriamente.");
             msb.show(null);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) {
+            Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void recalcularAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recalcularAllButtonActionPerformed
         try {
-            updateAll();
+            ConnectionDrivers.calculateExtraHours((DefaultTableModel) presenceTable.getModel(),
+                        fromDateString, untilDateString, storeName, map4Employs, offset);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha cargado la información correctamente.");
             msb.show(null);
         }
     }//GEN-LAST:event_recalcularAllButtonActionPerformed
 
+    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
+        workingFrame = new Working((Window) Shared.getMyMainWindows());
+
+        WaitSplash ws = new WaitSplash(this);
+
+        Shared.centerFrame(workingFrame);
+        workingFrame.setVisible(true);
+        ws.execute();
+    }//GEN-LAST:event_exportButtonActionPerformed
+
+    private void send2ProfitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_send2ProfitButtonActionPerformed
+
+        isSend2Profit = true;
+        workingFrame = new Working((Window) Shared.getMyMainWindows());
+
+        WaitSplash ws = new WaitSplash(this);
+
+        Shared.centerFrame(workingFrame);
+        workingFrame.setVisible(true);
+        ws.execute();
+
+    }//GEN-LAST:event_send2ProfitButtonActionPerformed
+
+    private void send2Profit(){
+
+        Connection c = null;
+        try{
+            if ( !ConnectionDrivers.isConnected2Profit() ){
+                System.out.println("Conectando con Profit nómina...");
+                ConnectionDrivers.initializeProfit();
+            }
+
+            System.out.println("Iniciando con Horas extras...");
+
+            c = ConnectionDrivers.cpdsProfit.getConnection();
+            c.setAutoCommit(false);
+
+            ConnectionDrivers.clearBonuses(c);
+
+            //Extrahours
+            for( int i = 0 ; i < presenceTable.getRowCount() ; i++ ){
+                String employId = (String) presenceTable.getValueAt(i, 0);
+
+                if ( !isCestaticket ){
+
+                    double hours = .0;
+                    double specialBonus = .0;
+
+
+                    // TODO QUITAR...
+                    if ( employId.compareTo("017053") >= 0 ){
+                        continue;
+                    }
+
+                    if ( !presenceTable.getValueAt(i, 2).toString().isEmpty() ){
+                        hours = Double.parseDouble(presenceTable.getValueAt(i, 2).toString());
+                    }
+
+                    if ( hours > 4.0 ){
+                        specialBonus = hours - 4.0;
+                        hours = 4.0;
+                    }
+                    System.out.println("Horas Extras Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 2).toString());
+                    ConnectionDrivers.addBonus(hours, employId, Constants.conceptExtraHour, c, "");
+
+                    if ( specialBonus > .0 ){
+                        System.out.println("Bono especial 2 Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 2).toString());
+                        ConnectionDrivers.addBonus(specialBonus, employId, Constants.conceptSpecialBonus, c, "");
+                    }
+
+                    if ( presenceTable.getValueAt(i, 4) != null && !presenceTable.getValueAt(i, 4).toString().isEmpty() ){
+                        System.out.println("Bono nocturno Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 2).toString());
+                        ConnectionDrivers.addBonus(Double.parseDouble(presenceTable.getValueAt(i, 4).toString()), employId, Constants.conceptNightBonus, c, "");
+                    }
+
+                    if ( presenceTable.getValueAt(i, 9) != null && !presenceTable.getValueAt(i, 9).toString().isEmpty() ){
+                        System.out.println("Descuento " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 9).toString());
+                        ConnectionDrivers.addBonus(Double.parseDouble(presenceTable.getValueAt(i, 9).toString()), employId, Constants.conceptFingerPrintDiscount, c ,"");
+                    }
+
+                    if ( presenceTable.getValueAt(i, 5) != null && !presenceTable.getValueAt(i, 5).toString().isEmpty() ){
+                        System.out.println("Bono de Asistencia " + employId + " con " + Double.parseDouble(presenceTable.getValueAt(i, 5).toString()) + " " + presenceTable.getValueAt(i, 5).toString());
+                        ConnectionDrivers.addBonus(Double.parseDouble(presenceTable.getValueAt(i, 5).toString()), employId, Constants.conceptPresenceBonus, c , "");
+                    }
+
+                    if ( presenceTable.getValueAt(i, 6) != null && !presenceTable.getValueAt(i, 6).toString().isEmpty() ){
+                        System.out.println("Bono de Produccion " + employId + " con " + Double.parseDouble(presenceTable.getValueAt(i, 6).toString()) + " " + presenceTable.getValueAt(i, 6).toString());
+                        ConnectionDrivers.addBonus(Double.parseDouble(presenceTable.getValueAt(i, 6).toString()), employId, Constants.conceptProductionBonus, c , "");
+                    }
+
+                    double toDiscount = .0;
+                    double sundaysWorked = .0;
+                    double saturdatWorked = .0;
+                    String comment2discount = "";
+                    String commentSundaysWorked = "";
+                    String commentSaturdayWorked = "";
+
+                    for ( int j = offset ; j < presenceTable.getColumnCount() ; j++ ){
+
+                        if ( !Shared.didItCome(presenceTable.getValueAt(i, j).toString()) ){
+                            if ( presenceTable.getValueAt(i, j) == null || presenceTable.getValueAt(i, j).equals("") ){
+                                ++toDiscount;
+                                comment2discount += presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
+                            }else if ( presenceTable.getValueAt(i, j).equals("M") ){
+                                toDiscount += .5;
+                                comment2discount += "Medio dia" + presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
+                            }
+                        }else if ( Shared.isHoliday(presenceTable.getModel().getColumnName(j).split(" ")[1]) ||
+                                 presenceTable.getModel().getColumnName(j).split(" ")[0].equals("Dom")){
+                            ++sundaysWorked;
+                            commentSundaysWorked += presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
+                        }else if ( presenceTable.getModel().getColumnName(j).split(" ")[0].equals("Sab") ){
+                            ++saturdatWorked;
+                            commentSaturdayWorked += presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
+                        }
+                    }
+                    if ( toDiscount > .0 ){
+                        System.out.println("Descontar a " + employId + " " + toDiscount);
+                        ConnectionDrivers.addBonus(toDiscount, employId, "D030", c , comment2discount);
+                    }
+
+                    if ( Double.parseDouble(Shared.getConfig("sundayWorked"))*sundaysWorked > .0 ){
+                        System.out.println("Domingos trabajados " + employId + " " + sundaysWorked);
+                        ConnectionDrivers.addBonus(sundaysWorked, employId, "A039", c , commentSundaysWorked);
+                    }
+
+                    if ( Double.parseDouble(Shared.getConfig("saturdayWorked"))*saturdatWorked > .0 ){
+                        System.out.println("Sabados trabajados " + employId + " " + saturdatWorked);
+                        ConnectionDrivers.addBonus(saturdatWorked, employId, "A309", c , commentSaturdayWorked);
+                    }
+                }else{
+                    double toDiscount = .0;
+                    double sundaysWorked = .0;
+                    String comment2discount = "";
+                    String commentSundaysWorked = "";
+
+                    for ( int j = offset ; j < presenceTable.getColumnCount() ; j++ ){
+
+                        if ( !Shared.didItCome(presenceTable.getValueAt(i, j).toString()) ){
+                            if ( presenceTable.getValueAt(i, j) == null || presenceTable.getValueAt(i, j).equals("") ){
+                                ++toDiscount;
+                                comment2discount += presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
+                            }else if ( presenceTable.getValueAt(i, j).equals("M") ){
+                                toDiscount += .5;
+                                comment2discount += "Medio dia" + presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
+                            }
+                        }else if ( Shared.isHoliday(presenceTable.getModel().getColumnName(j).split(" ")[1]) ||
+                                 presenceTable.getModel().getColumnName(j).split(" ")[0].equals("Dom")){
+                            ++sundaysWorked;
+                            commentSundaysWorked += presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
+                        }
+                    }
+                    if ( toDiscount > .0 ){
+                        System.out.println("Descontar a " + employId + " " + toDiscount);
+                        ConnectionDrivers.addBonus(toDiscount, employId, "D030", c , comment2discount);
+                    }
+
+                    if ( Double.parseDouble(Shared.getConfig("sundayWorked"))*sundaysWorked > .0 ){
+                        System.out.println("Domingos trabajados " + employId + " " + sundaysWorked);
+                        ConnectionDrivers.addBonus(sundaysWorked, employId, "A039", c , commentSundaysWorked);
+                    }
+                }
+
+            }
+
+            System.out.println("Justo antes del commit...");
+            c.commit();
+            c.setAutoCommit(true);
+            MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Enviado satisfactoriamente");
+            msb.show(null);
+        }catch(Exception ex){
+            try {
+                c.rollback();
+                System.out.println("Rolled back =(");
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se han enviado los datos.", ex);
+                msb.show(null);
+            } catch (SQLException ex1) {
+                Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex1);
+                // We are in problems =(
+            }
+        }finally{
+            try {
+                if (c != null && !c.isClosed()) {
+                    c.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
+                // We are in problems =(
+            }
+        }
+    }
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        Object[] options = {"Si","No","Cancelar"};
+        int n = JOptionPane.showOptionDialog(this,"¿Desea guardar la planilla antes de salir?",
+                Constants.appName,
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                null);
+
+        if ( n == 2 ) return;
+
+        if ( n == 0 ) {
+            try {
+                ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName, offset, isCestaticket);
+            } catch (Exception ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido", ex);
+                msb.show(Shared.getMyMainWindows());
+            }
+        }
+
+        this.dispose();
+
+    }//GEN-LAST:event_formInternalFrameClosing
+
+
+    protected void createHeaderWithoutCestatickets(){
+        header = new LinkedList<String>();
+        header.add("Código");
+        header.add("Empleado");
+        header.add("Horas");
+        header.add("Horas extras huella");
+        header.add("Bono Nocturno");
+        header.add("Bono de Asistencia");
+        header.add("Bono Produccion");
+        header.add("Leves");
+        header.add("Graves");
+        header.add("Descuento");
+        offset = header.size();
+        Date t = fromDate;
+        Calendar c = Calendar.getInstance();
+        c.setTime(t);
+
+        while(t.before(untilDate) || t.equals(untilDate)){
+            header.add(Constants.dayName[t.getDay()] + " " + Constants.df2int2p.format(t.getDate())+ "/" + Constants.df2int2p.format(t.getMonth()));
+            c.setTime(t);
+            c.add(Calendar.DATE, 1);
+            t = c.getTime();
+        }
+    }
+
+    protected void createHeaderWithCestatickets(){
+        header = new LinkedList<String>();
+        header.add("Código");
+        header.add("Empleado");
+        offset = header.size();
+        Date t = fromDate;
+        Calendar c = Calendar.getInstance();
+        c.setTime(t);
+
+        while(t.before(untilDate) || t.equals(untilDate)){
+            header.add(Constants.dayName[t.getDay()] + " " + Constants.df2int2p.format(t.getDate())+ "/" + Constants.df2int2p.format(t.getMonth()));
+            c.setTime(t);
+            c.add(Calendar.DATE, 1);
+            t = c.getTime();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
+    private javax.swing.JButton exportButton;
     private javax.swing.JLabel fromLabel;
     private javax.swing.JLabel fromLabelDate;
     private javax.swing.JScrollPane jScrollPane1;

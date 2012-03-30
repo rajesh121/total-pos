@@ -69,8 +69,14 @@ public class ConnectionDrivers {
             cpds = new ComboPooledDataSource();
             cpds.setCheckoutTimeout(Constants.dbTimeout);
             cpds.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Shared.getFileConfig("Server") + "/" +
+            String sT;
+            if ( Shared.storeIp != null ){
+                sT = "jdbc:mysql://" + Shared.storeIp + "/" +
                             Constants.dbName;
+            }else{
+                sT = "jdbc:mysql://" + Shared.getFileConfig("Server") + "/" +
+                            Constants.dbName;
+            }
             cpds.setJdbcUrl(sT);
             cpds.setUser(Constants.dbUser);
             cpds.setPassword(Constants.dbPassword);
@@ -504,7 +510,10 @@ public class ConnectionDrivers {
         if ( !Shared.getConfig().containsKey("minimunMoney") ){
             Shared.getConfig().put("minimunMoney", ".0");
         }
-        Shared.holidays.addAll(Arrays.asList(Shared.getConfig("holidays").split(",")));
+
+        if ( Shared.getConfig("holidays") != null ){
+            Shared.holidays.addAll(Arrays.asList(Shared.getConfig("holidays").split(",")));
+        }
     }
 
     protected static void saveConfig(String k, String v) throws SQLException {
@@ -4630,6 +4639,7 @@ public class ConnectionDrivers {
     }
 
     static void calculatePresence(DefaultTableModel model, String from , String until, String store, Map<String, Integer> employRow, int offset) throws SQLException{
+        System.out.println("Calculando presencia...");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo_empleado , datediff(fecha,?) as diff from asistencia, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and empleado.codigo=asistencia.codigo_empleado and empleado.agencia=?");
         stmt.setString(1, from);
@@ -4641,6 +4651,7 @@ public class ConnectionDrivers {
 
         while ( rs.next() ){
             model.setValueAt("S", employRow.get(rs.getString("codigo_empleado")), offset + rs.getInt("diff"));
+            System.out.println("Empleado " + employRow.get(rs.getString("codigo_empleado")) + " "  + ( offset + rs.getInt("diff")));
         }
 
         stmt = c.prepareStatement("select datediff(fecha,?) as diff , codigo_empleado, concepto from inasistencia , empleado where concepto!=' ' and  datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and inasistencia.codigo_empleado=empleado.codigo and empleado.agencia=?");
@@ -4699,7 +4710,7 @@ public class ConnectionDrivers {
 
             boolean isOk = true;
             for (int j = offset; j < model.getColumnCount() && isOk ; j++) {
-                if ( !Shared.didItCome(model.getValueAt(i, j).toString() ) ){
+                if ( model.getValueAt(i, j) == null || !Shared.didItCome(model.getValueAt(i, j).toString() ) ){
                     isOk = false;
                 }
             }
@@ -4714,7 +4725,7 @@ public class ConnectionDrivers {
         stmt = c.prepareStatement("select codigo_empleado, count(*) as leves from "
                 + "(select marcacion.codigo_empleado , (count(*)) as marcaciones from asistencia "
                 + ", marcacion, empleado where marcacion.codigo_empleado=asistencia.codigo_empleado"
-                + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= adddate(?,1)"
+                + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= ?"
                 + " and datediff(fecha, hora) =0 group by marcacion.agencia, fecha , marcacion.codigo_empleado"
                 + " having marcaciones=3 order by nombre_completo, fecha) as myTable, empleado where "
                 + "myTable.codigo_empleado=empleado.codigo and empleado.agencia=? group by codigo_empleado");
@@ -4730,7 +4741,7 @@ public class ConnectionDrivers {
         stmt = c.prepareStatement("select codigo_empleado, count(*) as leves from "
                 + "(select marcacion.codigo_empleado , (count(*)) as marcaciones from asistencia "
                 + ", marcacion, empleado where marcacion.codigo_empleado=asistencia.codigo_empleado"
-                + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= adddate(?,1)"
+                + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= ?"
                 + " and datediff(fecha, hora) =0 group by marcacion.agencia, fecha , marcacion.codigo_empleado"
                 + " having marcaciones=2 or marcaciones=1 order by nombre_completo, fecha) as myTable, empleado where "
                 + "myTable.codigo_empleado=empleado.codigo and empleado.agencia=? group by codigo_empleado");
@@ -4860,6 +4871,9 @@ public class ConnectionDrivers {
         while( rs.next() ){
             ans = true;
             model.setValueAt(rs.getString("v"), rs.getInt("x"), rs.getInt("y"));
+            if ( rs.getInt("y") == 0 ){
+                ap.map4Employs.put(rs.getString("v"), rs.getInt("x"));
+            }
         }
 
         c.close();
@@ -4997,7 +5011,17 @@ public class ConnectionDrivers {
         stmt.setString(3, comment);
         stmt.setString(4, employId);
         stmt.setString(5, concept);
-        int n = stmt.executeUpdate();
+        stmt.executeUpdate();
+    }
+
+    protected static void lockClosingDay(Connection c) throws SQLException{
+        PreparedStatement stmt = c.prepareStatement("lock table dia_operativo write");
+        stmt.executeUpdate();
+    }
+
+    protected static void unlock(Connection c) throws SQLException{
+        PreparedStatement stmt = c.prepareStatement("unlock tables");
+        stmt.executeUpdate();
     }
 
 }

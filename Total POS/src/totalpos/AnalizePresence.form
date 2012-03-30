@@ -58,8 +58,6 @@
                           <Component id="recalcularAllButton" alignment="1" pref="206" max="32767" attributes="1"/>
                           <Component id="exportButton" alignment="1" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="651" max="32767" attributes="0"/>
-                      <Component id="closeButton" min="-2" pref="108" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -81,7 +79,7 @@
                   <Component id="storeNameLabeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="416" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="417" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="send2ProfitButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -91,7 +89,6 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="saveButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="exportButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -185,15 +182,6 @@
         <Property name="text" type="java.lang.String" value="Agencia"/>
         <Property name="name" type="java.lang.String" value="storeNameLabel" noResource="true"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="closeButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Cerrar"/>
-        <Property name="name" type="java.lang.String" value="closeButton" noResource="true"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeButtonActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="send2ProfitButton">
       <Properties>

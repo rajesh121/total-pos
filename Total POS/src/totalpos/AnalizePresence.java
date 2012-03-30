@@ -177,7 +177,6 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         fromLabelDate = new javax.swing.JLabel();
         untilLabelDate = new javax.swing.JLabel();
         storeNameLabel = new javax.swing.JLabel();
-        closeButton = new javax.swing.JButton();
         send2ProfitButton = new javax.swing.JButton();
         storeNameLabeLabel = new javax.swing.JLabel();
         saveButton = new javax.swing.JButton();
@@ -251,14 +250,6 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         storeNameLabel.setText("Agencia");
         storeNameLabel.setName("storeNameLabel"); // NOI18N
 
-        closeButton.setText("Cerrar");
-        closeButton.setName("closeButton"); // NOI18N
-        closeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeButtonActionPerformed(evt);
-            }
-        });
-
         send2ProfitButton.setFont(new java.awt.Font("Courier New", 0, 12));
         send2ProfitButton.setText("Enviar a Profit");
         send2ProfitButton.setName("send2ProfitButton"); // NOI18N
@@ -327,9 +318,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(recalcularAllButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-                            .addComponent(exportButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 651, Short.MAX_VALUE)
-                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(exportButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -346,7 +335,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                     .addComponent(storeNameLabel)
                     .addComponent(storeNameLabeLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(send2ProfitButton)
@@ -354,17 +343,12 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveButton)
-                    .addComponent(exportButton)
-                    .addComponent(closeButton))
+                    .addComponent(exportButton))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_closeButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
@@ -378,10 +362,11 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
     private void recalcularAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recalcularAllButtonActionPerformed
         try {
+            clearHourTable();
             ConnectionDrivers.calculateExtraHours((DefaultTableModel) presenceTable.getModel(),
                         fromDateString, untilDateString, storeName, map4Employs, offset);
         } catch (SQLException ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha cargado la información correctamente.");
+            MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha cargado la información correctamente.",ex);
             msb.show(null);
         }
     }//GEN-LAST:event_recalcularAllButtonActionPerformed
@@ -440,7 +425,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                         continue;
                     }
 
-                    if ( !presenceTable.getValueAt(i, 2).toString().isEmpty() ){
+                    if ( presenceTable.getValueAt(i, 2) != null && !presenceTable.getValueAt(i, 2).toString().isEmpty() ){
                         hours = Double.parseDouble(presenceTable.getValueAt(i, 2).toString());
                     }
 
@@ -448,7 +433,12 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                         specialBonus = hours - 4.0;
                         hours = 4.0;
                     }
-                    System.out.println("Horas Extras Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 2).toString());
+                    if ( presenceTable.getValueAt(i, 2) != null ){
+                        System.out.println("Horas Extras Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 2).toString());
+                    }else{
+                        System.out.println("Horas Extras Empleado " + employId + " con " + hours + " null");
+                    }
+                    
                     ConnectionDrivers.addBonus(hours, employId, Constants.conceptExtraHour, c, "");
 
                     if ( specialBonus > .0 ){
@@ -457,7 +447,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                     }
 
                     if ( presenceTable.getValueAt(i, 4) != null && !presenceTable.getValueAt(i, 4).toString().isEmpty() ){
-                        System.out.println("Bono nocturno Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 2).toString());
+                        System.out.println("Bono nocturno Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 4).toString());
                         ConnectionDrivers.addBonus(Double.parseDouble(presenceTable.getValueAt(i, 4).toString()), employId, Constants.conceptNightBonus, c, "");
                     }
 
@@ -485,7 +475,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
                     for ( int j = offset ; j < presenceTable.getColumnCount() ; j++ ){
 
-                        if ( !Shared.didItCome(presenceTable.getValueAt(i, j).toString()) ){
+                        if ( presenceTable.getValueAt(i, j) == null || !Shared.didItCome(presenceTable.getValueAt(i, j).toString()) ){
                             if ( presenceTable.getValueAt(i, j) == null || presenceTable.getValueAt(i, j).equals("") ){
                                 ++toDiscount;
                                 comment2discount += presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
@@ -646,8 +636,17 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         }
     }
 
+    private void clearHourTable(){
+        for (int i = 0; i < presenceTable.getRowCount(); i++) {
+            for (int j = 2; j < presenceTable.getColumnCount() && j < offset; j++) {
+                presenceTable.setValueAt(null, i, j);
+
+            }
+
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton closeButton;
     private javax.swing.JButton exportButton;
     private javax.swing.JLabel fromLabel;
     private javax.swing.JLabel fromLabelDate;

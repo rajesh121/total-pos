@@ -16,6 +16,10 @@ public class Main {
     private static ServerSocket serverSkt;
 
     public static void main(String[] args) {        
+
+        if ( args.length > 0 ){
+            Shared.storeIp = args[0];
+        }
         splash = new StartSplash();
         splash.changeStatus("Leyendo archivo de configuración...", 10);
         try {

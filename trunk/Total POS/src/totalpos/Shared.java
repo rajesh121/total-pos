@@ -83,7 +83,9 @@ public class Shared {
     private static int processingWindows = 0;
     public static FiscalPrinter printer;
     public static int isFingerOpened = 0;
+    public static int numberClosingDayOpened = 0;
     protected static Set<String> holidays = new TreeSet<String>();
+    protected static String storeIp = null;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -1070,7 +1072,7 @@ public class Shared {
         });
 
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress("ventasdiariasgt99@gmail.com", "Agencia " + Shared.getConfig("storeName")));
+        message.setFrom(new InternetAddress("ventasdiariasgt99@gmail.com", "Agencia " + Shared.getConfig("storeName") + " ( " + Shared.getConfig("storeDescription") + ")"));
 
         String addrs[] = to.split(",");
         InternetAddress[] addressTo = new InternetAddress[addrs.length];

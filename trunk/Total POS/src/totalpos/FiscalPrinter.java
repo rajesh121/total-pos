@@ -66,7 +66,7 @@ public class FiscalPrinter {
             }
             
             printerSerial = Shared.b2s(tqps.PrnID);
-            z = tqps.UltZ + "";
+            z = (tqps.UltZ+1) + "";
 
             TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
             ans = printer.QueryPrnTransaction((byte)1, tqpt);
@@ -158,18 +158,19 @@ public class FiscalPrinter {
 
             System.out.println("Anyo = " +  calendar.get(Calendar.YEAR)%100);
             System.out.println("Fecha enviada: " + calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH)+1) + "/"
-                    + (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset)+ " " + hour + ":" + calendar.get(Calendar.MINUTE)
+                    + (byte)(calendar.get(Calendar.YEAR)%100)+ " " + hour + ":" + calendar.get(Calendar.MINUTE)
                     + ":" + calendar.get(Calendar.SECOND) + " " + ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
             ans = printer.NewDoc(Constants.receipt, client.getName(), client.getId(),
                     Shared.getUser().getLogin() + " " + ticketId, "ABC", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendar.get(Calendar.DAY_OF_MONTH)),
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
+            System.out.println("Ans = " + ans);
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
@@ -329,11 +330,11 @@ public class FiscalPrinter {
                                 cmd = "10";
                             }
                             printer.SendCmd(a, b, "2" + cmd + Shared.formatDoubleToSpecifyMoneyInPrinter(pf.getQuant()));
-                            if ( b.getValue() != 0 ){
+                            /*if ( b.getValue() != 0 ){
                                 lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                                 everythingCool = false;
                                 predicted = true;
-                            }
+                            }*/
                         }
                     }
                 }catch(Exception ex){
@@ -367,10 +368,10 @@ public class FiscalPrinter {
             printer.CloseFpctrl();
             isOk = true;
 
-            /*if ( predicted ){
+            if ( predicted ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La factura fue guardada satisfactoriamente!!");
                 msb.show(null);
-            }*/
+            }
         } else{
             throw new Exception("Driver de impresora desconocido!");
         }
@@ -400,10 +401,10 @@ public class FiscalPrinter {
             ans = printer.NewDoc(Constants.nonfiscalDoc, "SAUL", "123",
                     Shared.getUser().getLogin(), "", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendar.get(Calendar.DAY_OF_MONTH)),
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
@@ -528,7 +529,7 @@ public class FiscalPrinter {
                     throw new Exception(Shared.ncrErrMapping.get(ans));
                 }
 
-                z = tqps.UltZ + "";
+                z = (tqps.UltZ+1) + "";
                 
                 printer.ClosePort();
 
@@ -621,10 +622,10 @@ public class FiscalPrinter {
             ans = printer.NewDoc(Constants.creditNote, client.getName(), client.getId(),
                     Shared.getUser().getLogin(), receiptPrinter, new NativeLong(Long.parseLong(fiscalTicketId)), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendarCN.get(Calendar.DAY_OF_MONTH)),
-                    (calendarCN.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hourCN,
+                    (calendarCN.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hourCN,
                     calendarCN.get(Calendar.MINUTE), calendarCN.get(Calendar.SECOND),
                     ((calendarCN.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
@@ -833,10 +834,10 @@ public class FiscalPrinter {
 
             if ( r.equals("X") ){
                 //ans = printer.RptX((byte)(calendar.get(Calendar.DAY_OF_MONTH)), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset), (byte)((calendar.get(Calendar.HOUR)+12)%13), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1), "Caja" + Shared.getFileConfig("myId"));
-                ans = printer.RptX((byte)(calendar.get(Calendar.DAY_OF_MONTH)), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset), (byte)(hour), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1), "Caja" + Shared.getFileConfig("myId"));
+                ans = printer.RptX((byte)(calendar.get(Calendar.DAY_OF_MONTH)), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100), (byte)(hour), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1), "Caja" + Shared.getFileConfig("myId"));
             }else{
                 //ans = printer.GenRptZ((byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset), (byte)((calendar.get(Calendar.HOUR)+12)%13), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
-                ans = printer.GenRptZ((byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset), (byte)(hour), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+                ans = printer.GenRptZ((byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100), (byte)(hour), (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
             }
 
             printer.ClosePort();
@@ -888,7 +889,7 @@ public class FiscalPrinter {
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
 
-            z = tqps.UltZ + "";
+            z = (tqps.UltZ+1) + "";
             System.out.println("El Reporte Z es " + z);
 
             TQueryPrnTransaction tqpr = new TQueryPrnTransaction();
@@ -911,7 +912,7 @@ public class FiscalPrinter {
             Double total = Double.parseDouble(Shared.b2s(tqpr.VtaA))/100.0 - Double.parseDouble(Shared.b2s(tqpr.DevA))/100.0;
 
             TQueryPrnMemory tqpm = new TQueryPrnMemory();
-            ans = printer.QueryPrnMemory(tqps.UltZ, tqpm);
+            ans = printer.QueryPrnMemory(Integer.parseInt(z), tqpm);
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
@@ -1054,10 +1055,10 @@ public class FiscalPrinter {
             ans = printer.NewDoc(Constants.nonfiscalDoc, "SAUL", "123",
                     Shared.getUser().getLogin(), "", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1) ,(calendar.get(Calendar.DAY_OF_MONTH)),
-                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, hour,
+                    (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 

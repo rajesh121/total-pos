@@ -11,6 +11,7 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Window;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -53,6 +54,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private Double totalpcn;
     private String date4sap = "";
     private Double receiptTotal;
+    private Connection c = null;
 
     private String getExpensesTable() {
         String ans = "";
@@ -185,6 +187,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
      */
     protected ClosingDay(String day , boolean sr) {
         try {
+
+            if ( Shared.numberClosingDayOpened > 0 ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Solo debe haber 1 ventana de cierre administrativo abierta!");
+                msg.show(Shared.getMyMainWindows());
+                return;
+            }
+
             initComponents();
             showReport = sr;
             myDay = day;
@@ -223,6 +232,10 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Este día ha sido cerrado anteriormente!");
                 msg.show(this);
             }
+            c = ConnectionDrivers.cpds.getConnection();
+
+            ConnectionDrivers.lockClosingDay(c);
+            ++Shared.numberClosingDayOpened;
             isOk = true;
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
@@ -421,6 +434,23 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         setResizable(true);
         setTitle("Día Operativo");
         setVisible(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosing(evt);
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 formMouseMoved(evt);
@@ -1393,6 +1423,24 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private void formWayxPosesMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formWayxPosesMouseMoved
         Shared.getScreenSaver().actioned();
     }//GEN-LAST:event_formWayxPosesMouseMoved
+
+    private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
+        try {
+            ConnectionDrivers.unlock(c);
+            Shared.numberClosingDayOpened = 0;
+        } catch (SQLException ex) {
+
+            Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                if (c != null && !c.isClosed()) {
+                    c.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ClosingDay.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_formInternalFrameClosing
 
     @Override
     public void doIt(){

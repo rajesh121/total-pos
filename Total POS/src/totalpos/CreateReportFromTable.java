@@ -35,7 +35,8 @@ public class CreateReportFromTable {
             jrb = report();
             jrb = jrb.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE);
             jrb = jrb.setColumnTitleStyle(Constants.columnTitleStyle);
-            jrb = jrb.title(cmp.text(title));
+            jrb = jrb.title(Templates.createTitleComponent(title));
+            
             List<TextColumnBuilder> columnsTCB = new LinkedList<TextColumnBuilder>();
 
             String[] columns = new String[table.getColumnCount()];

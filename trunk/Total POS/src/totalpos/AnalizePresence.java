@@ -66,7 +66,6 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                 ConnectionDrivers.calculateExtraHours((DefaultTableModel) presenceTable.getModel(),
                         fromDateString, untilDateString, storeName, map4Employs, offset);
             }
-
             if ( !ConnectionDrivers.loadPresence(presenceTable, fromDateString,
                     untilDateString, storeName, fromDate, untilDate, this, map4Employs, offset) ){
                 ConnectionDrivers.calculatePresence((DefaultTableModel) presenceTable.getModel(),
@@ -123,7 +122,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
             presenceTable.getColumnModel().getColumn(i).setPreferredWidth(50);
         }
         presenceTable.getColumnModel().getColumn(1).setPreferredWidth(250);
-        presenceTable.getColumnModel().getColumn(0).setPreferredWidth(70);
+        presenceTable.getColumnModel().getColumn(0).setPreferredWidth(90);
     }
 
     private void createMap4Employees() throws SQLException{

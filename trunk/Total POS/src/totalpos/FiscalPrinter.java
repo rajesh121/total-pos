@@ -620,7 +620,7 @@ public class FiscalPrinter {
 
             System.out.println("Hora = " + hour + " _ " + hour);
             ans = printer.NewDoc(Constants.creditNote, client.getName(), client.getId(),
-                    Shared.getUser().getLogin(), receiptPrinter, new NativeLong(Long.parseLong(fiscalTicketId)), (calendar.get(Calendar.DAY_OF_MONTH)),
+                    Shared.getUser().getLogin() + " " + ticketId, receiptPrinter, new NativeLong(Long.parseLong(fiscalTicketId)), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
                     (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
                     calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
@@ -912,28 +912,35 @@ public class FiscalPrinter {
             Double total = Double.parseDouble(Shared.b2s(tqpr.VtaA))/100.0 - Double.parseDouble(Shared.b2s(tqpr.DevA))/100.0;
 
             TQueryPrnMemory tqpm = new TQueryPrnMemory();
-            ans = printer.QueryPrnMemory(Integer.parseInt(z), tqpm);
-            if ( ans != 0 ){
-                throw new Exception(Shared.ncrErrMapping.get(ans));
+            int lastZ = Integer.parseInt(z)-1;
+            if ( lastZ != 0 ){
+                ans = printer.QueryPrnMemory(lastZ, tqpm);
+                if ( ans != 0 ){
+                    throw new Exception(Shared.ncrErrMapping.get(ans));
+                }
+
+                System.out.println("Anterior ultima venta = " + Shared.b2s(tqpm.CounterLastVta) + " " + Shared.b2s(tqpm.CounterLastDev) );
+
+                System.out.println("Todos los valores = ");
+                System.out.println(" tqpm.CounterDev ="+ Shared.b2s(tqpm.CounterDev));
+                System.out.println(" tqpm.CounterLastDev ="+ Shared.b2s(tqpm.CounterLastDev));
+                System.out.println(" tqpm.CounterLastMemRptZ ="+ Shared.b2s(tqpm.CounterLastMemRptZ));
+                System.out.println(" tqpm.CounterLastVta ="+ Shared.b2s(tqpm.CounterLastVta));
+                System.out.println(" tqpm.DateTimeLastDev ="+ Shared.b2s(tqpm.DateTimeLastDev));
             }
-
-            System.out.println("Anterior ultima venta = " + Shared.b2s(tqpm.CounterLastVta) + " " + Shared.b2s(tqpm.CounterLastDev) );
-
-            System.out.println("Todos los valores = ");
-            System.out.println(" tqpm.CounterDev ="+ Shared.b2s(tqpm.CounterDev));
-            System.out.println(" tqpm.CounterLastDev ="+ Shared.b2s(tqpm.CounterLastDev));
-            System.out.println(" tqpm.CounterLastMemRptZ ="+ Shared.b2s(tqpm.CounterLastMemRptZ));
-            System.out.println(" tqpm.CounterLastVta ="+ Shared.b2s(tqpm.CounterLastVta));
-            System.out.println(" tqpm.DateTimeLastDev ="+ Shared.b2s(tqpm.DateTimeLastDev));
+            
             /*System.out.println(" tqpm.CounterDev ="+ Shared.b2s(tqpm.));
             System.out.println(" tqpm.CounterDev ="+ Shared.b2s(tqpm.CounterDev));*/
 
-            int myCounterLastVta = tqpr.VoucherVta;
-            int myCounterLastDev = tqpr.VoucherDev;
+            int myCounterLastVta = 0;
+            int myCounterLastDev = 0;
 
             try{
-                myCounterLastVta = Integer.parseInt(Shared.b2s(tqpm.CounterLastVta));
-                myCounterLastDev = Integer.parseInt(Shared.b2s(tqpm.CounterLastDev));
+                if ( lastZ != 0 ){
+                    myCounterLastVta = Integer.parseInt(Shared.b2s(tqpm.CounterLastVta));
+                    myCounterLastDev = Integer.parseInt(Shared.b2s(tqpm.CounterLastDev));
+                }
+                
             }catch(Exception ex){
                 
             }

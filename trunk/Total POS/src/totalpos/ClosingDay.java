@@ -234,7 +234,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
             c = ConnectionDrivers.cpds.getConnection();
 
-            ConnectionDrivers.lockClosingDay(c);
+            //ConnectionDrivers.lockClosingDay(c);
             ++Shared.numberClosingDayOpened;
             isOk = true;
         } catch (SQLException ex) {

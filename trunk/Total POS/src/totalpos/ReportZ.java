@@ -130,14 +130,30 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
         }
     }//GEN-LAST:event_userFieldKeyPressed
 
-    public void doIt(){
-        if ( userField.getText().isEmpty() ){
-            workingFrame.setVisible(false);
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");
-            msg.show(this);
-            return;
+    public void printTheZ() throws Exception{
+        myParent.printer.updateValues(day);
+        myParent.printer.printResumeZ(day, kindOfReport);
+        myParent.printer.report(kindOfReport);
+        if ( kindOfReport.equals("Z") ){
+            ConnectionDrivers.setZDone(day);
+            if ( day.equals("curdate()") ){
+                ConnectionDrivers.setAssignOpen(((MainRetailWindows)Shared.getMyMainWindows()).getAssign(), false);
+                MessageBox msg = new MessageBox(MessageBox.SGN_NOTICE, "Se ha culminado satisfactoriamente el día operativo de esta caja.");
+                msg.show(this);
+                Shared.reload();
+            }
         }
+    }
+
+    @Override
+    public void doIt(){
         try{
+            if ( userField.getText().isEmpty() ){
+                workingFrame.setVisible(false);
+                MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");
+                msg.show(this);
+                return;
+            }
             if ( !ConnectionDrivers.existsUser(userField.getText().trim()) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
                 msg.show(this);
@@ -156,18 +172,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
 
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), userField.getText());
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), "report" + kindOfReport) ){
-                myParent.printer.updateValues(day);
-                myParent.printer.printResumeZ(day, kindOfReport);
-                myParent.printer.report(kindOfReport);
-                if ( kindOfReport.equals("Z") ){
-                    ConnectionDrivers.setZDone(day);
-                    if ( day.equals("curdate()") ){
-                        ConnectionDrivers.setAssignOpen(((MainRetailWindows)Shared.getMyMainWindows()).getAssign(), false);
-                        MessageBox msg = new MessageBox(MessageBox.SGN_NOTICE, "Se ha culminado satisfactoriamente el día operativo de esta caja.");
-                        msg.show(this);
-                        Shared.reload();
-                    }
-                }
+                printTheZ();
             }else{
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para calcular el reporte " + kindOfReport);
                 msg.show(this);

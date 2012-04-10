@@ -189,43 +189,30 @@ public class Login extends JFrame implements Doer{
             MainRetailWindows mrw = new MainRetailWindows(u, a, this);
             System.out.println("Ya se creo la pantalla...");
             if ( mrw.isOk ){
-                workingFrame.setVisible(false);
-                Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
                 System.out.println("Dinero actual de caja ... ");
 
                 /*if ( currentMoney == -1.0 && Shared.isOffline ){
                     ConnectionDrivers.modifyMoney(currentMoney);
                     currentMoney = .0;
                 }*/
+                System.out.println("Ultimo Reporte Z = "  + Shared.printer.getZ());
+                String tDate = ConnectionDrivers.checkAllZReport(Shared.printer.printerSerial, Shared.printer.getZ());
+                System.out.println("tDate = " + tDate);
+                if (tDate != null){
+                    MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Esta caja no ha sido cerrada. Se cerrara ahora!");
+                    msg.show(this);
+                    ReportZ rz = new ReportZ(mrw, false, "Z","\'" + tDate + "\'");
+                    rz.printTheZ();
+                }
+                
+                workingFrame.setVisible(false);
+                Double currentMoney = ConnectionDrivers.getCashToday(Shared.getFileConfig("myId"));
 
                 Double minimumCash = Double.parseDouble(Shared.getConfig("minimunMoney") );
                 while ( currentMoney == -1.0 && !Shared.isOffline ){
                     String cc = JOptionPane.showInputDialog(getParent(),
                             "Monto Inicial de caja", Constants.df.format(minimumCash));
 
-                    System.out.println("Ultimo Reporte Z = "  + Shared.printer.getZ());
-                    String tDate = ConnectionDrivers.checkAllZReport(Shared.printer.printerSerial, Shared.printer.getZ());
-                    System.out.println("tDate = " + tDate);
-                    if (tDate != null){
-                        Object[] options = {"Si","No"};
-                        int n = JOptionPane.showOptionDialog(this,"Esta caja no ha sido cerrada. Desea cerrarla ahora?",
-                                Constants.appName,
-                                JOptionPane.YES_NO_CANCEL_OPTION,
-                                JOptionPane.QUESTION_MESSAGE,
-                                null,
-                                options,
-                                null);
-
-                        if ( n == 0 ){
-                            ReportZ rz = new ReportZ(mrw, true, "Z","\'" + tDate + "\'");
-                            Shared.centerFrame(rz);
-                            rz.setVisible(true);
-                        }else{
-                            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se puede continuar. Debe sacar el Reporte Z del día anterior.");
-                            msg.show(this);
-                            System.exit(0);
-                        }
-                    }
                     try{
                         if ( cc == null || cc.isEmpty() ){
                             throw new NumberFormatException();

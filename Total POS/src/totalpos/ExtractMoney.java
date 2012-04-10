@@ -280,7 +280,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
             return;
         }
         try{
-            double p = Double.parseDouble(moneyField.getText());
+            double p = Double.parseDouble(moneyField.getText().replace(',', '.'));
 
             curMoney = ConnectionDrivers.maximunMoney2Extract(Shared.getFileConfig("myId"));
             if ( p > curMoney || p <= 1.0){

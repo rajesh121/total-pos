@@ -40,7 +40,7 @@
                   </Group>
                   <Component id="untilText" alignment="1" pref="259" max="32767" attributes="0"/>
                   <Component id="fromTextButton" alignment="0" pref="259" max="32767" attributes="0"/>
-                  <Component id="storeText" alignment="1" pref="259" max="32767" attributes="0"/>
+                  <Component id="departamentoText" alignment="1" pref="259" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -62,7 +62,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="storeText" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="departamentoText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -100,7 +100,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/totalpos/resources/Etiquetas.jpg"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Agencia"/>
+        <Property name="text" type="java.lang.String" value="Departamento"/>
         <Property name="horizontalTextPosition" type="int" value="0"/>
         <Property name="name" type="java.lang.String" value="jLabel4" noResource="true"/>
       </Properties>
@@ -141,9 +141,9 @@
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="untilTextMouseClicked"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="storeText">
+    <Component class="javax.swing.JTextField" name="departamentoText">
       <Properties>
-        <Property name="name" type="java.lang.String" value="storeText" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="departamentoText" noResource="true"/>
       </Properties>
     </Component>
   </SubComponents>

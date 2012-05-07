@@ -353,6 +353,12 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    protected static void disableInitialStock(Connection c) throws SQLException, Exception{
+        PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario_puede where id_nodo = ?");
+        stmt.setString(1, "initialStock");
+        stmt.executeUpdate();
+    }
+
     protected static void enableMenuProfile(String profile, String id) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario_puede(id_tipo_usuario , id_nodo) values ( ? , ? )");
@@ -457,6 +463,7 @@ public class ConnectionDrivers {
             stmt.setString(1, description);
             stmt.setString(2, id);
             stmt.executeUpdate();
+            c.close();
             return; 
         }
 
@@ -1803,17 +1810,19 @@ public class ConnectionDrivers {
             stmt.setDouble(5, payForm.getQuant());
             stmt.setString(6, Shared.getFileConfig("myId"));
             stmt.executeUpdate();
-            if ( payForm.getFormWay().equals("Efectivo") ){
+            if ( payForm.getFormWay().equals(Constants.cashPaymentName) ){
                 addCash(payForm.getQuant(), Shared.getFileConfig("myId"));
-            }else if ( payForm.getFormWay().equals("Debito") ){
+            }else if ( payForm.getFormWay().equals(Constants.debitPaymentName) ){
                 addDebit(payForm.getQuant(), Shared.getFileConfig("myId"));
-            }else if ( payForm.getFormWay().equals("Credito") ){
+            }else if ( payForm.getFormWay().equals(Constants.creditPaymentName) ){
                 addCredit(payForm.getQuant(), Shared.getFileConfig("myId"));
-            }else if ( payForm.getFormWay().equals("Cambio") ){
+            }else if ( payForm.getFormWay().equals(Constants.cashPaymentName) ){
                 addCash(-1*payForm.getQuant(), Shared.getFileConfig("myId"));
-            }else if ( payForm.getFormWay().equals("Nota de Credito") ){
+            }else if ( payForm.getFormWay().equals(Constants.CNPaymentName) ){
                 addCreditNote(payForm.getQuant(), Shared.getFileConfig("myId"));
-            } else {
+            } else if ( payForm.getFormWay().equals(Constants.americanExpressPaymentName) ){
+                // TODO CREATE TABLES FOR AMERICAN EXPRESS
+            }else {
                 // This should not happend
                 assert(false);
             }
@@ -3300,6 +3309,46 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    protected static IXMLElement createFiscalData(String day) throws SQLException{
+
+        XMLElement xml = new XMLElement("FiscalData");
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select total_ventas , impresora , numero_reporte_z ,"
+                + " codigo_ultima_factura, num_facturas, codigo_ultima_nota_credito, numero_notas_credito, reporteZ, codigo_punto_de_venta "
+                + "from dia_operativo where datediff(fecha,?) = 0");
+
+        stmt.setString(1, day);
+        ResultSet rs = stmt.executeQuery();
+
+        while( rs.next() ){
+            IXMLElement child = xml.createElement("I");
+            xml.addChild(child);
+            if ( rs.getString("reporteZ").equals("0") ){
+                 System.out.println("No se ha sacado el reporte Z de la impresora de la caja " + rs.getString("codigo_punto_de_venta"));
+                 child.setAttribute("printer", ConnectionDrivers.getThisPrinterId( rs.getString("codigo_punto_de_venta")));
+                 child.setAttribute("monto", "0");
+                 child.setAttribute("reporteZ", "0");
+                 child.setAttribute("lastR", "0");
+                 child.setAttribute("numR", "0");
+                 child.setAttribute("lastCN", "0");
+                 child.setAttribute("numCN", "0");
+            }else{
+                child.setAttribute("printer", rs.getString("impresora") );
+                child.setAttribute("monto", Shared.round(rs.getDouble("total_ventas")*(Shared.getIva()+100.0)/100.0,2) + "");
+                child.setAttribute("reporteZ", rs.getString("numero_reporte_z"));
+                child.setAttribute("lastR", rs.getString("codigo_ultima_factura"));
+                child.setAttribute("numR", rs.getString("num_facturas"));
+                child.setAttribute("lastCN", rs.getString("codigo_ultima_nota_credito"));
+                child.setAttribute("numCN", rs.getString("numero_notas_credito"));
+                System.out.println(" Reporte Z === "  + rs.getString("numero_reporte_z"));
+            }
+        }
+
+        c.close();
+
+        return xml;
+    }
+
     protected static List<Receipt> listOkReceipts(String day) throws SQLException{
         List<Receipt> ans = new ArrayList<Receipt>();
 
@@ -3838,9 +3887,7 @@ public class ConnectionDrivers {
         return ansA[ansA.length-1];
     }
 
-    protected static String createNewMovement(String xmlMovement) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, IOException{
-
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    protected static String createNewMovement(Connection c , String xmlMovement) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, IOException{
 
         Shared.itemsNeeded = new LinkedList<XMLElement>();
 
@@ -3852,6 +3899,9 @@ public class ConnectionDrivers {
         System.out.println(xml.getName());
         TreeSet<String> movements = new TreeSet<String>();
 
+        PreparedStatement stmtDetailsMovements = c.prepareStatement("insert into detalles_movimientos"
+                    + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( ? , ? , ? , ? )");
+        PreparedStatement stmtCurrentStock = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
         for (Object x : xml.getChildren()) {
             XMLElement xmlI = (XMLElement)x;
 
@@ -3870,13 +3920,12 @@ public class ConnectionDrivers {
             //reason *= -1;
 
             System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR"));
-            PreparedStatement stmt = c.prepareStatement("insert into detalles_movimientos"
-                    + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( ? , ? , ? , ? )");
-            stmt.setString(1, xmlI.getAttribute("MBLNR"));
-            stmt.setString(2, xmlI.getAttribute("MATNR"));
-            stmt.setInt(3, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-            stmt.setString(4, xmlI.getAttribute("BWART"));
-            stmt.executeUpdate();
+            
+            stmtDetailsMovements.setString(1, xmlI.getAttribute("MBLNR"));
+            stmtDetailsMovements.setString(2, xmlI.getAttribute("MATNR"));
+            stmtDetailsMovements.setInt(3, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+            stmtDetailsMovements.setString(4, xmlI.getAttribute("BWART"));
+            stmtDetailsMovements.executeUpdate();
 
             movements.add(xmlI.getAttribute("MBLNR"));
 
@@ -3884,27 +3933,31 @@ public class ConnectionDrivers {
             if ( reason == 0 ){
                 // we are in problems... =(
             }else{
-                stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
-                stmt.setString(2, xmlI.getAttribute("MATNR"));
-                stmt.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-                int ans = stmt.executeUpdate();
+                stmtCurrentStock.setString(2, xmlI.getAttribute("MATNR"));
+                stmtCurrentStock.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+                int ans = stmtCurrentStock.executeUpdate();
                 if ( ans == 0 ){
                     Shared.itemsNeeded.add(xmlI);
                 }
             }
         }
 
+        xml = null;
+
+        PreparedStatement stmtInsert = c.prepareStatement("insert into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
+                    + "values (? , now() , ? , ? , ?)");
         Iterator<String> itrs = movements.iterator();
         while(itrs.hasNext()){
             String id = itrs.next();
-            PreparedStatement stmt = c.prepareStatement("insert into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
-                    + "values (? , now() , ? , ? , ?)");
-            stmt.setString(1, id);
-            stmt.setString(2, "Nuevo Movimiento Inventario");
-            stmt.setString(3, id);
-            stmt.setString(4, "");
-            stmt.executeUpdate();
+            
+            stmtInsert.setString(1, id);
+            stmtInsert.setString(2, "Nuevo Movimiento Inventario");
+            stmtInsert.setString(3, id);
+            stmtInsert.setString(4, "");
+            stmtInsert.executeUpdate();
         }
+
+        movements = null;
         
 
         XMLElement ans = new XMLElement("ITEMSNEEDED");
@@ -3918,103 +3971,119 @@ public class ConnectionDrivers {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLWriter xmlw = new XMLWriter(baos);
         xmlw.write(ans);
-        return baos.toString();
+        String tAns = baos.toString() + "";
+        baos = null;
+        xmlw = null;
+        return tAns;
     }
 
-    static void createItems(String ansDescriptions, boolean checkReason) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
-        Connection c = ConnectionDrivers.cpds.getConnection();
+    static void createItems(Connection c, String ansDescriptions, boolean checkReason) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
 
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
         IXMLReader reader = StdXMLReader.stringReader(ansDescriptions);
         parser.setReader(reader);
+        System.out.println("Recibido " + ansDescriptions);
         IXMLElement xml = (IXMLElement) parser.parse();
+
+        parser = null;
+        reader = null;
 
         TreeSet<String> itemsNeededJustOnce = new TreeSet<String>();
 
-        for (Object x : xml.getChildren()) {
-            XMLElement xmlI = (XMLElement)x;
-            if ( !itemsNeededJustOnce.contains(xmlI.getAttribute("MATNR")) ){
-                PreparedStatement stmt = c.prepareStatement("insert into articulo ( codigo , descripcion , fecha_registro , "
+        System.out.println("Justo antes de agregar los articulos...");
+        System.out.println("Descripciones ..." + ansDescriptions);
+        PreparedStatement stmtItem = c.prepareStatement("insert into articulo ( codigo , descripcion , fecha_registro , "
                     + "codigo_de_barras , modelo , unidad_venta, "
                     + "existencia_actual, bloqueado, imagen, descuento ) values (?,?,now(),?,?,?,0,0,?,?)");
+        PreparedStatement stmtBarcode = c.prepareStatement("insert IGNORE into codigo_de_barras(codigo_de_articulo,codigo_de_barras) values(?,?)");
+        XMLElement xmlI = null;
+        for (Object x : xml.getChildren()) {
+            xmlI = (XMLElement)x;
+            if ( !itemsNeededJustOnce.contains(xmlI.getAttribute("MATNR","")) ){
+                stmtItem.setString(1, xmlI.getAttribute("MATNR",""));
+                stmtItem.setString(2, xmlI.getAttribute("MAKTG",""));
+                stmtItem.setString(3, xmlI.getAttribute("EAN11",""));
+                stmtItem.setString(4, xmlI.getAttribute("MATKL",""));
+                stmtItem.setString(5, xmlI.getAttribute("MSEH3",""));
+                stmtItem.setString(6, Shared.getConfig("photoDir") + xmlI.getAttribute("MATNR","") + ".JPG");
+                stmtItem.setString(7, "0");
+                stmtItem.executeUpdate();
 
-                stmt.setString(1, xmlI.getAttribute("MATNR"));
-                stmt.setString(2, xmlI.getAttribute("MAKTG"));
-                stmt.setString(3, xmlI.getAttribute("EAN11"));
-                stmt.setString(4, xmlI.getAttribute("MATKL"));
-                stmt.setString(5, xmlI.getAttribute("MSEH3"));
-                stmt.setString(6, Shared.getConfig("photoDir") + xmlI.getAttribute("MATNR") + ".JPG");
-                stmt.setString(7, "0");
-                stmt.executeUpdate();
+                stmtBarcode.setString(1, xmlI.getAttribute("MATNR",""));
+                stmtBarcode.setString(2, xmlI.getAttribute("EAN11",""));
+                stmtBarcode.executeUpdate();
 
-                stmt = c.prepareStatement("insert IGNORE into codigo_de_barras(codigo_de_articulo,codigo_de_barras) values(?,?)");
-
-                stmt.setString(1, xmlI.getAttribute("MATNR"));
-                stmt.setString(2, xmlI.getAttribute("EAN11"));
-                stmt.executeUpdate();
-
-                itemsNeededJustOnce.add(xmlI.getAttribute("MATNR"));
+                itemsNeededJustOnce.add(xmlI.getAttribute("MATNR",""));
 
             }
+            xmlI = null;
         }
 
+        itemsNeededJustOnce = null;
+        xml = null;
+        parser = null;
+        reader = null;
+        ansDescriptions = null;
+
         Iterator<XMLElement> itr = Shared.itemsNeeded.iterator();
+        stmtItem = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
         while ( itr.hasNext() ){
-            XMLElement xmlI = itr.next();
+            xmlI = itr.next();
             int reason = 1;
             if ( checkReason ){
-                reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
+                reason = Shared.calculateReason(xmlI.getAttribute("BWART",""), xmlI.getAttribute("SHKZG",""));
             }
             if ( reason == 0 ){
                 // we are in problems... =(
             }else{
-                PreparedStatement stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
-                stmt.setString(2, xmlI.getAttribute("MATNR"));
-                stmt.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-                int ans = stmt.executeUpdate();
+                stmtItem.setString(2, xmlI.getAttribute("MATNR",""));
+                stmtItem.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE","").split("\\.")[0]));
+                int ans = stmtItem.executeUpdate();
                 if ( ans == 0 ){
                     // We are in problemas again... ='(
                 }
             }
         }
-
-        c.close();
     }
 
-    static void setPrices(String ansPricesDiscounts) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
-        Connection c = ConnectionDrivers.cpds.getConnection();
-
+    static void setPrices(Connection c, String ansPricesDiscounts) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
         IXMLReader reader = StdXMLReader.stringReader(ansPricesDiscounts);
         parser.setReader(reader);
         IXMLElement xml = (IXMLElement) parser.parse();
 
+        PreparedStatement stmtUpdate = c.prepareStatement("update articulo set descuento = ? where codigo = ? ");
+        PreparedStatement stmtDelete = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = curdate() ");
+        PreparedStatement stmtInsert = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , curdate() ) ");
+        XMLElement xmlI = null;
+        Double dis = null;
+        String disS = null;
+        parser = null;
+        reader = null;
+        System.out.println("Comenzo a fijar los descuentos...");
         for (Object x : xml.getChildren()) {
-            XMLElement xmlI = (XMLElement)x;
 
-            PreparedStatement stmt = null;
-            if ( xmlI.getAttribute("KONWA").equals("%") ) {
-                Double dis = -1*Double.parseDouble(xmlI.getAttribute("KBETR"))/10;
-                String disS = (dis+"").substring(0,Math.min((dis+"").length(), 5));
+            xmlI = (XMLElement)x;
 
-                stmt = c.prepareStatement("update articulo set descuento = ? where codigo = ? ");
-                stmt.setString(1, disS);
-                stmt.setString(2, xmlI.getAttribute("VAKEY").substring(4));
-                stmt.executeUpdate();
-                System.out.println("Fijar Descuento = " + disS + " articulo = "+ xmlI.getAttribute("VAKEY").substring(4));
+            if ( xmlI.getAttribute("KONWA","").equals("%") ) {
+                dis = -1*Double.parseDouble(xmlI.getAttribute("KBETR",""))/10;
+                disS = (dis+"").substring(0,Math.min((dis+"").length(), 5));
+
+                stmtUpdate.setString(1, disS);
+                stmtUpdate.setString(2, xmlI.getAttribute("VAKEY","").substring(4));
+                stmtUpdate.executeUpdate();
             }else{
-                stmt = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = curdate() ");
-                stmt.setString(1, xmlI.getAttribute("VAKEY").substring(6));
-                stmt.executeUpdate();
-                stmt = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , curdate() ) ");
-                stmt.setString(1, xmlI.getAttribute("VAKEY").substring(6));
-                stmt.setString(2, Double.parseDouble(xmlI.getAttribute("KBETR"))+"");
-                stmt.executeUpdate();
+                stmtDelete.setString(1, xmlI.getAttribute("VAKEY","").substring(6));
+                stmtDelete.executeUpdate();
+                stmtInsert.setString(1, xmlI.getAttribute("VAKEY","").substring(6));
+                stmtInsert.setString(2, Double.parseDouble(xmlI.getAttribute("KBETR",""))+"");
+                stmtInsert.executeUpdate();
             }
 
+            xmlI = null;
         }
+        System.out.println("Finalizo los descuentos!");
 
-        c.close();
     }
 
     static void setLastUpdateNow() throws SQLException {
@@ -4091,9 +4160,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static String getInitialStock(String xmlMovement) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, IOException{
-        Connection c = ConnectionDrivers.cpds.getConnection();
-
+    static String getInitialStock(Connection c, String xmlMovement) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, IOException{
         Shared.itemsNeeded = new LinkedList<XMLElement>();
 
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
@@ -4161,7 +4228,10 @@ public class ConnectionDrivers {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLWriter xmlw = new XMLWriter(baos);
         xmlw.write(ans);
-        return baos.toString();
+        String tAns = baos.toString() + "";
+        baos = null;
+        xmlw = null;
+        return tAns;
     }
 
     static String checkAllZReport(String printerId , String zReportId) throws SQLException{
@@ -4173,7 +4243,7 @@ public class ConnectionDrivers {
                 + "factura.numero_reporte_z from dia_operativo, factura where reporteZ=0 "
                 + "and codigo_punto_de_venta = ? and datediff(fecha,fecha_creacion)=0 and "
                 + "identificador_pos=codigo_punto_de_venta and estado='Facturada' and"
-                + " factura.numero_reporte_z=? and factura.impresora=? order "
+                + " factura.numero_reporte_z=? and factura.impresora=? and fecha != curdate() order "
                 + "by fecha desc");
         stmt.setString(1, Shared.getFileConfig("myId"));
         stmt.setString(2, zReportId);
@@ -4212,6 +4282,8 @@ public class ConnectionDrivers {
     static void updateEmployees(String xmlEmployees) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
+        c.setAutoCommit(false);
+
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
         IXMLReader reader = StdXMLReader.stringReader(xmlEmployees);
         parser.setReader(reader);
@@ -4225,12 +4297,25 @@ public class ConnectionDrivers {
             stmt = c.prepareStatement("insert into empleado (codigo,nombre_completo, departamento) values(?,?,?)");
             stmt.setString(1, xmlI.getAttribute("c"));
             stmt.setString(2, xmlI.getAttribute("n"));
-            stmt.setString(2, xmlI.getAttribute("d"));
+            stmt.setString(3, xmlI.getAttribute("d"));
             stmt.executeUpdate();
         }
 
-        c.close();
+        try{
+            c.commit();
+        }catch(SQLException ex){
+            System.out.println("Rolling back... ha ocurrido un error.");
+            try{
+                c.rollback();
+            }catch(Exception ex2){
+                // So bad, we are in problems =(
+            }
 
+        }finally{
+            if ( c != null && !c.isClosed()){
+                c.close();
+            }
+        }
     }
 
     static boolean existsEmployCode(String employId) throws SQLException {
@@ -4339,14 +4424,14 @@ public class ConnectionDrivers {
             String hours = model.getValueAt(i, 2)+"" ;
             PreparedStatement stmt = c.prepareStatement(
                 "insert into inasistencia ( agencia , fecha, codigo_empleado, concepto ) values ( ? , ? , ? , ? )");
-            stmt.setString(1, Shared.getConfig("storeName"));
+            stmt.setString(1, Shared.getConfig("department"));
             stmt.setString(2, day);
             stmt.setString(3, employCode);
             stmt.setString(4, concept);
             stmt.executeUpdate();
             stmt = c.prepareStatement(
                 "insert into horas_extra ( agencia , fecha, codigo_empleado, cantidad_horas ) values ( ? , ? , ? , ? )");
-            stmt.setString(1, Shared.getConfig("storeName"));
+            stmt.setString(1, Shared.getConfig("department"));
             stmt.setString(2, day);
             stmt.setString(3, employCode);
             stmt.setString(4, hours);
@@ -4381,7 +4466,7 @@ public class ConnectionDrivers {
             String hours = model.getValueAt(i, 1)+"" ;
             PreparedStatement stmt = c.prepareStatement(
                 "insert into horas_extra ( agencia , fecha, codigo_empleado, cantidad_horas ) values ( ? , ? , ? , ? )");
-            stmt.setString(1, Shared.getConfig("storeName"));
+            stmt.setString(1, Shared.getConfig("department"));
             stmt.setString(2, day);
             stmt.setString(3, employCode);
             stmt.setString(4, hours);
@@ -4410,7 +4495,7 @@ public class ConnectionDrivers {
     static List<OverTime> listAllOverTime(String myDay) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , cantidad_horas from horas_extra , empleado where datediff(fecha,?)=0 and empleado.codigo = horas.codigo_empleado and empleado.agencia = ? ");
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , cantidad_horas from horas_extra , empleado where datediff(fecha,?)=0 and empleado.codigo = horas.codigo_empleado and empleado.departamento like ? ");
         stmt.setString(1,myDay);
         stmt.setString(2, Shared.getConfig("storeName"));
         ResultSet rs = stmt.executeQuery();
@@ -4621,10 +4706,9 @@ public class ConnectionDrivers {
 
         List<Employ> ans = new LinkedList<Employ>();
 
-        PreparedStatement stmt = c.prepareStatement("select distinct codigo_empleado, nombre_completo from asistencia , empleado where ? <= fecha and fecha <= ? and empleado.codigo=asistencia.codigo_empleado and asistencia.agencia= ? order by codigo_empleado");
+        PreparedStatement stmt = c.prepareStatement("select distinct codigo_empleado, nombre_completo from asistencia , empleado where ? <= fecha and fecha <= ? and empleado.codigo=asistencia.codigo_empleado order by codigo_empleado");
         stmt.setString(1, from);
         stmt.setString(2, until);
-        stmt.setString(3, store);
 
         ResultSet rs = stmt.executeQuery();
 
@@ -4641,7 +4725,7 @@ public class ConnectionDrivers {
     static void calculatePresence(DefaultTableModel model, String from , String until, String store, Map<String, Integer> employRow, int offset) throws SQLException{
         System.out.println("Calculando presencia...");
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , datediff(fecha,?) as diff from asistencia, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and empleado.codigo=asistencia.codigo_empleado and empleado.agencia=?");
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , datediff(fecha,?) as diff from asistencia, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and empleado.codigo=asistencia.codigo_empleado and empleado.departamento like ?");
         stmt.setString(1, from);
         stmt.setString(2, from);
         stmt.setString(3, until);
@@ -4654,7 +4738,7 @@ public class ConnectionDrivers {
             System.out.println("Empleado " + employRow.get(rs.getString("codigo_empleado")) + " "  + ( offset + rs.getInt("diff")));
         }
 
-        stmt = c.prepareStatement("select datediff(fecha,?) as diff , codigo_empleado, concepto from inasistencia , empleado where concepto!=' ' and  datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and inasistencia.codigo_empleado=empleado.codigo and empleado.agencia=?");
+        stmt = c.prepareStatement("select datediff(fecha,?) as diff , codigo_empleado, concepto from inasistencia , empleado where concepto!=' ' and  datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and inasistencia.codigo_empleado=empleado.codigo and empleado.departamento like ?");
         stmt.setString(2, from);
         stmt.setString(3, until);
         stmt.setString(4, store);
@@ -4664,17 +4748,22 @@ public class ConnectionDrivers {
             model.setValueAt(rs.getString("concepto"), employRow.get(rs.getString("codigo_empleado")), offset + rs.getInt("diff"));
         }
 
-        for ( int i = 0 ; i < model.getRowCount() ; i++ ){
+        //TODO QUE OCURRE ACA!
+        /*for ( int i = 0 ; i < model.getRowCount() ; i++ ){
             model.setValueAt("0", i, 2);
-        }
+        }*/
         
         c.close();
     }
 
     static void calculateExtraHours(DefaultTableModel model, String from , String until, String store, Map<String, Integer> employRow, int offset) throws SQLException {
+        for ( int i = 0 ; i < model.getRowCount() ; i++ ){
+            model.setValueAt("0", i, 2);
+        }
+
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select codigo_empleado, sum(cantidad_horas) as sch from horas_extra, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and horas_extra.codigo_empleado=empleado.codigo and empleado.agencia=? group by codigo_empleado having sch > 0");
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado, sum(cantidad_horas) as sch from horas_extra, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and horas_extra.codigo_empleado=empleado.codigo and empleado.departamento like ? group by codigo_empleado having sch > 0");
         stmt.setString(1, from);
         stmt.setString(2, until);
         stmt.setString(3, store);
@@ -4682,7 +4771,7 @@ public class ConnectionDrivers {
         while ( rs.next() ){
             model.setValueAt(rs.getString("sch"), employRow.get(rs.getString("codigo_empleado")), 2);
         }
-        stmt = c.prepareStatement("select codigo_empleado, mid(concat(sec_to_time(sum(secondsbyday)),''),1,6) as extrahours from (select codigo_empleado , Time_to_Sec(timediff(max(t),?)) as secondsbyday, datediff(fecha,?) as diff from (select codigo_empleado, timediff(marcacion4, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion3, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion2, marcacion1) as t, fecha from asistencia having t is not NULL) as t where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 group by codigo_empleado , fecha ) as sbt , empleado where sbt.codigo_empleado=empleado.codigo and empleado.agencia=? group by codigo_empleado");
+        stmt = c.prepareStatement("select codigo_empleado, mid(concat(sec_to_time(sum(secondsbyday)),''),1,6) as extrahours from (select codigo_empleado , Time_to_Sec(timediff(max(t),?)) as secondsbyday, datediff(fecha,?) as diff from (select codigo_empleado, timediff(marcacion4, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion3, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion2, marcacion1) as t, fecha from asistencia having t is not NULL) as t where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 group by codigo_empleado , fecha ) as sbt , empleado where sbt.codigo_empleado=empleado.codigo and empleado.departamento like ? group by codigo_empleado");
         stmt.setString(1, Constants.workingHours);
         stmt.setString(2, from);
         stmt.setString(3, from);
@@ -4693,7 +4782,7 @@ public class ConnectionDrivers {
             model.setValueAt(rs.getString("extrahours"), employRow.get(rs.getString("codigo_empleado")), 3);
         }
 
-        stmt = c.prepareStatement("select codigo_empleado, time(hora) as th, TIME_TO_SEC(timediff(time(hora),?)) as diff from marcacion, empleado where datediff(hora, ?) >= 0 and datediff(hora, ?)<=0 and empleado.codigo=marcacion.codigo_empleado and empleado.agencia=? having th > ?");
+        stmt = c.prepareStatement("select codigo_empleado, time(hora) as th, TIME_TO_SEC(timediff(time(hora),?)) as diff from marcacion, empleado where datediff(hora, ?) >= 0 and datediff(hora, ?)<=0 and empleado.codigo=marcacion.codigo_empleado and empleado.departamento like ? having th > ?");
         stmt.setString(5, Constants.beginOfNightBonus);
         stmt.setString(1, Constants.beginOfNightBonus);
         stmt.setString(2, from);
@@ -4728,7 +4817,7 @@ public class ConnectionDrivers {
                 + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= ?"
                 + " and datediff(fecha, hora) =0 group by marcacion.agencia, fecha , marcacion.codigo_empleado"
                 + " having marcaciones=3 order by nombre_completo, fecha) as myTable, empleado where "
-                + "myTable.codigo_empleado=empleado.codigo and empleado.agencia=? group by codigo_empleado");
+                + "myTable.codigo_empleado=empleado.codigo and empleado.departamento like ? group by codigo_empleado");
         stmt.setString(1, from);
         stmt.setString(2, until);
         stmt.setString(3, store);
@@ -4744,7 +4833,7 @@ public class ConnectionDrivers {
                 + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= ?"
                 + " and datediff(fecha, hora) =0 group by marcacion.agencia, fecha , marcacion.codigo_empleado"
                 + " having marcaciones=2 or marcaciones=1 order by nombre_completo, fecha) as myTable, empleado where "
-                + "myTable.codigo_empleado=empleado.codigo and empleado.agencia=? group by codigo_empleado");
+                + "myTable.codigo_empleado=empleado.codigo and empleado.departamento like ? group by codigo_empleado");
         stmt.setString(1, from);
         stmt.setString(2, until);
         stmt.setString(3, store);

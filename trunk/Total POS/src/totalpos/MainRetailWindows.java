@@ -201,6 +201,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 }
             }
             setClient(null);
+            Shared.msgWithEffect("Bienvenido a    ", "    Mundo Total =D  ");
         }else{
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Existe un pedido pendiente!");
             msb.show(this);
@@ -1154,6 +1155,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             descriptionLabel.setText(i.getDescription());
             currentPrice.setText(i.getLastPrice().toString());
             Shared.loadPhoto(imageLabel, i.getImageAddr(),imagePanel.getWidth()-27,imagePanel.getHeight()-30);
+            Shared.msgWithEffect(i.getDescription().substring(0,Math.min(i.getDescription().length(), Constants.displaySize)), quant + " x " + i.getLastPrice().withDiscount(i.getDescuento()).toString() + " = " + Shared.format4Display(i.getLastPrice().withDiscount(i.getDescuento()).getQuant()*(double)quant) );
         }
     }
 
@@ -1239,6 +1241,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             get.getLastPrice().getIva().toString(), Constants.df.format(get.getLastPrice().plusIva().getQuant()*quant)};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
+            gridTable.scrollRectToVisible(gridTable.getCellRect(model.getRowCount()-1, 0, true));
             items.add(new Item2Receipt(get, quant,0,get.getLastPrice().getQuant(),get.getDescuento()));
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
@@ -1377,10 +1380,12 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public void deleteCurrent(){
         try {
             ConnectionDrivers.cancelReceipt(actualId);
-            while (items != null && !items.isEmpty()) {
-                deleteItem();
+            if ( items != null ){
+                for( int i = 0 ; i < items.size() ; i++ ){
+                    ConnectionDrivers.deleteItem2Receipt(actualId, items.get(i).getItem(), items.get(i).getQuant());
+                }
             }
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             // Nothing to do... We are fucked. =( 
         }
     }

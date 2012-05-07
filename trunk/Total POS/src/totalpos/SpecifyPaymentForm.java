@@ -56,6 +56,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
         change = sum-total;
         moneyResult.setText(Constants.df.format(sum));
         ChangeResult.setText(Constants.df.format(change));
+        Shared.msgWithEffect("Tot. + IVA = " + Shared.format4Display(total), "Recibido = " + Shared.format4Display(sum));
     }
 
     /** This method is called from within the constructor to
@@ -82,6 +83,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
         changeLabel = new javax.swing.JLabel();
         ChangeResult = new javax.swing.JLabel();
         moneyResult = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Formas de Pago");
@@ -143,22 +145,22 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Courier New", 1, 12));
+        jLabel5.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
         jLabel5.setText("C / Crédito");
         jLabel5.setFocusable(false);
         jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Courier New", 1, 12));
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel6.setText("Esc / Atras");
         jLabel6.setFocusable(false);
         jLabel6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel6.setName("jLabel6"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Courier New", 1, 12));
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
         jLabel7.setText("Enter / OK");
         jLabel7.setFocusable(false);
         jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -231,16 +233,27 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ChangeResult, changeLabel, moneyLabel, moneyResult});
 
+        jLabel9.setFont(new java.awt.Font("Courier New", 1, 12)); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas 2x.jpg"))); // NOI18N
+        jLabel9.setText("A / American Express");
+        jLabel9.setFocusable(false);
+        jLabel9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel9.setName("jLabel9"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel2)
@@ -249,14 +262,12 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE))
-                    .addComponent(jLabel1))
+                            .addComponent(jLabel9)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4))))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, 0, 438, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -265,25 +276,24 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel7)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel6)))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -296,21 +306,27 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
             payForms.remove(table.getSelectedRow());
             updateAll();
         }else if ( evt.getKeyCode() == KeyEvent.VK_N ){
-            AddMoney2Pay am2p = new AddMoney2Pay(this, true, "Nota de Credito",total);
+            AddMoney2Pay am2p = new AddMoney2Pay(this, true, Constants.CNPaymentName,total);
             Shared.centerFrame(am2p);
             am2p.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_E ){
-            AddMoney2Pay am2p = new AddMoney2Pay(this, true, "Efectivo",total);
+            AddMoney2Pay am2p = new AddMoney2Pay(this, true, Constants.cashPaymentName,total);
             Shared.centerFrame(am2p);
             am2p.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_C ){
-            AddCard2Pay ac2p = new AddCard2Pay(this, true, "Credito",total);
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, Constants.creditPaymentName,total);
             if ( ac2p.isOk ){
                 Shared.centerFrame(ac2p);
                 ac2p.setVisible(true);
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_D ){
-            AddCard2Pay ac2p = new AddCard2Pay(this, true, "Debito",total);
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, Constants.debitPaymentName,total);
+            if ( ac2p.isOk ){
+                Shared.centerFrame(ac2p);
+                ac2p.setVisible(true);
+            }
+        } else if ( evt.getKeyCode() == KeyEvent.VK_A ){
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, Constants.americanExpressPaymentName,total);
             if ( ac2p.isOk ){
                 Shared.centerFrame(ac2p);
                 ac2p.setVisible(true);
@@ -342,6 +358,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
                 MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");
                 msb.show(null);
             }else{
+                Shared.msgWithEffect( "Cambio = " + Shared.format4Display(change), "Gracias :)!");
                 myParent.printer.isReceipt = true;
                 myParent.printer.printerSerial = null;
                 if (!myParent.printer.checkPrinter()) {
@@ -350,10 +367,9 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
                     return;
                 }
 
-                payForms.add(new PayForm(receiptID, "Efectivo", "" , "", Constants.add2PayForm));
                 myParent.print(payForms);
                 ConnectionDrivers.updateLastReceipt(myParent.printer.lastReceipt);
-                payForms.add(new PayForm(receiptID, "Efectivo", "" , "", -1*change));
+                payForms.add(new PayForm(receiptID, Constants.cashPaymentName, "" , "", -1*change));
                 ConnectionDrivers.savePayForm(payForms);
                 this.dispose();
             }
@@ -397,6 +413,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel moneyLabel;

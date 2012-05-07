@@ -36,7 +36,7 @@ public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
         closeButton = new javax.swing.JButton();
         fromTextButton = new javax.swing.JTextField();
         untilText = new javax.swing.JTextField();
-        storeText = new javax.swing.JTextField();
+        departamentoText = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -53,7 +53,7 @@ public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
         jLabel3.setName("jLabel3"); // NOI18N
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/totalpos/resources/Etiquetas.jpg"))); // NOI18N
-        jLabel4.setText("Agencia");
+        jLabel4.setText("Departamento");
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel4.setName("jLabel4"); // NOI18N
 
@@ -89,7 +89,7 @@ public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
             }
         });
 
-        storeText.setName("storeText"); // NOI18N
+        departamentoText.setName("departamentoText"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -109,7 +109,7 @@ public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
                         .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(untilText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                     .addComponent(fromTextButton, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                    .addComponent(storeText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
+                    .addComponent(departamentoText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -126,7 +126,7 @@ public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(storeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(departamentoText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(closeButton)
@@ -154,11 +154,11 @@ public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_untilTextMouseClicked
 
     private void seeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seeButtonActionPerformed
-        if ( fromTextButton.getText().isEmpty() || untilText.getText().isEmpty() || storeText.getText().isEmpty() ){
+        if ( fromTextButton.getText().isEmpty() || untilText.getText().isEmpty() ){
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Todos los campos son obligatorios");
             msg.show(null);
         }else{
-            AnalizePresence ap = new AnalizePresence(storeText.getText(),fromTextButton.getText(), untilText.getText(), isCestatickets);
+            AnalizePresence ap = new AnalizePresence("%"+ departamentoText.getText() +"%",fromTextButton.getText(), untilText.getText(), isCestatickets);
             if ( ap.isOk ){
                 ((MainWindows)Shared.getMyMainWindows()).mdiPanel.add(ap);
                 ap.setVisible(true);
@@ -170,12 +170,12 @@ public class SelectRangeDayAndStore extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
+    private javax.swing.JTextField departamentoText;
     private javax.swing.JTextField fromTextButton;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JButton seeButton;
-    private javax.swing.JTextField storeText;
     private javax.swing.JTextField untilText;
     // End of variables declaration//GEN-END:variables
 

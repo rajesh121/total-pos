@@ -126,6 +126,17 @@ public class FiscalPrinter {
         return getSerial().equals(serial);
     }
 
+    private void restartCommunicationNCR(){
+        printer.CancelTransaction();
+        printer.ClosePort();
+        try {
+            Thread.currentThread().sleep(Constants.timeWaitPrinter);
+        } catch (InterruptedException ex) {
+            ;
+        }
+        printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+    }
+
     // TODO Check difference between predicted and everythingCool
     public void printTicket(List<Item2Receipt> items , Client client, Double globalDiscount, String ticketId, User u , List<PayForm> pfs) throws Exception{
         if ( !Constants.withFiscalPrinter ){
@@ -137,9 +148,23 @@ public class FiscalPrinter {
         if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
             isOk = false;
 
+            System.out.println("Cerrando puerto...");
             printer.ClosePort();
+            System.out.println("Abriendo puerto...");
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
+
+            TQueryPrnStatus tqps = new TQueryPrnStatus();
+            ans = printer.QueryPrnStatus(tqps);
+            byte b = tqps.PrnStatusHdw[0];
+            byte c = tqps.PrnStatusHdw[1];
+            System.out.println("b = " + b);
+            System.out.println("c = " + c);
+            /*if ( (4 & c) == 4 ){
+                throw new Exception("Gaveta abierta");
+            }*/
+
             printer.OpenBox();
+            System.out.println("Cancelando Transaccion...");
             printer.CancelTransaction();
 
             if ( ans != 0 ){
@@ -160,6 +185,7 @@ public class FiscalPrinter {
             System.out.println("Fecha enviada: " + calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH)+1) + "/"
                     + (byte)(calendar.get(Calendar.YEAR)%100)+ " " + hour + ":" + calendar.get(Calendar.MINUTE)
                     + ":" + calendar.get(Calendar.SECOND) + " " + ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+            System.out.println("Abriendo documentos...");
             ans = printer.NewDoc(Constants.receipt, client.getName(), client.getId(),
                     Shared.getUser().getLogin() + " " + ticketId, "ABC", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
@@ -171,14 +197,30 @@ public class FiscalPrinter {
                     ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
 
             System.out.println("Ans = " + ans);
+
             if ( ans != 0 ){
+                throw new Exception(Shared.ncrErrMapping.get(ans));
+            }
+
+
+            TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
+
+            ans = printer.QueryPrnTransaction((byte)1, tqpt);
+
+            if ( ans != 0 ){
+                throw new Exception(Shared.ncrErrMapping.get(ans));
+            }
+            String nextReceipt = tqpt.VoucherVta + "";
+
+            if ( ans != 0 || tqpt.VoucherVta <= 0 || tqpt.VoucherVta > Constants.maximumFiscalNumber ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
             Double subtotal = .0;
             int itemsQuant = 0;
             for (Item2Receipt item2r : items) {
+                System.out.println("Enviando articulo....");
                 String d = item2r.getItem().getDescription();
-                subtotal += item2r.getSellPrice()*(1.0 - item2r.getSellDiscount()/100.0);
+                subtotal += item2r.getSellPrice()*(1.0 - item2r.getSellDiscount()/100.0)*item2r.getQuant();
                 ans = printer.NewItem((byte)0, (byte)0, item2r.getQuant()+.0, Shared.round(item2r.getSellPrice(),2) , (item2r.getItem().getModel()+"-"+d).substring(0, Math.min(Constants.maxNcrDescription, d.length())));
                 if ( ans != 0 ){
                     throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -193,46 +235,66 @@ public class FiscalPrinter {
             }
 
             TreeMap<String,Double> buff = new TreeMap<String , Double>();
-            buff.put("Efectivo", .0);
-            buff.put("Nota de Credito", .0);
-            buff.put("Credito", .0);
-            buff.put("Debito", .0);
+            buff.put(Constants.cashPaymentName, .0);
+            buff.put(Constants.CNPaymentName, .0);
+            buff.put(Constants.creditPaymentName, .0);
+            buff.put(Constants.debitPaymentName, .0);
+            buff.put(Constants.americanExpressPaymentName, .0);
             for (PayForm payForm : pfs) {
                 buff.put( payForm.getFormWay() , buff.get(payForm.getFormWay()) + payForm.getQuant());
             }
+            System.out.println("Enviando cantidad de articulos...");
             ans = printer.PrintTextNoFiscal(Constants.normalFont,"                                   ",1,(byte)0);
             ans = printer.PrintTextNoFiscal(Constants.normalFont,"===================================",2,(byte)0);
             ans = printer.PrintTextNoFiscal(Constants.normalFont,"      CANTIDAD DE ARTICULOS " + itemsQuant,3,(byte)0);
             ans = printer.PrintTextNoFiscal(Constants.normalFont,"===================================",4,(byte)0);
 
             System.out.println("Código de barras 69");
-            ans = printer.CloseDoc(buff.get("Efectivo"), buff.get("Nota de Credito"), buff.get("Credito"), buff.get("Debito"),
-                    .0, .0, subtotal*globalDiscount, .0, (byte)12 , (byte)70, ticketId);
+            subtotal = Math.round(subtotal * 100)/100.0;
+            System.out.println("SubTotal = " + subtotal);
+            int ansOfPrinting = printer.CloseDoc(buff.get(Constants.cashPaymentName), buff.get(Constants.CNPaymentName), buff.get(Constants.creditPaymentName), buff.get(Constants.debitPaymentName),
+                    buff.get(Constants.americanExpressPaymentName), .0, subtotal*globalDiscount, .0, (byte)12 , (byte)70, ticketId);
 
-            System.out.println("ans Close Doc = " + ans);
+            System.out.println("ans Close Doc = " + ansOfPrinting);
+            System.out.println("Numero supuesto siguiente fiscal " + nextReceipt);
 
-            if ( ans != 0 && ans != 309){
-                printer.CancelTransaction();
-                throw new Exception(Shared.ncrErrMapping.get(ans));
+            tqpt = new TQueryPrnTransaction();
+
+            int tries = 1;
+            boolean isOk = false;
+            do{
+                System.out.println("Intento " + tries);
+                int cancelT = printer.CancelTransaction();
+                System.out.println("Respuesta de Cancelar = " + cancelT);
+                ans = printer.QueryPrnTransaction((byte)2, tqpt);
+                System.out.println("Respuesta del Primer Intento = " + ans);
+
+                predicted = false;
+                if ( ans != 0 || tqpt.VoucherVta <= 0 || tqpt.VoucherVta > Constants.maximumFiscalNumber ){
+                    restartCommunicationNCR();
+                }else{
+                    lastReceipt = tqpt.VoucherVta + "";
+                    System.out.println("Numero Fiscal detectado = " + lastReceipt);
+                    isOk = true;
+                }
+                ++tries;
             }
+            while( tries <= Constants.triesWithPrinter && !isOk );
 
-            TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
-            ans = printer.QueryPrnTransaction((byte)1, tqpt);
+            if ( !isOk ){
+                lastReceipt = nextReceipt;
 
-            predicted = false;
-            if ( ans != 0 || tqpt.VoucherVta < 0 || tqpt.VoucherVta > Constants.maximumFiscalNumber ){
-                lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
-                predicted = true;
+                ConnectionDrivers.flipEnabledPointOfSale(new PointOfSale(Shared.getFileConfig("myId"), "", "", true));
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La impresora fiscal no esta respondiendo correctamente. Se ha guardado la factura y se ha bloqueado esta caja.");
+                msb.show(null);
+            }else if ( nextReceipt.equals(lastReceipt) ){
+                // so far so good
             }else{
-                lastReceipt = tqpt.VoucherVta + "";
+                throw new Exception(Shared.ncrErrMapping.get(ansOfPrinting));
             }
 
             ans = printer.ClosePort();
 
-            if ( predicted ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La factura fue guardada satisfactoriamente!!");
-                msb.show(null);
-            }
             isOk = true;
         }else if ( Shared.getFileConfig("printerDriver").equals("tfhkaif") ){
             isOk = false;
@@ -320,14 +382,16 @@ public class FiscalPrinter {
                              * Put it in the configuracion file.
                              */
                             String cmd = "01";
-                            if ( pf.getFormWay().equals("Efectivo") ){
+                            if ( pf.getFormWay().equals(Constants.cashPaymentName) ){
                                 cmd = "01";
-                            }else if ( pf.getFormWay().equals("Nota de Credito") ){
+                            }else if ( pf.getFormWay().equals(Constants.CNPaymentName) ){
                                 cmd = "02";
-                            }else if ( pf.getFormWay().equals("Credito") ){
+                            }else if ( pf.getFormWay().equals(Constants.creditPaymentName) ){
                                 cmd = "09";
-                            }else if ( pf.getFormWay().equals("Debito") ){
+                            }else if ( pf.getFormWay().equals(Constants.debitPaymentName) ){
                                 cmd = "10";
+                            }else if ( pf.getFormWay().equals(Constants.americanExpressPaymentName) ){
+                                cmd = "11";
                             }
                             printer.SendCmd(a, b, "2" + cmd + Shared.formatDoubleToSpecifyMoneyInPrinter(pf.getQuant()));
                             /*if ( b.getValue() != 0 ){
@@ -336,6 +400,7 @@ public class FiscalPrinter {
                                 predicted = true;
                             }*/
                         }
+                        printer.SendCmd(a, b, "2" + "01" + Shared.formatDoubleToSpecifyMoneyInPrinter(Constants.add2PayForm));
                     }
                 }catch(Exception ex){
                     lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
@@ -632,11 +697,22 @@ public class FiscalPrinter {
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
+
+
+            TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
+
+            ans = printer.QueryPrnTransaction((byte)1, tqpt);
+
+            if ( ans != 0 || tqpt.VoucherDev <= 0 || tqpt.VoucherDev > Constants.maximumFiscalNumber ){
+                throw new Exception(Shared.ncrErrMapping.get(ans));
+            }
+            String nextReceipt = tqpt.VoucherDev + "";
+
             
             Double subtotal = .0;
             for (Item2Receipt item2r : items) {
                 String d = item2r.getItem().getDescription();
-                subtotal += item2r.getSellPrice()*(1.0 - item2r.getSellDiscount()/100.0);
+                subtotal += item2r.getSellPrice()*(1.0 - item2r.getSellDiscount()/100.0)*item2r.getQuant();
                 ans = printer.NewItem((byte)0, (byte)0, item2r.getQuant()+.0, Shared.round(item2r.getSellPrice(),2) , (item2r.getItem().getModel()+"-"+d).substring(0, Math.min(Constants.maxNcrDescription, d.length())));
                 if ( ans != 0 ){
                     throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -651,34 +727,44 @@ public class FiscalPrinter {
             }
 
             TreeMap<String,Double> buff = new TreeMap<String , Double>();
-            buff.put("Efectivo", .0);
-            buff.put("Nota de Credito", .0);
-            buff.put("Credito", .0);
-            buff.put("Debito", .0);
+            buff.put(Constants.cashPaymentName, .0);
+            buff.put(Constants.CNPaymentName, .0);
+            buff.put(Constants.creditPaymentName, .0);
+            buff.put(Constants.debitPaymentName, .0);
+            buff.put(Constants.americanExpressPaymentName, .0);
 
-            ans = printer.CloseDoc(.0, new Price(null, subtotal).plusIva().getQuant(), .0, .0,
+            int ansOfPrinting = printer.CloseDoc(.0, new Price(null, subtotal).plusIva().getQuant(), .0, .0,
                     .0, .0, .0, .0, (byte)12 , (byte)70, ticketId);
 
-            if ( ans != 0 && ans != 309 ){
+            ans = printer.QueryPrnTransaction((byte)2, tqpt);
+
+            int tries = 0;
+            boolean isOkT = false;
+            do{
                 printer.CancelTransaction();
-                throw new Exception(Shared.ncrErrMapping.get(ans));
+                ans = printer.QueryPrnTransaction((byte)2, tqpt);
+
+                if ( ans != 0 || tqpt.VoucherDev <= 0 || tqpt.VoucherDev > Constants.maximumFiscalNumber ){
+                    restartCommunicationNCR();
+                }else{
+                    lastReceipt = tqpt.VoucherDev + "";
+                    isOkT = true;
+                }
+                ++tries;
+                System.out.println("Intento " + tries);
             }
+            while( tries < Constants.triesWithPrinter && !isOkT );
 
-            TQueryPrnTransaction tqpt = new TQueryPrnTransaction();
-            ans = printer.QueryPrnTransaction((byte)1, tqpt);
 
-            System.out.println("Ans Query Prn = " + ans);
-            boolean predicted = false;
-            if ( ans != 0 || tqpt.VoucherDev < 0 || tqpt.VoucherDev > Constants.maximumFiscalNumber ){
-                lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
-                predicted = true;
-            }else{
-                lastReceipt = tqpt.VoucherDev + "";
-            }
-
-            if ( predicted ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La factura fue guardada satisfactoriamente!!");
+            if ( !isOkT ){
+                lastReceipt = nextReceipt;
+                ConnectionDrivers.flipEnabledPointOfSale(new PointOfSale(Shared.getFileConfig("myId"), "", "", true));
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "La impresora fiscal no esta respondiendo correctamente. Se ha guardado la factura y se ha bloqueado esta caja.");
                 msb.show(null);
+            }else if ( nextReceipt.equals(lastReceipt) ){
+                //Everything ok =D
+            }else{
+                throw new Exception(Shared.ncrErrMapping.get(ansOfPrinting));
             }
 
             ans = printer.ClosePort();
@@ -893,7 +979,7 @@ public class FiscalPrinter {
             System.out.println("El Reporte Z es " + z);
 
             TQueryPrnTransaction tqpr = new TQueryPrnTransaction();
-            ans = printer.QueryPrnTransaction((byte)1, tqpr);
+            ans = printer.QueryPrnTransaction((byte)2, tqpr);
 
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -1028,7 +1114,7 @@ public class FiscalPrinter {
 
             line = sc.next();
 
-            String pLastCN = "0";//line.substring(168);
+            String pLastCN = line.substring(168);
             int nNC = (Integer.parseInt(lastCN)-Integer.parseInt(pLastCN));
             ConnectionDrivers.updateTotalFromPrinter(total, z ,lReceipt,quantReceiptsToday,lastCN,nNC, day);
 

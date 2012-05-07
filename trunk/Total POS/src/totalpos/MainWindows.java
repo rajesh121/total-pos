@@ -451,7 +451,7 @@ public class MainWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel1MouseMoved
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
-        
+        System.out.println("Thread.currentThread().getStackTrace()[1] = " + Thread.currentThread().getStackTrace()[1]);
     }//GEN-LAST:event_jPanel1MouseClicked
 
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved

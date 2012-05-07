@@ -50,7 +50,11 @@ public class Main {
             msb.show(splash);
             System.exit(0);
         }
-        splash.changeStatus("Verificando variables básicas...", 20);
+        if ( Constants.isPos ){
+            splash.changeStatus("Inicializando display...", 20);
+            Shared.initializeDisplay();
+        }
+        splash.changeStatus("Verificando variables básicas...", 25);
         for (String var : Constants.var2check) {
             if ( Shared.getFileConfig(var) == null ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La variable " + var + " es obligatoria. No se puede continuar");
@@ -58,7 +62,7 @@ public class Main {
                 System.exit(0);
             }
         }
-        
+
         splash.changeStatus("Conectado a base de datos...", 30);
         ConnectionDrivers.initialize();
 

@@ -20,8 +20,6 @@ import net.n3.nanoxml.StdXMLReader;
 import net.n3.nanoxml.XMLElement;
 import net.n3.nanoxml.XMLException;
 import net.n3.nanoxml.XMLParserFactory;
-import ws.WS;
-import ws.WSService;
 
 /**
  *
@@ -224,11 +222,11 @@ public class Logon extends javax.swing.JFrame implements Doer{
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
 
-        DefaultTableModel model = (DefaultTableModel) logonTable.getModel();
+        /*DefaultTableModel model = (DefaultTableModel) logonTable.getModel();
 
         model.setRowCount(0);
         try {
-            WS ws = new WSService().getWSPort();
+            /*WS ws = new WSService().getWSPort();
             String xmlIp = ws.getIpStoreName();
             System.out.println("WS =  " + xmlIp);
 
@@ -254,7 +252,7 @@ public class Logon extends javax.swing.JFrame implements Doer{
             Logger.getLogger(Logon.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
             Logger.getLogger(Logon.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }//GEN-LAST:event_updateButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed

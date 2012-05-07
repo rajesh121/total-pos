@@ -30,7 +30,7 @@ import javax.swing.table.TableCellRenderer;
  */
 public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
-    String storeName;
+    String department;
     Date fromDate;
     Date untilDate;
     String fromDateString;
@@ -47,7 +47,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
     public AnalizePresence(String sn, String fd, String ud, boolean isCestaticketA) {
         try {
             initComponents();
-            this.storeName = sn;
+            this.department = sn;
             fromDate = Constants.sdfDay2DB.parse(fd);
             untilDate = Constants.sdfDay2DB.parse(ud);
             fromDateString = fd;
@@ -62,14 +62,14 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
             createMap4Employees();
             setSizes2Table();
             if ( !isCestaticket && !ConnectionDrivers.loadHours( presenceTable, fromDateString,
-                    untilDateString, storeName, fromDate, untilDate, this) ){
+                    untilDateString, department, fromDate, untilDate, this) ){
                 ConnectionDrivers.calculateExtraHours((DefaultTableModel) presenceTable.getModel(),
-                        fromDateString, untilDateString, storeName, map4Employs, offset);
+                        fromDateString, untilDateString, department, map4Employs, offset);
             }
             if ( !ConnectionDrivers.loadPresence(presenceTable, fromDateString,
-                    untilDateString, storeName, fromDate, untilDate, this, map4Employs, offset) ){
+                    untilDateString, department, fromDate, untilDate, this, map4Employs, offset) ){
                 ConnectionDrivers.calculatePresence((DefaultTableModel) presenceTable.getModel(),
-                        fromDateString, untilDateString, storeName, map4Employs, offset);
+                        fromDateString, untilDateString, department, map4Employs, offset);
             }
 
             String[] t = fd.split("-");
@@ -78,7 +78,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
             t = ud.split("-");
             untilLabelDate.setText(t[2] + "/" + t[1] + "/" + t[0]);
 
-            storeNameLabeLabel.setText(sn);
+            departmentNameLabeLabel.setText(sn);
 
             System.out.println("Termino");
             isOk = true;
@@ -100,13 +100,13 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
             send2Profit();
         }else{
             try {
-                ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName, offset, isCestaticket);
+                ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, department, offset, isCestaticket);
                 String[] t = new String[header.size()];
                 int i = 0;
                 for (String tt : header) {
                     t[i++] = tt;
                 }
-                new CreateReportFromTable(presenceTable, "Control de Asistencias - Agencia " + storeName);
+                new CreateReportFromTable(presenceTable, "Control de Asistencias - Agencia " + department);
             } catch (SQLException ex) {
                 Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ParseException ex) {
@@ -127,7 +127,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
     private void createMap4Employees() throws SQLException{
         Map<String, Integer> map = new TreeMap<String, Integer>();
-        List<Employ> employs = ConnectionDrivers.getAllEmployBetween(fromDateString, untilDateString, storeName);
+        List<Employ> employs = ConnectionDrivers.getAllEmployBetween(fromDateString, untilDateString, department);
         String[][] tableModel = new String[employs.size()][2];
         System.out.println("Consegui " + employs.size() + " Empleados");
         for (int i = 0 ; i < employs.size() ; ++i ) {
@@ -177,7 +177,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         untilLabelDate = new javax.swing.JLabel();
         storeNameLabel = new javax.swing.JLabel();
         send2ProfitButton = new javax.swing.JButton();
-        storeNameLabeLabel = new javax.swing.JLabel();
+        departmentNameLabeLabel = new javax.swing.JLabel();
         saveButton = new javax.swing.JButton();
         recalcularAllButton = new javax.swing.JButton();
         exportButton = new javax.swing.JButton();
@@ -246,7 +246,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         untilLabelDate.setName("untilLabelDate"); // NOI18N
 
         storeNameLabel.setFont(new java.awt.Font("Courier New", 1, 14));
-        storeNameLabel.setText("Agencia");
+        storeNameLabel.setText("Departamento");
         storeNameLabel.setName("storeNameLabel"); // NOI18N
 
         send2ProfitButton.setFont(new java.awt.Font("Courier New", 0, 12));
@@ -258,9 +258,9 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
             }
         });
 
-        storeNameLabeLabel.setFont(new java.awt.Font("Courier New", 1, 14));
-        storeNameLabeLabel.setText("Nómina desde:");
-        storeNameLabeLabel.setName("storeNameLabeLabel"); // NOI18N
+        departmentNameLabeLabel.setFont(new java.awt.Font("Courier New", 1, 14));
+        departmentNameLabeLabel.setText("Nómina desde:");
+        departmentNameLabeLabel.setName("departmentNameLabeLabel"); // NOI18N
 
         saveButton.setFont(new java.awt.Font("Courier New", 0, 12));
         saveButton.setText("Guardar Cambios");
@@ -309,7 +309,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(storeNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(storeNameLabeLabel))
+                        .addComponent(departmentNameLabeLabel))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(send2ProfitButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -332,7 +332,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                     .addComponent(fromLabelDate)
                     .addComponent(untilLabelDate)
                     .addComponent(storeNameLabel)
-                    .addComponent(storeNameLabeLabel))
+                    .addComponent(departmentNameLabeLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -351,7 +351,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
-            ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName, offset, isCestaticket);
+            ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, department, offset, isCestaticket);
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado Satisfactoriamente.");
             msb.show(null);
         } catch (Exception ex) {
@@ -363,7 +363,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         try {
             clearHourTable();
             ConnectionDrivers.calculateExtraHours((DefaultTableModel) presenceTable.getModel(),
-                        fromDateString, untilDateString, storeName, map4Employs, offset);
+                        fromDateString, untilDateString, department, map4Employs, offset);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha cargado la información correctamente.",ex);
             msb.show(null);
@@ -581,7 +581,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
         if ( n == 0 ) {
             try {
-                ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, storeName, offset, isCestaticket);
+                ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, department, offset, isCestaticket);
             } catch (Exception ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido", ex);
                 msb.show(Shared.getMyMainWindows());
@@ -646,6 +646,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel departmentNameLabeLabel;
     private javax.swing.JButton exportButton;
     private javax.swing.JLabel fromLabel;
     private javax.swing.JLabel fromLabelDate;
@@ -654,7 +655,6 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
     private javax.swing.JButton recalcularAllButton;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton send2ProfitButton;
-    private javax.swing.JLabel storeNameLabeLabel;
     private javax.swing.JLabel storeNameLabel;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel untilLabel;

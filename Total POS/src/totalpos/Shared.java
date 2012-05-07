@@ -12,7 +12,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -36,8 +37,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.comm.CommPortIdentifier;
+import javax.comm.SerialPort;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -52,15 +53,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import net.n3.nanoxml.IXMLElement;
 import net.n3.nanoxml.XMLElement;
-import net.n3.nanoxml.XMLWriter;
 import srvEntidades.BNKA;
 import srvEntidades.DD07T;
 import srvEntidades.IsrvEntidades;
 import srvEntidades.SrvEntidades;
-import ws.WS;
-import ws.WSService;
 
 /**
  *
@@ -86,6 +83,10 @@ public class Shared {
     public static int numberClosingDayOpened = 0;
     protected static Set<String> holidays = new TreeSet<String>();
     protected static String storeIp = null;
+    private static Enumeration portList;
+    private static CommPortIdentifier portId;
+    private static SerialPort serialPort;
+    private static OutputStream outputNCRDisplay;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -218,6 +219,58 @@ public class Shared {
         ncrErrMapping.put(new Integer(386), "La Sintaxis de la Ruta y/o Nombre de Archivo de Salida No Es Valida");
         ncrErrMapping.put(new Integer(387), "Error de I/O en Archivo de Salida del Journal");
 
+    }
+
+    protected static boolean initializeDisplay(){
+        if( !fileConfig.containsKey("displayPort") ){
+            System.out.println("No contiene configuracion para display");
+            return true;
+        }
+        portList = CommPortIdentifier.getPortIdentifiers();
+        while (portList.hasMoreElements()) {
+            portId = (CommPortIdentifier) portList.nextElement();
+            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL && portId.getName().equals(Shared.getFileConfig("displayPort")))  {
+                try{ 
+                    serialPort = (SerialPort) portId.open("SimpleWriteApp", 9600);
+                    outputNCRDisplay = serialPort.getOutputStream();
+                    outputNCRDisplay.write(new byte[]{27,14});
+                    outputNCRDisplay.write(new byte[]{27,5});
+                    outputNCRDisplay.write(new byte[]{27,2});
+                    //outputNCRDisplay.write(new byte[]{27,11});
+                    //outputNCRDisplay.write(new byte[]{27,27});
+                    msgWithEffect("Total Pos =D", "Version 1.04.30");
+                    return true;
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean msgWithEffect(String line1, String line2){
+
+        if ( !fileConfig.containsKey("displayPort") ){
+            return true;
+        }
+        //line1 = String.format("%" + Constants.displaySize*2 + "s", line1);
+        //line2 = String.format("%" + Constants.displaySize*2 + "s", line2);
+        line1 = String.format("%" + Constants.displaySize + "s", line1);
+        line2 = String.format("%" + Constants.displaySize + "s", line2);
+
+        System.out.println("Line1 " + line1);
+        System.out.println("Line2 " + line2);
+        try{
+            outputNCRDisplay.write(new byte[]{27,5});
+            outputNCRDisplay.write(new byte[]{27,2});
+            /*for ( int i = 0 ; i <= Constants.displaySize ; i+=4 ){
+                outputNCRDisplay.write((line1.substring(i, i+Constants.displaySize) + line2.substring(i, i+Constants.displaySize)).getBytes());
+            }*/
+            outputNCRDisplay.write( (line1 + line2).getBytes() );
+            return true;
+        }catch(Exception ex){
+            return false;
+        }
     }
 
     protected static void centerFrame(javax.swing.JFrame frame){
@@ -496,6 +549,11 @@ public class Shared {
 
     public static String formatQuantToPrint(Double d){
         DecimalFormat df = new DecimalFormat("00000.000");
+        return df.format(d).replaceAll(",", "");
+    }
+
+    public static String format4Display(Double d){
+        DecimalFormat df = new DecimalFormat("#0.00");
         return df.format(d).replaceAll(",", "");
     }
 
@@ -826,9 +884,8 @@ public class Shared {
     }
 
     static void sendSells(String myDay, ClosingDay cd , String ansMoney ) throws SQLException, IOException {
-        List< ReceiptSap > CreditNoteGroup = new LinkedList<ReceiptSap>();
+
         // CN
-        List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
 
         /*if ( receipts.isEmpty() ){
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una nota de crédito.");
@@ -836,147 +893,21 @@ public class Shared {
             return;
         }*/
         // TODO UNCOMMENT THIS
-        ReceiptSap rs = new ReceiptSap(myDay);
-        int previousId = -1;
-        String previousCli = "Contado";
-        for (Receipt receipt : receipts) {
-            if ( receipt.getFiscalNumber().isEmpty() ){
-                System.out.println("Error con la factura " + receipt.getInternId());
-                continue;
-            }
-            if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() )
-                    && receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) ){
-                rs.add(receipt);
-            }else{
-                CreditNoteGroup.add(rs);
-                rs = new ReceiptSap(myDay);
-                rs.add(receipt);
-            }
-            previousId = Integer.parseInt(receipt.getFiscalNumber());
-            previousCli = receipt.getClientId();
-        }
-        if ( rs.getSize() > 0 ){
-            CreditNoteGroup.add(rs);
-        }
+        
 
-        IXMLElement xmlCN = new XMLElement("Notas");
-
-        for (ReceiptSap receiptSap : CreditNoteGroup) {
-            IXMLElement child = xmlCN.createElement("CN");
-            xmlCN.addChild(child);
-            child.setAttribute("getId", receiptSap.getId());
-            child.setAttribute("getKind", receiptSap.getKind());
-            child.setAttribute("getClient", receiptSap.getClient());
-            child.setAttribute("range", receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
-            child.setAttribute("getZ", receiptSap.getZ());
-            child.setAttribute("getPrinterId", receiptSap.getPrinterId());
-            int position = 1;
-            for (Receipt receipt : receiptSap.receipts) {
-                for (Item2Receipt item2Receipt : receipt.getItems()) {
-                    IXMLElement childchild = child.createElement("CND");
-                    child.addChild(childchild);
-                    childchild.setAttribute("id", "D" + receiptSap.getId());
-                    childchild.setAttribute("position", Constants.df2intSAP.format(position++));
-                    childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
-                    childchild.setAttribute("quant", item2Receipt.getQuant().toString());
-                    childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
-                    childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
-                    childchild.setAttribute("discount", (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice()+"");
-                }
-
-            }
-            System.out.println("child = " + receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
-        }
-        List< ReceiptSap > receiptGroup = new LinkedList<ReceiptSap>();
-        receipts = ConnectionDrivers.listOkReceipts(myDay);
-
-        if ( receipts.isEmpty() ){
-            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "No se puede continuar, debe existir al menos una factura.");
-            msg.show(cd);
-            return;
-        }
-        rs = new ReceiptSap(myDay);
-        previousId = -1;
-        previousCli = "Contado";
-        Double previousDis = -1.0;
-
-        List<String> clients = new LinkedList<String>();
-
-        for (Receipt receipt : receipts) {
-
-            if ( !receipt.getClientId().equals("Contado") ){
-                clients.add(receipt.getClientId());
-            }
-
-            if ( receipt.getFiscalNumber().isEmpty() ){
-                System.out.println("Error con la factura " + receipt.getInternId());
-                continue;
-            }
-            if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) &&
-                    receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) &&
-                    ( Math.abs(receipt.getGlobalDiscount() - previousDis) < Constants.exilon || previousDis == -1.0 )){
-                rs.add(receipt);
-            }else{
-                receiptGroup.add(rs);
-                rs = new ReceiptSap(myDay);
-                rs.add(receipt);
-            }
-            previousId = Integer.parseInt(receipt.getFiscalNumber());
-            previousCli = receipt.getClientId();
-            previousDis = receipt.getGlobalDiscount();
-        }
-        if ( rs.getSize() > 0 ){
-            receiptGroup.add(rs);
-        }
-
-        IXMLElement xmlRe = new XMLElement("Facturas");
-
-        for (ReceiptSap receiptSap : receiptGroup) {
-            IXMLElement child = xmlRe.createElement("Re");
-            xmlRe.addChild(child);
-            child.setAttribute("getId", receiptSap.getId());
-            child.setAttribute("getKind", receiptSap.getKind());
-            child.setAttribute("getClient", receiptSap.getClient());
-            child.setAttribute("range", receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
-            child.setAttribute("getZ", receiptSap.getZ());
-            child.setAttribute("getPrinterId", receiptSap.getPrinterId());
-
-            int position = 1;
-            for (Receipt receipt : receiptSap.receipts) {
-                Double gDisc = receipt.getGlobalDiscount();
-                for (Item2Receipt item2Receipt : receipt.getItems()) {
-                    IXMLElement childchild = child.createElement("CND");
-                    child.addChild(childchild);
-                    childchild.setAttribute("id", "F" + receiptSap.getId());
-                    childchild.setAttribute("position", Constants.df2intSAP.format(position++));
-                    childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
-                    childchild.setAttribute("quant", item2Receipt.getQuant().toString());
-                    childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
-                    childchild.setAttribute("sellPrice", item2Receipt.getSellPrice()+"");
-                    Double tmpD = (item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice();
-                    childchild.setAttribute("discount", tmpD + gDisc*(item2Receipt.getSellPrice()-tmpD) +"");
-                }
-
-            }
-            System.out.println("child = " +receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
-        }
-
-        XMLElement clienXML = new XMLElement("Clientes");
+        
 
 
-        List<Object> clientC = new LinkedList<Object>();
-        for (String c : clients) {
-            Client cc = ConnectionDrivers.listClients(c).get(0);
-            IXMLElement client = clienXML.createElement("C");
-            client.setAttribute("ID", cc.getId());
-            String tname = cc.getName();
-            client.setAttribute("Name", tname.substring(0,Math.min(35, tname.length())));
-            String tc = cc.getAddress() + " Tlf: " + cc.getPhone();
-            client.setAttribute("Addr", (tc).substring(0, Math.min(30,tc.length())));
-            clienXML.addChild(client);
-        }
 
-        String ansTP = "OK";
+        /*String ansTP = "OK";
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLWriter xmlw = new XMLWriter(baos);
+        xmlw.write(xmlCN);
+        System.out.println("Notas de Credito = " + baos.toString());
+/*
+        /*
+
         System.out.println("Comienzo de envio");
         WS ws = new WSService().getWSPort();
         String ansI = ws.initialize(myDay, Shared.getConfig("storeName"));
@@ -1018,7 +949,7 @@ public class Shared {
 
         if ( !ansI.isEmpty() ) {
             ansTP = ansI;
-        }
+        }*/
 
         //String ansTP = "";
         // UNCOMMENT THIS
@@ -1028,7 +959,7 @@ public class Shared {
             ansTP = "File Error";
         }*/
 
-        String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + ansTP + " </html>" ;
+        String msgT = "<html><br>Cobranzas: " + ansMoney + "<br>Ventas: " + "" + " </html>" ;
         MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, msgT);
         msg.show(cd);
     }

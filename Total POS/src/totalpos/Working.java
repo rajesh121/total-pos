@@ -36,14 +36,14 @@ public class Working extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Trabajando...");
         setResizable(false);
         setUndecorated(true);
 
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Courier New", 1, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Courier New", 1, 18));
         jLabel2.setText("Trabajando... espere por favor...");
         jLabel2.setName("jLabel2"); // NOI18N
 

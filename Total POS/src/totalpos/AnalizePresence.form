@@ -46,7 +46,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="storeNameLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="storeNameLabeLabel" min="-2" max="-2" attributes="0"/>
+                      <Component id="departmentNameLabeLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -76,7 +76,7 @@
                   <Component id="fromLabelDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="untilLabelDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="storeNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="storeNameLabeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="departmentNameLabeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" pref="417" max="32767" attributes="0"/>
@@ -179,7 +179,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="14" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Agencia"/>
+        <Property name="text" type="java.lang.String" value="Departamento"/>
         <Property name="name" type="java.lang.String" value="storeNameLabel" noResource="true"/>
       </Properties>
     </Component>
@@ -195,13 +195,13 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="send2ProfitButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="storeNameLabeLabel">
+    <Component class="javax.swing.JLabel" name="departmentNameLabeLabel">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="14" style="1"/>
         </Property>
         <Property name="text" type="java.lang.String" value="N&#xf3;mina desde:"/>
-        <Property name="name" type="java.lang.String" value="storeNameLabeLabel" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="departmentNameLabeLabel" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="saveButton">

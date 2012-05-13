@@ -69,8 +69,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
             user = u;
             try{
+                System.out.println("Creando la libreria...");
                 printer = new FiscalPrinter();
                 Shared.printer = printer;
+                System.out.println("Termino.");
             }catch( Exception ex ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se pudo cargar el controlador de la impresora. No se puede continuar",ex);
                 msb.show(myParent);
@@ -90,6 +92,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
             try {
                 printer.printerSerial = null;
+                System.out.println("Check Fiscal Printer...");
                 if ( !printer.checkPrinter() ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema.");
                     msb.show(myParent);
@@ -98,6 +101,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     myParent.dispose();
                     return;
                 }
+                System.out.println("Salio del checkFiscalPrinter!");
             }catch ( Exception ex ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
                 msb.show(myParent);

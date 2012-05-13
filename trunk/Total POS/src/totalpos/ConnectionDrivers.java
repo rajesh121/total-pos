@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -5111,6 +5112,64 @@ public class ConnectionDrivers {
     protected static void unlock(Connection c) throws SQLException{
         PreparedStatement stmt = c.prepareStatement("unlock tables");
         stmt.executeUpdate();
+    }
+
+    protected static void writeArtPda(PrintStream ps) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select distinct codigo, descripcion, date_format(fecha_registro,'%m/%e/%X') as fecha,"
+                + " codigo_de_barras, modelo, unidad_venta , monto, round(monto*1.12) as monto_con_iva from articulo"
+                + " , precio where codigo="
+                + "codigo_de_articulo and fecha=(select max(fecha) from precio where codigo_de_articulo = codigo)");
+
+        ResultSet rs = stmt.executeQuery();
+        while( rs.next() ){
+            ps.println(Constants.template_art_pda
+                    .replaceAll("@codigo", rs.getString("codigo"))
+                    .replaceAll("@descripcion", rs.getString("descripcion"))
+                    .replaceAll("@fecha", rs.getString("fecha"))
+                    .replaceAll("@barras", rs.getString("codigo_de_barras"))
+                    .replaceAll("@modelo", rs.getString("modelo"))
+                    .replaceAll("@unidad_de_venta", rs.getString("unidad_venta"))
+                    .replaceAll("@monto_con_iva", rs.getString("monto_con_iva"))
+                    .replaceAll("@monto", rs.getString("monto"))
+                    .replaceAll("@fecha", rs.getString("fecha"))
+                    );
+        }
+        c.close();
+        rs.close();
+
+    }
+
+    protected static void writeMovimiento(PrintStream ps) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select distinct codigo_articulo from detalles_movimientos");
+
+        ResultSet rs = stmt.executeQuery();
+        while( rs.next() ){
+            ps.println(Constants.template_movimiento
+                    .replaceAll("@codigo_articulo", rs.getString("codigo_articulo"))
+                    );
+        }
+        c.close();
+        rs.close();
+
+    }
+
+    protected static void writeSt_almacpda(PrintStream ps) throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select `Value` as agencia, codigo_de_articulo as articulo, cantidad as stock from configuracion, existencia_desde_movimientos where `Key` = 'storeName'");
+
+        ResultSet rs = stmt.executeQuery();
+        while( rs.next() ){
+            ps.println(Constants.template_st_almacpda
+                    .replaceAll("@agencia", rs.getString("agencia"))
+                    .replaceAll("@articulo", rs.getString("articulo"))
+                    .replaceAll("@stock", rs.getString("stock"))
+                    );
+        }
+        c.close();
+        rs.close();
+
     }
 
 }

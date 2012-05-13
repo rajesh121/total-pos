@@ -12,22 +12,30 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileFilter;
+import org.jfree.ui.ExtensionFileFilter;
 
 /**
  *
@@ -318,6 +326,8 @@ public class MainWindows extends javax.swing.JFrame {
                 SelectRangeDayAndStore srds = new SelectRangeDayAndStore(true);
                 mdiPanel.add(srds);
                 srds.setVisible(true);
+            } else if ( ed.getFuncion().equals("exportData") ){
+                exportData();
             } else if (ed.getFuncion().isEmpty()) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Función no implementada aún");
                 msg.show(mainWindows);
@@ -421,6 +431,53 @@ public class MainWindows extends javax.swing.JFrame {
                 mdiPanel.add(cd);
                 cd.setVisible(true);
             }
+        }
+    }
+
+    private void exportData(){
+        JFileChooser jfc = new JFileChooser();
+        FileFilter ff = new ExtensionFileFilter("Archivos de Texto","txt");
+        jfc.setFileFilter(ff);
+        jfc.setCurrentDirectory(new File("."));
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        jfc.setDialogTitle("Gererar Archivos de Texto");
+
+        if ( jfc.showSaveDialog(Shared.getMyMainWindows()) == JFileChooser.APPROVE_OPTION ){
+            PrintStream ps = null;
+            try {
+                System.out.println("Directorio elegido " + jfc.getSelectedFile().getAbsolutePath());
+                System.out.println("Crear Art_pda");
+                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Constants.art_pda));
+                ConnectionDrivers.writeArtPda(ps);
+                System.out.println("Creado!");
+                System.out.println("Creando Movimiento");
+                ps.close();
+                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Constants.movimiento));
+                ConnectionDrivers.writeMovimiento(ps);
+                System.out.println("Creado!");
+                ps.close();
+
+                System.out.println("Creando stock");
+                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Constants.st_almacpda));
+                ConnectionDrivers.writeSt_almacpda(ps);
+                System.out.println("Creado!");
+                ps.close();
+
+                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Creado Satisfactoriamente");
+                msb.show(null);
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Problemas con la base de datos.",ex);
+                msb.show(null);
+            } catch (FileNotFoundException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "No se ha podido escribir en el directorio",ex);
+                msb.show(null);
+            } finally {
+                ps.close();
+            }
+
+
+        }else{
+            return;
         }
     }
 

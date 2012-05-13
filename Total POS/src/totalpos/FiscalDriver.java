@@ -35,4 +35,5 @@ public interface FiscalDriver extends Library{
     public int OprDoc(byte TipOpr, byte TipIva, double amount, String DscOpr);
     public int CancelTransaction();
     public int OpenBox();
+    public byte SetTimeOuts(byte Timeout);
 }

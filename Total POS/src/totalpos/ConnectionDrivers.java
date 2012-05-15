@@ -1213,7 +1213,7 @@ public class ConnectionDrivers {
     protected static void cancelReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
-                + "  estado = 'Anulada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
+                + "  estado = 'Anulada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? and estado != 'Facturada'");
         stmt.setString(1, receiptId);
         stmt.executeUpdate();
 

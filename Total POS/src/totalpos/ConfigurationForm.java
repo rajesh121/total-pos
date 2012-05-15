@@ -189,16 +189,8 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
         model.setRowCount(0);
 
         data = ConnectionDrivers.listConfig();
-        String[] filter = Shared.getConfig("fieldsShown").split(",");
-        for (String simpleConfig : filter) {
-            String anotherName = ConnectionDrivers.configName(simpleConfig);
-            String[] s = new String[2];
-            if ( anotherName!= null ){
-                s[0] = anotherName;
-            }else{
-                s[0] = simpleConfig;
-            }
-            s[1] = Shared.getConfig(simpleConfig);
+        for (SimpleConfig sc : data) {
+            String[] s = {sc.getName() == null ? sc.getKey() : sc.getName() , sc.getValue()};
             model.addRow(s);
         }
     }

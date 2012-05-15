@@ -2955,10 +2955,10 @@ public class ConnectionDrivers {
     protected static List<SimpleConfig> listConfig() throws SQLException{
         List<SimpleConfig> ans = new ArrayList<SimpleConfig>();
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select `Key` , `Value` from configuracion");
+        PreparedStatement stmt = c.prepareStatement("select `Key` , `Value`, nombre from configuracion");
         ResultSet rs = stmt.executeQuery();
         while( rs.next() ){
-            ans.add(new SimpleConfig(rs.getString("Key"),rs.getString("Value")));
+            ans.add(new SimpleConfig(rs.getString("Key"),rs.getString("Value"), rs.getString("nombre")));
         }
 
         c.close();

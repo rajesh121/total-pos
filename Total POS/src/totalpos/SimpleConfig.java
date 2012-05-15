@@ -7,6 +7,7 @@ package totalpos;
 public class SimpleConfig {
     private String key;
     private String value;
+    private String name;
 
     public String getKey() {
         return key;
@@ -24,8 +25,13 @@ public class SimpleConfig {
         this.value = value;
     }
 
-    public SimpleConfig(String key, String value) {
+    public String getName() {
+        return name;
+    }
+
+    public SimpleConfig(String key, String value, String name) {
         this.key = key;
         this.value = value;
+        this.name = name;
     }
 }

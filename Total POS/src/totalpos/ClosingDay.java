@@ -95,6 +95,38 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         return ans;
     }
 
+    private String getNegativeStock() throws SQLException {
+
+        List<Item> l = ConnectionDrivers.getNegativeStock();
+        String ans = "";
+        for( int i = 0 ; i < l.size() ; i++ ){
+            Item item = l.get(i);
+            ans += "<tr>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += item.getCode();
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += item.getDescription();
+            ans += "</td>";
+            if ( i%2 == 0 ){
+                ans += "<td bordercolor=\"#C1F2FF\" style=\"background-color:#C1F2FF\">";
+            }else{
+                ans += "<td>";
+            }
+            ans += item.getCurrentStock();
+            ans += "</td>";
+            ans += "</tr>";
+        }
+        return ans;
+    }
+
     private String getPaymentsTable() {
         String ans = "";
         for( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
@@ -1483,7 +1515,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         return xml;
     }
     
-    private String createEmail() throws SQLException{
+    private String createCloseEmail() throws SQLException{
         String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
         return "<html>\n"
                     + "<b><u>RESUMEN DIARIO DE VENTAS</u><br><br></b>\n"
@@ -1519,9 +1551,31 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     + "</html>";
     }
 
-    private String createSubject(){
+    private String createCloseEmailSubject(){
         String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
         return "Cierre del dia " + formatDay + " Agencia " + Shared.getConfig("storeName");
+    }
+
+    private String createNegativeStockSubject(){
+        String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
+        return "Stock Negativo " + formatDay + " Agencia " + Shared.getConfig("storeName");
+    }
+
+    private String createNegativeStockEmail() throws SQLException{
+        String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
+        return "<html>\n"
+                    + "<b><u>Stock en Negativo</u><br><br></b>\n"
+                    + "Dia: " + formatDay + "<br>\n"
+                    + "Agencia: " +  Shared.getConfig("storeName") + " <br>"
+                    + "Descripcion: " +  Shared.getConfig("storeDescription") + " <br><br>"
+                    + "<table width=\"600\" cellpadding=\"3\" cellspacing=\"3\">"
+                    + "<tr>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Tipo de Gasto</td>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Monto</td>"
+                    + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Observaciones</td>"
+                    + "</tr>"
+                    + getNegativeStock()
+                    + "</html>";
     }
 
     @Override
@@ -1540,6 +1594,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
             ConnectionDrivers.recalculateStock();
             System.out.println("Stock recalculado!");
+            Shared.sendMail(Shared.getConfig("email2sendNegativeStock") , createNegativeStockEmail(), createNegativeStockSubject());
 
             if ( Math.abs(ConnectionDrivers.getTotalDeclared(myDay) - receiptTotal) > Constants.moneyExilon ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se puede enviar el cierre administrativo. Lo total declarado no coincide con lo facturado.");
@@ -1547,12 +1602,10 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 return;
             }
 
-            Shared.sendMail(Shared.getConfig("sendEmail"), createEmail(), createSubject());
+            Shared.sendMail(Shared.getConfig("sendEmail"), createCloseEmail(), createCloseEmailSubject());
             if ( Constants.justEmail ){
                 return;
             }
-
-            String ansMoney = "";
 
             IXMLElement data2Sent = new XMLElement("data");
             data2Sent.setAttribute("storeName", Shared.getConfig("storeName"));

@@ -2959,6 +2959,7 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
         while( rs.next() ){
             ans.add(new SimpleConfig(rs.getString("Key"),rs.getString("Value"), rs.getString("nombre")));
+            System.out.println(rs.getString("Key"));
         }
 
         c.close();
@@ -3875,7 +3876,7 @@ public class ConnectionDrivers {
         String ans = null;
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select max(identificador) from movimiento_inventario");
+        PreparedStatement stmt = c.prepareStatement("select max(`Value`) from (select `Value` from configuracion where `Key` = 'lastSAPcodeAtInitialStock' union select identificador from movimiento_inventario) as myTable");
         ResultSet rs = stmt.executeQuery();
         boolean ok = rs.next();
         if ( ok ){
@@ -4170,7 +4171,11 @@ public class ConnectionDrivers {
         IXMLElement xml = (IXMLElement) parser.parse();
 
         System.out.println(xml.getName());
-        TreeSet<String> movements = new TreeSet<String>();
+        String lastMovement = null;
+
+        PreparedStatement stmt = c.prepareStatement("insert into detalles_movimientos"
+                    + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( concat(curdate(),\'-II\') , ? , ? , ? )");
+        PreparedStatement stmtItem = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
 
         for (Object x : xml.getChildren()) {
             XMLElement xmlI = (XMLElement)x;
@@ -4182,41 +4187,37 @@ public class ConnectionDrivers {
             int reason = 1;
 
             System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR") + " MENGE = " + xmlI.getAttribute("MENGE"));
-            PreparedStatement stmt = c.prepareStatement("insert into detalles_movimientos"
-                    + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( ? , ? , ? , ? )");
-            stmt.setString(1, xmlI.getAttribute("MBLNR"));
-            stmt.setString(2, xmlI.getAttribute("MATNR"));
-            stmt.setInt(3, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-            stmt.setString(4, xmlI.getAttribute("BWART"));
-            stmt.executeUpdate();
 
-            movements.add(xmlI.getAttribute("MBLNR"));
+            lastMovement = xmlI.getAttribute("MBLNR");
+            stmt.setString(1, xmlI.getAttribute("MATNR"));
+            stmt.setInt(2, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+            stmt.setString(3, xmlI.getAttribute("BWART"));
+            stmt.executeUpdate();
 
             if ( reason == 0 ){
                 // we are in problems... =(
             }else{
-                stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
-                stmt.setString(2, xmlI.getAttribute("MATNR"));
-                stmt.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-                int ans = stmt.executeUpdate();
+                stmtItem.setString(2, xmlI.getAttribute("MATNR"));
+                stmtItem.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
+                int ans = stmtItem.executeUpdate();
                 if ( ans == 0 ){
                     Shared.itemsNeeded.add(xmlI);
                 }
             }
         }
 
-        Iterator<String> itrs = movements.iterator();
-        while(itrs.hasNext()){
-            String id = itrs.next();
-            PreparedStatement stmt = c.prepareStatement("insert into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
-                    + "values (? , now() , ? , ? , ?)");
-            stmt.setString(1, id);
-            stmt.setString(2, "Stock Inicial");
-            stmt.setString(3, id);
-            stmt.setString(4, "");
-            stmt.executeUpdate();
-        }
+        PreparedStatement stmtMI = c.prepareStatement("insert into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
+                + "values ( concat(curdate(),\'-II\') , now() , ? , concat(curdate(),\'-II\') , ?)");
+        stmtMI.setString(1, "Stock Inicial");
+        stmtMI.setString(2, "");
+        stmtMI.executeUpdate();
 
+        stmtMI = c.prepareStatement("insert into configuracion (`Key` , `Value` , nombre ) "
+                + "values ( ?, ?, ?)");
+        stmtMI.setString(1, "lastSAPcodeAtInitialStock");
+        stmtMI.setString(2, lastMovement);
+        stmtMI.setString(3, "Ultimo Movimiento Para Inventario Inicial");
+        stmtMI.executeUpdate();
 
         XMLElement ans = new XMLElement("ITEMSNEEDED");
 
@@ -5170,6 +5171,25 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+    }
+
+    protected static List<Item> getNegativeStock() throws SQLException{
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select codigo, descripcion, existencia_actual from articulo where existencia_actual < 0");
+
+        List<Item> ans = new LinkedList<Item>();
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            ans.add(
+                new Item(rs.getString("codigo"), rs.getString("descripcion"), null, null, null, null, null, null, null, null, rs.getInt("existencia_actual"), null, null, null, false, null, null)
+            );
+        }
+
+        c.close();
+        rs.close();
+
+        return ans;
     }
 
 }

@@ -1017,7 +1017,7 @@ public class Shared {
         });
 
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress("ventasdiariasgt99@gmail.com", "Agencia " + Shared.getConfig("storeName") + " ( " + Shared.getConfig("storeDescription") + ")"));
+        message.setFrom(new InternetAddress("ventasdiariasgt99@gmail.com", "Agencia " + Shared.getConfig("storeName") + " ( " + Shared.getConfig("storeDescription") + " )"));
 
         String addrs[] = to.split(",");
         InternetAddress[] addressTo = new InternetAddress[addrs.length];

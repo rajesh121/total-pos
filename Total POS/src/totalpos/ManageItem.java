@@ -891,6 +891,7 @@ public class ManageItem extends JInternalFrame implements Doer {
                 if ( item.getCurrentStock() <= 0 ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se puede imprimir etiquetas de un producto sin existencia.");
                     msb.show(this);
+                    return;
                 }
                 toPrint.add(item);
                 quantToPrint.add(1);

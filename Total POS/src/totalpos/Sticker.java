@@ -56,7 +56,7 @@ public class Sticker {
         try{
             DocPrintJob job = psZebra.createPrintJob();
 
-            String buff = "ZB\nR0,20\n";
+            String buff = "ZB\nR10,20\n";
 
             DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
             Doc doc = new SimpleDoc(buff.getBytes(), flavor, null);

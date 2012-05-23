@@ -98,7 +98,8 @@ public class UpdateStockFromSAP implements Doer{
 
                 System.out.println("Listo!");
             }else if ( mode.equals("profitWorkers")){
-                String ans = ws.listEmployCode(Shared.getConfig("storeNameProfit"));
+                System.out.println("Profit DB Name " + Shared.getConfig("profitDatabase"));
+                String ans = ws.listEmployCode(Shared.getConfig("storeNameProfit"), Shared.getConfig("profitDatabase"));
                 System.out.println("Ans = " + ans);
                 ConnectionDrivers.updateEmployees(ans);
             }

@@ -897,19 +897,6 @@ public class ConnectionDrivers {
         stmt.setDouble(4, item.getLastPrice().getQuant());
         stmt.setDouble(5, item.getDescuento());
         stmt.executeUpdate();
-
-        changeItemStock(item.getCode(), -1*quant);
-
-        double withoutTax = item.getLastPrice().getQuant()*quant*(100.0-item.getDescuento())/100.0;
-        double subT = accumulatedInReceipt(receiptId) + withoutTax;
-        stmt = c.prepareStatement("update factura "
-                + "set total_sin_iva = " + (subT) +
-                " , total_con_iva =" + (new Price(null,subT)).plusIva().getQuant() +
-                " , iva = " + (new Price(null,subT)).getIva().getQuant() +
-                " , cantidad_de_articulos = cantidad_de_articulos + 1 "
-                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
-        stmt.setString(1, receiptId);
-        stmt.executeUpdate();
         
         c.close();
 
@@ -932,28 +919,6 @@ public class ConnectionDrivers {
         stmt.setString(1, receiptId);
         stmt.setString(2, item.getCode());
         stmt.setInt(3, quant);
-        stmt.executeUpdate();
-
-        changeItemStock(item.getCode(), 1*quant);
-
-        double withoutTax = -1*(item.getLastPrice().withDiscount(item.getDescuento()).getQuant())*quant;
-        double subT = accumulatedInReceipt(receiptId) - withoutTax;
-        stmt = c.prepareStatement("update factura "
-                + "set total_sin_iva = total_sin_iva + ? " +
-                " , cantidad_de_articulos = cantidad_de_articulos - 1 "
-                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
-        stmt.setDouble(1, withoutTax);
-        stmt.setString(2, receiptId);
-        stmt.executeUpdate();
-
-        stmt = c.prepareStatement("update factura "
-                + "set total_con_iva = total_sin_iva * ? " +
-                " , iva = total_sin_iva * ? " +
-                " , cantidad_de_articulos = cantidad_de_articulos - 1 "
-                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
-        stmt.setDouble(1, Double.parseDouble(Shared.getConfig("iva"))+1.0);
-        stmt.setDouble(2, Double.parseDouble(Shared.getConfig("iva")));
-        stmt.setString(3, receiptId);
         stmt.executeUpdate();
 
         c.close();
@@ -1520,6 +1485,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    @Deprecated
     protected static void createClient(Client client) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement(
@@ -1532,6 +1498,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    @Deprecated
     protected static void modifyClient(Client myClient) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update cliente set nombre = ? , direccion = ? , telefono = ? where codigo = ?");
@@ -1540,6 +1507,28 @@ public class ConnectionDrivers {
         stmt.setString(3, myClient.getPhone());
         stmt.setString(4, myClient.getId());
         stmt.executeUpdate();
+
+        c.close();
+    }
+
+    protected static void updateClient(Client myClient) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("update cliente set nombre = ? , direccion = ? , telefono = ? where codigo = ?");
+        stmt.setString(1, myClient.getName());
+        stmt.setString(2, myClient.getAddress());
+        stmt.setString(3, myClient.getPhone());
+        stmt.setString(4, myClient.getId());
+        int ans = stmt.executeUpdate();
+
+        if ( ans == 0 ){
+            stmt = c.prepareStatement(
+                "insert into cliente ( codigo, nombre , direccion , telefono ) values ( ? , ? , ? , ? )");
+            stmt.setString(1, myClient.getId());
+            stmt.setString(2, myClient.getName());
+            stmt.setString(3, myClient.getAddress());
+            stmt.setString(4, myClient.getPhone());
+            stmt.executeUpdate();
+        }
 
         c.close();
     }
@@ -2035,20 +2024,6 @@ public class ConnectionDrivers {
         stmt.setInt(3, item.getQuant());
         stmt.setDouble(4, sellPrice);
         stmt.setDouble(5, discount);
-        stmt.executeUpdate();
-
-        changeItemStock(item.getItem().getCode(), 1*item.getQuant());
-
-        double withoutTax = item.getItem().getLastPrice().getQuant();
-        double subT = .0;// = accumulatedInReceipt(receiptId) + withoutTax;
-        stmt = c.prepareStatement("update nota_de_credito set " +
-                /*+ "set total_sin_iva = " + (subT) +
-                " , total_con_iva =" + (new Price(null,subT)).plusIva().getQuant() +
-                " , iva = " + (new Price(null,subT)).getIva().getQuant() +*/
-                " cantidad_de_articulos = cantidad_de_articulos + ? "
-                + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
-        stmt.setString(2, receiptId);
-        stmt.setInt(1, item.getQuant());
         stmt.executeUpdate();
 
         c.close();
@@ -4291,7 +4266,7 @@ public class ConnectionDrivers {
         parser.setReader(reader);
         IXMLElement xml = (IXMLElement) parser.parse();
 
-        PreparedStatement stmt = c.prepareStatement("delete from empleado");
+        PreparedStatement stmt = c.prepareStatement("truncate empleado");
         stmt.executeUpdate();
         for (Object x : xml.getChildren()) {
             XMLElement xmlI = (XMLElement)x;
@@ -4339,7 +4314,7 @@ public class ConnectionDrivers {
 
     static Employ getEmploy(String employId) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement pstmt = c.prepareStatement("select codigo, nombre_completo from empleado where codigo = ? ");
+        PreparedStatement pstmt = c.prepareStatement("select codigo, nombre_completo, departamento from empleado where codigo = ? ");
         pstmt.setString(1, employId);
         ResultSet rs = pstmt.executeQuery();
 
@@ -4349,7 +4324,7 @@ public class ConnectionDrivers {
             return null;
         }
 
-        Employ ans = new Employ(rs.getString("codigo"), rs.getString("nombre_completo"));
+        Employ ans = new Employ(rs.getString("codigo"), rs.getString("nombre_completo"), rs.getString("departamento"));
         c.close();
         rs.close();
         return ans;
@@ -4357,13 +4332,13 @@ public class ConnectionDrivers {
 
     static List<Employ> getAllEmployees() throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement pstmt = c.prepareStatement("select codigo, nombre_completo from empleado");
+        PreparedStatement pstmt = c.prepareStatement("select codigo, nombre_completo, departamento from empleado");
         ResultSet rs = pstmt.executeQuery();
 
         List<Employ> ans = new LinkedList<Employ>();
 
         while( rs.next() ){
-            ans.add(new Employ(rs.getString("codigo"), rs.getString("nombre_completo")));
+            ans.add(new Employ(rs.getString("codigo"), rs.getString("nombre_completo"), rs.getString("departamento")));
         }
 
         c.close();
@@ -4525,53 +4500,43 @@ public class ConnectionDrivers {
 
         if ( p.getFingerPrints().isEmpty() ){
 
-            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( codigo_empleado , hora ) values(  ? , now() )");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
 
-            stmt = c.prepareStatement("insert into asistencia ( agencia , fecha , codigo_empleado , marcacion1 ) values(?,curdate(),?,now())");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            stmt = c.prepareStatement("insert into asistencia ( fecha , codigo_empleado , marcacion1 ) values(curdate(),?,now())");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
         }else if ( p.getFingerPrints().size() == 1){
-            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            PreparedStatement stmt = c.prepareStatement("insert into marcacion (codigo_empleado , hora ) values( ? , now() )");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
 
-            stmt = c.prepareStatement("update asistencia set marcacion2=now() where agencia=? and fecha=curdate() and codigo_empleado=?");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            stmt = c.prepareStatement("update asistencia set marcacion2=now() where fecha=curdate() and codigo_empleado=?");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
         }else if ( p.getFingerPrints().size() == 2){
-            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( codigo_empleado , hora ) values( ? , now() )");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
-            stmt = c.prepareStatement("update asistencia set marcacion3=now() where agencia=? and fecha=curdate() and codigo_empleado=?");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            stmt = c.prepareStatement("update asistencia set marcacion3=now() where fecha=curdate() and codigo_empleado=?");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
         }else if ( p.getFingerPrints().size() == 3 ){
-            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( codigo_empleado , hora ) values( ? , now() )");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
 
-            stmt = c.prepareStatement("update asistencia set marcacion4=now() where agencia=? and fecha=curdate() and codigo_empleado=?");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            stmt = c.prepareStatement("update asistencia set marcacion4=now() where fecha=curdate() and codigo_empleado=?");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
         }else{
             deleteLastFingerPrint(e, "curdate()");
-            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( agencia, codigo_empleado , hora ) values( ? , ? , now() )");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            PreparedStatement stmt = c.prepareStatement("insert into marcacion ( codigo_empleado , hora ) values( ? , now() )");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
-            stmt = c.prepareStatement("update asistencia set marcacion4=now() where agencia=? and fecha=curdate() and codigo_empleado=?");
-            stmt.setString(1, Shared.getConfig("storeName"));
-            stmt.setString(2, e.getCode());
+            stmt = c.prepareStatement("update asistencia set marcacion4=now() where fecha=curdate() and codigo_empleado=?");
+            stmt.setString(1, e.getCode());
             stmt.executeUpdate();
         }
 
@@ -4614,9 +4579,8 @@ public class ConnectionDrivers {
     static void deleteLastFingerPrint(Employ e, String myDay) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select max(hora) as hora from marcacion where agencia=? and datediff("+ myDay +",hora)=0 and codigo_empleado=?");
-        stmt.setString(1,Shared.getConfig("storeName"));
-        stmt.setString(2, e.getCode());
+        PreparedStatement stmt = c.prepareStatement("select max(hora) as hora from marcacion where datediff("+ myDay +",hora)=0 and codigo_empleado=?");
+        stmt.setString(1, e.getCode());
         ResultSet rs = stmt.executeQuery();
 
         String tTime = "";
@@ -4651,9 +4615,8 @@ public class ConnectionDrivers {
     static Presence listAllFingerPrintMarks(String myDay, Employ e) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select codigo_empleado, hora from marcacion where agencia=? and datediff("+ myDay +",hora)=0 and codigo_empleado=? order by hora");
-        stmt.setString(1,Shared.getConfig("storeName"));
-        stmt.setString(2, e.getCode());
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado, hora from marcacion where datediff("+ myDay +",hora)=0 and codigo_empleado=? order by hora");
+        stmt.setString(1, e.getCode());
         ResultSet rs = stmt.executeQuery();
 
         Presence ans = new Presence(e);
@@ -4703,19 +4666,19 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    public static List<Employ> getAllEmployBetween(String from, String until, String store) throws SQLException{
+    public static List<Employ> getAllEmployBetween(String from, String until) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         List<Employ> ans = new LinkedList<Employ>();
 
-        PreparedStatement stmt = c.prepareStatement("select distinct codigo_empleado, nombre_completo from asistencia , empleado where ? <= fecha and fecha <= ? and empleado.codigo=asistencia.codigo_empleado order by codigo_empleado");
+        PreparedStatement stmt = c.prepareStatement("select distinct codigo_empleado, nombre_completo , departamento from asistencia , empleado where ? <= fecha and fecha <= ? and empleado.codigo=asistencia.codigo_empleado order by departamento, empleado.codigo");
         stmt.setString(1, from);
         stmt.setString(2, until);
 
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
-            ans.add(new Employ(rs.getString("codigo_empleado"),rs.getString("nombre_completo")));
+            ans.add(new Employ(rs.getString("codigo_empleado"),rs.getString("nombre_completo"), rs.getString("departamento")));
         }
 
         c.close();
@@ -4724,14 +4687,13 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    static void calculatePresence(DefaultTableModel model, String from , String until, String store, Map<String, Integer> employRow, int offset) throws SQLException{
+    static void calculatePresence(DefaultTableModel model, String from , String until, Map<String, Integer> employRow, int offset) throws SQLException{
         System.out.println("Calculando presencia...");
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , datediff(fecha,?) as diff from asistencia, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and empleado.codigo=asistencia.codigo_empleado and empleado.departamento like ?");
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado , datediff(fecha,?) as diff from asistencia, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and empleado.codigo=asistencia.codigo_empleado ");
         stmt.setString(1, from);
         stmt.setString(2, from);
         stmt.setString(3, until);
-        stmt.setString(4, store);
 
         ResultSet rs = stmt.executeQuery();
 
@@ -4740,10 +4702,9 @@ public class ConnectionDrivers {
             System.out.println("Empleado " + employRow.get(rs.getString("codigo_empleado")) + " "  + ( offset + rs.getInt("diff")));
         }
 
-        stmt = c.prepareStatement("select datediff(fecha,?) as diff , codigo_empleado, concepto from inasistencia , empleado where concepto!=' ' and  datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and inasistencia.codigo_empleado=empleado.codigo and empleado.departamento like ?");
+        stmt = c.prepareStatement("select datediff(fecha,?) as diff , codigo_empleado, concepto from inasistencia , empleado where concepto!=' ' and  datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and inasistencia.codigo_empleado=empleado.codigo");
         stmt.setString(2, from);
         stmt.setString(3, until);
-        stmt.setString(4, store);
         stmt.setString(1, from);
         rs = stmt.executeQuery();
         while ( rs.next() ){
@@ -4758,58 +4719,59 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static void calculateExtraHours(DefaultTableModel model, String from , String until, String store, Map<String, Integer> employRow, int offset) throws SQLException {
+    static void calculateExtraHours(DefaultTableModel model, String from , String until, Map<String, Integer> employRow, int offset, JTable presenceTable) throws SQLException {
         for ( int i = 0 ; i < model.getRowCount() ; i++ ){
-            model.setValueAt("0", i, 2);
+            model.setValueAt("0", i, 3);
         }
 
         Connection c = ConnectionDrivers.cpds.getConnection();
 
-        PreparedStatement stmt = c.prepareStatement("select codigo_empleado, sum(cantidad_horas) as sch from horas_extra, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and horas_extra.codigo_empleado=empleado.codigo and empleado.departamento like ? group by codigo_empleado having sch > 0");
+        PreparedStatement stmt = c.prepareStatement("select codigo_empleado, sum(cantidad_horas) as sch from horas_extra, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and horas_extra.codigo_empleado=empleado.codigo group by codigo_empleado having sch > 0");
         stmt.setString(1, from);
         stmt.setString(2, until);
-        stmt.setString(3, store);
         ResultSet rs = stmt.executeQuery();
         while ( rs.next() ){
-            model.setValueAt(rs.getString("sch"), employRow.get(rs.getString("codigo_empleado")), 2);
+            System.out.println("rs.getString(\"\") = " + rs.getString("sch") + "  " + rs.getString("codigo_empleado") + "  " + employRow.get(rs.getString("codigo_empleado")) );
+            model.setValueAt(rs.getString("sch"), employRow.get(rs.getString("codigo_empleado")), 3);
         }
-        stmt = c.prepareStatement("select codigo_empleado, mid(concat(sec_to_time(sum(secondsbyday)),''),1,6) as extrahours from (select codigo_empleado , Time_to_Sec(timediff(max(t),?)) as secondsbyday, datediff(fecha,?) as diff from (select codigo_empleado, timediff(marcacion4, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion3, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion2, marcacion1) as t, fecha from asistencia having t is not NULL) as t where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 group by codigo_empleado , fecha ) as sbt , empleado where sbt.codigo_empleado=empleado.codigo and empleado.departamento like ? group by codigo_empleado");
+        stmt = c.prepareStatement("select codigo_empleado, mid(concat(sec_to_time(sum(secondsbyday)),''),1,6) as extrahours from (select codigo_empleado , Time_to_Sec(timediff(max(t),?)) as secondsbyday, datediff(fecha,?) as diff from (select codigo_empleado, timediff(marcacion4, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion3, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion2, marcacion1) as t, fecha from asistencia having t is not NULL) as t where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 group by codigo_empleado , fecha ) as sbt , empleado where sbt.codigo_empleado=empleado.codigo group by codigo_empleado");
         stmt.setString(1, Constants.workingHours);
         stmt.setString(2, from);
         stmt.setString(3, from);
         stmt.setString(4, until);
-        stmt.setString(5, store);
         rs = stmt.executeQuery();
         while ( rs.next() ){
-            model.setValueAt(rs.getString("extrahours"), employRow.get(rs.getString("codigo_empleado")), 3);
+            model.setValueAt(rs.getString("extrahours"), employRow.get(rs.getString("codigo_empleado")), 4);
         }
 
-        stmt = c.prepareStatement("select codigo_empleado, time(hora) as th, TIME_TO_SEC(timediff(time(hora),?)) as diff from marcacion, empleado where datediff(hora, ?) >= 0 and datediff(hora, ?)<=0 and empleado.codigo=marcacion.codigo_empleado and empleado.departamento like ? having th > ?");
-        stmt.setString(5, Constants.beginOfNightBonus);
+        stmt = c.prepareStatement("select codigo_empleado, time(hora) as th, TIME_TO_SEC(timediff(time(hora),?)) as diff from marcacion, empleado where datediff(hora, ?) >= 0 and datediff(hora, ?)<=0 and empleado.codigo=marcacion.codigo_empleado having th > ?");
+        stmt.setString(4, Constants.beginOfNightBonus);
         stmt.setString(1, Constants.beginOfNightBonus);
         stmt.setString(2, from);
         stmt.setString(3, until);
-        stmt.setString(4, store);
         rs = stmt.executeQuery();
         while ( rs.next() ){
             int m = rs.getInt("diff")/60+15;
             double an = (m/60) + (m%60>=45?.5:.0);
-            model.setValueAt(an, employRow.get(rs.getString("codigo_empleado")), 4);
+            model.setValueAt(an, employRow.get(rs.getString("codigo_empleado")), 5);
         }
 
         for (int i = 0; i < model.getRowCount(); i++) {
 
             boolean isOk = true;
             for (int j = offset; j < model.getColumnCount() && isOk ; j++) {
-                if ( model.getValueAt(i, j) == null || !Shared.didItCome(model.getValueAt(i, j).toString() ) ){
+                if ( model.getValueAt(i, j) == null || (!Shared.didItCome(model.getValueAt(i, j).toString())
+                        && (( (Shared.isSaturday(presenceTable, j ) && Double.parseDouble(Shared.getConfig("saturdayNotWorked")) > Constants.exilon) ||
+                            ( (Shared.isSunday(presenceTable, j ) || Shared.isHoliday(presenceTable, j)) && Double.parseDouble(Shared.getConfig("sundayNotWorked")) > Constants.exilon )) ||
+                            ( !Shared.isSunday(presenceTable, j ) && !Shared.isSaturday(presenceTable, j ) && !Shared.isHoliday(presenceTable, j)))) ){
                     isOk = false;
                 }
             }
 
             if ( isOk ){
-                model.setValueAt(Shared.getConfig("presenceBonus"), i, 5);
+                model.setValueAt(Shared.getConfig("presenceBonus"), i, 6);
             }else{
-                model.setValueAt(.0, i, 5);
+                model.setValueAt(.0, i, 6);
             }
         }
 
@@ -4817,51 +4779,49 @@ public class ConnectionDrivers {
                 + "(select marcacion.codigo_empleado , (count(*)) as marcaciones from asistencia "
                 + ", marcacion, empleado where marcacion.codigo_empleado=asistencia.codigo_empleado"
                 + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= ?"
-                + " and datediff(fecha, hora) =0 group by marcacion.agencia, fecha , marcacion.codigo_empleado"
+                + " and datediff(fecha, hora) =0 group by fecha , marcacion.codigo_empleado"
                 + " having marcaciones=3 order by nombre_completo, fecha) as myTable, empleado where "
-                + "myTable.codigo_empleado=empleado.codigo and empleado.departamento like ? group by codigo_empleado");
+                + "myTable.codigo_empleado=empleado.codigo group by codigo_empleado");
         stmt.setString(1, from);
         stmt.setString(2, until);
-        stmt.setString(3, store);
-        rs = stmt.executeQuery();
-
-        while ( rs.next() ){
-            model.setValueAt(rs.getString("leves"), employRow.get(rs.getString("codigo_empleado")), 7);
-        }
-
-        stmt = c.prepareStatement("select codigo_empleado, count(*) as leves from "
-                + "(select marcacion.codigo_empleado , (count(*)) as marcaciones from asistencia "
-                + ", marcacion, empleado where marcacion.codigo_empleado=asistencia.codigo_empleado"
-                + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= ?"
-                + " and datediff(fecha, hora) =0 group by marcacion.agencia, fecha , marcacion.codigo_empleado"
-                + " having marcaciones=2 or marcaciones=1 order by nombre_completo, fecha) as myTable, empleado where "
-                + "myTable.codigo_empleado=empleado.codigo and empleado.departamento like ? group by codigo_empleado");
-        stmt.setString(1, from);
-        stmt.setString(2, until);
-        stmt.setString(3, store);
         rs = stmt.executeQuery();
 
         while ( rs.next() ){
             model.setValueAt(rs.getString("leves"), employRow.get(rs.getString("codigo_empleado")), 8);
         }
 
+        stmt = c.prepareStatement("select codigo_empleado, count(*) as leves from "
+                + "(select marcacion.codigo_empleado , (count(*)) as marcaciones from asistencia "
+                + ", marcacion, empleado where marcacion.codigo_empleado=asistencia.codigo_empleado"
+                + " and marcacion.codigo_empleado=empleado.codigo and ? <= fecha and fecha <= ?"
+                + " and datediff(fecha, hora) =0 group by fecha , marcacion.codigo_empleado"
+                + " having marcaciones=2 or marcaciones=1 order by nombre_completo, fecha) as myTable, empleado where "
+                + "myTable.codigo_empleado=empleado.codigo group by codigo_empleado");
+        stmt.setString(1, from);
+        stmt.setString(2, until);
+        rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            model.setValueAt(rs.getString("leves"), employRow.get(rs.getString("codigo_empleado")), 9);
+        }
+
         for (int i = 0; i < model.getRowCount(); i++) {
             int soft = 0;
-            if ( model.getValueAt(i, 7) != null ){
-                soft = Integer.parseInt(model.getValueAt(i, 7).toString());
+            if ( model.getValueAt(i, 8) != null ){
+                soft = Integer.parseInt(model.getValueAt(i, 8).toString());
             }
             int hard = 0;
-            if ( model.getValueAt(i, 8) != null ){
-                hard = Integer.parseInt(model.getValueAt(i, 8).toString());
+            if ( model.getValueAt(i, 9) != null ){
+                hard = Integer.parseInt(model.getValueAt(i, 9).toString());
             }
 
-            model.setValueAt(soft/4+hard, i, 9);
+            model.setValueAt(soft/4+hard, i, 10);
         }
         
         c.close();
     }
 
-    static void saveTable(DefaultTableModel model, String fromDate, String untilDate, String storeName, int offset, boolean isCestatickets) throws SQLException, ParseException, Exception {
+    static void saveTable(DefaultTableModel model, String fromDate, String untilDate, int offset, boolean isCestatickets) throws SQLException, ParseException, Exception {
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         try{
@@ -4870,11 +4830,10 @@ public class ConnectionDrivers {
 
             PreparedStatement stmt;
             if ( !isCestatickets ){
-                stmt = c.prepareStatement("delete from cuadro_recursos_humanos where fecha_inicio = ? and fecha_fin = ? and agencia = ? ");
+                stmt = c.prepareStatement("delete from cuadro_recursos_humanos where fecha_inicio = ? and fecha_fin = ?");
 
                 stmt.setString(1, fromDate);
                 stmt.setString(2, untilDate);
-                stmt.setString(3, storeName);
                 stmt.executeUpdate();
 
 
@@ -4886,13 +4845,12 @@ public class ConnectionDrivers {
 
                     for (int j = 0; j < model.getColumnCount() && j < offset; j++) {
                         if (  model.getValueAt(i, j) != null ){
-                            stmt = c.prepareStatement("insert into cuadro_recursos_humanos (fecha_inicio, fecha_fin, agencia, x, y, v) values (?,?,?,?,?,?)");
+                            stmt = c.prepareStatement("insert into cuadro_recursos_humanos (fecha_inicio, fecha_fin, x, y, v) values (?,?,?,?,?)");
                             stmt.setString(1, fromDate);
                             stmt.setString(2, untilDate);
-                            stmt.setString(3, storeName);
-                            stmt.setString(4, i+"");
-                            stmt.setString(5, j+"");
-                            stmt.setString(6, model.getValueAt(i, j).toString());
+                            stmt.setString(3, i+"");
+                            stmt.setString(4, j+"");
+                            stmt.setString(5, model.getValueAt(i, j).toString());
                             stmt.executeUpdate();
                         }
                     }
@@ -4906,11 +4864,10 @@ public class ConnectionDrivers {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(fromDateD);
                 for ( int j = offset ; j < model.getColumnCount() ; j++ ){
-                    stmt = c.prepareStatement("insert ignore into asistencia_calculada (agencia , fecha) values (?,?)");
-                    stmt.setString(1, storeName);
+                    stmt = c.prepareStatement("insert ignore into asistencia_calculada (fecha) values (?)");
 
                     java.sql.Date da = new Date(fromDateD.getTime());
-                    stmt.setDate(2, da);
+                    stmt.setDate(1, da);
                     stmt.executeUpdate();
 
                     stmt = c.prepareStatement("delete from asistencia_final where datediff(fecha, ?)=0 and codigo_empleado = ?");
@@ -4947,16 +4904,15 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    static boolean loadHours( JTable presenceTable ,String fromDateString, String untilDateString, String storeName, java.util.Date fromDate, java.util.Date untilDate , AnalizePresence ap) throws SQLException {
+    static boolean loadHours( JTable presenceTable ,String fromDateString, String untilDateString, java.util.Date fromDate, java.util.Date untilDate , AnalizePresence ap) throws SQLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
         boolean ans = false;
 
         DefaultTableModel model = (DefaultTableModel) presenceTable.getModel();
 
-        PreparedStatement stmt = c.prepareStatement("select x , y , v  from cuadro_recursos_humanos where fecha_inicio = ? and fecha_fin = ? and agencia = ? ");
+        PreparedStatement stmt = c.prepareStatement("select x , y , v  from cuadro_recursos_humanos where fecha_inicio = ? and fecha_fin = ? ");
         stmt.setString(1, fromDateString);
         stmt.setString(2, untilDateString);
-        stmt.setString(3, storeName);
         ResultSet rs = stmt.executeQuery();
 
         while( rs.next() ){
@@ -4971,14 +4927,13 @@ public class ConnectionDrivers {
         return ans;
     }
 
-    protected static boolean loadPresence( JTable presenceTable ,String fromDateString, String untilDateString, String storeName, java.util.Date fromDate, java.util.Date untilDate , AnalizePresence ap, Map<String, Integer> map4employes, int offset) throws SQLException{
+    protected static boolean loadPresence( JTable presenceTable ,String fromDateString, String untilDateString, java.util.Date fromDate, java.util.Date untilDate , AnalizePresence ap, Map<String, Integer> map4employes, int offset) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
         boolean ans = false;
 
-        PreparedStatement stmt = c.prepareStatement("select count(*) as n from asistencia_calculada where agencia=? and ? <= fecha and fecha <= ?");
-        stmt.setString(2, fromDateString);
-        stmt.setString(3, untilDateString);
-        stmt.setString(1, storeName);
+        PreparedStatement stmt = c.prepareStatement("select count(*) as n from asistencia_calculada where ? <= fecha and fecha <= ?");
+        stmt.setString(1, fromDateString);
+        stmt.setString(2, untilDateString);
         ResultSet rs = stmt.executeQuery();
 
         boolean t = rs.next();
@@ -5018,7 +4973,7 @@ public class ConnectionDrivers {
     }
 
     protected static void clearBonuses(Connection c) throws SQLException{
-        PreparedStatement stmt = c.prepareStatement("update snem_va set val_n= 0 ");
+        PreparedStatement stmt = c.prepareStatement("update snem_va set val_n= 0 , comentario = NULL ");
         stmt.executeUpdate();
     }
 

@@ -7,9 +7,11 @@
 package totalpos;
 
 import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.JDialog;
 
 /**
  *
@@ -17,23 +19,37 @@ import java.util.List;
  */
 public class ManageClient extends javax.swing.JDialog {
 
-    private boolean found = false;
-    private MainRetailWindows parent;
-    private boolean modified = false;
+    private Window parent;
     public boolean isOk = false;
 
     /** Creates new form ManageClient */
     public ManageClient(Frame parent, boolean modal, Client c) {
         super(parent, modal);
         initComponents();
-        this.parent = (MainRetailWindows) parent;
-        modifyClient.setVisible(false);
+        idField.setFocusTraversalKeysEnabled(false);
+        this.parent = parent;
         if ( c != null ){
             try {
                 searchIt(c.getId());
-                if (found) {
-                    idField.setText(c.getId());
-                }
+                isOk = true;
+            } catch (SQLException ex) {
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                msb.show(this);
+                this.dispose();
+                Shared.reload();
+            }
+        }
+        isOk = true;
+    }
+
+    public ManageClient(JDialog parent, boolean modal, Client c) {
+        super(parent, modal);
+        initComponents();
+        idField.setFocusTraversalKeysEnabled(false);
+        this.parent = parent;
+        if ( c != null ){
+            try {
+                searchIt(c.getId());
                 isOk = true;
             } catch (SQLException ex) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
@@ -65,7 +81,6 @@ public class ManageClient extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
         acceptButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        modifyClient = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -105,18 +120,8 @@ public class ManageClient extends javax.swing.JDialog {
         phoneLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         phoneLabel.setName("phoneLabel"); // NOI18N
 
-        idField.setFont(new java.awt.Font("Courier New", 0, 12));
+        idField.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
         idField.setName("idField"); // NOI18N
-        idField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                idFieldActionPerformed(evt);
-            }
-        });
-        idField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                idFieldFocusLost(evt);
-            }
-        });
         idField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 idFieldKeyPressed(evt);
@@ -174,14 +179,6 @@ public class ManageClient extends javax.swing.JDialog {
         jLabel1.setText("* = Campo Obligatorio");
         jLabel1.setName("jLabel1"); // NOI18N
 
-        modifyClient.setText("Modificar");
-        modifyClient.setName("modifyClient"); // NOI18N
-        modifyClient.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifyClientActionPerformed(evt);
-            }
-        });
-
         jLabel9.setText("*");
         jLabel9.setName("jLabel9"); // NOI18N
 
@@ -194,7 +191,7 @@ public class ManageClient extends javax.swing.JDialog {
         jLabel12.setText("*");
         jLabel12.setName("jLabel12"); // NOI18N
 
-        comboKind.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "V", "G", "J" }));
+        comboKind.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "V", "G", "J", "E" }));
         comboKind.setName("comboKind"); // NOI18N
         comboKind.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -242,9 +239,7 @@ public class ManageClient extends javax.swing.JDialog {
                             .addComponent(jLabel1))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(modifyClient, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -287,7 +282,6 @@ public class ManageClient extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(acceptButton)
                     .addComponent(jLabel1)
-                    .addComponent(modifyClient)
                     .addComponent(cancelButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -302,59 +296,50 @@ public class ManageClient extends javax.swing.JDialog {
     private void searchIt(String clientId) throws SQLException{
         List<Client> clients = ConnectionDrivers.listClients(clientId);
         if ( clients.isEmpty() ){
-            nameField.setText("");
-            phoneField.setText("");
-            addressField.setText("");
-            nameField.setEditable(true);
-            phoneField.setEditable(true);
-            addressField.setEditable(true);
-            modifyClient.setVisible(false);
-            found = false;
+            nameField.requestFocus();
         }else if ( clients.size() == 1 ){
             Client c = clients.get(0);
             nameField.setText(c.getName());
             phoneField.setText(c.getPhone());
             addressField.setText(c.getAddress());
-            nameField.setEditable(false);
-            phoneField.setEditable(false);
-            addressField.setEditable(false);
-            found = true;
-            modifyClient.setVisible(true);
+            nameField.requestFocus();
+            idField.setText(c.getId().substring(1));
+            comboKind.setSelectedIndex(Constants.orderClientCategory.indexOf(c.getId().charAt(0)));
         }else{
             // This section shouldn't be reached.
             // There are 2 clients with the same RIF.
-            found = false;
             assert( false );
         }
     }
-
-    private void idFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idFieldFocusLost
-        if ( validateRif()){
-            try {
-                searchIt(comboKind.getSelectedItem().toString() + idField.getText());
-            } catch (SQLException ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
-                msb.show(this);
-                this.dispose();
-                Shared.reload();
-            }
-        }
-    }//GEN-LAST:event_idFieldFocusLost
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
         doIt();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void idFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idFieldKeyPressed
+
         Shared.getScreenSaver().actioned();
-        if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            nameField.requestFocus();
+        if ( evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB || evt.getKeyCode() == KeyEvent.VK_DOWN){
+
+            if ( idField.getText().isEmpty() ){
+                setClient(null);
+                this.dispose();
+                return;
+            }
+            if ( validateRif()){
+                String t = ("000000000000000" + idField.getText());
+                idField.setText(t.substring(t.length()-Constants.clientMaximumlength));
+                try {
+                    searchIt(comboKind.getSelectedItem().toString() + idField.getText());
+                } catch (SQLException ex) {
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
+                    msb.show(this);
+                    this.dispose();
+                    Shared.reload();
+                }
+            }
         }else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
-        }else if ( evt.getKeyCode() == KeyEvent.VK_UP ){
-            comboKind.requestFocus();
-        }else if ( evt.getKeyCode() == KeyEvent.VK_DOWN ){
-            nameField.requestFocus();
         }
     }//GEN-LAST:event_idFieldKeyPressed
 
@@ -384,14 +369,6 @@ public class ManageClient extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_phoneFieldKeyPressed
 
-    private void modifyClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyClientActionPerformed
-        nameField.requestFocus();
-        modified = true;
-        nameField.setEditable(true);
-        phoneField.setEditable(true);
-        addressField.setEditable(true);
-    }//GEN-LAST:event_modifyClientActionPerformed
-
     private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nameFieldActionPerformed
@@ -401,7 +378,7 @@ public class ManageClient extends javax.swing.JDialog {
     }//GEN-LAST:event_nameFieldFocusGained
 
     private void idFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idFieldKeyReleased
-        if ( idField.getText().length() > 9 ){
+        /*if ( idField.getText().length() > 9 ){
             idField.setText(idField.getText().substring(0, 9));
         }
 
@@ -411,7 +388,7 @@ public class ManageClient extends javax.swing.JDialog {
             if ( Character.isDigit(d) ){
                 idField.setText(idField.getText() + d);
             }
-        }
+        }*/
 
     }//GEN-LAST:event_idFieldKeyReleased
 
@@ -423,29 +400,16 @@ public class ManageClient extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_comboKindKeyPressed
 
-    private void idFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_idFieldActionPerformed
-
     private void addressFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyReleased
 
     }//GEN-LAST:event_addressFieldKeyReleased
 
     private void nameFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameFieldKeyReleased
 
-        if ( idField.getText().length() > 9 ){
-            idField.setText(idField.getText().substring(0, 9));
-        }
-        if ( nameField.getText().length() > 35 ){
-            nameField.setText(nameField.getText().substring(0,35));
-        }
+        /**/
     }//GEN-LAST:event_nameFieldKeyReleased
 
     private void addressFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_addressFieldKeyPressed
-
-        if ( addressField.getText().length() > 30 ){
-            addressField.setText(addressField.getText().substring(0,30));
-        }
 
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
@@ -472,7 +436,6 @@ public class ManageClient extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JButton modifyClient;
     private javax.swing.JTextField nameField;
     private javax.swing.JTextField phoneField;
     private javax.swing.JLabel phoneLabel;
@@ -482,13 +445,12 @@ public class ManageClient extends javax.swing.JDialog {
     private boolean validateRif(){
         idField.setText(idField.getText().toUpperCase());
         String text = idField.getText();
-        if ( !text.matches("([0-9]+)")){
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Especifique el rif!!");
-            idField.requestFocus();
+        if ( !text.matches("([0-9]+)") || text.length() > 9 ){
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Rif Invalido!! Solo se permiten hasta 9 digitos");
             msb.show(this);
             return false;
         }
-        idField.setText(("00000000" + text).substring(text.length()-1));
+        idField.setText(("000000000" + text).substring(Constants.clientMaximumlength));
         return true;
     }
 
@@ -498,9 +460,19 @@ public class ManageClient extends javax.swing.JDialog {
         if ( ! validateRif() ){
             idField.setSelectionStart(0);
             idField.setSelectionEnd(idField.getText().length());
-            idField.requestFocus();
             return;
         }
+
+        if ( addressField.getText().length() > 30 ){
+            addressField.setText(addressField.getText().substring(0,30));
+        }
+        if ( idField.getText().length() > 9 ){
+            idField.setText(idField.getText().substring(0, 9));
+        }
+        if ( nameField.getText().length() > 35 ){
+            nameField.setText(nameField.getText().substring(0,35));
+        }
+        
         if ( nameField.getText().isEmpty() || addressField.getText().isEmpty()
                 || phoneField.getText().isEmpty() ){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios");
@@ -512,19 +484,28 @@ public class ManageClient extends javax.swing.JDialog {
                 nameField.getText(), addressField.getText(), phoneField.getText());
 
         try {
-            if ( !found ){
-                ConnectionDrivers.createClient(myClient);
-            } else if ( modified ){
-                ConnectionDrivers.modifyClient(myClient);
-            }
+            ConnectionDrivers.updateClient(myClient);
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
             msb.show(this);
             this.dispose();
             Shared.reload();
         }
-        parent.setClient(myClient.getId().isEmpty()?null:myClient);
+
+        setClient(myClient);
+        
+        
         this.dispose();
+    }
+
+    private void setClient(Client myClient){
+        if ( parent instanceof MainRetailWindows ){
+            MainRetailWindows mrw = (MainRetailWindows)parent;
+            mrw.setClient(myClient.getId().isEmpty()?null:myClient);
+        }else if ( parent instanceof CreditNoteForm ){
+            CreditNoteForm mrw = (CreditNoteForm)parent;
+            mrw.setClient(myClient.getId().isEmpty()?null:myClient);
+        }
     }
     
 }

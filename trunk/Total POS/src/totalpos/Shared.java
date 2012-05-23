@@ -1041,11 +1041,29 @@ public class Shared {
         return holidays.contains(day);
     }
 
-    protected static boolean didItCome(String c){
+    /*protected static boolean didItCome(String c){
         return !(c == null  ||
                         (!c.equals("S") && !c.equals("L")
                           && !c.equals("R") && !c.equals("ML")
                             && !c.equals("V")));
+    }*/
+    protected static boolean didItCome(String c){
+        return (c != null  &&
+                        (c.equals("S") || c.equals("L")
+                          || c.equals("R")
+                            || c.equals("V")));
+    }
+
+    public static boolean isSunday(JTable presenceTable, int j) {
+        return presenceTable.getModel().getColumnName(j).split(" ")[0].equals("Dom");
+    }
+
+    public static boolean isSaturday(JTable presenceTable, int j) {
+        return presenceTable.getModel().getColumnName(j).split(" ")[0].equals("Sab");
+    }
+
+    public static boolean isHoliday(JTable presenceTable, int j) {
+        return isHoliday(presenceTable.getModel().getColumnName(j).split(" ")[1]);
     }
 
 }

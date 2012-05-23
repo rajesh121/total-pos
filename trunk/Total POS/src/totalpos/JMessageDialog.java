@@ -93,6 +93,7 @@ public class JMessageDialog extends javax.swing.JDialog {
         myMsg.jtxtException.setCaretPosition(0);            
         
         //myMsg.show();
+        myMsg.jcmdOK.requestFocus();
         myMsg.setVisible(true);
     }
     

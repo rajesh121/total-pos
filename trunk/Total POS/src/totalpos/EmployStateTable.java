@@ -107,7 +107,11 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
         model.setRowCount(0);
 
         for (Presence4Print presence4Print : fp) {
-            String []s = {presence4Print.getE().getName4Menu() , presence4Print.getMark1() , presence4Print.getMark2() , presence4Print.getMark3() , presence4Print.getMark4()};
+            String n4m = "Empleado Eliminado";
+            if ( presence4Print.getE() != null ){
+                n4m = presence4Print.getE().getName4Menu();
+            }
+            String []s = {n4m , presence4Print.getMark1() , presence4Print.getMark2() , presence4Print.getMark3() , presence4Print.getMark4()};
             model.addRow(s);
         }
     }

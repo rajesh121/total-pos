@@ -1362,7 +1362,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 }
             }
             if ( Math.abs(ConnectionDrivers.getTotalDeclared(myDay) - receiptTotal) > Constants.moneyExilon ){
-                SellWithoutStock sws = new SellWithoutStock((Frame) Shared.getMyMainWindows(), true, "Lo total declarado no coincide con lo facturado.", "sendODWithDiff");
+                SellWithoutStock sws = new SellWithoutStock((Frame) Shared.getMyMainWindows(), true, "Envio con diferencias.", "sendODWithDiff");
                 Shared.centerFrame(sws);
                 sws.setVisible(true);
                 if ( !sws.authorized ){
@@ -1739,10 +1739,12 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             System.out.println("Stock recalculado!");
             Shared.sendMail(Shared.getConfig("email2sendNegativeStock") , createNegativeStockEmail(), createNegativeStockSubject());
 
-            Shared.sendMail(Shared.getConfig("sendEmail"), createCloseEmail(), createCloseEmailSubject());
             if ( Constants.justEmail ){
                 return;
             }
+
+            //Shared.sendMail(Shared.getConfig("sendEmail"), createCloseEmail(), createCloseEmailSubject());
+
 
             IXMLElement data2Sent = new XMLElement("data");
             data2Sent.setAttribute("storeName", Shared.getConfig("storeName"));
@@ -1819,10 +1821,12 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos.",ex);
             msg.show(this);
             System.out.println(ex.getMessage() + ex.getStackTrace());
+            ex.printStackTrace();
         } catch (Exception ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error en el envío del cierre del día. Debe intentar de nuevo.",ex);
             msg.show(this);
             System.out.println(ex.getMessage() + ex.getStackTrace());
+            ex.printStackTrace();
         }
     }
 

@@ -70,6 +70,10 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
         }
     }
 
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     public void updateAll(){
         //TODO Set status in a Constant File
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -490,17 +494,33 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
-        workingFrame = new Working(this);
-        WaitSplash ws = new WaitSplash(this);
-
-        Shared.centerFrame(workingFrame);
-        workingFrame.setVisible(true);
-
-        ws.execute();
+        letsDoIt();
     }//GEN-LAST:event_acceptButtonActionPerformed
 
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            letsDoIt();
+        } else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_tableKeyPressed
+
+    private void letsDoIt(){
+
+        System.out.println("Entrando...");
+        if ( client != null && client.getId().equals("Contado") ){
+            client = null;
+        }
+
+        if ( client == null){
+            ManageClient mc = new ManageClient(this, true, client);
+            if ( mc.isOk ){
+                Shared.centerFrame(mc);
+                mc.setVisible(true);
+            }
+        }
+
+        if ( client != null){
             workingFrame = new Working(this);
             WaitSplash ws = new WaitSplash(this);
 
@@ -508,10 +528,8 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
             workingFrame.setVisible(true);
 
             ws.execute();
-        } else if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            this.dispose();
         }
-    }//GEN-LAST:event_tableKeyPressed
+    }
 
     private void reverseALLButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reverseALLButtonActionPerformed
         for (int i = 0; i < table.getRowCount(); ++i) {

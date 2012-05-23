@@ -43,9 +43,7 @@
                       <Component id="untilLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="untilLabelDate" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="storeNameLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="108" max="-2" attributes="0"/>
                       <Component id="departmentNameLabeLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -75,7 +73,6 @@
                   <Component id="untilLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="fromLabelDate" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="untilLabelDate" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="storeNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="departmentNameLabeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -124,7 +121,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){&#xa;        Component comp = super.prepareRenderer(renderer, row, column);&#xa;        if ( presenceTable.getModel().getColumnName(column).split(&quot; &quot;)[0].equals(&quot;Dom&quot;) || ( presenceTable.getModel().getColumnName(column).split(&quot; &quot;).length &gt; 1 &amp;&amp; Shared.isHoliday( presenceTable.getModel().getColumnName(column).split(&quot; &quot;)[1])) ){&#xa;            comp.setBackground(Color.YELLOW);&#xa;        }else{&#xa;            comp.setBackground(Constants.transparent);&#xa;        }&#xa;        return comp;&#xa;    }&#xa;}"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    @Override public Component prepareRenderer(TableCellRenderer renderer, int row, int column){&#xa;        Component comp = super.prepareRenderer(renderer, row, column);&#xa;        String[] s = presenceTable.getModel().getColumnName(column).split(&quot; &quot;);&#xa;        if ( Shared.isSunday(presenceTable, column) || Shared.isSaturday(presenceTable, column) || ( s.length &gt; 1 &amp;&amp; Shared.isHoliday( s[1] )) ){&#xa;            comp.setBackground(Color.YELLOW);&#xa;        }else{&#xa;            comp.setBackground(Constants.transparent);&#xa;        }&#xa;        return comp;&#xa;    }&#xa;}"/>
           </AuxValues>
         </Component>
       </SubComponents>
@@ -174,15 +171,6 @@
         <Property name="name" type="java.lang.String" value="untilLabelDate" noResource="true"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="storeNameLabel">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Courier New" size="14" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Departamento"/>
-        <Property name="name" type="java.lang.String" value="storeNameLabel" noResource="true"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JButton" name="send2ProfitButton">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -200,7 +188,6 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Courier New" size="14" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="N&#xf3;mina desde:"/>
         <Property name="name" type="java.lang.String" value="departmentNameLabeLabel" noResource="true"/>
       </Properties>
     </Component>

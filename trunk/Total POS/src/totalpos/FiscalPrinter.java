@@ -195,7 +195,7 @@ public class FiscalPrinter {
             calendar.setTime(dd);
 
             if ( client == null || client.getId() == null || client.getId().isEmpty() ){
-                client = new Client("Contado", "Contado", "", "");
+                client = new Client("", "", "", "");
             }
 
             int hour = calendar.get(Calendar.HOUR) == 0?12:calendar.get(Calendar.HOUR);
@@ -340,8 +340,6 @@ public class FiscalPrinter {
                     if ( !client.getAddress().trim().isEmpty() ) {
                         buffer.add("i0" + (line++) + "Direccion: " + client.getAddress());
                     }
-                }else{
-                    buffer.add("i0" + (line++) + "Cliente: Contado");
                 }
                 buffer.add("i0" + ( line++ ) + "Correlativo: " + ticketId);
                 buffer.add("i0" + ( line++ ) + "Caja: " + Shared.getFileConfig("myId"));
@@ -703,7 +701,7 @@ public class FiscalPrinter {
             int hourCN = calendarCN.get(Calendar.HOUR) == 0?12:calendarCN.get(Calendar.HOUR);
 
             if ( client == null || client.getId() == null || client.getId().isEmpty() || client.getId().equals("Contado") ){
-                client = new Client("Contado", "Contado", "", "");
+                client = new Client("", "", "", "");
             }
 
             System.out.println("Hora = " + hour + " _ " + hour);
@@ -819,8 +817,6 @@ public class FiscalPrinter {
                     if ( !client.getAddress().trim().isEmpty() ) {
                         buffer.add("i0" + (line++) + "Direccion: " + client.getAddress());
                     }
-                }else{
-                    buffer.add("i0" + (line++) + "Cliente: Contado");
                 }
                 buffer.add("i0" + ( line++ ) + "Correlativo: " + myId);
                 buffer.add("i0" + ( line++ ) + "Factura: " + ticketId);

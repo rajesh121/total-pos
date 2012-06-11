@@ -61,7 +61,7 @@ public class AddExpenses extends javax.swing.JInternalFrame {
         conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
 
         for (Expense e : expenses) {
-            String[] s = {e.getConcept(),Constants.df.format(e.getQuant()),e.getDescription()};
+            String[] s = {e.getConcept(),Shared.df.format(e.getQuant()),e.getDescription()};
             model.addRow(s);
         }
     }

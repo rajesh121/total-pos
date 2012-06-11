@@ -249,7 +249,7 @@ public class AddReport extends JInternalFrame {
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
         if ( !nameField.getText().isEmpty() ){
             try {
-                BufferedWriter out = new BufferedWriter(new FileWriter(Constants.reportFolder+"/"+nameField.getText()));
+                BufferedWriter out = new BufferedWriter(new FileWriter(Shared.getConfig("reportFolder")+"/"+nameField.getText()));
                 out.write("Title==" + titleField.getText()+"\n");
                 out.write("Columns=="+columnField.getText()+"\n");
                 out.write("ShowNumbers=="+(showNumbersCheckBox.isSelected()?"True":"False")+"\n");

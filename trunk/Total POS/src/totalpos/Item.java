@@ -22,13 +22,12 @@ public class Item implements Serializable{
     private String buyUnits;
     private int currentStock;
     private List<Price> price;
-    private List<Cost> cost;
     private List<String> barcodes;
     private boolean status;
     private String imageAddr;
     private String descuento;
 
-    public Item(String code, String description, Date registerDate, String mark, String sector, String sublineCode, String mainBarcode, String model, String sellUnits, String buyUnits, int currentStock, List<Price> price, List<Cost> cost, List<String> barcodes, boolean status, String imageAddr, String descuento) {
+    public Item(String code, String description, Date registerDate, String mark, String sector, String sublineCode, String mainBarcode, String model, String sellUnits, String buyUnits, int currentStock, List<Price> price, List<String> barcodes, boolean status, String imageAddr, String descuento) {
         this.code = code;
         this.description = description;
         this.registerDate = registerDate;
@@ -41,7 +40,6 @@ public class Item implements Serializable{
         this.buyUnits = buyUnits;
         this.currentStock = currentStock;
         this.price = price;
-        this.cost = cost;
         this.barcodes = barcodes;
         this.status = status;
         this.imageAddr = imageAddr;
@@ -61,7 +59,6 @@ public class Item implements Serializable{
         this.buyUnits = o.getBuyUnits();
         this.currentStock = o.getCurrentStock();
         this.price = o.getPrice();
-        this.cost = o.getCost();
         this.barcodes = o.getBarcodes();
         this.status = o.isStatus();
         this.imageAddr = o.getImageAddr();
@@ -78,10 +75,6 @@ public class Item implements Serializable{
 
     public String getCode() {
         return code;
-    }
-
-    public List<Cost> getCost() {
-        return Collections.unmodifiableList(cost);
     }
 
     public int getCurrentStock() {

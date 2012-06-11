@@ -129,7 +129,7 @@ public class ChangeIdleTime extends JInternalFrame {
                         ConnectionDrivers.initializeConfig();
                         this.dispose();
                     } catch (SQLException ex) {
-                        if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+                        if ( ex.getMessage().matches(Shared.getConfig("isDataRepeated")) ){
                             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
                             msb.show(this);
                         }else{

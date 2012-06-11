@@ -6,6 +6,7 @@ import java.awt.Window;
 import java.io.File;
 import java.net.NoRouteToHostException;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import org.jfree.ui.ExtensionFileFilter;
 
@@ -23,7 +24,7 @@ public class UpdateStock implements Doer{
     }
 
     public void updateStock(){
-        workingFrame = new Working((Window) Shared.getMyMainWindows());
+        workingFrame = new Working((JFrame) Shared.getMyMainWindows());
         WaitSplash ws = new WaitSplash(this);
 
         Shared.centerFrame(workingFrame);
@@ -39,10 +40,10 @@ public class UpdateStock implements Doer{
 
             if ( mode.equals("FTP") ){
                 FTPClient client = new FTPClient();
-                client.connect(Constants.ftpHost);
-                client.login(Constants.ftpUser, Constants.ftpPass);
-                client.changeDirectory(Constants.ftpDir);
-                File ff = new File(Constants.tmpDir + Constants.tmpFtpFileName);
+                client.connect(Shared.getConfig("ftpHost"));
+                client.login(Shared.getConfig("ftpUser"), Shared.getConfig("ftpPass"));
+                client.changeDirectory(Shared.getConfig("ftpDir"));
+                File ff = new File(Constants.tmpDir + Shared.getConfig("tmpFtpFileName"));
                 client.download("GT99_A09.rar", ff );
                 client.disconnect(false);
                 Shared.prepareMovements( ff );

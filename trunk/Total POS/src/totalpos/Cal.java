@@ -198,7 +198,7 @@ public class Cal extends JPanel {
           // fire some kind of DateChanged event here.
           // Also, build a similar daySetter for day-of-week btns.
         }
-        String ans = yy + "-" + Constants.df2int.format(mm+1) + "-" + Constants.df2int.format(dd);
+        String ans = yy + "-" + Shared.df2int.format(mm+1) + "-" + Shared.df2int.format(dd);
 
         System.out.println("ans = " + ans);
 

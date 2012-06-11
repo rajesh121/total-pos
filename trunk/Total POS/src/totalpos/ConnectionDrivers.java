@@ -56,8 +56,8 @@ import srvSap.ZFISDATAFISCAL;
 public class ConnectionDrivers {
 
     protected static ComboPooledDataSource cpds ;
-    protected static ComboPooledDataSource cpdsMirror; // Just to mirror
-    protected static ComboPooledDataSource cpdsProfit = null; // Connection Profit
+    protected static ComboPooledDataSource cpdsMirror; // mirror
+    protected static ComboPooledDataSource cpdsProfit = null; // Profit Connection
     protected static boolean mirrorConnected = false;
 
     /** Crea la piscina de conexiones.
@@ -73,14 +73,14 @@ public class ConnectionDrivers {
             String sT;
             if ( Shared.storeIp != null ){
                 sT = "jdbc:mysql://" + Shared.storeIp + "/" +
-                            Constants.dbName;
+                            Shared.getFileConfig("dbName");
             }else{
                 sT = "jdbc:mysql://" + Shared.getFileConfig("Server") + "/" +
-                            Constants.dbName;
+                            Shared.getFileConfig("dbName");
             }
             cpds.setJdbcUrl(sT);
-            cpds.setUser(Constants.dbUser);
-            cpds.setPassword(Constants.dbPassword);
+            cpds.setUser(Shared.getFileConfig("dbUser"));
+            cpds.setPassword(Shared.getFileConfig("dbPassword"));
 
             return true;
 
@@ -91,16 +91,16 @@ public class ConnectionDrivers {
         }
         
     }
-
+ 
     protected static boolean initializeProfit(){
         try {
             cpdsProfit = new ComboPooledDataSource();
             cpdsProfit.setCheckoutTimeout(Constants.dbTimeout);
             cpdsProfit.setDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://" + Constants.serverSQLServerProfitAdd + ":" + Constants.portSqlServer + ";DatabaseName=" + Constants.dbProfitName;
+            String url = "jdbc:sqlserver://" + Shared.getConfig("serverSQLServerProfitAdd") + ":" + Shared.getConfig("portSqlServer") + ";DatabaseName=" + Shared.getConfig("profitDatabase");
             cpdsProfit.setJdbcUrl(url);
-            cpdsProfit.setUser(Constants.dbSqlServerUser);
-            cpdsProfit.setPassword(Constants.dbSqlServerPassword);
+            cpdsProfit.setUser(Shared.getFileConfig("dbSqlServerUser"));
+            cpdsProfit.setPassword(Shared.getFileConfig("dbSqlServerPassword"));
 
             return true;
 
@@ -121,10 +121,10 @@ public class ConnectionDrivers {
             cpds = new ComboPooledDataSource();
             cpds.setDriverClass("com.mysql.jdbc.Driver");
             String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" +
-                            Constants.mirrorDbName;
+                            Shared.getFileConfig("mirrorDbName");
             cpds.setJdbcUrl(sT);
-            cpds.setUser(Constants.mirrordbUser);
-            cpds.setPassword(Constants.mirrordbPassword);
+            cpds.setUser(Shared.getFileConfig("mirrordbUser"));
+            cpds.setPassword(Shared.getFileConfig("mirrordbPassword"));
 
             return true;
 
@@ -153,7 +153,7 @@ public class ConnectionDrivers {
         if ( ! rs.next() ){
             c.close();
             rs.close();
-            throw new Exception(Constants.wrongPasswordMsg);
+            throw new Exception(Shared.getConfig("wrongPasswordMsg"));
         }
         c.close();
         rs.close();
@@ -537,23 +537,6 @@ public class ConnectionDrivers {
         c.close();
     }
 
-    private static List<Cost> listCosts(String code) throws SQLException{
-        List<Cost> ans = new LinkedList<Cost>();
-
-        Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement( "select monto , fecha from costo where codigo_de_articulo = ? " );
-        stmt.setString(1, code);
-        ResultSet rs = stmt.executeQuery();
-
-        while (rs.next()) {
-            ans.add(new Cost(rs.getDate("fecha"), rs.getDouble("monto")));
-        }
-        c.close();
-        rs.close();
-
-        return ans;
-    }
-
     private static List<Price> listPrices(String code) throws SQLException{
         List<Price> ans = new LinkedList<Price>();
 
@@ -622,7 +605,6 @@ public class ConnectionDrivers {
                         rs.getString("unidad_compra"),
                         rs.getInt("existencia_actual"),
                         listPrices(rs.getString("codigo")),
-                        listCosts(rs.getString("codigo")),
                         listBarcodes(rs.getString("codigo")),
                         rs.getBoolean("bloqueado"),
                         rs.getString("imagen"),
@@ -662,7 +644,6 @@ public class ConnectionDrivers {
                         rs.getString("unidad_compra"),
                         rs.getInt("existencia_actual"),
                         listPrices(rs.getString("codigo")),
-                        listCosts(rs.getString("codigo")),
                         listBarcodes(rs.getString("codigo")),
                         rs.getBoolean("bloqueado"),
                         rs.getString("imagen"),
@@ -706,7 +687,6 @@ public class ConnectionDrivers {
                         rs.getString("unidad_compra"),
                         rs.getInt("existencia_actual"),
                         listPrices(rs.getString("codigo")),
-                        listCosts(rs.getString("codigo")),
                         listBarcodes(rs.getString("codigo")),
                         rs.getBoolean("bloqueado"),
                         rs.getString("imagen"),
@@ -1078,7 +1058,7 @@ public class ConnectionDrivers {
     protected static void createAssign(Assign a) throws SQLException{
 
         if ( ! assignIsOk(a) ){
-            throw new SQLException(Constants.duplicatedMsg);
+            throw new SQLException(Shared.getConfig("duplicatedMsg"));
         }
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1210,7 +1190,6 @@ public class ConnectionDrivers {
                         rs.getString("unidad_compra"),
                         rs.getInt("existencia_actual"),
                         listPrices(rs.getString("codigo")),
-                        listCosts(rs.getString("codigo")),
                         listBarcodes(rs.getString("codigo")),
                         rs.getBoolean("bloqueado"),
                         rs.getString("imagen"),
@@ -1249,7 +1228,6 @@ public class ConnectionDrivers {
                             rs.getString("unidad_compra"),
                             rs.getInt("existencia_actual"),
                             listPrices(rs.getString("codigo")),
-                            listCosts(rs.getString("codigo")),
                             listBarcodes(rs.getString("codigo")),
                             rs.getBoolean("bloqueado"),
                             rs.getString("imagen"),
@@ -1292,7 +1270,6 @@ public class ConnectionDrivers {
                             rs.getString("unidad_compra"),
                             rs.getInt("existencia_actual"),
                             listPrices(rs.getString("codigo")),
-                            listCosts(rs.getString("codigo")),
                             listBarcodes(rs.getString("codigo")),
                             rs.getBoolean("bloqueado"),
                             rs.getString("imagen"),
@@ -1388,6 +1365,51 @@ public class ConnectionDrivers {
                             rs.getString("codigo_interno_alternativo")
                         )
                     );
+        }
+        c.close();
+        rs.close();
+
+        return ans;
+    }
+
+    protected static List<Receipt> listThisCreditNote(String internal_code) throws SQLException{
+        List<Receipt> ans = new ArrayList<Receipt>();
+
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select nc.codigo_interno, nc.estado, nc.fecha_creacion, "
+                + "nc.fecha_impresion, fac.codigo_de_cliente , nc.total_sin_iva, nc.total_con_iva, "
+                + "nc.iva, nc.impresora, nc.numero_fiscal, "
+                + "nc.numero_reporte_z, nc.codigo_de_usuario, nc.cantidad_de_articulos , nc.identificador_turno , nc.codigo_interno_alternativo "
+                + "from nota_de_credito nc , factura fac where nc.codigo_factura = fac.codigo_interno and nc.estado='Nota' "
+                + " and fac.identificador_pos = ? and fac.codigo_interno = ? ");
+
+        stmt.setString(1, Shared.getFileConfig("myId"));
+        stmt.setString(2, internal_code);
+        ResultSet rs = stmt.executeQuery();
+
+        while ( rs.next() ){
+            Receipt r = new Receipt(
+                            rs.getString("codigo_interno"),
+                            rs.getString("estado"),
+                            rs.getTimestamp("fecha_creacion"),
+                            rs.getTimestamp("fecha_impresion"),
+                            rs.getString("codigo_de_cliente"),
+                            rs.getDouble("total_sin_iva"),
+                            rs.getDouble("total_con_iva"),
+                            .0,
+                            rs.getDouble("iva"),
+                            rs.getString("impresora"),
+                            rs.getString("numero_fiscal"),
+                            rs.getString("numero_reporte_z"),
+                            rs.getString("codigo_de_usuario"),
+                            rs.getInt("cantidad_de_articulos"),
+                            listItems2CN(rs.getString("codigo_interno")),
+                            rs.getString("identificador_turno"),
+                            rs.getString("codigo_interno_alternativo")
+                        );
+            if ( !r.getItems().isEmpty() ){
+                ans.add(r);
+            }
         }
         c.close();
         rs.close();
@@ -1766,7 +1788,8 @@ public class ConnectionDrivers {
         PreparedStatement stmt = c.prepareStatement("select id , descripcion, lote, identificador_pos , tipo from punto_de_venta_de_banco "
                 + "where ( tipo = ?  or tipo = ? ) ");
         stmt.setString(1, kindbpos);
-        stmt.setString(2, Constants.kindOfBPOS[Constants.kindOfBPOS.length-1]);
+        String[] kOfPos = Shared.getConfig("kindOfBPOS").split(",");
+        stmt.setString(2, kOfPos[kOfPos.length-1]);
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
@@ -1795,23 +1818,25 @@ public class ConnectionDrivers {
                 + "values ( now(), ? , ? , ? , ? , ? , ?)");
             stmt.setString(1, payForm.getReceiptId());
             stmt.setString(2, payForm.getFormWay());
+            System.out.println("Agregando <" + payForm.getbPos() + ">");
             stmt.setString(3, payForm.getbPos());
             stmt.setString(4, payForm.getLot());
             stmt.setDouble(5, payForm.getQuant());
             stmt.setString(6, Shared.getFileConfig("myId"));
+            System.out.println("pos = " + Shared.getFileConfig("myId") );
             stmt.executeUpdate();
-            if ( payForm.getFormWay().equals(Constants.cashPaymentName) ){
+            if ( payForm.getFormWay().equals(Shared.getConfig("cashPaymentName")) ){
                 addCash(payForm.getQuant(), Shared.getFileConfig("myId"));
-            }else if ( payForm.getFormWay().equals(Constants.debitPaymentName) ){
+            }else if ( payForm.getFormWay().equals(Shared.getConfig("debitPaymentName")) ){
                 addDebit(payForm.getQuant(), Shared.getFileConfig("myId"));
-            }else if ( payForm.getFormWay().equals(Constants.creditPaymentName) ){
+            }else if ( payForm.getFormWay().equals(Shared.getConfig("creditPaymentName")) ){
                 addCredit(payForm.getQuant(), Shared.getFileConfig("myId"));
-            }else if ( payForm.getFormWay().equals(Constants.cashPaymentName) ){
+            }else if ( payForm.getFormWay().equals(Shared.getConfig("cashPaymentName")) ){
                 addCash(-1*payForm.getQuant(), Shared.getFileConfig("myId"));
-            }else if ( payForm.getFormWay().equals(Constants.CNPaymentName) ){
+            }else if ( payForm.getFormWay().equals(Shared.getConfig("CNPaymentName")) ){
                 addCreditNote(payForm.getQuant(), Shared.getFileConfig("myId"));
-            } else if ( payForm.getFormWay().equals(Constants.americanExpressPaymentName) ){
-                // TODO CREATE TABLES FOR AMERICAN EXPRESS
+            } else if ( payForm.getFormWay().equals(Shared.getConfig("americanExpressPaymentName")) ){
+                // TODO CREATE FIELDS FOR AMERICAN EXPRESS
             }else {
                 // This should not happend
                 assert(false);
@@ -2401,12 +2426,12 @@ public class ConnectionDrivers {
         ResultSet rs = stmt.executeQuery();
 
         while ( rs.next() ){
-            System.out.println("Numero: " + Constants.df.format((ConnectionDrivers.getSumTotalWithIva(day,"factura","Facturada", true , rs.getString("codigo_punto_de_venta")))));
+            System.out.println("Numero: " + Shared.df.format((ConnectionDrivers.getSumTotalWithIva(day,"factura","Facturada", true , rs.getString("codigo_punto_de_venta")))));
             Object[] s = {rs.getString("codigo_punto_de_venta"),rs.getString("impresora")
-                    , Constants.df.format((ConnectionDrivers.getSumTotalWithIva(day,"factura","Facturada", true , rs.getString("codigo_punto_de_venta"))
+                    , Shared.df.format((ConnectionDrivers.getSumTotalWithIva(day,"factura","Facturada", true , rs.getString("codigo_punto_de_venta"))
                         - ConnectionDrivers.getSumTotalWithIva(day,"nota_de_credito","Nota",false, rs.getString("codigo_punto_de_venta")))
                         *(Shared.getIva()/100.0+1.0))
-                    ,Constants.df.format(rs.getDouble("facturado_impresora")), rs.getBoolean("reporteZ") };
+                    ,Shared.df.format(rs.getDouble("facturado_impresora")), rs.getBoolean("reporteZ") };
             ans.addRow(s);
         }
 
@@ -2641,18 +2666,18 @@ public class ConnectionDrivers {
                 // Admin has no mirror
                 return;
             }
-            String cmd = "mysqldump -u " + Constants.dbUser + " -p"+
-                    Constants.dbPassword + " -h " + Shared.getFileConfig("Server") + " "
-                    + Constants.dbName + " " + tableName + " | mysql -u " + Constants.mirrordbUser
-                    + " -p" + Constants.mirrordbPassword + " " + "-h " + Shared.getFileConfig("ServerMirror")
-                    + " " + Constants.mirrorDbName ;
-            FileWriter fstream = new FileWriter(Constants.tmpDir + Constants.scriptReplicateName);
+            String cmd = "mysqldump -u " + Shared.getFileConfig("dbUser") + " -p"+
+                    Shared.getFileConfig("dbPassword") + " -h " + Shared.getFileConfig("Server") + " "
+                    + Shared.getFileConfig("dbName") + " " + tableName + " | mysql -u " + Shared.getFileConfig("mirrordbUser")
+                    + " -p" + Shared.getFileConfig("mirrordbPassword") + " " + "-h " + Shared.getFileConfig("ServerMirror")
+                    + " " + Shared.getFileConfig("mirrorDbName") ;
+            FileWriter fstream = new FileWriter(Constants.tmpDir + Shared.getConfig("scriptReplicateName"));
             BufferedWriter out = new BufferedWriter(fstream);
 
             out.write(cmd);
             out.close();
 
-            Process process = Runtime.getRuntime().exec(Constants.tmpDir + Constants.scriptReplicateName);
+            Process process = Runtime.getRuntime().exec(Constants.tmpDir + Shared.getConfig("scriptReplicateName"));
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
@@ -2661,7 +2686,7 @@ public class ConnectionDrivers {
                 ;
             }
 
-            File f = new File(Constants.tmpDir + Constants.scriptReplicateName);
+            File f = new File(Constants.tmpDir + Shared.getConfig("scriptReplicateName"));
             f.delete();
             } catch (IOException ex) {
                 Logger.getLogger(ConnectionDrivers.class.getName()).log(Level.SEVERE, null, ex);
@@ -2679,10 +2704,10 @@ public class ConnectionDrivers {
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Constants.mirrorDbName;
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Shared.getFileConfig("mirrorDbName");
             cpdsMirror.setJdbcUrl(sT);
-            cpdsMirror.setUser(Constants.mirrordbUser);
-            cpdsMirror.setPassword(Constants.mirrordbPassword);
+            cpdsMirror.setUser(Shared.getFileConfig("mirrordbUser"));
+            cpdsMirror.setPassword(Shared.getFileConfig("mirrordbPassword"));
             mirrorConnected = true;
         }
 
@@ -2728,10 +2753,10 @@ public class ConnectionDrivers {
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Constants.mirrorDbName;
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Shared.getFileConfig("mirrorDbName");
             cpdsMirror.setJdbcUrl(sT);
-            cpdsMirror.setUser(Constants.mirrordbUser);
-            cpdsMirror.setPassword(Constants.mirrordbPassword);
+            cpdsMirror.setUser(Shared.getFileConfig("mirrordbUser"));
+            cpdsMirror.setPassword(Shared.getFileConfig("mirrordbPassword"));
             mirrorConnected = true;
         }
 
@@ -2775,10 +2800,10 @@ public class ConnectionDrivers {
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Constants.mirrorDbName;
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Shared.getFileConfig("mirrorDbName");
             cpdsMirror.setJdbcUrl(sT);
-            cpdsMirror.setUser(Constants.mirrordbUser);
-            cpdsMirror.setPassword(Constants.mirrordbPassword);
+            cpdsMirror.setUser(Shared.getFileConfig("mirrordbUser"));
+            cpdsMirror.setPassword(Shared.getFileConfig("mirrordbPassword"));
             mirrorConnected = true;
         }
 
@@ -2814,10 +2839,10 @@ public class ConnectionDrivers {
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
-            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Constants.mirrorDbName;
+            String sT = "jdbc:mysql://" + Shared.getFileConfig("ServerMirror") + "/" + Shared.getFileConfig("mirrorDbName");
             cpdsMirror.setJdbcUrl(sT);
-            cpdsMirror.setUser(Constants.mirrordbUser);
-            cpdsMirror.setPassword(Constants.mirrordbPassword);
+            cpdsMirror.setUser(Shared.getFileConfig("mirrordbUser"));
+            cpdsMirror.setPassword(Shared.getFileConfig("mirrordbPassword"));
             mirrorConnected = true;
         }
 
@@ -3237,10 +3262,10 @@ public class ConnectionDrivers {
         System.out.println("MANDT\tIDTIENDA\tIDIMPFISCAL\tFECHA\tMONTO\tNUMREPZ\tULTFACTURA\tNUMFACD\tULTNOTACREDITO\tNUMNCD");
         while( rs.next() ){
             ZFISDATAFISCAL zfdf = new ZFISDATAFISCAL();
-            zfdf.setMANDT(Constants.of.createZFISDATAFISCALMANDT(Constants.mant));
-            System.out.print(Constants.mant + "\t");
-            zfdf.setIDTIENDA(Constants.of.createZFISDATAFISCALIDTIENDA(Constants.storePrefix+Shared.getConfig("storeName")));
-            System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\t");
+            zfdf.setMANDT(Constants.of.createZFISDATAFISCALMANDT(Shared.getConfig("mant")));
+            System.out.print(Shared.getConfig("mant") + "\t");
+            zfdf.setIDTIENDA(Constants.of.createZFISDATAFISCALIDTIENDA(Shared.getConfig("storePrefix")+Shared.getConfig("storeName")));
+            System.out.print(Shared.getConfig("storePrefix")+Shared.getConfig("storeName") + "\t");
             if ( rs.getString("reporteZ").equals("0") ){
                 System.out.println("No se ha sacado el reporte Z de la impresora de la caja " + rs.getString("codigo_punto_de_venta"));
                 zfdf.setIDIMPFISCAL(Constants.of.createZFISDATAFISCALIDIMPFISCAL(ConnectionDrivers.getThisPrinterId( rs.getString("codigo_punto_de_venta"))));
@@ -3874,13 +3899,70 @@ public class ConnectionDrivers {
         IXMLElement xml = (IXMLElement) parser.parse();
 
         System.out.println(xml.getName());
-        TreeSet<String> movements = new TreeSet<String>();
 
         PreparedStatement stmtDetailsMovements = c.prepareStatement("insert into detalles_movimientos"
                     + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( ? , ? , ? , ? )");
-        PreparedStatement stmtCurrentStock = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
+
+        PreparedStatement stmtInsert = c.prepareStatement("insert ignore into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
+                    + "values (? , now() , ? , ? , ?)");
+
+        PreparedStatement stmtItem = c.prepareStatement("insert ignore into articulo ( codigo , descripcion , fecha_registro , "
+                    + "codigo_de_barras , modelo , unidad_venta, "
+                    + "existencia_actual, bloqueado, imagen, descuento ) values (?,?,now(),?,?,?,0,0,?,?)");
+        PreparedStatement stmtBarcode = c.prepareStatement("insert IGNORE into codigo_de_barras(codigo_de_articulo,codigo_de_barras) values(?,?)");
+
+
+        PreparedStatement stmtUpdateItem = c.prepareStatement("update articulo set descripcion = ?  , "
+            + "codigo_de_barras = ? , modelo = ? , unidad_venta = ? , "
+            + " descuento  = ? where codigo = ?");
+
+        PreparedStatement stmtUpdatePrice = c.prepareStatement("update articulo set descuento = ? where codigo = ? ");
+        PreparedStatement stmtDeletePrice = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = curdate() ");
+        PreparedStatement stmtInsertPrice = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , curdate() ) ");
+
+
         for (Object x : xml.getChildren()) {
             XMLElement xmlI = (XMLElement)x;
+
+            stmtInsert.setString(1, xmlI.getAttribute("MBLNR",""));
+            stmtInsert.setString(2, "Nuevo Movimiento Inventario");
+            stmtInsert.setString(3, xmlI.getAttribute("MBLNR",""));
+            stmtInsert.setString(4, "");
+            stmtInsert.executeUpdate();
+
+            stmtUpdateItem.setString(1, xmlI.getAttribute("MAKTG",""));
+            stmtUpdateItem.setString(2, xmlI.getAttribute("EAN11",""));
+            stmtUpdateItem.setString(3, xmlI.getAttribute("MATKL",""));
+            stmtUpdateItem.setString(4, xmlI.getAttribute("MSEH3",""));
+            stmtUpdateItem.setString(5, xmlI.getAttribute("DISC",""));
+            stmtUpdateItem.setString(6, xmlI.getAttribute("MATNR",""));
+            int ans = stmtUpdateItem.executeUpdate();
+
+            if ( ans == 0 ){
+                stmtItem.setString(1, xmlI.getAttribute("MATNR",""));
+                stmtItem.setString(2, xmlI.getAttribute("MAKTG",""));
+                stmtItem.setString(3, xmlI.getAttribute("EAN11",""));
+                stmtItem.setString(4, xmlI.getAttribute("MATKL",""));
+                stmtItem.setString(5, xmlI.getAttribute("MSEH3",""));
+                stmtItem.setString(6, Shared.getConfig("photoDir") + xmlI.getAttribute("MATNR","") + ".JPG");
+                stmtItem.setString(7, xmlI.getAttribute("DISC",""));
+                stmtItem.executeUpdate();
+            }
+
+            stmtUpdatePrice.setString(1, xmlI.getAttribute("",""));
+            stmtUpdatePrice.setString(2, xmlI.getAttribute("MATNR",""));
+            stmtUpdatePrice.executeUpdate();
+
+            stmtDeletePrice.setString(1, xmlI.getAttribute("MATNR",""));
+            stmtDeletePrice.executeUpdate();
+
+            stmtInsertPrice.setString(1, xmlI.getAttribute("MATNR",""));
+            stmtInsertPrice.setString(2, xmlI.getAttribute("PRICE",""));
+            stmtInsertPrice.executeUpdate();
+
+            stmtBarcode.setString(1, xmlI.getAttribute("MATNR",""));
+            stmtBarcode.setString(2, xmlI.getAttribute("EAN11",""));
+            stmtBarcode.executeUpdate();
 
             // TODO QUITAR
             /*if ( !xmlI.getAttribute("MBLNR").equals("4900458135") && !xmlI.getAttribute("MBLNR").equals("4900458134")
@@ -3892,66 +3974,23 @@ public class ConnectionDrivers {
                     && !xmlI.getAttribute("MBLNR").equals("4900447581")){
                 continue;
             }*/
-            int reason = Shared.calculateReason(xmlI.getAttribute("BWART"), xmlI.getAttribute("SHKZG"));
+            int reason = Shared.calculateReason(xmlI.getAttribute("BWART",""), xmlI.getAttribute("SHKZG",""));
             // TODO QUITAR
             //reason *= -1;
 
-            System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR"));
+            System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR","") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR",""));
             
-            stmtDetailsMovements.setString(1, xmlI.getAttribute("MBLNR"));
-            stmtDetailsMovements.setString(2, xmlI.getAttribute("MATNR"));
-            stmtDetailsMovements.setInt(3, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-            stmtDetailsMovements.setString(4, xmlI.getAttribute("BWART"));
+            stmtDetailsMovements.setString(1, xmlI.getAttribute("MBLNR",""));
+            stmtDetailsMovements.setString(2, xmlI.getAttribute("MATNR",""));
+            stmtDetailsMovements.setInt(3, reason * Integer.parseInt(xmlI.getAttribute("MENGE","").split("\\.")[0]));
+            stmtDetailsMovements.setString(4, xmlI.getAttribute("BWART",""));
             stmtDetailsMovements.executeUpdate();
-
-            movements.add(xmlI.getAttribute("MBLNR"));
-
-            System.out.println("Movimiento " + reason + " articulo " + xmlI.getAttribute("MATNR"));
-            if ( reason == 0 ){
-                // we are in problems... =(
-            }else{
-                stmtCurrentStock.setString(2, xmlI.getAttribute("MATNR"));
-                stmtCurrentStock.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-                int ans = stmtCurrentStock.executeUpdate();
-                if ( ans == 0 ){
-                    Shared.itemsNeeded.add(xmlI);
-                }
-            }
+            System.out.println("Movimiento " + reason + " articulo " + xmlI.getAttribute("MATNR",""));
         }
 
         xml = null;
-
-        PreparedStatement stmtInsert = c.prepareStatement("insert into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
-                    + "values (? , now() , ? , ? , ?)");
-        Iterator<String> itrs = movements.iterator();
-        while(itrs.hasNext()){
-            String id = itrs.next();
-            
-            stmtInsert.setString(1, id);
-            stmtInsert.setString(2, "Nuevo Movimiento Inventario");
-            stmtInsert.setString(3, id);
-            stmtInsert.setString(4, "");
-            stmtInsert.executeUpdate();
-        }
-
-        movements = null;
         
-
-        XMLElement ans = new XMLElement("ITEMSNEEDED");
-
-        for( XMLElement it : Shared.itemsNeeded){
-            IXMLElement ansi = ans.createElement("ITEM");
-            ans.addChild(ansi);
-            ansi.setContent( it.getAttribute("MATNR") );
-        }
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLWriter xmlw = new XMLWriter(baos);
-        xmlw.write(ans);
-        String tAns = baos.toString() + "";
-        baos = null;
-        xmlw = null;
-        return tAns;
+        return "";
     }
 
     static void createItems(Connection c, String ansDescriptions, boolean checkReason) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
@@ -4097,8 +4136,8 @@ public class ConnectionDrivers {
             ConnectionDrivers.setClient(c,client,actualId);
         }
         ConnectionDrivers.setPritingHour(c,actualId, "factura");
-        ConnectionDrivers.finishReceipt(c, actualId);
         ConnectionDrivers.ensureTotalReceipt(c, actualId);
+        ConnectionDrivers.finishReceipt(c, actualId);
 
         c.close();
     }
@@ -4148,67 +4187,95 @@ public class ConnectionDrivers {
         System.out.println(xml.getName());
         String lastMovement = null;
 
-        PreparedStatement stmt = c.prepareStatement("insert into detalles_movimientos"
+        PreparedStatement stmtDetailsMovements = c.prepareStatement("insert into detalles_movimientos"
                     + "(identificador_movimiento,codigo_articulo,cantidad_articulo,tipo) values ( concat(curdate(),\'-II\') , ? , ? , ? )");
-        PreparedStatement stmtItem = c.prepareStatement("update articulo set existencia_actual = existencia_actual + ? where codigo = ? ");
+
+        PreparedStatement stmtInsert = c.prepareStatement("insert ignore into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
+                    + "values (concat(curdate(),\'-II\') , now() , 'Stock Inicial' , concat(curdate(),\'-II\') , '')");
+        stmtInsert.executeUpdate();
+
+        PreparedStatement stmtItem = c.prepareStatement("insert ignore into articulo ( codigo , descripcion , fecha_registro , "
+                    + "codigo_de_barras , modelo , unidad_venta, "
+                    + "existencia_actual, bloqueado, imagen, descuento ) values (?,?,now(),?,?,?,0,0,?,?)");
+
+        PreparedStatement stmtUpdateItem = c.prepareStatement("update articulo set descripcion = ?  , "
+                    + "codigo_de_barras = ? , modelo = ? , unidad_venta = ? , "
+                    + " descuento  = ? where codigo = ?");
+
+        PreparedStatement stmtBarcode = c.prepareStatement("insert IGNORE into codigo_de_barras(codigo_de_articulo,codigo_de_barras) values(?,?)");
+
+        PreparedStatement stmtMI = c.prepareStatement("insert into configuracion (`Key` , `Value` , nombre ) "
+                + "values ( ?, ?, ?)");
+
+        PreparedStatement stmtDeletePrice = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = curdate() ");
+        PreparedStatement stmtInsertPrice = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , curdate() ) ");
 
         for (Object x : xml.getChildren()) {
             XMLElement xmlI = (XMLElement)x;
 
-            // TODO QUITAR
-            /*if ( !xmlI.getAttribute("MBLNR").equals("4900392898") && !xmlI.getAttribute("MBLNR").equals("4900392871") ){
-                continue;
-            }*/
-            int reason = 1;
+            stmtUpdateItem.setString(1, xmlI.getAttribute("MAKTG",""));
+            stmtUpdateItem.setString(2, xmlI.getAttribute("EAN11",""));
+            stmtUpdateItem.setString(3, xmlI.getAttribute("MATKL",""));
+            stmtUpdateItem.setString(4, xmlI.getAttribute("MSEH3",""));
+            stmtUpdateItem.setString(5, xmlI.getAttribute("DISC",""));
+            stmtUpdateItem.setString(6, xmlI.getAttribute("MATNR",""));
+            int ans = stmtUpdateItem.executeUpdate();
+            
+            if ( ans == 0 ){
+                stmtItem.setString(1, xmlI.getAttribute("MATNR",""));
+                stmtItem.setString(2, xmlI.getAttribute("MAKTG",""));
+                stmtItem.setString(3, xmlI.getAttribute("EAN11",""));
+                stmtItem.setString(4, xmlI.getAttribute("MATKL",""));
+                stmtItem.setString(5, xmlI.getAttribute("MSEH3",""));
+                stmtItem.setString(6, Shared.getConfig("photoDir") + xmlI.getAttribute("MATNR","") + ".JPG");
+                stmtItem.setString(7, xmlI.getAttribute("DISC",""));
+                stmtItem.executeUpdate();
+            }
 
-            System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR") + " MENGE = " + xmlI.getAttribute("MENGE"));
+            stmtBarcode.setString(1, xmlI.getAttribute("MATNR",""));
+            stmtBarcode.setString(2, xmlI.getAttribute("EAN11",""));
+            stmtBarcode.executeUpdate();
+
+            stmtDeletePrice.setString(1, xmlI.getAttribute("MATNR",""));
+            stmtDeletePrice.executeUpdate();
+
+            stmtInsertPrice.setString(1, xmlI.getAttribute("MATNR",""));
+            stmtInsertPrice.setString(2, xmlI.getAttribute("PRICE",""));
+            stmtInsertPrice.executeUpdate();
 
             lastMovement = xmlI.getAttribute("MBLNR");
-            stmt.setString(1, xmlI.getAttribute("MATNR"));
-            stmt.setInt(2, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-            stmt.setString(3, xmlI.getAttribute("BWART"));
-            stmt.executeUpdate();
+            // TODO QUITAR
+            /*if ( !xmlI.getAttribute("MBLNR").equals("4900458135") && !xmlI.getAttribute("MBLNR").equals("4900458134")
+                    && !xmlI.getAttribute("MBLNR").equals("4900458133") && !xmlI.getAttribute("MBLNR").equals("4900458130") && !xmlI.getAttribute("MBLNR").equals("4900458129")){
+                continue;
+            }*/
+            /*if (
+                    !xmlI.getAttribute("MBLNR").equals("4900447579")&& !xmlI.getAttribute("MBLNR").equals("4900447580")
+                    && !xmlI.getAttribute("MBLNR").equals("4900447581")){
+                continue;
+            }*/
+            int reason = Shared.calculateReason(xmlI.getAttribute("BWART",""), xmlI.getAttribute("SHKZG",""));
+            // TODO QUITAR
+            //reason *= -1;
 
-            if ( reason == 0 ){
-                // we are in problems... =(
-            }else{
-                stmtItem.setString(2, xmlI.getAttribute("MATNR"));
-                stmtItem.setInt(1, reason * Integer.parseInt(xmlI.getAttribute("MENGE").split("\\.")[0]));
-                int ans = stmtItem.executeUpdate();
-                if ( ans == 0 ){
-                    Shared.itemsNeeded.add(xmlI);
-                }
-            }
+            System.out.println("MBLNR = " + xmlI.getAttribute("MBLNR","") + " reason = " + reason + " codigo_articulo = " + xmlI.getAttribute("MATNR",""));
+
+            stmtDetailsMovements.setString(1, xmlI.getAttribute("MATNR",""));
+            stmtDetailsMovements.setInt(2, reason * Integer.parseInt(xmlI.getAttribute("MENGE","").split("\\.")[0]));
+            stmtDetailsMovements.setString(3, xmlI.getAttribute("BWART",""));
+            stmtDetailsMovements.executeUpdate();
+
+
+            System.out.println("Movimiento " + reason + " articulo " + xmlI.getAttribute("MATNR",""));
         }
 
-        PreparedStatement stmtMI = c.prepareStatement("insert into movimiento_inventario (identificador , fecha , descripcion , codigo , almacen ) "
-                + "values ( concat(curdate(),\'-II\') , now() , ? , concat(curdate(),\'-II\') , ?)");
-        stmtMI.setString(1, "Stock Inicial");
-        stmtMI.setString(2, "");
-        stmtMI.executeUpdate();
-
-        stmtMI = c.prepareStatement("insert into configuracion (`Key` , `Value` , nombre ) "
-                + "values ( ?, ?, ?)");
         stmtMI.setString(1, "lastSAPcodeAtInitialStock");
         stmtMI.setString(2, lastMovement);
         stmtMI.setString(3, "Ultimo Movimiento Para Inventario Inicial");
         stmtMI.executeUpdate();
 
-        XMLElement ans = new XMLElement("ITEMSNEEDED");
-
-        for( XMLElement it : Shared.itemsNeeded){
-            IXMLElement ansi = ans.createElement("ITEM");
-            ans.addChild(ansi);
-            ansi.setContent( it.getAttribute("MATNR") );
-        }
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLWriter xmlw = new XMLWriter(baos);
-        xmlw.write(ans);
-        String tAns = baos.toString() + "";
-        baos = null;
-        xmlw = null;
-        return tAns;
+        xml = null;
+        return "";
     }
 
     static String checkAllZReport(String printerId , String zReportId) throws SQLException{
@@ -4492,8 +4559,8 @@ public class ConnectionDrivers {
 
         String t = ConnectionDrivers.getLastMark(e);
 
-        if ( t != null && Constants.halfHour.compareTo(t) >= 0 && p.getFingerPrints().size() < 4 ){
-            return Constants.fingerPrintRepeated;
+        if ( t != null && Shared.getConfig("halfHour").compareTo(t) >= 0 && p.getFingerPrints().size() < 4 ){
+            return Shared.getConfig("fingerPrintRepeated");
         }
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -4573,7 +4640,7 @@ public class ConnectionDrivers {
             tmp = rs.getString("hora");
         }
         c.close();
-        return tmp.compareTo(Constants.halfDay) < 0;
+        return tmp.compareTo(Shared.getConfig("halfDay")) < 0;
     }
 
     static void deleteLastFingerPrint(Employ e, String myDay) throws SQLException{
@@ -4735,7 +4802,7 @@ public class ConnectionDrivers {
             model.setValueAt(rs.getString("sch"), employRow.get(rs.getString("codigo_empleado")), 3);
         }
         stmt = c.prepareStatement("select codigo_empleado, mid(concat(sec_to_time(sum(secondsbyday)),''),1,6) as extrahours from (select codigo_empleado , Time_to_Sec(timediff(max(t),?)) as secondsbyday, datediff(fecha,?) as diff from (select codigo_empleado, timediff(marcacion4, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion3, marcacion1) as t, fecha from asistencia having t is not NULL union select codigo_empleado, timediff(marcacion2, marcacion1) as t, fecha from asistencia having t is not NULL) as t where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 group by codigo_empleado , fecha ) as sbt , empleado where sbt.codigo_empleado=empleado.codigo group by codigo_empleado");
-        stmt.setString(1, Constants.workingHours);
+        stmt.setString(1, Shared.getConfig("workingHours"));
         stmt.setString(2, from);
         stmt.setString(3, from);
         stmt.setString(4, until);
@@ -4745,8 +4812,8 @@ public class ConnectionDrivers {
         }
 
         stmt = c.prepareStatement("select codigo_empleado, time(hora) as th, TIME_TO_SEC(timediff(time(hora),?)) as diff from marcacion, empleado where datediff(hora, ?) >= 0 and datediff(hora, ?)<=0 and empleado.codigo=marcacion.codigo_empleado having th > ?");
-        stmt.setString(4, Constants.beginOfNightBonus);
-        stmt.setString(1, Constants.beginOfNightBonus);
+        stmt.setString(4, Shared.getConfig("beginOfNightBonus"));
+        stmt.setString(1, Shared.getConfig("beginOfNightBonus"));
         stmt.setString(2, from);
         stmt.setString(3, until);
         rs = stmt.executeQuery();
@@ -4761,8 +4828,8 @@ public class ConnectionDrivers {
             boolean isOk = true;
             for (int j = offset; j < model.getColumnCount() && isOk ; j++) {
                 if ( model.getValueAt(i, j) == null || (!Shared.didItCome(model.getValueAt(i, j).toString())
-                        && (( (Shared.isSaturday(presenceTable, j ) && Double.parseDouble(Shared.getConfig("saturdayNotWorked")) > Constants.exilon) ||
-                            ( (Shared.isSunday(presenceTable, j ) || Shared.isHoliday(presenceTable, j)) && Double.parseDouble(Shared.getConfig("sundayNotWorked")) > Constants.exilon )) ||
+                        && (( (Shared.isSaturday(presenceTable, j ) && Double.parseDouble(Shared.getConfig("saturdayNotWorked")) > Double.parseDouble(Shared.getConfig("exilon"))) ||
+                            ( (Shared.isSunday(presenceTable, j ) || Shared.isHoliday(presenceTable, j)) && Double.parseDouble(Shared.getConfig("sundayNotWorked")) > Double.parseDouble(Shared.getConfig("exilon")) )) ||
                             ( !Shared.isSunday(presenceTable, j ) && !Shared.isSaturday(presenceTable, j ) && !Shared.isHoliday(presenceTable, j)))) ){
                     isOk = false;
                 }
@@ -4839,7 +4906,7 @@ public class ConnectionDrivers {
 
                 for (int i = 0; i < model.getRowCount(); i++) {
 
-                    java.util.Date fromDateD = Constants.sdfDay2DB.parse(fromDate);
+                    java.util.Date fromDateD = Shared.sdfDay2DB.parse(fromDate);
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(fromDateD);
 
@@ -4860,7 +4927,7 @@ public class ConnectionDrivers {
 
             for (int i = 0; i < model.getRowCount(); i++) {
 
-                java.util.Date fromDateD = Constants.sdfDay2DB.parse(fromDate);
+                java.util.Date fromDateD = Shared.sdfDay2DB.parse(fromDate);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(fromDateD);
                 for ( int j = offset ; j < model.getColumnCount() ; j++ ){
@@ -5079,7 +5146,7 @@ public class ConnectionDrivers {
 
         ResultSet rs = stmt.executeQuery();
         while( rs.next() ){
-            ps.println(Constants.template_art_pda
+            ps.println(Shared.getConfig("template_art_pda")
                     .replaceAll("@codigo", rs.getString("codigo"))
                     .replaceAll("@descripcion", rs.getString("descripcion"))
                     .replaceAll("@fecha", rs.getString("fecha"))
@@ -5102,7 +5169,7 @@ public class ConnectionDrivers {
 
         ResultSet rs = stmt.executeQuery();
         while( rs.next() ){
-            ps.println(Constants.template_movimiento
+            ps.println(Shared.getConfig("template_movimiento")
                     .replaceAll("@codigo_articulo", rs.getString("codigo_articulo"))
                     );
         }
@@ -5117,7 +5184,7 @@ public class ConnectionDrivers {
 
         ResultSet rs = stmt.executeQuery();
         while( rs.next() ){
-            ps.println(Constants.template_st_almacpda
+            ps.println(Shared.getConfig("template_st_almacpda")
                     .replaceAll("@agencia", rs.getString("agencia"))
                     .replaceAll("@articulo", rs.getString("articulo"))
                     .replaceAll("@stock", rs.getString("stock"))
@@ -5137,7 +5204,7 @@ public class ConnectionDrivers {
 
         while ( rs.next() ){
             ans.add(
-                new Item(rs.getString("codigo"), rs.getString("descripcion"), null, null, null, null, null, null, null, null, rs.getInt("existencia_actual"), null, null, null, false, null, null)
+                new Item(rs.getString("codigo"), rs.getString("descripcion"), null, null, null, null, null, null, null, null, rs.getInt("existencia_actual"), null, null, false, null, null)
             );
         }
 
@@ -5147,4 +5214,47 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    static String getLastFlagc() throws SQLException {
+        String ans = null;
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select DATE_FORMAT(min(fecha),'%Y%m%d') as d from dia_operativo where compensado=false");
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+        if ( ok ){
+            ans = rs.getString("d");
+        }
+
+        c.close();
+        rs.close();
+        return ans;
+    }
+
+    static void updateFlagc(String daysFlagc, Connection c) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, SQLException {
+        IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+        IXMLReader reader = StdXMLReader.stringReader(daysFlagc);
+        parser.setReader(reader);
+        IXMLElement xml = (IXMLElement) parser.parse();
+
+        PreparedStatement stmt = c.prepareStatement("update dia_operativo set compensado = 1 where concat(mid(fecha,1,4),mid(fecha,6,2),mid(fecha,9,2)) = ?");
+        for (Object x : xml.getChildren()) {
+            stmt.setString(1, ((XMLElement)x).getContent());
+            stmt.executeUpdate();
+        }
+    }
+
+    static boolean wasFlagC(String day) throws SQLException {
+        Connection c = ConnectionDrivers.cpds.getConnection();
+        PreparedStatement stmt = c.prepareStatement("select * from dia_operativo where fecha = ? and compensado=1");
+        stmt.setString(1, day);
+        ResultSet rs = stmt.executeQuery();
+
+        boolean ok = rs.next();
+
+        c.close();
+        rs.close();
+        return ok;
+    }
+
 }
+

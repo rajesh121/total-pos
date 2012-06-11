@@ -62,7 +62,7 @@ public class CheckFingerprint extends fingerPrintReader{
                             super.setState(state);
                             super.setTitleLabel(names[0]);
                             super.setNameLabel(names[1]);
-                            if ( state.equals(Constants.fingerPrintRepeated) ){
+                            if ( state.equals(Shared.getConfig("fingerPrintRepeated")) ){
                                 super.setColorState(new Color(52, 218, 22));
                             }else{
                                 super.setColorState(new Color(0, 182, 255));

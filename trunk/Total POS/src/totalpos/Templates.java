@@ -120,7 +120,7 @@ public class Templates {
 		  	cmp.verticalList(
 		  		cmp.text("Grupo Total 99 CA").setStyle(bold22CenteredStyle).setHorizontalAlignment(HorizontalAlignment.LEFT),
 		  		//cmp.text("http://dynamicreports.sourceforge.net").setStyle(italicStyle).setHyperLink(link)));
-                                cmp.text("RIF J-311501878. Generado el : " + Constants.sdfDateHour.format(new GregorianCalendar().getTime()) + "\n Total Pos" ).setStyle(italicStyle) ));
+                                cmp.text("RIF J-311501878. Generado el : " + Shared.sdfDateHour.format(new GregorianCalendar().getTime()) + "\n Total Pos" ).setStyle(italicStyle) ));
 
 		footerComponent = cmp.pageXofY()
 		                     .setStyle(

@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -57,7 +58,7 @@ public class ManageItem extends JInternalFrame implements Doer {
         model.setRowCount(0);
 
         for (Item item : items) {
-            String s[] = {item.getCode(),item.getDescription(),item.getModel(),Constants.df.format(Math.round(item.getLastPrice().plusIva().withDiscount(item.getDescuento()).getQuant())),item.getDescuento()+"",item.getCurrentStock()+""};
+            String s[] = {item.getCode(),item.getDescription(),item.getModel(),Shared.df.format(Math.round(item.getLastPrice().plusIva().withDiscount(item.getDescuento()).getQuant())),item.getDescuento()+"",item.getCurrentStock()+""};
             //System.out.println("Precio = " + Math.round(item.getLastPrice().plusIva().withDiscount(item.getDescuento()).getQuant())+"");
             model.addRow(s);
         }
@@ -617,7 +618,7 @@ public class ManageItem extends JInternalFrame implements Doer {
     }//GEN-LAST:event_itemTableMouseReleased
 
     private void printLabelsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printLabelsActionPerformed
-        workingFrame = new Working((Window)Shared.getMyMainWindows());
+        workingFrame = new Working((JFrame)Shared.getMyMainWindows());
 
         WaitSplash ws = new WaitSplash(this);
 

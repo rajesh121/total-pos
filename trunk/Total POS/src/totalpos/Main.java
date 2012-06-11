@@ -22,6 +22,7 @@ public class Main {
         }
         splash = new StartSplash();
         splash.changeStatus("Leyendo archivo de configuración...", 10);
+        Shared.initializaUser32();
         try {
             if ( Constants.isPos ){
                 serverSkt = new ServerSocket(Constants.lockingPort);
@@ -44,7 +45,8 @@ public class Main {
         }
         
         try {
-            Shared.loadFileConfig();
+            Shared.loadFileConfig(Constants.fileName4passwd, "password4passwd");
+            Shared.loadFileConfig(Constants.fileName4ConfigN,"password4config");
         } catch (IOException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al leer el archivo de configuración. No se puede continuar",ex);
             msb.show(splash);
@@ -102,11 +104,11 @@ public class Main {
                 splash.changeStatus("Sincronizando inventario ...", 60);
                 ConnectionDrivers.updateStock();
                 ConnectionDrivers.updateMoney();
-                for (String table : Constants.tablesToCleanMirror) {
+                for (String table : Shared.getConfig("tablesToCleanMirror").split(",")) {
                     splash.changeStatus("Cargando tabla " + table + "...", 65);
                     ConnectionDrivers.cleanMirror(table);
                 }
-                for (String table : Constants.tablesToMirrorAtBegin) {
+                for (String table : Shared.getConfig("tablesToCleanMirror").split(",")) {
                     splash.changeStatus("Replicando tabla " + table + "...", 75);
                     ConnectionDrivers.mirrorTableFastMode(table);
                 }
@@ -115,6 +117,11 @@ public class Main {
             }
         }
 
+        /*try{
+            Shared.createBackup();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }*/
         splash.changeStatus("Creando ventana de login...", 95);
         Login login = new Login();
         Shared.centerFrame(login);

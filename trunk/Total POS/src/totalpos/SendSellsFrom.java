@@ -14,6 +14,7 @@ import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JTextField;
 
 /**
@@ -125,7 +126,7 @@ public class SendSellsFrom extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
-        workingFrame = new Working((Window) Shared.getMyMainWindows());
+        workingFrame = new Working((JFrame) Shared.getMyMainWindows());
 
         WaitSplash ws = new WaitSplash(this);
 

@@ -110,6 +110,7 @@ public class ListIdleReceipts extends javax.swing.JDialog {
             if ( table.getSelectedRow() != -1 ){
                 try {
                     parent.deleteCurrent();
+                    parent.clearForm();
                     parent.loadThisReceipt(receipts.get(table.getSelectedRow()));
                     ConnectionDrivers.putToNormal(receipts.get(table.getSelectedRow()).getInternId());
                     this.dispose();

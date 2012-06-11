@@ -321,7 +321,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
                     MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
                     msg.show(this);
                 }else{
-                    finalMoney.setText(Constants.df.format((new Price(null,(100-p)*subtotal/100.0)).plusIva().getQuant()));
+                    finalMoney.setText(Shared.df.format((new Price(null,(100-p)*subtotal/100.0)).plusIva().getQuant()));
                 }
             }else if ( !finalMoney.getText().isEmpty() ){
                 double p = Double.parseDouble(finalMoney.getText().replace(',', '.'));
@@ -330,7 +330,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
                     MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Descuento incorrecto.");
                     msg.show(this);
                 }else{
-                    percentField.setText(Constants.df.format((100.0-(p/totalPlusIva)*100.0)));
+                    percentField.setText(Shared.df.format((100.0-(p/totalPlusIva)*100.0)));
                 }
             }else{
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe especificar el descuento.");
@@ -414,19 +414,20 @@ public class GlobalDiscount extends javax.swing.JDialog {
         } catch (Exception ex) {
             String kindErr = "";
 
-            if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {
-                kindErr = Constants.wrongPasswordMsg;
+            if ( Shared.getConfig("wrongPasswordMsg").equals(ex.getMessage()) ) {
+                kindErr = Shared.getConfig("wrongPasswordMsg");
             }
 
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr);
             msg.show(this);
 
-            if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
+            if ( ex.getMessage().equals(Shared.getConfig("wrongPasswordMsg")) ){
                 try {
                     Shared.userTrying(userField.getText());
                 } catch (Exception ex1) {
+                    String userLocked = Shared.getConfig("userLocked");
                     msg = new MessageBox(MessageBox.SGN_DANGER,
-                                (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
+                                (ex1.getMessage().equals(userLocked)? userLocked :"Error."),
                                 ex1);
                     msg.show(null);
                     this.dispose();

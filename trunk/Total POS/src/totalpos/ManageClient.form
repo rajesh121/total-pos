@@ -67,7 +67,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="comboKind" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="idField" pref="248" max="32767" attributes="1"/>
+                              <Component id="idField" pref="252" max="32767" attributes="1"/>
                           </Group>
                           <Component id="addressField" alignment="0" pref="287" max="32767" attributes="0"/>
                       </Group>
@@ -267,19 +267,17 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="comboKind">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="V"/>
-            <StringItem index="1" value="G"/>
-            <StringItem index="2" value="J"/>
-            <StringItem index="3" value="E"/>
-          </StringArray>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new javax.swing.DefaultComboBoxModel(ll.toArray())" type="code"/>
         </Property>
         <Property name="name" type="java.lang.String" value="comboKind" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="comboKindKeyPressed"/>
       </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="LinkedList&lt;String&gt; ll = new LinkedList&lt;String&gt;();&#xa;&#xa;String[] ss2 = Shared.getConfig(&quot;orderClientCategory&quot;).split(&quot;|&quot;);&#xa;for ( int i = 1 ; i &lt; ss2.length ; i++ ){&#xa;    ll.add(ss2[i]);&#xa;}"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="addressField">
       <Properties>

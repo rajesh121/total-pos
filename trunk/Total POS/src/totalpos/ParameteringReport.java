@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -228,7 +229,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     public void doItNow(){
-        workingFrame = new Working((Window) Shared.getMyMainWindows());
+        workingFrame = new Working((JFrame) Shared.getMyMainWindows());
 
         WaitSplash ws = new WaitSplash(this);
 
@@ -240,7 +241,7 @@ public class ParameteringReport extends javax.swing.JInternalFrame implements Do
     @Override
     public void doIt(){
         try {
-            for ( String w : Constants.forbiddenWords ){
+            for ( String w : Shared.getConfig("forbiddenWords").split(",") ){
                 if ( sql.toLowerCase().contains(w)){
                     MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Operación no permitida en la consulta");
                     msb.show(this);

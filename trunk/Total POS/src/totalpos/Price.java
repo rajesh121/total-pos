@@ -38,7 +38,7 @@ public class Price implements Serializable {
 
     @Override
     public String toString() {
-        return Constants.df.format(quant) + "";
+        return Shared.df.format(quant) + "";
     }
 
     public Price plusIva(){

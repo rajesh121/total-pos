@@ -7,6 +7,7 @@
 package totalpos;
 
 import java.awt.Window;
+import javax.swing.JFrame;
 
 /**
  *

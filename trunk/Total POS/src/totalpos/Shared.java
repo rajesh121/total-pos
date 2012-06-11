@@ -1,5 +1,6 @@
 package totalpos;
 
+import com.sun.jna.Native;
 import it.sauronsoftware.ftp4j.FTPAbortedException;
 import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPDataTransferException;
@@ -10,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -23,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -87,6 +90,22 @@ public class Shared {
     private static CommPortIdentifier portId;
     private static SerialPort serialPort;
     private static OutputStream outputNCRDisplay;
+    private static User32 user32;
+    protected static SimpleDateFormat sdfHour = null;
+    protected static SimpleDateFormat sdfHour2BK = null;
+    protected static SimpleDateFormat sdfDay = null;
+    protected static SimpleDateFormat sdfDay2DB = null;
+    protected static SimpleDateFormat sdfDateHour = null;
+    protected static SimpleDateFormat sdfDay2SAP = null;
+    protected static SimpleDateFormat sdf4backup = null;
+    protected static SimpleDateFormat sdf4ncr = null;
+    protected static DateFormat dateFormatter = null;
+    protected static DecimalFormat df = null;
+    protected static DecimalFormat df2z = null;
+    protected static DecimalFormat df2int = null;
+    protected static DecimalFormat df2intSAP = null;
+    protected static DecimalFormat df2int2p = null;
+    protected static DecimalFormat df2intnonfiscalcopy = null;
 
     protected static void initialize(){
         errMapping.put(new Integer(0), "No hay error");
@@ -219,6 +238,36 @@ public class Shared {
         ncrErrMapping.put(new Integer(386), "La Sintaxis de la Ruta y/o Nombre de Archivo de Salida No Es Valida");
         ncrErrMapping.put(new Integer(387), "Error de I/O en Archivo de Salida del Journal");
 
+        sdfHour = new SimpleDateFormat(Shared.getConfig("sdfHour"));
+        sdfHour2BK = new SimpleDateFormat(Shared.getConfig("sdfHour2BK"));
+        sdfDay = new SimpleDateFormat(Shared.getConfig("sdfDay"));
+        sdfDay2DB = new SimpleDateFormat(Shared.getConfig("sdfDay2DB"));
+        sdfDateHour = new SimpleDateFormat(Shared.getConfig("sdfDateHour"));
+        sdfDay2SAP = new SimpleDateFormat(Shared.getConfig("sdfDay2SAP"));
+        sdf4backup = new SimpleDateFormat(Shared.getConfig("sdf4backup"));
+        sdf4ncr =  new SimpleDateFormat(Shared.getConfig("sdf4ncr"));
+        dateFormatter =  new SimpleDateFormat(Shared.getConfig("dateFormatter"));
+        df = new DecimalFormat(Shared.getConfig("df"));
+        df2z = new DecimalFormat(Shared.getConfig("df2z"));
+        df2int = new DecimalFormat(Shared.getConfig("df2int"));
+        df2intSAP = new DecimalFormat(Shared.getConfig("df2intSAP"));
+        df2int2p = new DecimalFormat(Shared.getConfig("df2int2p"));
+        df2intnonfiscalcopy = new DecimalFormat(Shared.getConfig("df2intnonfiscalcopy"));
+    }
+
+    protected static void initializaUser32(){
+        user32 = (User32)Native.loadLibrary( "User32" , User32.class ) ;
+    }
+
+    protected static void lockUser32(){ 
+        user32.BlockInput(true);
+        //System.out.println("hWnd = " + (int)Native.getWindowID((Window)Shared.getMyMainWindows()));
+        //user32.EnableWindow((int)Native.getWindowID((Window)Shared.getMyMainWindows()), true);
+    }
+
+    protected static void unlockUser32(){
+        user32.BlockInput(false);
+        //user32.EnableWindow((int)Native.getWindowID((Window)Shared.getMyMainWindows()), true);
     }
 
     protected static boolean initializeDisplay(){
@@ -255,8 +304,8 @@ public class Shared {
         }
         //line1 = String.format("%" + Constants.displaySize*2 + "s", line1);
         //line2 = String.format("%" + Constants.displaySize*2 + "s", line2);
-        line1 = String.format("%" + Constants.displaySize + "s", line1);
-        line2 = String.format("%" + Constants.displaySize + "s", line2);
+        line1 = String.format("%" + Shared.getConfig("displaySize") + "s", line1);
+        line2 = String.format("%" + Shared.getConfig("displaySize") + "s", line2);
 
         System.out.println("Line1 " + line1);
         System.out.println("Line2 " + line2);
@@ -360,14 +409,14 @@ public class Shared {
     public static void userTrying(String l) throws Exception{
         if ( !tries.containsKey(l) ){
             getTries().put(l, new Integer(1));
-        }else if ( getTries().get(l).compareTo(new Integer(Constants.triesWithPassword-2)) > 0 ){
+        }else if ( getTries().get(l).compareTo(new Integer(Integer.parseInt(Shared.getConfig("triesWithPassword"))-2)) > 0 ){
             try {
                 ConnectionDrivers.lockUser(l);
             } catch (SQLException ex1) {
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex1);
                 msg.show(Shared.getMyMainWindows());
             }
-            throw new Exception(Constants.userLocked);
+            throw new Exception(Shared.getConfig("userLocked"));
         }else{
             getTries().put(l, new Integer(getTries().get(l) + 1));
         }
@@ -390,8 +439,8 @@ public class Shared {
         setUser(null);
     }
 
-    protected static void loadFileConfig() throws FileNotFoundException, IOException{
-        prepareFile(new File(Constants.rootDir + Constants.fileName4ConfigN), Constants.fileName4ConfigRar, "password4config", Constants.scriptConfig);
+    protected static void loadFileConfig(String fileName, String pass) throws FileNotFoundException, IOException{
+        prepareFile(new File(Constants.rootDir + fileName), Constants.fileName4ConfigRar, pass, Constants.scriptConfig);
         File f = new File(Constants.tmpDir + Constants.fileName4Config);
         Scanner sc = new Scanner(f);
         int lineNumber = 1;
@@ -567,7 +616,7 @@ public class Shared {
 
     public static void what2DoWithReceipt(MainRetailWindows myParent , Exception msg){
         try{
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter , msg);
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Shared.getConfig("errWithPrinter") , msg);
             msb.show(null);
 
             myParent.toWait();
@@ -601,17 +650,14 @@ public class Shared {
             String[] toks = line.split("\t");
             
             Price p = new Price( null , Double.parseDouble(toks[35])/(getIva()/100.0+1.0));
-            Cost c = new Cost(null, Double.parseDouble(toks[55]));
             List<Price> lp = new LinkedList<Price>();
             lp.add(p);
-            List<Cost> lc = new LinkedList<Cost>();
-            lc.add(c);
             List<String> barcodes = new LinkedList<String>();
             barcodes.add(myTrim(toks[9]));
             Item i = new Item(myTrim(toks[0]),
-                    myTrim(toks[1]) , Constants.dateFormatter.parse(toks[2].split(" ")[0]) , myTrim(toks[4]),
+                    myTrim(toks[1]) , Shared.dateFormatter.parse(toks[2].split(" ")[0]) , myTrim(toks[4]),
                     "",  myTrim(toks[6]), myTrim(toks[9]), myTrim(toks[10]), myTrim(toks[14]),
-                    myTrim(toks[15]), Integer.parseInt(toks[19].split("\\.")[0]), lp, lc, barcodes,
+                    myTrim(toks[15]), Integer.parseInt(toks[19].split("\\.")[0]), lp, barcodes,
                     toks[85].equals("T"), Shared.getConfig("photoDir") + myTrim(toks[0]) + ".JPG", "0");
             ans.add(i);
             newItemMapping.put(i.getCode(), i);
@@ -647,7 +693,7 @@ public class Shared {
             String[] toks = line.split("\t");
             if ( myTrim(toks[25]).equals(Shared.getConfig("storeName")) ){
                 hadMovements = true;
-                Date dd = Constants.dateFormatter.parse(toks[1].split(" ")[0]);
+                Date dd = Shared.dateFormatter.parse(toks[1].split(" ")[0]);
                 java.sql.Date ddsql = new java.sql.Date(dd.getYear(), dd.getMonth(), dd.getDate());
                 Movement m = new Movement(toks[0], ddsql
                         , myTrim(toks[2]) , myTrim(toks[16]), myTrim(toks[28]), t.get(toks[0]));
@@ -664,7 +710,7 @@ public class Shared {
         try {
             SrvEntidades srvEnt = new SrvEntidades();
             IsrvEntidades bHBIE = srvEnt.getBasicHttpBindingIsrvEntidades();
-            List<BNKA> lbnka = bHBIE.obtenerBancosSap(Constants.mant).getBNKA();
+            List<BNKA> lbnka = bHBIE.obtenerBancosSap(Shared.getConfig("mant")).getBNKA();
             String banks = "";
             for (BNKA bnka : lbnka) {
                 banks += "{" + bnka.getBANKL().getValue() + " - " + bnka.getBANKA().getValue() + "}";
@@ -690,13 +736,15 @@ public class Shared {
     public static void updateMovements() throws FileNotFoundException, SQLException, ParseException, IOException{
         hadMovements = false;
         System.out.println("Parse Items");
-        List<Item> items = parseItems(Constants.addrForIncome + "art.txt");
+
+        String addrForIncome = Shared.getConfig("addrForIncome");
+        List<Item> items = parseItems(addrForIncome + "art.txt");
         System.out.println("Listo\nActualizar Items");
         ConnectionDrivers.updateItems(items);
         System.out.println("Actualizar Movimientos");
-        List<Movement> movements = parseMovements(Constants.addrForIncome + "ajuste.txt", Constants.addrForIncome + "reng_aju.txt");
+        List<Movement> movements = parseMovements(addrForIncome + "ajuste.txt", addrForIncome + "reng_aju.txt");
         ConnectionDrivers.updateMovements(movements, newItemMapping);
-        parseDiscounts(Constants.addrForIncome + "descuen.txt");
+        parseDiscounts(addrForIncome + "descuen.txt");
     }
 
     public static boolean isHadMovements() {
@@ -704,25 +752,28 @@ public class Shared {
     }
     
     public static String formatIt(String msg1, String msg2){
-        char[] spaces = new char[Constants.longReportTotals - msg1.length() - msg2.length()];
+        char[] spaces = new char[Integer.parseInt(Shared.getConfig("longReportTotals")) - msg1.length() - msg2.length()];
         Arrays.fill(spaces, ' ');
         return msg1 + new String(spaces) + msg2;
     }
 
     static void prepareMovements(File myRar) throws IOException {
-        String cmd = "copy \"" + myRar.getAbsolutePath() + "\" \"" + Constants.addrForIncome + Constants.fileName4Income + "\"\n"+
-                "cd \"" + Constants.addrForIncome + "\"\n" +
+        String addrForIncome = Shared.getConfig("addrForIncome");
+        String fileName4Income = Shared.getConfig("fileName4Income");
+        String cmd = "copy \"" + myRar.getAbsolutePath() + "\" \"" + addrForIncome + fileName4Income + "\"\n"+
+                "cd \"" + addrForIncome + "\"\n" +
                 "erase *.txt\n" +
-                "\"C:\\Archivos de programa\\WinRAR\\unrar.exe\" e " + Constants.fileName4Income + "\n"+
-                "erase " + Constants.fileName4Income + "\n";
+                "\"C:\\Archivos de programa\\WinRAR\\unrar.exe\" e " + fileName4Income + "\n"+
+                "erase " + fileName4Income + "\n";
 
-        FileWriter fstream = new FileWriter(Constants.rootDir + Constants.scriptMovementsName);
+        String scriptMovementsName = Shared.getConfig("scriptMovementsName");
+        FileWriter fstream = new FileWriter(Constants.rootDir + scriptMovementsName);
         BufferedWriter out = new BufferedWriter(fstream);
 
         out.write(cmd);
         out.close();
 
-        Process process = Runtime.getRuntime().exec(Constants.rootDir + Constants.scriptMovementsName);
+        Process process = Runtime.getRuntime().exec(Constants.rootDir + scriptMovementsName);
         InputStream is = process.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
@@ -730,23 +781,26 @@ public class Shared {
         while ( br.readLine() != null) {
             ;
         }
-        File f = new File(Constants.rootDir + Constants.scriptMovementsName);
+        File f = new File(Constants.rootDir + scriptMovementsName);
         f.delete();
 
     }
 
     public static void createBackup(String table) throws IOException, SQLException{
-        String cmd = "mysqldump -u " + Constants.dbUser + " -p" + Constants.dbPassword + " " + Constants.dbName + " " + table + " > " +
-                Constants.backupDir + Constants.sdfDay2DB.format(Calendar.getInstance().getTime()) + "-" +
-                Constants.sdfHour2BK.format((Calendar.getInstance().getTime()));
 
-        FileWriter fstream = new FileWriter(Constants.tmpDir + Constants.scriptMovementsName);
+        String backupDir = Shared.getConfig("backupDir");
+        String cmd = "mysqldump -u " + Shared.getFileConfig("dbUser") + " -p" + Shared.getFileConfig("dbPassword") + " " + Shared.getFileConfig("dbName") + " " + table + " > " +
+                backupDir + Shared.sdfDay2DB.format(Calendar.getInstance().getTime()) + "-" +
+                Shared.sdfHour2BK.format((Calendar.getInstance().getTime()));
+
+        String scriptMovementsName = Shared.getConfig("scriptMovementsName");
+        FileWriter fstream = new FileWriter(Constants.tmpDir + scriptMovementsName);
         BufferedWriter out = new BufferedWriter(fstream);
 
         out.write(cmd);
         out.close();
 
-        Process process = Runtime.getRuntime().exec(Constants.tmpDir + Constants.scriptMovementsName);
+        Process process = Runtime.getRuntime().exec(Constants.tmpDir + scriptMovementsName);
         InputStream is = process.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
@@ -754,7 +808,7 @@ public class Shared {
         while ( br.readLine() != null) {
             ;
         }
-        File f = new File(Constants.tmpDir + Constants.scriptMovementsName);
+        File f = new File(Constants.tmpDir + scriptMovementsName);
         f.delete();
     }
 
@@ -762,6 +816,8 @@ public class Shared {
         String pass = Shared.getConfig(configKey);
         if ( configKey.equals("password4config") ){
             pass = Constants.configPassword;
+        }else if ( configKey.equals("password4passwd") ){
+            pass = Constants.passwdPassword;
         }
         String cmd = "copy \"" + myRar.getAbsolutePath() + "\" \"" + Constants.tmpDir + fileName + "\"\n"+
                 "cd \"" + Constants.tmpDir + "\"\n" +
@@ -802,20 +858,20 @@ public class Shared {
 
     public static int calculateReason(String bwart, String shkzg){
         int reason = 0;
-        for (String ii : Constants.incomingItems) {
+        for (String ii : Shared.getConfig("incomingItems").split(",")) {
             if ( bwart.equals(ii) ){
                 reason = 1;
             }
         }
 
-        for (String oi : Constants.outcomingItems) {
+        for (String oi : Shared.getConfig("outcomingItems").split(",")) {
             if ( bwart.equals(oi) ){
                 reason = -1;
             }
         }
 
         boolean isEqual = false;
-        for (String bMovement : Constants.bwartMovement) {
+        for (String bMovement : Shared.getConfig("bwartMovement").split(",")) {
             if ( bwart.equals(bMovement) ){
                 isEqual = true;
             }
@@ -839,20 +895,22 @@ public class Shared {
     }
 
     protected static String now4backup(){
-        return Constants.sdf4backup.format(Calendar.getInstance().getTime()) + ".rar";
+        return Shared.sdf4backup.format(Calendar.getInstance().getTime()) + ".rar";
     }
 
     protected static void createBackup() throws IOException, IllegalStateException, FTPIllegalReplyException, FTPException, FileNotFoundException, FTPDataTransferException, FTPAbortedException{
-        String cmd = "mysqldump -u " + Constants.dbUser + " -p" + Constants.dbPassword + " " + Constants.dbName  +
+        String cmd = "mysqldump -u " + Shared.getFileConfig("dbUser") + " -p" + Shared.getFileConfig("dbPassword") + " " + Shared.getFileConfig("dbName")  +
                 " > " + Constants.tmpDir + "Backup.sql";
 
-        FileWriter fstream = new FileWriter(Constants.tmpDir + Constants.tmpScript);
+        String tmpScript = Shared.getConfig("tmpScript");
+
+        FileWriter fstream = new FileWriter(Constants.tmpDir + tmpScript);
         BufferedWriter out = new BufferedWriter(fstream);
 
         out.write(cmd);
         out.close();
 
-        Process process = Runtime.getRuntime().exec(Constants.tmpDir + Constants.tmpScript);
+        Process process = Runtime.getRuntime().exec(Constants.tmpDir + tmpScript);
         InputStream is = process.getInputStream();
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader br = new BufferedReader(isr);
@@ -874,8 +932,8 @@ public class Shared {
         }
 
         FTPClient client = new FTPClient();
-        client.connect(Constants.ftpBackupAddr);
-        client.login(Constants.ftpBackupUser, Constants.ftpBackupPassword);
+        client.connect(Shared.getConfig("ftpBackupAddr"));
+        client.login(Shared.getConfig("ftpBackupUser"), Shared.getConfig("ftpBackupPassword"));
         client.changeDirectory("/" + Shared.getConfig("storeName"));
         File f = new File(Constants.tmpDir + fileName);
         client.upload(f);
@@ -1012,7 +1070,7 @@ public class Shared {
         Session session = Session.getDefaultInstance(props,
         new javax.mail.Authenticator() {
         protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(Constants.email,Constants.passEmail);
+                return new PasswordAuthentication(Shared.getConfig("email"),Shared.getConfig("passEmail"));
         }
         });
 

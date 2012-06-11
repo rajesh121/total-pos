@@ -22,9 +22,9 @@ import srvSap.ZSDSPOSFACT;
  */
 public class ReceiptSap implements Serializable {
     List<Receipt> receipts = new LinkedList<Receipt>();
-    private String id = Constants.maximunId; // is it really INF??
-    private String maxFiscalId = Constants.minimunId;
-    private String minFiscalId = Constants.maximunId;
+    private String id = Shared.getConfig("maximunId"); // is it really INF??
+    private String maxFiscalId = Shared.getConfig("minimunId");
+    private String minFiscalId = Shared.getConfig("maximunId");
     private String z = "";
     private String kind = "";
     private String printerId;
@@ -100,8 +100,8 @@ public class ReceiptSap implements Serializable {
         String range = minFiscalId + "-" + maxFiscalId;
 
         System.out.println("MANDT\tFKDAT\tVBELN\tZTIPV\tKUNNR\tRANGO\tREPOZ\tIMPRE\tWAERS\tWERKS");
-        ans.setMANDT(of.createZSDSCABDEVMANDT(Constants.mant));
-        System.out.print(Constants.mant + "\t");
+        ans.setMANDT(of.createZSDSCABDEVMANDT(Shared.getConfig("mant")));
+        System.out.print(Shared.getConfig("mant") + "\t");
         ans.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
         System.out.print(myDay.replace("-", "") + "\t");
         ans.setVBELN(of.createZSDSCABDEVVBELN(idF));
@@ -116,10 +116,10 @@ public class ReceiptSap implements Serializable {
         System.out.print(z + "\t");
         ans.setIMPRE(of.createZSDSCABDEVIMPRE(printerId));
         System.out.print(printerId + "\t");
-        ans.setWAERS(of.createZSDSCABDEVWAERS(Constants.waerks));
-        System.out.print(Constants.waerks + "\t");
-        ans.setWERKS(of.createZSDSCABDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
-        System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\n");
+        ans.setWAERS(of.createZSDSCABDEVWAERS(Shared.getConfig("waerks")));
+        System.out.print(Shared.getConfig("waerks") + "\t");
+        ans.setWERKS(of.createZSDSCABDEVWERKS(Shared.getConfig("storePrefix")+Shared.getConfig("storeName")));
+        System.out.print(Shared.getConfig("storePrefix")+Shared.getConfig("storeName") + "\n");
         return ans;
     }
 
@@ -130,8 +130,8 @@ public class ReceiptSap implements Serializable {
         String range = minFiscalId + "-" + maxFiscalId;
 
         System.out.println("MANDT\tFKDAT\tVBELN\tZTIPV\tKUNNR\tRANGO\tREPOZ\tIMPRE\tWAERS\tWERKS");
-        ans.setMANDT(of.createZSDSCABDEVMANDT(Constants.mant));
-        System.out.print(Constants.mant + "\t");
+        ans.setMANDT(of.createZSDSCABDEVMANDT(Shared.getConfig("mant")));
+        System.out.print(Shared.getConfig("mant") + "\t");
         ans.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
         System.out.print(myDay.replace("-", "") + "\t");
         ans.setVBELN(of.createZSDSCABDEVVBELN(idF));
@@ -146,10 +146,10 @@ public class ReceiptSap implements Serializable {
         System.out.print(z + "\t");
         ans.setIMPRE(of.createZSDSCABDEVIMPRE(printerId));
         System.out.print(printerId + "\t");
-        ans.setWAERS(of.createZSDSCABDEVWAERS(Constants.waerks));
-        System.out.print(Constants.waerks + "\t");
-        ans.setWERKS(of.createZSDSCABDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
-        System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\n");
+        ans.setWAERS(of.createZSDSCABDEVWAERS(Shared.getConfig("waerks")));
+        System.out.print(Shared.getConfig("waerks") + "\t");
+        ans.setWERKS(of.createZSDSCABDEVWERKS(Shared.getConfig("storePrefix")+Shared.getConfig("storeName")));
+        System.out.print(Shared.getConfig("storePrefix")+Shared.getConfig("storeName") + "\n");
         return ans;
     }
 
@@ -163,14 +163,14 @@ public class ReceiptSap implements Serializable {
                 if ( item2Receipt.getQuant() > 0 ){
                     String idd = item2Receipt.getItem().getCode();
                     ZSDSPOSDEV zdpd = new ZSDSPOSDEV();
-                    zdpd.setMANDT(of.createZSDSPOSDEVMANDT(Constants.mant));
-                    System.out.print(Constants.mant + "\t");
+                    zdpd.setMANDT(of.createZSDSPOSDEVMANDT(Shared.getConfig("mant")));
+                    System.out.print(Shared.getConfig("mant") + "\t");
                     zdpd.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
                     System.out.print(myDay.replace("-", "") + "\t");
                     zdpd.setVBELN(of.createZSDSPOSDEVVBELN("D" + id ));
                     System.out.print("D" + id + "\t");
-                    zdpd.setPOSNR(of.createZSDSPOSDEVPOSNR(Constants.df2intSAP.format(position++)));
-                    System.out.print(Constants.df2intSAP.format(position-1) + "\t");
+                    zdpd.setPOSNR(of.createZSDSPOSDEVPOSNR(Shared.df2intSAP.format(position++)));
+                    System.out.print(Shared.df2intSAP.format(position-1) + "\t");
                     zdpd.setEAN11(of.createZSDSPOSDEVEAN11(idd));
                     System.out.print(idd + "\t");
                     zdpd.setKWMENG(new BigDecimal(item2Receipt.getQuant()));
@@ -186,8 +186,8 @@ public class ReceiptSap implements Serializable {
                     System.out.print((item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice() + "\t");
                     zdpd.setPERNR(of.createZSDSPOSDEVPERNR("999999"));
                     System.out.print("999999" + "\t");
-                    zdpd.setWERKS(of.createZSDSPOSDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
-                    System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\n");
+                    zdpd.setWERKS(of.createZSDSPOSDEVWERKS(Shared.getConfig("storePrefix")+Shared.getConfig("storeName")));
+                    System.out.print(Shared.getConfig("storePrefix")+Shared.getConfig("storeName") + "\n");
                     ans.add(zdpd);
                 }
             }
@@ -210,14 +210,14 @@ public class ReceiptSap implements Serializable {
                 if ( item2Receipt.getQuant() > 0 ){
                     String idd = item2Receipt.getItem().getCode();
                     ZSDSPOSFACT zdpd = new ZSDSPOSFACT();
-                    zdpd.setMANDT(of.createZSDSPOSDEVMANDT(Constants.mant));
-                    System.out.print(Constants.mant + "\t");
+                    zdpd.setMANDT(of.createZSDSPOSDEVMANDT(Shared.getConfig("mant")));
+                    System.out.print(Shared.getConfig("mant") + "\t");
                     zdpd.setFKDAT(of.createZSDSPOSDEVFKDAT(myDay.replace("-", "")));
                     System.out.print(myDay.replace("-", "") + "\t");
                     zdpd.setVBELN(of.createZSDSPOSDEVVBELN("F" + id ));
                     System.out.print("F" + id + "\t");
-                    zdpd.setPOSNR(of.createZSDSPOSDEVPOSNR(Constants.df2intSAP.format(position++)));
-                    System.out.print(Constants.df2intSAP.format(position-1) + "\t");
+                    zdpd.setPOSNR(of.createZSDSPOSDEVPOSNR(Shared.df2intSAP.format(position++)));
+                    System.out.print(Shared.df2intSAP.format(position-1) + "\t");
                     zdpd.setEAN11(of.createZSDSPOSDEVEAN11(idd));
                     System.out.print(idd + "\t");
                     zdpd.setKWMENG(new BigDecimal(item2Receipt.getQuant()));
@@ -233,8 +233,8 @@ public class ReceiptSap implements Serializable {
                     System.out.print((item2Receipt.getSellDiscount()/100.0)*item2Receipt.getSellPrice() + "\t");
                     zdpd.setPERNR(of.createZSDSPOSDEVPERNR("999999"));
                     System.out.print("999999" + "\t");
-                    zdpd.setWERKS(of.createZSDSPOSDEVWERKS(Constants.storePrefix+Shared.getConfig("storeName")));
-                    System.out.print(Constants.storePrefix+Shared.getConfig("storeName") + "\n");
+                    zdpd.setWERKS(of.createZSDSPOSDEVWERKS(Shared.getConfig("storePrefix")+Shared.getConfig("storeName")));
+                    System.out.print(Shared.getConfig("storePrefix")+Shared.getConfig("storeName") + "\n");
                     ans.add(zdpd);
                 }
             }

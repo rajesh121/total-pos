@@ -45,7 +45,7 @@ public class ReportsForm extends javax.swing.JInternalFrame {
 
     private void scanReports(){
         reportsScanned.clear();
-        File reportsFolder = new File(Constants.reportFolder);
+        File reportsFolder = new File(Shared.getConfig("reportFolder"));
         for (File file : reportsFolder.listFiles()) {
             try {
                 DataInputStream in = new DataInputStream(new FileInputStream(file));

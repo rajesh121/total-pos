@@ -41,7 +41,7 @@ public class UpdateClock extends Thread{
             ++checking;
 
             try {
-                if ( !Shared.isOffline && checking % Constants.secondsToChangeMsg2Pos == 0
+                if ( !Shared.isOffline && checking % Integer.parseInt(Shared.getConfig("secondsToChangeMsg2Pos")) == 0
                         && Shared.getMyMainWindows() instanceof MainRetailWindows ){
                     MainRetailWindows m = (MainRetailWindows) Shared.getMyMainWindows();
 
@@ -52,12 +52,12 @@ public class UpdateClock extends Thread{
                     m.updateMsg();
                 }
 
-                if ( !Shared.isOffline && checking % Constants.secondsToShiftMsg == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+                if ( !Shared.isOffline && checking % Integer.parseInt(Shared.getConfig("secondsToShiftMsg")) == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
                     MainRetailWindows m = (MainRetailWindows) Shared.getMyMainWindows();
                     m.increaseShiftValue();
                 }
 
-                if ( !Shared.isOffline && checking % Constants.secondsToCheckTurn == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+                if ( !Shared.isOffline && checking % Integer.parseInt(Shared.getConfig("secondsToCheckTurn")) == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
                     try {
                         List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                         boolean toContinue = false;
@@ -81,7 +81,7 @@ public class UpdateClock extends Thread{
                     }
                 }
 
-                if ( !Shared.isOffline && checking % Constants.secondsToUpdateCountdown == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
+                if ( !Shared.isOffline && checking % Integer.parseInt(Shared.getConfig("secondsToUpdateCountdown")) == 0 && Shared.getMyMainWindows() instanceof MainRetailWindows ){
                     try {
                         List<Assign> as = ConnectionDrivers.listAssignsTurnPosRightNow();
                         for (Assign assign : as) {
@@ -119,7 +119,7 @@ public class UpdateClock extends Thread{
                         && Shared.getMyMainWindows() instanceof MainRetailWindows){
                     if ( !Shared.isOffline ){
                         try {
-                            for (String table : Constants.tablesToMirrorAtDay) {
+                            for (String table : Shared.getConfig("tablesToMirrorAtDay").split(",")) {
                                 ConnectionDrivers.mirrorTableFastMode(table);
                             }
                         } catch (Exception ex) {
@@ -169,10 +169,10 @@ public class UpdateClock extends Thread{
 
                 if ( Shared.getMyMainWindows() instanceof MainWindows ){
                     MainWindows m = (MainWindows)Shared.getMyMainWindows();
-                    m.whatTimeIsIt.setText(Constants.sdfDateHour.format(d));
+                    m.whatTimeIsIt.setText(Shared.sdfDateHour.format(d));
                 } else if ( Shared.getMyMainWindows() instanceof MainRetailWindows ){
                     MainRetailWindows m = (MainRetailWindows)Shared.getMyMainWindows();
-                    m.whatTimeIsIt.setText(Constants.sdfDateHour.format(d));
+                    m.whatTimeIsIt.setText(Shared.sdfDateHour.format(d));
                 }
             }catch(Exception ex){
                 System.err.println(ex.getMessage());

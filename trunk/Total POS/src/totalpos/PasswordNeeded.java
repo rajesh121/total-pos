@@ -94,12 +94,14 @@ public class PasswordNeeded extends JDialog {
         } catch (Exception ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, ex.getMessage(), ex);
             msg.show(this);
-            if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
+            String wrongPasswordMsg = Shared.getConfig("wrongPasswordMsg");
+            if ( ex.getMessage().equals(wrongPasswordMsg) ){
                 try {
                     Shared.userTrying(this.user.getLogin());
                 } catch (Exception ex1) {
+                    String userLocked = Shared.getConfig("userLocked");
                     msg = new MessageBox(MessageBox.SGN_CAUTION,
-                                (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :ex1.getMessage()),
+                                (ex1.getMessage().equals(userLocked)? userLocked :ex1.getMessage()),
                                 ex1);
                     msg.show(null);
                     this.dispose();

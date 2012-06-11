@@ -243,7 +243,7 @@ public class CreatePOS extends javax.swing.JInternalFrame {
             this.setVisible(false);
             this.dispose();
         } catch (SQLException ex) {
-            if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+            if ( ex.getMessage().matches(Shared.getConfig("isDataRepeated")) ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
                 msb.show(this);
             }else{

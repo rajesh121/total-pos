@@ -103,7 +103,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 }
                 System.out.println("Salio del checkFiscalPrinter!");
             }catch ( Exception ex ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Shared.getFileConfig("errWithPrinter"),ex);
                 msb.show(myParent);
                 this.dispose();
                 Shared.reload();
@@ -117,7 +117,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 //ConnectionDrivers.updateLastReceipt(printer.lastReceipt);
                 printer.updateValues("curdate()");
             } catch (Exception ex) {
-                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Constants.errWithPrinter,ex);
+                MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, Shared.getFileConfig("errWithPrinter"),ex);
                 msb.show(myParent);
                 this.dispose();
                 Shared.reload();
@@ -153,8 +153,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         this.user = user;
     }
 
-    protected void updateAll() throws SQLException{
-
+    protected void clearForm() throws SQLException{
         descriptionLabel.setText("Bievenido a Mundo Total");
         currentPrice.setText("");
         quantItemField.setText("0");
@@ -173,7 +172,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         }
 
         cleanTable();
-
+        
         List<Receipt> idleReceipts = ConnectionDrivers.listIdleReceiptToday();
         if ( idleReceipts.isEmpty() ){
             msg2user.setVisible(false);
@@ -184,11 +183,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             msg2user.setVisible(true);
             msg2user.setText("Tiene " + idleReceipts.size() + " pedidos en espera.");
         }
+    }
+
+    protected void updateAll() throws SQLException{
+
+        clearForm();
+
         ConnectionDrivers.fixWrongReceipts();
         List<Receipt> uncompletedReceipts = ConnectionDrivers.listUncompletedReceiptToday();
         
         if ( uncompletedReceipts.isEmpty() ){
-            // For performance!
+            // For performance! 
             ConnectionDrivers.cancelAllReceipts();
             actualId = Shared.nextId(0);
             ConnectionDrivers.createReceipt(actualId, user.getLogin(), assign);
@@ -196,7 +201,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 try {
                     printer.updateValues("curdate()");
                 } catch (Exception ex) {
-                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter ,ex);
+                    MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Shared.getFileConfig("errWithPrinter"),ex);
                     msb.show(this);
                     printer.forceClose();
                     this.dispose();
@@ -823,28 +828,67 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 ab.setVisible(true);
                 return;
             }else if ( myBarcode.equals("version") ){
-                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Total Pos Version " + Constants.version);
+                MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Total Pos Version " + Shared.getConfig("version"));
                 msb.show(this);
                 return;
             }else if ( myBarcode.split(" ")[0].equals("reimprimir") ){
-                ChangeQuantItems cqi = new ChangeQuantItems(this, true, -1, "Reimprimir factura " + myBarcode.split(" ")[1], Constants.reprint);
+                SellWithoutStock cqi = new SellWithoutStock(this, true, "Reimprimir factura " + myBarcode.split(" ")[1], Shared.getConfig("reprint"));
                 Shared.centerFrame(cqi);
                 cqi.setVisible(true);
-                if ( cqi.passOk ){
+                if ( cqi.authorized ){
                     List<Receipt> receiptMatched = ConnectionDrivers.listThisReceipt(myBarcode.split(" ")[1]);
                     if ( receiptMatched.isEmpty() ){
                         MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se ha conseguido la factura!");
                         msb.show(this);
-                        return;
                     }else if ( receiptMatched.size() == 1){
                         deleteCurrent();
+                        clearForm();
                         loadThisReceipt(receiptMatched.get(0));
                         ConnectionDrivers.putToNormal(receiptMatched.get(0).getInternId());
-                        return;
                     }
-
                 }
-
+                return;
+            }else if ( myBarcode.split(" ")[0].equals("copiafactura") ) {
+                System.out.println("Imprimiendo copia de factura...");
+                SellWithoutStock cqi = new SellWithoutStock(this, true, "Imprimir Copia de factura " + myBarcode.split(" ")[1], Shared.getConfig("printnonfiscalcopy"));
+                Shared.centerFrame(cqi);
+                cqi.setVisible(true);
+                if ( cqi.authorized ){
+                    List<Receipt> receiptMatched = ConnectionDrivers.listThisReceipt(myBarcode.split(" ")[1]);
+                    if ( receiptMatched.isEmpty() ){
+                        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se ha conseguido la factura!");
+                        msb.show(this);
+                    }else if ( receiptMatched.size() == 1){
+                        Receipt r = receiptMatched.get(0);
+                        try{
+                            printer.printNonFiscalCopyReceipt(r.getFiscalNumber(), r.getPrintingDate());
+                        }catch(Exception ex){
+                            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al imprimir copia", ex);
+                            msb.show(this);
+                        }
+                    }
+                }
+                return;
+            }else if ( myBarcode.split(" ")[0].equals("copianotadecredito") ) {
+                SellWithoutStock cqi = new SellWithoutStock(this, true, "Imprimir Copia de devolucion " + myBarcode.split(" ")[1], Shared.getConfig("printnonfiscalcopy"));
+                Shared.centerFrame(cqi);
+                cqi.setVisible(true);
+                if ( cqi.authorized ){
+                    List<Receipt> receiptMatched = ConnectionDrivers.listThisCreditNote(myBarcode.split(" ")[1]);
+                    if ( receiptMatched.isEmpty() ){
+                        MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No se ha conseguido la devolucion!");
+                        msb.show(this);
+                    }else if ( receiptMatched.size() == 1){
+                        Receipt r = receiptMatched.get(0);
+                        try{
+                            printer.printNonFiscalCopyCreditNote(r.getFiscalNumber(), r.getPrintingDate());
+                        }catch(Exception ex){
+                            MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Error al imprimir copia", ex);
+                            msb.show(this);
+                        }
+                    }
+                }
+                return;
             }
             if ( myBarcode.isEmpty() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");
@@ -868,10 +912,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             }
 
             if ( quant != 1 ){
-                ChangeQuantItems cqi = new ChangeQuantItems(this, true, quant, "Cantidad de Producto: ", Constants.changeQuant);
+                SellWithoutStock cqi = new SellWithoutStock(this, true, "Cantidad de Producto: ", Shared.getConfig("changeQuant"));
                 Shared.centerFrame(cqi);
                 cqi.setVisible(true);
-                if ( !cqi.passOk ){
+                if ( !cqi.authorized ){
                     quant = 1;
                     return;
                 }
@@ -1059,10 +1103,10 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "La factura tiene descuento global. No puede ser devuelta!");
                         msb.show(this);
                     }else {
-                        ChangeQuantItems cqi = new ChangeQuantItems(this, true, -1, "Crear Nota de Crédito", "cn");
+                        SellWithoutStock cqi = new SellWithoutStock(this, true, "Crear Nota de Crédito", Shared.getConfig("createCN"));
                         Shared.centerFrame(cqi);
                         cqi.setVisible(true);
-                        if ( cqi.passOk ){
+                        if ( cqi.authorized ){
                             CreditNoteForm cnf = new CreditNoteForm(this, true, r);
                             Shared.centerFrame(cnf);
                             cnf.setVisible(true);
@@ -1159,7 +1203,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             descriptionLabel.setText(i.getDescription());
             currentPrice.setText(i.getLastPrice().toString());
             Shared.loadPhoto(imageLabel, i.getImageAddr(),imagePanel.getWidth()-27,imagePanel.getHeight()-30);
-            Shared.msgWithEffect(i.getDescription().substring(0,Math.min(i.getDescription().length(), Constants.displaySize)), quant + " x " + i.getLastPrice().withDiscount(i.getDescuento()).toString() + " = " + Shared.format4Display(i.getLastPrice().withDiscount(i.getDescuento()).getQuant()*(double)quant) );
+            Shared.msgWithEffect(i.getDescription().substring(0,Math.min(i.getDescription().length(), Integer.parseInt(Shared.getConfig("displaySize")))), quant + " x " + i.getLastPrice().withDiscount(i.getDescuento()).toString() + " = " + Shared.format4Display(i.getLastPrice().withDiscount(i.getDescuento()).getQuant()*(double)quant) );
         }
     }
 
@@ -1242,7 +1286,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
             String[] s = {get.getDescription(), quant+"", get.getDescuento()+"", get.getLastPrice().toString(),
-            get.getLastPrice().getIva().toString(), Constants.df.format(get.getLastPrice().plusIva().getQuant()*quant)};
+            get.getLastPrice().getIva().toString(), Shared.df.format(get.getLastPrice().plusIva().getQuant()*quant)};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
             gridTable.scrollRectToVisible(gridTable.getCellRect(model.getRowCount()-1, 0, true));
@@ -1282,11 +1326,11 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             quantItems += item2Receipt.getQuant();
         }
         quantItemField.setText(quantItems+"");
-        subTotalLabelResult.setText(Constants.df.format(subTwithoutD) + " Bs");
+        subTotalLabelResult.setText(Shared.df.format(subTwithoutD) + " Bs");
         if ( !globalDiscount.equals(.0) ){
-            discountLabel.setText("Desc (" + Constants.df.format(globalDiscount*100.0) + "%):");
+            discountLabel.setText("Desc (" + Shared.df.format(globalDiscount*100.0) + "%):");
             discountLabel.setVisible(true);
-            discountResult.setText(Constants.df.format(subT) + " Bs");
+            discountResult.setText(Shared.df.format(subT) + " Bs");
             discountResult.setVisible(true);
         }else{
             discountLabel.setVisible(false);
@@ -1297,8 +1341,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         ivaT = new Price(null, subT).getIva().getQuant();
         total = Math.round(subT + ivaT)+.0;
 
-        ivaLabelResult.setText(Constants.df.format(ivaT) + " Bs");
-        TotalLabelResult.setText(Constants.df.format(total) + " Bs");
+        ivaLabelResult.setText(Shared.df.format(ivaT) + " Bs");
+        TotalLabelResult.setText(Shared.df.format(total) + " Bs");
     }
 
     private void deleteItem() {

@@ -1,10 +1,8 @@
 package totalpos;
 
-import java.awt.Window;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JFrame;
 import net.n3.nanoxml.XMLException;
 import webservice.TotalPosWebService;
 import webservice.TotalPosWebServiceService;
@@ -23,7 +21,7 @@ public class UpdateStockFromSAP implements Doer{
     }
 
     public void updateStockFromSAP() {
-        workingFrame = new Working((Window) Shared.getMyMainWindows());
+        workingFrame = new Working((JFrame) Shared.getMyMainWindows());
         WaitSplash ws = new WaitSplash(this);
 
         Shared.centerFrame(workingFrame);
@@ -35,11 +33,19 @@ public class UpdateStockFromSAP implements Doer{
 
     private void updatePrices(Connection c, TotalPosWebService ws) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException{
         String myDay = Shared.getConfig("lastPriceUpdate");
-        String newPrices = ws.listNewPriceFromDate(myDay, Constants.storePrefix+Shared.getConfig("storeName"), Shared.getConfig("Z"));
+        String newPrices = ws.listNewPriceFromDate(myDay, Shared.getConfig("storePrefix")+Shared.getConfig("storeName"), Shared.getConfig("Z"));
         System.out.println("newPrices = " + newPrices);
 
         ConnectionDrivers.setPrices(c,newPrices);
         ConnectionDrivers.setLastUpdateNow();
+    }
+
+    private void updateFlagC(Connection c, TotalPosWebService ws) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException{
+        String myDay = ConnectionDrivers.getLastFlagc();
+
+        String daysFlagc = ws.getFlagC(Shared.getConfig("storePrefix")+Shared.getConfig("storeName"), myDay);
+
+        ConnectionDrivers.updateFlagc(daysFlagc, c);
     }
     
     @Override
@@ -56,18 +62,16 @@ public class UpdateStockFromSAP implements Doer{
 
             if ( mode.equals("MM") ){
 
-                String ansListMM = ws.listMM(ConnectionDrivers.getLastMM(), Constants.storePrefix+Shared.getConfig("storeName"));
+                String ansListMM = ws.listMM(ConnectionDrivers.getLastMM(), Shared.getConfig("storePrefix")+Shared.getConfig("storeName"));
                 //String ansListMM = ws.listMM("4900458128");
                 System.out.println(" ansListMM = " + ansListMM );
 
                 String itemsNeeded = ConnectionDrivers.createNewMovement(c, ansListMM);
                 ansListMM = null;
                 System.out.println("itemsNeeded = " + itemsNeeded);
-                String ansDescriptions = ws.listDescriptionFromItems(itemsNeeded, Constants.storePrefix+Shared.getConfig("storeName"));
+                ws.listDescriptionFromItems(itemsNeeded, Shared.getConfig("storePrefix")+Shared.getConfig("storeName"));
 
-                ConnectionDrivers.createItems(c, ansDescriptions, true);
-
-                String ansPricesDiscounts = ws.listPriceFromItemList(itemsNeeded , Shared.getConfig("Z") , Constants.storePrefix+Shared.getConfig("storeName"));
+                String ansPricesDiscounts = ws.listPriceFromItemList(itemsNeeded , Shared.getConfig("Z") , Shared.getConfig("storePrefix")+Shared.getConfig("storeName"));
 
                 System.out.println("ansPricesDiscounts = " + ansPricesDiscounts);
 
@@ -76,23 +80,20 @@ public class UpdateStockFromSAP implements Doer{
                 // Update prices too
                 updatePrices(c,ws);
 
+                // flagsC
+                updateFlagC(c, ws);
+
+                // Descriptions
+                updateDescriptions(c, ws);
+
                 System.out.println("Listo!");
             }else if ( mode.equals("Prices")){
                 updatePrices(c,ws);
             }else if ( mode.equals("initialStock") ){
                 
-                String ansListMM = ws.getInitialStock(Constants.storePrefix+Shared.getConfig("storeName"));
+                String ansListMM = ws.getInitialStockWithPrices(Shared.getConfig("storePrefix")+Shared.getConfig("storeName"), Shared.getConfig("Z"));
                 System.out.println(" ansListMM = " + ansListMM );
-                String itemsNeeded = ConnectionDrivers.getInitialStock(c, ansListMM);
-                System.out.println("itemsNeeded = " + itemsNeeded);
-                String ansDescriptions = ws.listDescriptionFromItems(itemsNeeded, Constants.storePrefix+Shared.getConfig("storeName"));
-
-                ConnectionDrivers.createItems(c,ansDescriptions, false);
-
-                String ansPricesDiscounts = ws.listPrices4InitialStock(Constants.minimunDate, Shared.getConfig("Z") , Constants.storePrefix+Shared.getConfig("storeName"));
-                System.out.println("ansPricesDiscounts = " + ansPricesDiscounts);
-
-                ConnectionDrivers.setPrices(c,ansPricesDiscounts);
+                ConnectionDrivers.getInitialStock(c, ansListMM);
 
                 ConnectionDrivers.disableInitialStock(c);
 
@@ -111,13 +112,17 @@ public class UpdateStockFromSAP implements Doer{
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Actualizado!");
             msg.show(Shared.getMyMainWindows());
         } catch (Exception ex) {
+            System.out.println("Comenzo la exception");
             try {
+                System.out.println("Haciendo Rollback");
                 c.rollback();
                 System.out.println("Reversado!");
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Ha ocurrido un error. No se ha guardado ningun cambio.", ex);
                 msg.show(Shared.getMyMainWindows());
-            } catch (SQLException ex1) {
+            } catch (Exception ex1) {
                 // We are in problems :(
+                MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Ha ocurrido un error. No se ha guardado ningun cambio.", ex);
+                msg.show(Shared.getMyMainWindows());
                 System.out.println("Ha ocurrido un error. Haciendo Roll back..." + ex1.getMessage());
             }
         }finally{
@@ -132,6 +137,14 @@ public class UpdateStockFromSAP implements Doer{
     @Override
     public void close() {
         workingFrame.setVisible(false);
+    }
+
+    private void updateDescriptions(Connection c, TotalPosWebService ws) {
+        /*String myDay = ConnectionDrivers.getLastDescriptionUpdate();
+
+        String daysFlagc = ws.getFlagC(Constants.storePrefix+Shared.getConfig("storeName"), myDay);
+
+        ConnectionDrivers.updateFlagc(daysFlagc, c);*/
     }
 
 }

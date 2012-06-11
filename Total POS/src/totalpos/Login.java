@@ -181,7 +181,7 @@ public class Login extends JFrame implements Doer{
                 return;
             }else if ( Shared.isOffline ){
                 //TODO What day should I choose
-                a = new Assign("offline", Shared.getFileConfig("myId"), java.sql.Date.valueOf(Constants.sdfDay2DB.format(Calendar.getInstance().getTime())), true);
+                a = new Assign("offline", Shared.getFileConfig("myId"), java.sql.Date.valueOf(Shared.sdfDay2DB.format(Calendar.getInstance().getTime())), true);
             }
 
             uc.start(); //Start the screensaver xDD
@@ -211,7 +211,7 @@ public class Login extends JFrame implements Doer{
                 Double minimumCash = Double.parseDouble(Shared.getConfig("minimunMoney") );
                 while ( currentMoney == -1.0 && !Shared.isOffline ){
                     String cc = JOptionPane.showInputDialog(getParent(),
-                            "Monto Inicial de caja", Constants.df.format(minimumCash));
+                            "Monto Inicial de caja", Shared.df.format(minimumCash));
 
                     try{
                         if ( cc == null || cc.isEmpty() ){
@@ -226,7 +226,7 @@ public class Login extends JFrame implements Doer{
                         }
                     }catch ( NumberFormatException ex){
                         MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION,
-                                "Monto incorrecto. Intente de nuevo. El monto debe ser mayor o igual a " + Constants.df.format(minimumCash) + " Bs y mayor o igual a 0 Bs");
+                                "Monto incorrecto. Intente de nuevo. El monto debe ser mayor o igual a " + Shared.df.format(minimumCash) + " Bs y mayor o igual a 0 Bs");
                         msb.show(this);
                         currentMoney = -1.0;
                     }
@@ -280,19 +280,20 @@ public class Login extends JFrame implements Doer{
         } catch (Exception ex) {
             passwordText.setEnabled(true);
             String kindErr = "";
-            if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {
-                kindErr = Constants.wrongPasswordMsg;
+            if ( Shared.getConfig("wrongPasswordMsg").equals(ex.getMessage()) ) {
+                kindErr = Shared.getConfig("wrongPasswordMsg");
             }
 
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr , ex );
             msg.show(null);
 
-            if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
+            if ( ex.getMessage().equals(Shared.getConfig("wrongPasswordMsg")) ){
                 try {
                     Shared.userTrying(loginText.getText());
                 } catch (Exception ex1) {
+                    String userLocked = Shared.getConfig("userLocked");
                     msg = new MessageBox(MessageBox.SGN_DANGER,
-                                (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
+                                (ex1.getMessage().equals(userLocked)? userLocked :"Error."),
                                 ex1);
                     msg.show(null);
                     Shared.reload();

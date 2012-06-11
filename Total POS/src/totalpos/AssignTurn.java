@@ -159,7 +159,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error en el monto de la caja.");
             msb.show(this);
         } catch (SQLException ex) {
-            if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+            if ( ex.getMessage().matches(Shared.getConfig("isDataRepeated") )){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Asignación ya existente, algún turno está solapado o intenta abrir un turno ya finalizado el día de hoy. Intente otro.");
                 msb.show(this);
             }else{
@@ -177,7 +177,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
             poses = ConnectionDrivers.listPointOfSales4Assignments(true);
 
             for (Turn t : turns) {
-                turnCombo.addItem( "(" + t.getIdentificador() + ") " + Constants.sdfHour.format(t.getInicio()) + " -> " + Constants.sdfHour.format(t.getFin()));
+                turnCombo.addItem( "(" + t.getIdentificador() + ") " + Shared.sdfHour.format(t.getInicio()) + " -> " + Shared.sdfHour.format(t.getFin()));
             }
 
             for (PointOfSale pointOfSale : poses) {

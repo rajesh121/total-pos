@@ -92,8 +92,8 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(dataTable);
-        dataTable.getColumnModel().getColumn(0).setPreferredWidth(170);
-        dataTable.getColumnModel().getColumn(1).setPreferredWidth(40);
+        dataTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+        dataTable.getColumnModel().getColumn(1).setPreferredWidth(600);
 
         closeButton.setText("Cerrar");
         closeButton.setFocusable(false);
@@ -120,10 +120,10 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(titleLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1138, Short.MAX_VALUE)
+                    .addComponent(titleLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1138, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(acceptButton, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                        .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -150,7 +150,7 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
             for (int i = 0; i < dataTable.getRowCount(); i++) {
                 String a = (String) dataTable.getValueAt(i, 0);
                 String b = (String) dataTable.getValueAt(i, 1);
-                if (a == null || b == null || a.isEmpty() || b.isEmpty()) {
+                if (a == null || b == null || a.isEmpty() ) {
                     MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios!");
                     msg.show(this);
                     return;

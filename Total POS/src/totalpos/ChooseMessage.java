@@ -180,14 +180,14 @@ public class ChooseMessage extends javax.swing.JInternalFrame {
                     msg.show(this);
                     return;
                 }
-                if ( s.length() > Constants.maximumLenghtMsg2Pos ){
+                if ( s.length() > Integer.parseInt(Shared.getConfig("maximumLenghtMsg2Pos")) ){
                     if ( !showed ){
                         MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Hay mensajes que han sido truncados a " +
-                                Constants.maximumLenghtMsg2Pos+ " carácteres.");
+                                Integer.parseInt(Shared.getConfig("maximumLenghtMsg2Pos"))+ " carácteres.");
                         msg.show(this);
                         showed = true;
                     }
-                    msgTable.setValueAt(s.substring(0, Constants.maximumLenghtMsg2Pos), i, 0);
+                    msgTable.setValueAt(s.substring(0, Integer.parseInt(Shared.getConfig("maximumLenghtMsg2Pos"))), i, 0);
                 }
             }
 

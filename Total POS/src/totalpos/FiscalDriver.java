@@ -36,4 +36,5 @@ public interface FiscalDriver extends Library{
     public int CancelTransaction();
     public int OpenBox();
     public byte SetTimeOuts(byte Timeout);
+    public int PrintDocument(NativeLong NumDoc, byte DiaDoc, byte MesDoc, byte anyoDoc, byte TipDoc, byte DiaPrc, byte MesPrc, byte anyoPrc, byte horaPrc, byte minPrc, byte segundoPrc, byte AMPMPrc);
 }

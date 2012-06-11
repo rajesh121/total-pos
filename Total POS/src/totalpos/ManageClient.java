@@ -10,6 +10,7 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JDialog;
 
@@ -25,6 +26,7 @@ public class ManageClient extends javax.swing.JDialog {
     /** Creates new form ManageClient */
     public ManageClient(Frame parent, boolean modal, Client c) {
         super(parent, modal);
+        //System.out.println(Shared.getConfig("orderClientCategory").split);
         initComponents();
         idField.setFocusTraversalKeysEnabled(false);
         this.parent = parent;
@@ -120,7 +122,7 @@ public class ManageClient extends javax.swing.JDialog {
         phoneLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         phoneLabel.setName("phoneLabel"); // NOI18N
 
-        idField.setFont(new java.awt.Font("Courier New", 0, 12)); // NOI18N
+        idField.setFont(new java.awt.Font("Courier New", 0, 12));
         idField.setName("idField"); // NOI18N
         idField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -191,7 +193,13 @@ public class ManageClient extends javax.swing.JDialog {
         jLabel12.setText("*");
         jLabel12.setName("jLabel12"); // NOI18N
 
-        comboKind.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "V", "G", "J", "E" }));
+        LinkedList<String> ll = new LinkedList<String>();
+
+        String[] ss2 = Shared.getConfig("orderClientCategory").split("|");
+        for ( int i = 1 ; i < ss2.length ; i++ ){
+            ll.add(ss2[i]);
+        }
+        comboKind.setModel(new javax.swing.DefaultComboBoxModel(ll.toArray()));
         comboKind.setName("comboKind"); // NOI18N
         comboKind.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -248,7 +256,7 @@ public class ManageClient extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(comboKind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
+                                .addComponent(idField, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE))
                             .addComponent(addressField, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))))
                 .addContainerGap())
         );
@@ -304,7 +312,7 @@ public class ManageClient extends javax.swing.JDialog {
             addressField.setText(c.getAddress());
             nameField.requestFocus();
             idField.setText(c.getId().substring(1));
-            comboKind.setSelectedIndex(Constants.orderClientCategory.indexOf(c.getId().charAt(0)));
+            comboKind.setSelectedIndex(Shared.getConfig("orderClientCategory").indexOf(c.getId().charAt(0)));
         }else{
             // This section shouldn't be reached.
             // There are 2 clients with the same RIF.
@@ -328,7 +336,7 @@ public class ManageClient extends javax.swing.JDialog {
             }
             if ( validateRif()){
                 String t = ("000000000000000" + idField.getText());
-                idField.setText(t.substring(t.length()-Constants.clientMaximumlength));
+                idField.setText(t.substring(t.length()-Integer.parseInt(Shared.getConfig("clientMaximumlength"))));
                 try {
                     searchIt(comboKind.getSelectedItem().toString() + idField.getText());
                 } catch (SQLException ex) {
@@ -450,7 +458,7 @@ public class ManageClient extends javax.swing.JDialog {
             msb.show(this);
             return false;
         }
-        idField.setText(("000000000" + text).substring(Constants.clientMaximumlength));
+        idField.setText(("000000000" + text).substring(Integer.parseInt(Shared.getConfig("clientMaximumlength"))));
         return true;
     }
 
@@ -499,12 +507,14 @@ public class ManageClient extends javax.swing.JDialog {
     }
 
     private void setClient(Client myClient){
-        if ( parent instanceof MainRetailWindows ){
-            MainRetailWindows mrw = (MainRetailWindows)parent;
-            mrw.setClient(myClient.getId().isEmpty()?null:myClient);
-        }else if ( parent instanceof CreditNoteForm ){
-            CreditNoteForm mrw = (CreditNoteForm)parent;
-            mrw.setClient(myClient.getId().isEmpty()?null:myClient);
+        if ( myClient != null ){
+            if ( parent instanceof MainRetailWindows ){
+                MainRetailWindows mrw = (MainRetailWindows)parent;
+                mrw.setClient(myClient.getId().isEmpty()?null:myClient);
+            }else if ( parent instanceof CreditNoteForm ){
+                CreditNoteForm mrw = (CreditNoteForm)parent;
+                mrw.setClient(myClient.getId().isEmpty()?null:myClient);
+            }
         }
     }
     

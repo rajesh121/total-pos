@@ -301,8 +301,8 @@ public class ListTurnsAssigned extends JInternalFrame {
             model.setRowCount(0);
             for (Assign a : assigns) {
                 Turn t = Shared.getTurn(ConnectionDrivers.listTurns(), a.getTurn());
-                Object[] s = {"(" + t.getIdentificador() + ") " + Constants.sdfHour.format(t.getInicio()) + " -> "
-                        + Constants.sdfHour.format(t.getFin()),a.getPos(),Constants.sdfDay.format(a.getDate()),a.isOpen()};
+                Object[] s = {"(" + t.getIdentificador() + ") " + Shared.sdfHour.format(t.getInicio()) + " -> "
+                        + Shared.sdfHour.format(t.getFin()),a.getPos(),Shared.sdfDay.format(a.getDate()),a.isOpen()};
                 model.addRow(s);
             }
         } catch (SQLException ex) {

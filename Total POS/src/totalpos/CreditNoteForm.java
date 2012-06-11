@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -41,9 +42,9 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
             internIdField.setText(receipt.getInternId());
             fiscalNumberField.setText(receipt.getFiscalNumber());
             fiscalPrinterField.setText(receipt.getFiscalPrinter());
-            totalField.setText(Constants.df.format(receipt.getTotalWithIva()));
+            totalField.setText(Shared.df.format(receipt.getTotalWithIva()));
             zReportField.setText(receipt.getzReportId());
-            dateField.setText(Constants.sdfDateHour.format(receipt.getCreationDate()));
+            dateField.setText(Shared.sdfDateHour.format(receipt.getCreationDate()));
             List<Client> l = ConnectionDrivers.listClients(receipt.getClientId());
 
             // Client MUST be registred
@@ -639,7 +640,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
             myParent.dispose();
             Shared.reload();
         } catch (Exception ex) {
-            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Constants.errWithPrinter , ex);
+            MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, Shared.getConfig("errWithPrinter") , ex);
             msb.show(this);
             this.dispose();
         } 

@@ -8,6 +8,7 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import javax.swing.JFrame;
 
 /**
  *
@@ -220,7 +221,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             this.dispose();
         }if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            workingFrame = new Working(this);
+            workingFrame = new Working((JFrame) Shared.getMyMainWindows());
             WaitSplash ws = new WaitSplash(this);
 
             Shared.centerFrame(workingFrame);
@@ -236,7 +237,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
-        workingFrame = new Working(this);
+        workingFrame = new Working((JFrame) Shared.getMyMainWindows());
         WaitSplash ws = new WaitSplash(this);
 
         Shared.centerFrame(workingFrame);
@@ -324,26 +325,27 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
         } catch ( NumberFormatException ex ){
             String msgExtra = " Se ha extraído todo el dinero de la caja";
             if ( Math.abs(curMoney) > 1.0 ){
-                msgExtra = " La máxima cantidad de dinero que se puede extraer es " + Constants.df.format(curMoney) + " Bs";
+                msgExtra = " La máxima cantidad de dinero que se puede extraer es " + Shared.df.format(curMoney) + " Bs";
             }
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El monto es inválido." + msgExtra );
             msg.show(this);
         } catch (Exception ex) {
             String kindErr = "";
 
-            if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {
-                kindErr = Constants.wrongPasswordMsg;
+            if ( Shared.getConfig("wrongPasswordMsg").equals(ex.getMessage()) ) {
+                kindErr = Shared.getConfig("wrongPasswordMsg");
             }
 
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr,ex);
             msg.show(this);
 
-            if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
+            if ( ex.getMessage().equals(Shared.getConfig("wrongPasswordMsg")) ){
                 try {
                     Shared.userTrying(idField.getText());
                 } catch (Exception ex1) {
+                    String userLocked = Shared.getConfig("userLocked");
                     msg = new MessageBox(MessageBox.SGN_DANGER,
-                                (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
+                                (ex1.getMessage().equals(userLocked)? userLocked :"Error."),
                                 ex1);
                     msg.show(null);
                     this.dispose();

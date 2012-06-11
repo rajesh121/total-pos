@@ -400,7 +400,7 @@ public class CreateTurn extends JInternalFrame {
             setVisible(false);
             dispose();
         } catch (SQLException ex) {
-            if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+            if ( ex.getMessage().matches(Shared.getConfig("isDataRepeated")) ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Turno ya existente. Intente otro.");
                 msb.show(this);
             }else{

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,10 +52,11 @@ public class FiscalPrinter {
 
             //printer.ClosePort();
 
+
             System.out.println("Probando Timeout");
             printer.SetTimeOuts((byte)6);
             System.out.println("Termino de probar");
-            
+
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
             //printer.CancelTransaction();
 
@@ -97,13 +99,13 @@ public class FiscalPrinter {
                 throw new Exception(Shared.getErrMapping().get(128));
             }
 
-            ansT = printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
+            ansT = printer.UploadStatusCmd(a, b, "S1", Constants.tmpDir + Shared.getConfig("tmpFileName"));
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
             assert (ansT);
 
-            File file = new File(Constants.tmpFileName);
+            File file = new File(Constants.tmpDir + Shared.getConfig("tmpFileName"));
 
             Scanner sc = new Scanner(file);
 
@@ -113,7 +115,7 @@ public class FiscalPrinter {
 
 
             printerSerial = line.substring(66, 76);
-            z = Constants.df2z.format(Integer.parseInt(line.substring(47, 51))+1);
+            z = Shared.df2z.format(Integer.parseInt(line.substring(47, 51))+1);
             lastReceipt = line.substring(21,21+8);
             sc.close();
             file.delete();
@@ -191,7 +193,7 @@ public class FiscalPrinter {
             }
             
             Calendar calendar = GregorianCalendar.getInstance();
-            Date dd = Constants.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
+            Date dd = Shared.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
             calendar.setTime(dd);
 
             if ( client == null || client.getId() == null || client.getId().isEmpty() ){
@@ -205,7 +207,7 @@ public class FiscalPrinter {
                     + (byte)(calendar.get(Calendar.YEAR)%100)+ " " + hour + ":" + calendar.get(Calendar.MINUTE)
                     + ":" + calendar.get(Calendar.SECOND) + " " + ((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
             System.out.println("Abriendo documentos...");
-            ans = printer.NewDoc(Constants.receipt, client.getName(), client.getId(),
+            ans = printer.NewDoc(Integer.parseInt(Shared.getConfig("receipt")), client.getName(), client.getId(),
                     Shared.getUser().getLogin() + " " + ticketId, "ABC", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
                     (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
@@ -231,7 +233,7 @@ public class FiscalPrinter {
             }
             String nextReceipt = tqpt.VoucherVta + "";
 
-            if ( ans != 0 || tqpt.VoucherVta <= 0 || tqpt.VoucherVta > Constants.maximumFiscalNumber ){
+            if ( ans != 0 || tqpt.VoucherVta <= 0 || tqpt.VoucherVta > Integer.parseInt(Shared.getConfig("maximumFiscalNumber")) ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
             Double subtotal = .0;
@@ -240,11 +242,11 @@ public class FiscalPrinter {
                 System.out.println("Enviando articulo....");
                 String d = item2r.getItem().getDescription();
                 subtotal += item2r.getSellPrice()*(1.0 - item2r.getSellDiscount()/100.0)*item2r.getQuant();
-                ans = printer.NewItem((byte)0, (byte)0, item2r.getQuant()+.0, Shared.round(item2r.getSellPrice(),2) , (item2r.getItem().getModel()+"-"+d).substring(0, Math.min(Constants.maxNcrDescription, d.length())));
+                ans = printer.NewItem((byte)0, (byte)0, item2r.getQuant()+.0, Shared.round(item2r.getSellPrice(),2) , (item2r.getItem().getModel()+"-"+d).substring(0, Math.min(Integer.parseInt(Shared.getConfig("maxNcrDescription")), d.length())));
                 if ( ans != 0 ){
                     throw new Exception(Shared.ncrErrMapping.get(ans));
                 }
-                if ( Math.abs(item2r.getItem().getDescuento()) > Constants.exilon ){
+                if ( Math.abs(item2r.getItem().getDescuento()) > Double.parseDouble(Shared.getConfig("exilon")) ){
                     ans = printer.OprDoc((byte)0, (byte)0, Shared.round((item2r.getQuant()+.0)*item2r.getSellPrice()*(item2r.getSellDiscount()/100.0),2), ((item2r.getSellDiscount())+"%").replace(',', '.'));
                 }
                 if ( ans != 0 ){
@@ -254,27 +256,27 @@ public class FiscalPrinter {
             }
 
             TreeMap<String,Double> buff = new TreeMap<String , Double>();
-            buff.put(Constants.cashPaymentName, .0);
-            buff.put(Constants.CNPaymentName, .0);
-            buff.put(Constants.creditPaymentName, .0);
-            buff.put(Constants.debitPaymentName, .0);
-            buff.put(Constants.americanExpressPaymentName, .0);
+            buff.put(Shared.getConfig("cashPaymentName"), .0);
+            buff.put(Shared.getConfig("CNPaymentName"), .0);
+            buff.put(Shared.getConfig("creditPaymentName"), .0);
+            buff.put(Shared.getConfig("debitPaymentName"), .0);
+            buff.put(Shared.getConfig("americanExpressPaymentName"), .0);
             for (PayForm payForm : pfs) {
                 buff.put( payForm.getFormWay() , buff.get(payForm.getFormWay()) + payForm.getQuant());
             }
             System.out.println("Enviando cantidad de articulos...");
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"                                   ",1,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"===================================",2,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"      CANTIDAD DE ARTICULOS " + itemsQuant,3,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"===================================",4,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"                                   ",1,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"===================================",2,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"      CANTIDAD DE ARTICULOS " + itemsQuant,3,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"===================================",4,(byte)0);
 
             System.out.println("Código de barras 69");
             subtotal = Math.round(subtotal * 100)/100.0;
             System.out.println("SubTotal = " + subtotal);
 
             int ansOfPrinting = 0;
-            ansOfPrinting = printer.CloseDoc(buff.get(Constants.cashPaymentName), buff.get(Constants.CNPaymentName), buff.get(Constants.creditPaymentName), buff.get(Constants.debitPaymentName),
-                    buff.get(Constants.americanExpressPaymentName), .0, subtotal*globalDiscount, .0, (byte)12 , (byte)70, ticketId);
+            ansOfPrinting = printer.CloseDoc(buff.get(Shared.getConfig("cashPaymentName")), buff.get(Shared.getConfig("CNPaymentName")), buff.get(Shared.getConfig("creditPaymentName")), buff.get(Shared.getConfig("debitPaymentName")),
+                    buff.get(Shared.getConfig("americanExpressPaymentName")), .0, subtotal*globalDiscount, .0, (byte)12 , (byte)70, ticketId);
             /*ansOfPrinting = printer.CloseDoc(1, 0, 0, 0,
                     0, .0, 10, .0, (byte)12 , (byte)70, ticketId);*/
 
@@ -293,7 +295,7 @@ public class FiscalPrinter {
                 System.out.println("Respuesta del Primer Intento = " + ans);
 
                 predicted = false;
-                if ( ans != 0 || tqpt.VoucherVta <= 0 || tqpt.VoucherVta > Constants.maximumFiscalNumber ){
+                if ( ans != 0 || tqpt.VoucherVta <= 0 || tqpt.VoucherVta > Integer.parseInt(Shared.getConfig("maximumFiscalNumber")) ){
                     restartCommunicationNCR();
                 }else{
                     lastReceipt = tqpt.VoucherVta + "";
@@ -302,7 +304,7 @@ public class FiscalPrinter {
                 }
                 ++tries;
             }
-            while( tries <= Constants.triesWithPrinter && !isOk );
+            while( tries <= Integer.parseInt(Shared.getConfig("triesWithPrinter")) && !isOk );
 
             if ( !isOk ){
                 lastReceipt = nextReceipt;
@@ -403,15 +405,15 @@ public class FiscalPrinter {
                              * Put it in the configuracion file.
                              */
                             String cmd = "01";
-                            if ( pf.getFormWay().equals(Constants.cashPaymentName) ){
+                            if ( pf.getFormWay().equals(Shared.getConfig("cashPaymentName")) ){
                                 cmd = "01";
-                            }else if ( pf.getFormWay().equals(Constants.CNPaymentName) ){
+                            }else if ( pf.getFormWay().equals(Shared.getConfig("CNPaymentName")) ){
                                 cmd = "02";
-                            }else if ( pf.getFormWay().equals(Constants.creditPaymentName) ){
+                            }else if ( pf.getFormWay().equals(Shared.getConfig("creditPaymentName")) ){
                                 cmd = "09";
-                            }else if ( pf.getFormWay().equals(Constants.debitPaymentName) ){
+                            }else if ( pf.getFormWay().equals(Shared.getConfig("debitPaymentName")) ){
                                 cmd = "10";
-                            }else if ( pf.getFormWay().equals(Constants.americanExpressPaymentName) ){
+                            }else if ( pf.getFormWay().equals(Shared.getConfig("americanExpressPaymentName")) ){
                                 cmd = "11";
                             }
                             printer.SendCmd(a, b, "2" + cmd + Shared.formatDoubleToSpecifyMoneyInPrinter(pf.getQuant()));
@@ -421,7 +423,7 @@ public class FiscalPrinter {
                                 predicted = true;
                             }*/
                         }
-                        printer.SendCmd(a, b, "2" + "01" + Shared.formatDoubleToSpecifyMoneyInPrinter(Constants.add2PayForm));
+                        printer.SendCmd(a, b, "2" + "01" + Shared.formatDoubleToSpecifyMoneyInPrinter(Double.parseDouble(Shared.getConfig("add2PayForm"))));
                     }
                 }catch(Exception ex){
                     lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
@@ -431,14 +433,14 @@ public class FiscalPrinter {
 
             }
             if ( everythingCool ){
-                printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
+                printer.UploadStatusCmd(a, b, "S1", Constants.tmpDir + Shared.getConfig("tmpFileName"));
                 if ( b.getValue() != 0 ){
                     lastReceipt = Integer.parseInt(ConnectionDrivers.getLastReceipt())+1+"";
                     everythingCool = false;
                     predicted = true;
                 }
                 if ( everythingCool ){
-                    File file = new File(Constants.tmpFileName);
+                    File file = new File(Constants.tmpDir + Shared.getConfig("tmpFileName"));
 
                     Scanner sc = new Scanner(file);
 
@@ -479,12 +481,12 @@ public class FiscalPrinter {
             }*/
             
             Calendar calendar = GregorianCalendar.getInstance();
-            Date dd = Constants.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
+            Date dd = Shared.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
             calendar.setTime(dd);
 
             int hour = calendar.get(Calendar.HOUR) == 0?12:calendar.get(Calendar.HOUR);
 
-            int ans = printer.NewDoc(Constants.nonfiscalDoc, "SAUL", "123",
+            int ans = printer.NewDoc(Integer.parseInt(Shared.getConfig("nonfiscalDoc")), "SAUL", "123",
                     Shared.getUser().getLogin(), "", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
                     (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
@@ -498,21 +500,21 @@ public class FiscalPrinter {
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
 
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",1,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"         Extraer dinero de la Caja " + Shared.getFileConfig("myId"),2,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.bigFont,"          " + Constants.df.format(quant) + " Bs",1,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",3,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"               Firma Cajera",4,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",5,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",6,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"            _____________________",7,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",8,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"               Firma Encargado",9,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",10,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",11,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"            _____________________",12,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",13,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",14,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",1,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"         Extraer dinero de la Caja " + Shared.getFileConfig("myId"),2,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("bigFont")),"          " + Shared.df.format(quant) + " Bs",1,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",3,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"               Firma Cajera",4,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",5,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",6,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"            _____________________",7,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",8,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"               Firma Encargado",9,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",10,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",11,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"            _____________________",12,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",13,(byte)0);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"",14,(byte)0);
 
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
@@ -542,7 +544,7 @@ public class FiscalPrinter {
             }*/
 
             List<String> buffer = new ArrayList<String>();
-            buffer.add("800 Retiro de Efectivo  " +  Constants.df.format(quant));
+            buffer.add("800 Retiro de Efectivo  " +  Shared.df.format(quant));
             buffer.add("800 Caja " + Shared.getFileConfig("myId"));
             buffer.add("800 ");
             buffer.add("800                 _______________________");
@@ -626,12 +628,12 @@ public class FiscalPrinter {
                 IntByReference b = new IntByReference();
                 printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
 
-                printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
+                printer.UploadReportCmd(a, b, "U0X", Constants.tmpDir + Shared.getConfig("tmpFileName"));
                 if ( b.getValue() != 0 ){
                     throw new Exception(Shared.getErrMapping().get(b.getValue()));
                 }
 
-                File file = new File(Constants.tmpFileName);
+                File file = new File(Constants.tmpDir + Shared.getConfig("tmpFileName"));
 
                 Scanner sc = new Scanner(file);
 
@@ -657,6 +659,7 @@ public class FiscalPrinter {
         }
 
         if ( printerSerial == null ){
+            System.out.println("Calculando el serial...");
             calculateSerial();
         }
         return printerSerial;
@@ -691,7 +694,7 @@ public class FiscalPrinter {
             int ans = printer.OpenBox();
 
             Calendar calendar = GregorianCalendar.getInstance();
-            Date dd = Constants.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
+            Date dd = Shared.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
             calendar.setTime(dd);
 
             Calendar calendarCN = new GregorianCalendar();
@@ -705,7 +708,7 @@ public class FiscalPrinter {
             }
 
             System.out.println("Hora = " + hour + " _ " + hour);
-            ans = printer.NewDoc(Constants.creditNote, client.getName(), client.getId(),
+            ans = printer.NewDoc(Integer.parseInt(Shared.getConfig("creditNote")), client.getName(), client.getId(),
                     Shared.getUser().getLogin() + " " + ticketId, receiptPrinter, new NativeLong(Long.parseLong(fiscalTicketId)), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
                     (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
@@ -724,7 +727,7 @@ public class FiscalPrinter {
 
             ans = printer.QueryPrnTransaction((byte)1, tqpt);
 
-            if ( ans != 0 || tqpt.VoucherDev <= 0 || tqpt.VoucherDev > Constants.maximumFiscalNumber ){
+            if ( ans != 0 || tqpt.VoucherDev <= 0 || tqpt.VoucherDev > Integer.parseInt(Shared.getConfig("maximumFiscalNumber")) ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
             String nextReceipt = tqpt.VoucherDev + "";
@@ -734,11 +737,11 @@ public class FiscalPrinter {
             for (Item2Receipt item2r : items) {
                 String d = item2r.getItem().getDescription();
                 subtotal += item2r.getSellPrice()*(1.0 - item2r.getSellDiscount()/100.0)*item2r.getQuant();
-                ans = printer.NewItem((byte)0, (byte)0, item2r.getQuant()+.0, Shared.round(item2r.getSellPrice(),2) , (item2r.getItem().getModel()+"-"+d).substring(0, Math.min(Constants.maxNcrDescription, d.length())));
+                ans = printer.NewItem((byte)0, (byte)0, item2r.getQuant()+.0, Shared.round(item2r.getSellPrice(),2) , (item2r.getItem().getModel()+"-"+d).substring(0, Math.min(Integer.parseInt(Shared.getConfig("maxNcrDescription")), d.length())));
                 if ( ans != 0 ){
                     throw new Exception(Shared.ncrErrMapping.get(ans));
                 }
-                if ( Math.abs(item2r.getSellDiscount()) > Constants.exilon ){
+                if ( Math.abs(item2r.getSellDiscount()) > Double.parseDouble(Shared.getConfig("exilon")) ){
                     ans = printer.OprDoc((byte)0, (byte)0, Shared.round((item2r.getQuant()+.0)*item2r.getSellPrice()*(item2r.getSellDiscount()/100.0),2), ((item2r.getSellDiscount())+"%").replace(',', '.'));
                 }
 
@@ -748,11 +751,11 @@ public class FiscalPrinter {
             }
 
             TreeMap<String,Double> buff = new TreeMap<String , Double>();
-            buff.put(Constants.cashPaymentName, .0);
-            buff.put(Constants.CNPaymentName, .0);
-            buff.put(Constants.creditPaymentName, .0);
-            buff.put(Constants.debitPaymentName, .0);
-            buff.put(Constants.americanExpressPaymentName, .0);
+            buff.put(Shared.getConfig("cashPaymentName"), .0);
+            buff.put(Shared.getConfig("CNPaymentName"), .0);
+            buff.put(Shared.getConfig("creditPaymentName"), .0);
+            buff.put(Shared.getConfig("debitPaymentName"), .0);
+            buff.put(Shared.getConfig("americanExpressPaymentName"), .0);
 
             int ansOfPrinting = printer.CloseDoc(.0, new Price(null, subtotal).plusIva().getQuant(), .0, .0,
                     .0, .0, .0, .0, (byte)12 , (byte)70, ticketId);
@@ -765,7 +768,7 @@ public class FiscalPrinter {
                 printer.CancelTransaction();
                 ans = printer.QueryPrnTransaction((byte)2, tqpt);
 
-                if ( ans != 0 || tqpt.VoucherDev <= 0 || tqpt.VoucherDev > Constants.maximumFiscalNumber ){
+                if ( ans != 0 || tqpt.VoucherDev <= 0 || tqpt.VoucherDev > Integer.parseInt(Shared.getConfig("maximumFiscalNumber")) ){
                     restartCommunicationNCR();
                 }else{
                     lastReceipt = tqpt.VoucherDev + "";
@@ -774,7 +777,7 @@ public class FiscalPrinter {
                 ++tries;
                 System.out.println("Intento " + tries);
             }
-            while( tries < Constants.triesWithPrinter && !isOkT );
+            while( tries < Integer.parseInt(Shared.getConfig("triesWithPrinter")) && !isOkT );
 
 
             if ( !isOkT ){
@@ -880,7 +883,7 @@ public class FiscalPrinter {
 
             try{
                 if ( everythingCool ){
-                    printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
+                    printer.UploadReportCmd(a, b, "U0X", Constants.tmpDir + Shared.getConfig("tmpFileName"));
                     if ( b.getValue() != 0 ){
                         lastReceipt = Integer.parseInt(ConnectionDrivers.getLastCN())+1+"";
                         everythingCool = false;
@@ -888,7 +891,7 @@ public class FiscalPrinter {
                     }
 
                     if ( everythingCool ){
-                        File file = new File(Constants.tmpFileName);
+                        File file = new File(Constants.tmpDir + Shared.getConfig("tmpFileName"));
 
                         Scanner sc = new Scanner(file);
 
@@ -931,7 +934,7 @@ public class FiscalPrinter {
 
             int ans = 0;
             Calendar calendar = GregorianCalendar.getInstance();
-            Date dd = Constants.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
+            Date dd = Shared.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
             calendar.setTime(dd);
             int hour = calendar.get(Calendar.HOUR) == 0?12:calendar.get(Calendar.HOUR);
 
@@ -1062,12 +1065,12 @@ public class FiscalPrinter {
             printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
             IntByReference a = new IntByReference();
             IntByReference b = new IntByReference();
-            printer.UploadStatusCmd(a, b, "S4", Constants.tmpFileName);
+            printer.UploadStatusCmd(a, b, "S4", Constants.tmpDir + Shared.getConfig("tmpFileName"));
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
 
-            File file = new File(Constants.tmpFileName);
+            File file = new File(Constants.tmpDir + Shared.getConfig("tmpFileName"));
 
             Scanner sc = new Scanner(file);
 
@@ -1084,11 +1087,11 @@ public class FiscalPrinter {
 
             sc.close();
             file.delete();
-            printer.UploadStatusCmd(a, b, "S1", Constants.tmpFileName);
+            printer.UploadStatusCmd(a, b, "S1", Constants.tmpDir + Shared.getConfig("tmpFileName"));
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
-            file = new File(Constants.tmpFileName);
+            file = new File(Constants.tmpDir + Shared.getConfig("tmpFileName"));
             sc = new Scanner(file);
             line = sc.next();
             //Double total = Double.parseDouble(line.substring(2+10*1,2+10*2))/100.0;
@@ -1100,13 +1103,13 @@ public class FiscalPrinter {
             sc.close();
             file.delete();
 
-            String pZ = Constants.df2z.format(Integer.parseInt(z) - 1);
-            printer.UploadReportCmd(a, b, "U0X", Constants.tmpFileName);
+            String pZ = Shared.df2z.format(Integer.parseInt(z) - 1);
+            printer.UploadReportCmd(a, b, "U0X", Constants.tmpDir + Shared.getConfig("tmpFileName"));
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
 
-            file = new File(Constants.tmpFileName);
+            file = new File(Constants.tmpDir + Shared.getConfig("tmpFileName"));
             sc = new Scanner(file);
 
             line = sc.next();
@@ -1124,12 +1127,12 @@ public class FiscalPrinter {
             sc.close();
             file.delete();
 
-            printer.UploadReportCmd(a, b, "U3A00" + pZ + "00" + z, Constants.tmpFileName);
+            printer.UploadReportCmd(a, b, "U3A00" + pZ + "00" + z, Constants.tmpDir + Shared.getConfig("tmpFileName"));
             if ( b.getValue() != 0 ){
                 throw new Exception(Shared.getErrMapping().get(b.getValue()));
             }
 
-            file = new File(Constants.tmpFileName);
+            file = new File(Constants.tmpDir + Shared.getConfig("tmpFileName"));
             sc = new Scanner(file);
 
             line = sc.next();
@@ -1161,12 +1164,12 @@ public class FiscalPrinter {
             }
 
             Calendar calendar = GregorianCalendar.getInstance();
-            Date dd = Constants.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
+            Date dd = Shared.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
             calendar.setTime(dd);
             int hour = calendar.get(Calendar.HOUR) == 0?12:calendar.get(Calendar.HOUR);
 
             System.out.println("Comenzo el new doc");
-            ans = printer.NewDoc(Constants.nonfiscalDoc, "SAUL", "123",
+            ans = printer.NewDoc(Integer.parseInt(Shared.getConfig("nonfiscalDoc")), "SAUL", "123",
                     Shared.getUser().getLogin(), "", new NativeLong(0), (calendar.get(Calendar.DAY_OF_MONTH)),
                     //(calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100+Constants.ncrYearOffset, (calendar.get(Calendar.HOUR)+12)%13,
                     (calendar.get(Calendar.MONTH)+1), calendar.get(Calendar.YEAR)%100, hour,
@@ -1182,20 +1185,21 @@ public class FiscalPrinter {
             }
 
             System.out.println("Mandando texto no fiscal");
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",1,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Resumen del Reporte " + xoz + "  Nro " + z ,2,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Impresora Fiscal Serial Nro " + printerSerial,1,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," ",3,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Sucursal: " + Shared.getConfig("storeName"),4,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Caja Nro: " + Shared.getFileConfig("myId"),5,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Ult Factura:        " + ConnectionDrivers.getLastReceipt(),6,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Ult Nota de Credito " + ConnectionDrivers.getLastCN(),7,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas", day),8,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito", day),9,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"), day)),11,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," ",12,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont," Fin de Resumen del Reporte Z Nro " + z,13,(byte)0);
-            ans = printer.PrintTextNoFiscal(Constants.normalFont,"",14,(byte)0);
+            int nf = Integer.parseInt(Shared.getConfig("normalFont"));
+            ans = printer.PrintTextNoFiscal(nf,"",1,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Resumen del Reporte " + xoz + "  Nro " + z ,2,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Impresora Fiscal Serial Nro " + printerSerial,1,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," ",3,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Sucursal: " + Shared.getConfig("storeName"),4,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Caja Nro: " + Shared.getFileConfig("myId"),5,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Ult Factura:        " + ConnectionDrivers.getLastReceipt(),6,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Ult Nota de Credito " + ConnectionDrivers.getLastCN(),7,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas", day),8,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito", day),9,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Neto Ventas:         " + Shared.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"), day)),11,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," ",12,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf," Fin de Resumen del Reporte Z Nro " + z,13,(byte)0);
+            ans = printer.PrintTextNoFiscal(nf,"",14,(byte)0);
             System.out.println("Termino de mandar texto");
 
             if ( ans != 0 ){
@@ -1230,7 +1234,7 @@ public class FiscalPrinter {
             buffer.add("800 Nro de Facturas:      " + ConnectionDrivers.getQuant(Shared.getFileConfig("myId"),"num_facturas", day));
             buffer.add("800 Nro de N/C:         " + ConnectionDrivers.getQuant( Shared.getFileConfig("myId"),"numero_notas_credito", day));
             buffer.add("800 ");
-            buffer.add("800 Neto Ventas:         " + Constants.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"), day)));
+            buffer.add("800 Neto Ventas:         " + Shared.df.format(ConnectionDrivers.getTotalDeclaredPos(Shared.getFileConfig("myId"), day)));
             buffer.add("800 ");
             buffer.add("810 Fin de Resumen del Reporte Z Nro " + z);
 
@@ -1259,12 +1263,66 @@ public class FiscalPrinter {
         System.out.println(" Computer = " + (computer + currentReceipt));
         System.out.println(" Printer = " + printer );
         printer = ConnectionDrivers.getTotalPrinter("curdate()", Shared.getFileConfig("myId"));
-        if ( Math.abs( computer + currentReceipt - printer ) < Constants.printerExilon ){
+        if ( Math.abs( computer + currentReceipt - printer ) < Double.parseDouble(Shared.getConfig("printerExilon")) ){
             return 0;
         }else if ( computer < printer ){
             return -1;
         }else{
             return 1;
+        }
+    }
+
+    void printNonFiscalCopyReceipt(String fiscalNumber, Timestamp printingDate) throws SQLException, ParseException {
+        if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
+            isOk = false;
+
+            Calendar calendar = GregorianCalendar.getInstance();
+            Date dd = Shared.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
+            calendar.setTime(dd);
+            int hour = calendar.get(Calendar.HOUR) == 0?12:calendar.get(Calendar.HOUR);
+
+            
+            int ans = printer.PrintDocument(new NativeLong(Long.parseLong(fiscalNumber)), (byte)printingDate.getDate(), (byte)(printingDate.getMonth()+1), (byte)(printingDate.getYear()%100), (byte)0, (byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100), (byte)hour, (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+
+            System.out.println("ans = " + ans);
+            isOk = true;
+        }else if ( Shared.getFileConfig("printerDriver").equals("tfhkaif") ){
+            isOk = false;
+            IntByReference a = new IntByReference();
+            IntByReference b = new IntByReference();
+            printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
+
+            String tmp = Shared.df2intnonfiscalcopy.format(Integer.parseInt(fiscalNumber));
+            printer.SendCmd(a, b, "RF" + tmp + tmp);
+            printer.CloseFpctrl();
+            isOk = true;
+        }
+    }
+
+    void printNonFiscalCopyCreditNote(String fiscalNumber, Timestamp printingDate) throws ParseException, SQLException {
+        if ( Shared.getFileConfig("printerDriver").equals("PrnFiscalDLL32") ){
+            isOk = false;
+
+            Calendar calendar = GregorianCalendar.getInstance();
+            Date dd = Shared.sdf4ncr.parse(ConnectionDrivers.getDate4NCR());
+            calendar.setTime(dd);
+            int hour = calendar.get(Calendar.HOUR) == 0?12:calendar.get(Calendar.HOUR);
+
+
+            int ans = printer.PrintDocument(new NativeLong(Long.parseLong(fiscalNumber)), (byte)printingDate.getDate(), (byte)(printingDate.getMonth()+1), (byte)(printingDate.getYear()%100), (byte)1, (byte)calendar.get(Calendar.DAY_OF_MONTH), (byte)(calendar.get(Calendar.MONTH)+1), (byte)(calendar.get(Calendar.YEAR)%100), (byte)hour, (byte)calendar.get(Calendar.MINUTE), (byte)calendar.get(Calendar.SECOND), (byte)((calendar.get(Calendar.AM_PM) == Calendar.AM)?0:1));
+
+            System.out.println("ans = " + ans);
+            isOk = true;
+        }else if ( Shared.getFileConfig("printerDriver").equals("tfhkaif") ){
+            isOk = false;
+            IntByReference a = new IntByReference();
+            IntByReference b = new IntByReference();
+            printer.OpenFpctrl(Shared.getFileConfig("printerPort"));
+
+            String tmp = Shared.df2intnonfiscalcopy.format(Integer.parseInt(fiscalNumber));
+            printer.SendCmd(a, b, "RC" + tmp + tmp);
+            printer.CloseFpctrl();
+            isOk = true;
         }
     }
     

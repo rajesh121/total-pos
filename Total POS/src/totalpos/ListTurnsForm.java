@@ -207,7 +207,7 @@ public class ListTurnsForm extends JInternalFrame {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.setRowCount(0);
             for (Turn p : turns) {
-                Object[] s = {p.getIdentificador(), p.getNombre(), Constants.sdfHour.format(p.getInicio()), Constants.sdfHour.format(p.getFin())};
+                Object[] s = {p.getIdentificador(), p.getNombre(), Shared.sdfHour.format(p.getInicio()), Shared.sdfHour.format(p.getFin())};
                 model.addRow(s);
             }
         } catch (SQLException ex) {

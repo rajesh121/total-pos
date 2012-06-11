@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -95,9 +96,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         return ans;
     }
 
-    private String getNegativeStock() throws SQLException {
-
-        List<Item> l = ConnectionDrivers.getNegativeStock();
+    private String getNegativeStock(List<Item> l) throws SQLException {
         String ans = "";
         for( int i = 0 ; i < l.size() ; i++ ){
             Item item = l.get(i);
@@ -212,9 +211,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     System.out.println(row + " _ " + column);
                 }
                 if ( value == null ){
-                    value = Constants.df.format(.0);
+                    value = Shared.df.format(.0);
                 }else{
-                    value = Constants.df.format((Double)value);
+                    value = Shared.df.format((Double)value);
                 }
             }
 
@@ -253,9 +252,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             model.setRowCount(0);
 
             JComboBox jcb = new JComboBox();
-            jcb.addItem(Constants.creditPaymentName);
-            jcb.addItem(Constants.debitPaymentName);
-            jcb.addItem(Constants.americanExpressPaymentName);
+            jcb.addItem(Shared.getConfig("creditPaymentName"));
+            jcb.addItem(Shared.getConfig("debitPaymentName"));
+            jcb.addItem(Shared.getConfig("americanExpressPaymentName"));
 
             DefaultTableCellRenderer renderer =
                     new DefaultTableCellRenderer();
@@ -273,7 +272,22 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             conceptColumn.setCellRenderer(renderer);
             conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
             updateAll();
-            if ( sr &&  ConnectionDrivers.wasClosed(day) ){
+
+            if ( ConnectionDrivers.wasFlagC(day) ){
+                saveDeposit.setEnabled(false);
+                saveExpense.setEnabled(false);
+                saveNewBanks.setEnabled(false);
+                printAndSendButton.setEnabled(false);
+                updateButton.setEnabled(false);
+                addDeposit.setEnabled(false);
+                deleteDeposit.setEnabled(false);
+                addExpense.setEnabled(false);
+                deleteExpense.setEnabled(false);
+                addDeposit1.setEnabled(false);
+                deleteNewBanks.setEnabled(false);
+                MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Este día ha sido compensado!");
+                msg.show(this);
+            }else if ( sr &&  ConnectionDrivers.wasClosed(day) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Este día ha sido cerrado anteriormente!");
                 msg.show(this);
             }
@@ -312,7 +326,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
 
         for (Deposit e : deposits) {
-            String[] s = {e.getBank(),e.getFormId(),Constants.df.format(e.getQuant())};
+            String[] s = {e.getBank(),e.getFormId(),Shared.df.format(e.getQuant())};
             model.addRow(s);
         }
         
@@ -341,7 +355,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         conceptColumn.setCellEditor(new DefaultCellEditor(jcb));
 
         for (Expense e : expenses) {
-            String[] s = {e.getConcept(),Constants.df.format(e.getQuant()),e.getDescription()};
+            String[] s = {e.getConcept(),Shared.df.format(e.getQuant()),e.getDescription()};
             model.addRow(s);
         }
     }
@@ -373,15 +387,15 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         updateFiscalZ();
         updatePayWayxPosesDetails();
         Double expensesD = ConnectionDrivers.getExpenses(myDay);
-        totalCardsField.setText(Constants.df.format(totalInCard = ConnectionDrivers.getTotalCards(myDay)));
-        totalCashField.setText(Constants.df.format(totalInCash = ConnectionDrivers.getTotalCash(myDay)));
-        payWithCreditNoteField.setText( Constants.df.format( totalpcn = ConnectionDrivers.getTotalPCN(myDay) ));
-        creditNoteField.setText(Constants.df.format(totalCN = (ConnectionDrivers.getTotalCN(myDay)*(Shared.getIva()+100.0)/100.0)));
-        totalTotalField.setText(Constants.df.format(totalInCard + totalInCash));
-        expensesTodayField.setText( Constants.df.format(totalExpenses = expensesD) );
-        totalDeclaredField.setText(Constants.df.format(totalDeclared*(Shared.getIva()+100.0)/100.0));
-        expensesMinusDeclaredField.setText(Constants.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0));
-        totalField.setText(Constants.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 - totalInCard - totalInCash-expensesD)));
+        totalCardsField.setText(Shared.df.format(totalInCard = ConnectionDrivers.getTotalCards(myDay)));
+        totalCashField.setText(Shared.df.format(totalInCash = ConnectionDrivers.getTotalCash(myDay)));
+        payWithCreditNoteField.setText( Shared.df.format( totalpcn = ConnectionDrivers.getTotalPCN(myDay) ));
+        creditNoteField.setText(Shared.df.format(totalCN = (ConnectionDrivers.getTotalCN(myDay)*(Shared.getIva()+100.0)/100.0)));
+        totalTotalField.setText(Shared.df.format(totalInCard + totalInCash));
+        expensesTodayField.setText( Shared.df.format(totalExpenses = expensesD) );
+        totalDeclaredField.setText(Shared.df.format(totalDeclared*(Shared.getIva()+100.0)/100.0));
+        expensesMinusDeclaredField.setText(Shared.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0));
+        totalField.setText(Shared.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 - totalInCard - totalInCash-expensesD)));
     }
 
     /** This method is called from within the constructor to
@@ -566,7 +580,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 .addContainerGap())
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Depósitos"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Depósito Efectivo"));
         jPanel3.setName("jPanel3"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -644,7 +658,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 .addContainerGap())
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Banco y Lotes"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Depositos de Punto de venta de Bancos"));
         jPanel4.setName("jPanel4"); // NOI18N
 
         jScrollPane5.setName("jScrollPane5"); // NOI18N
@@ -809,14 +823,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+            .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(addExpense)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteExpense, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                        .addComponent(deleteExpense, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveExpense)))
                 .addContainerGap())
@@ -833,7 +847,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 .addContainerGap())
         );
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Medios de Pago por el Cajero"));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen de Medios de Pago x Cajero"));
         jPanel6.setName("jPanel6"); // NOI18N
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
@@ -1189,7 +1203,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(noteLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1204,11 +1218,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1361,7 +1375,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     return;
                 }
             }
-            if ( Math.abs(ConnectionDrivers.getTotalDeclared(myDay) - receiptTotal) > Constants.moneyExilon ){
+            if ( Math.abs(ConnectionDrivers.getTotalDeclared(myDay) - receiptTotal) > Double.parseDouble(Shared.getConfig("moneyExilon")) ){
                 SellWithoutStock sws = new SellWithoutStock((Frame) Shared.getMyMainWindows(), true, "Envio con diferencias.", "sendODWithDiff");
                 Shared.centerFrame(sws);
                 sws.setVisible(true);
@@ -1381,7 +1395,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 }//GEN-LAST:event_printAndSendButtonActionPerformed
 
     private void sendIt(){
-        workingFrame = new Working((Window) Shared.getMyMainWindows());
+        workingFrame = new Working((JFrame) Shared.getMyMainWindows());
 
         WaitSplash ws = new WaitSplash(this);
 
@@ -1536,7 +1550,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     IXMLElement childchild = child.createElement("CND");
                     child.addChild(childchild);
                     childchild.setAttribute("id", "D" + receiptSap.getId());
-                    childchild.setAttribute("position", Constants.df2intSAP.format(position++));
+                    childchild.setAttribute("position", Shared.df2intSAP.format(position++));
                     childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
                     childchild.setAttribute("quant", item2Receipt.getQuant().toString());
                     childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
@@ -1577,7 +1591,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
             if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) &&
                     receipt.getClientId().equals("Contado") && receipt.getClientId().equals(previousCli)) &&
-                    ( Math.abs(receipt.getGlobalDiscount() - previousDis) < Constants.exilon || previousDis == -1.0 )){
+                    ( Math.abs(receipt.getGlobalDiscount() - previousDis) < Double.parseDouble(Shared.getConfig("exilon")) || previousDis == -1.0 )){
                 rs.add(receipt);
             }else{
                 receiptGroup.add(rs);
@@ -1611,7 +1625,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     IXMLElement childchild = child.createElement("CND");
                     child.addChild(childchild);
                     childchild.setAttribute("id", "F" + receiptSap.getId());
-                    childchild.setAttribute("position", Constants.df2intSAP.format(position++));
+                    childchild.setAttribute("position", Shared.df2intSAP.format(position++));
                     childchild.setAttribute("barcode", item2Receipt.getItem().getMainBarcode());
                     childchild.setAttribute("quant", item2Receipt.getQuant().toString());
                     childchild.setAttribute("sellUnits", item2Receipt.getItem().getSellUnits());
@@ -1704,7 +1718,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         return "Stock Negativo " + formatDay + " Agencia " + Shared.getConfig("storeName");
     }
 
-    private String createNegativeStockEmail() throws SQLException{
+    private String createNegativeStockEmail(List<Item> l) throws SQLException{
         String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
         return "<html>\n"
                     + "<b><u>Stock en Negativo</u><br><br></b>\n"
@@ -1717,7 +1731,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                     + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Monto</td>"
                     + "<td bordercolor=\"#000066\" style=\"background-color:#79BAEC\">Observaciones</td>"
                     + "</tr>"
-                    + getNegativeStock()
+                    + getNegativeStock(l)
                     + "</html>";
     }
 
@@ -1726,24 +1740,27 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
         try {
             Double diffe = Math.abs(totalInCard + totalInCash + totalExpenses - (new Price(null,receiptTotal).plusIva().getQuant()));
-            if ( diffe > Constants.moneyExilon){
+            if ( diffe > Double.parseDouble(Shared.getConfig("moneyExilon"))){
 
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se puede enviar el cierre administrativo. "
                         + (totalInCard + totalInCash + totalExpenses - (new Price(null,receiptTotal).plusIva().getQuant()) < 0 ? "Faltan" : "Sobran")
-                        + " " + Constants.df.format(diffe) + " bs ");
+                        + " " + Shared.df.format(diffe) + " bs ");
                 msg.show(this);
                 return;
             }
 
             ConnectionDrivers.recalculateStock();
             System.out.println("Stock recalculado!");
-            Shared.sendMail(Shared.getConfig("email2sendNegativeStock") , createNegativeStockEmail(), createNegativeStockSubject());
+            List<Item> l = ConnectionDrivers.getNegativeStock();
+            if ( !l.isEmpty() ){
+                Shared.sendMail(Shared.getConfig("email2sendNegativeStock") , createNegativeStockEmail(l), createNegativeStockSubject());
+            }
 
             if ( Constants.justEmail ){
                 return;
             }
 
-            //Shared.sendMail(Shared.getConfig("sendEmail"), createCloseEmail(), createCloseEmailSubject());
+            Shared.sendMail(Shared.getConfig("sendEmail"), createCloseEmail(), createCloseEmailSubject());
 
 
             IXMLElement data2Sent = new XMLElement("data");
@@ -1899,14 +1916,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         for ( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
             IXMLElement child = xml.createElement("I");
             xml.addChild(child);
-            child.setAttribute("waerks", Constants.waerks);
+            child.setAttribute("waerks", Shared.getConfig("waerks"));
             child.setAttribute("simbo", (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim());
 
-            if ( bankTable.getValueAt(i, 2).equals(Constants.creditPaymentName) ){
+            if ( bankTable.getValueAt(i, 2).equals(Shared.getConfig("creditPaymentName")) ){
                 child.setAttribute("mpago", "B");
-            }else if ( bankTable.getValueAt(i, 2).equals(Constants.debitPaymentName) ){
+            }else if ( bankTable.getValueAt(i, 2).equals(Shared.getConfig("debitPaymentName")) ){
                 child.setAttribute("mpago", "D");
-            }else if ( bankTable.getValueAt(i, 2).equals(Constants.americanExpressPaymentName) ){
+            }else if ( bankTable.getValueAt(i, 2).equals(Shared.getConfig("americanExpressPaymentName")) ){
                 child.setAttribute("mpago", "A");
             }else{
                 System.out.println("Banco desconocido... agregando E");
@@ -1923,13 +1940,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         for ( int i = 0 ; i < expenseTable.getRowCount() ; i++ ){
             IXMLElement child = xml.createElement("I");
             xml.addChild(child);
-            child.setAttribute("waerks", Constants.waerks);
-            child.setAttribute("simbo", Constants.genericBank);
+            child.setAttribute("waerks", Shared.getConfig("waerks"));
+            child.setAttribute("simbo", Shared.getConfig("genericBank"));
 
             String tmp = expenseTable.getValueAt(i, 0).toString().split("-")[0];
             child.setAttribute("mpago", tmp.substring(0, tmp.length() - 1));
 
-            child.setAttribute("bpago", Constants.genericBank);
+            child.setAttribute("bpago", Shared.getConfig("genericBank"));
             child.setAttribute("lote", i+"");
             child.setAttribute("monto", ((String)expenseTable.getValueAt(i, 1)).replace(',', '.'));
             child.setAttribute("text", (String)expenseTable.getValueAt(i, 2));
@@ -1940,7 +1957,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         for ( int i = 0 ; i < depositTable.getRowCount() ; i++ ){
             IXMLElement child = xml.createElement("I");
             xml.addChild(child);
-            child.setAttribute("waerks", Constants.waerks);
+            child.setAttribute("waerks", Shared.getConfig("waerks"));
             String bancoId = ((String)depositTable.getValueAt(i, 0)).split("-")[0].trim();
             child.setAttribute("simbo", bancoId);
             child.setAttribute("mpago", "E");
@@ -1961,14 +1978,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             System.out.println("ID\tMANDT\tFECHA\tWERKS\tWAERS\tSIMBO\tMPAGO\tBPAGO\tLOTE\tMONTO\tITEMTEXT");
             zfc.setID(1);
             System.out.print("1\t");
-            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
-            System.out.print(Constants.mant + "\t");
+            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Shared.getConfig("mant")));
+            System.out.print(Shared.getConfig("mant") + "\t");
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
             System.out.print(date4sap + "\t");
-            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
-            System.out.print(Constants.storePrefix + Shared.getConfig("storeName") + "\t");
-            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
-            System.out.print(Constants.waerks + "\t");
+            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Shared.getConfig("storePrefix") + Shared.getConfig("storeName")));
+            System.out.print(Shared.getConfig("storePrefix") + Shared.getConfig("storeName") + "\t");
+            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Shared.getConfig("waerks")));
+            System.out.print(Shared.getConfig("waerks") + "\t");
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO( (bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()));
             System.out.print((bankTable.getValueAt(i, 0).toString().split("-")[0]).trim()  + "\t");
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( bankTable.getValueAt(i, 2).equals("Credito")?"B":"D" ) );
@@ -1997,21 +2014,21 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
             System.out.print(1+ "\t");
-            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
-            System.out.print(Constants.mant+"\t");
+            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Shared.getConfig("mant")));
+            System.out.print(Shared.getConfig("mant")+"\t");
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
             System.out.print(date4sap+"\t");
-            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
-            System.out.print(Constants.storePrefix + Shared.getConfig("storeName")+"\t");
-            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
-            System.out.print(Constants.waerks+"\t");
-            zfc.setSIMBO(of.createZFISCOBRANZASIMBO(Constants.genericBank));
-            System.out.print(Constants.genericBank+"\t");
+            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Shared.getConfig("storePrefix") + Shared.getConfig("storeName")));
+            System.out.print(Shared.getConfig("storePrefix") + Shared.getConfig("storeName")+"\t");
+            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Shared.getConfig("waerks")));
+            System.out.print(Shared.getConfig("waerks")+"\t");
+            zfc.setSIMBO(of.createZFISCOBRANZASIMBO(Shared.getConfig("genericBank")));
+            System.out.print(Shared.getConfig("genericBank")+"\t");
             String tmp = expenseTable.getValueAt(i, 0).toString().split("-")[0];
             zfc.setMPAGO( of.createZFISCOBRANZAMPAGO( tmp.substring(0, tmp.length() - 1) ) );
             System.out.print(tmp.substring(0, tmp.length() - 1)+"\t");
-            zfc.setBPAGO(of.createZFISCOBRANZABPAGO(Constants.genericBank));
-            System.out.print(Constants.genericBank+"\t");
+            zfc.setBPAGO(of.createZFISCOBRANZABPAGO(Shared.getConfig("genericBank")));
+            System.out.print(Shared.getConfig("genericBank")+"\t");
             //String[] md = myDay.split("-");
             //zfc.setLOTE(of.createZFISCOBRANZALOTE(md[2] + md[1] + md[0] + Shared.getConfig("storeName")));
             //zfc.setLOTE(of.createZFISCOBRANZALOTE(""));
@@ -2032,14 +2049,14 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ZFISCOBRANZA zfc = new ZFISCOBRANZA();
             zfc.setID(1);
             System.out.print("1\t");
-            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Constants.mant));
-            System.out.print(Constants.mant+ "\t");
+            zfc.setMANDT(of.createZFISCOBRANZAMANDT(Shared.getConfig("mant")));
+            System.out.print(Shared.getConfig("mant")+ "\t");
             zfc.setFECHA(of.createZFISCOBRANZAFECHA(date4sap));
             System.out.print(date4sap+ "\t");
-            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Constants.storePrefix + Shared.getConfig("storeName")));
-            System.out.print(Constants.storePrefix + Shared.getConfig("storeName")+ "\t");
-            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Constants.waerks));
-            System.out.print(Constants.waerks+"\t");
+            zfc.setWERKS(of.createZFISCOBRANZAWERKS(Shared.getConfig("storePrefix") + Shared.getConfig("storeName")));
+            System.out.print(Shared.getConfig("storePrefix") + Shared.getConfig("storeName")+ "\t");
+            zfc.setWAERS(of.createZFISCOBRANZAWAERS(Shared.getConfig("waerks")));
+            System.out.print(Shared.getConfig("waerks")+"\t");
             String bancoId = ((String)depositTable.getValueAt(i, 0)).split("-")[0].trim();
             zfc.setSIMBO(of.createZFISCOBRANZASIMBO(bancoId));
             System.out.print(bancoId+"\t");

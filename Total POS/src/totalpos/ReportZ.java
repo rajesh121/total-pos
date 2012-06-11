@@ -8,6 +8,7 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import javax.swing.JFrame;
 
 /**
  *
@@ -111,7 +112,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
 
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            workingFrame = new Working(this);
+            workingFrame = new Working((JFrame) Shared.getMyMainWindows());
 
             WaitSplash ws = new WaitSplash(this);
 
@@ -189,19 +190,21 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
             System.out.println("Exception " + ex.getMessage());
             String kindErr = "";
 
-            if ( Constants.wrongPasswordMsg.equals(ex.getMessage()) ) {
-                kindErr = Constants.wrongPasswordMsg;
+            String wrongPasswordMsg = Shared.getConfig("wrongPasswordMsg");
+            if ( wrongPasswordMsg.equals(ex.getMessage()) ) {
+                kindErr = wrongPasswordMsg;
             }
 
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, kindErr,ex);
             msg.show(this);
 
-            if ( ex.getMessage().equals(Constants.wrongPasswordMsg) ){
+            if ( ex.getMessage().equals(wrongPasswordMsg) ){
                 try {
                     Shared.userTrying(userField.getText());
                 } catch (Exception ex1) {
+                    String userLocked = Shared.getConfig("userLocked");
                     msg = new MessageBox(MessageBox.SGN_DANGER,
-                                (ex1.getMessage().equals(Constants.userLocked)? Constants.userLocked :"Error."),
+                                (ex1.getMessage().equals(userLocked)? userLocked :"Error."),
                                 ex1);
                     msg.show(null);
                     this.dispose();

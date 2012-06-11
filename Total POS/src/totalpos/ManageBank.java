@@ -50,7 +50,7 @@ public class ManageBank extends JInternalFrame {
             model.addRow(s);
         }
         JComboBox comboBox = new JComboBox();
-        for (String kbpos : Constants.kindOfBPOS) {
+        for (String kbpos : Shared.getConfig("kindOfBPOS").split(",")) {
            comboBox.addItem(kbpos);
         }
         TableColumn kbposColumn = bposTable.getColumnModel().getColumn(4);

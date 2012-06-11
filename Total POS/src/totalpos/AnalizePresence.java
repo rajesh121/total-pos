@@ -8,7 +8,6 @@ package totalpos;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Window;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -20,6 +19,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -47,8 +47,8 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
     public AnalizePresence(String fd, String ud, boolean isCestaticketA) {
         try {
             initComponents();
-            fromDate = Constants.sdfDay2DB.parse(fd);
-            untilDate = Constants.sdfDay2DB.parse(ud);
+            fromDate = Shared.sdfDay2DB.parse(fd);
+            untilDate = Shared.sdfDay2DB.parse(ud);
             fromDateString = fd;
             untilDateString = ud;
             this.isCestaticket = isCestaticketA;
@@ -361,7 +361,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_recalcularAllButtonActionPerformed
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
-        workingFrame = new Working((Window) Shared.getMyMainWindows());
+        workingFrame = new Working((JFrame) Shared.getMyMainWindows());
 
         WaitSplash ws = new WaitSplash(this);
 
@@ -373,7 +373,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
     private void send2ProfitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_send2ProfitButtonActionPerformed
 
         isSend2Profit = true;
-        workingFrame = new Working((Window) Shared.getMyMainWindows());
+        workingFrame = new Working((JFrame) Shared.getMyMainWindows());
 
         WaitSplash ws = new WaitSplash(this);
 
@@ -429,37 +429,37 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                         System.out.println("Horas Extras Empleado " + employId + " con " + hours + " null");
                     }
                     
-                    ConnectionDrivers.addBonus(hours, employId, Constants.conceptExtraHour, c, "");
+                    ConnectionDrivers.addBonus(hours, employId, Shared.getConfig("conceptExtraHour"), c, "");
 
                     curStr =  presenceTable.getValueAt(i, 3);
                     
                     if ( specialBonus > .0 ){
                         System.out.println("Bono especial 2 Empleado " + employId + " con " + hours + " " + curStr.toString());
-                        ConnectionDrivers.addBonus(specialBonus, employId, Constants.conceptSpecialBonus, c, "");
+                        ConnectionDrivers.addBonus(specialBonus, employId, Shared.getConfig("conceptSpecialBonus"), c, "");
                     }
 
                     curStr = presenceTable.getValueAt(i, 5);
                     if ( curStr != null && !curStr.toString().isEmpty() ){
                         System.out.println("Bono nocturno Empleado " + employId + " con " + hours + " " + curStr.toString());
-                        ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()) * Double.parseDouble(Shared.getConfig("nightBonus")), employId, Constants.conceptNightBonus, c, "");
+                        ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()) * Double.parseDouble(Shared.getConfig("nightBonus")), employId, Shared.getConfig("conceptNightBonus"), c, "");
                     }
 
                     curStr = presenceTable.getValueAt(i, 10);
                     if ( curStr != null && !curStr.toString().isEmpty() ){
                         System.out.println("Descuento " + employId + " con " + hours + " " + curStr.toString());
-                        ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Constants.conceptFingerPrintDiscount, c ,"");
+                        ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Shared.getConfig("conceptFingerPrintDiscount"), c ,"");
                     }
 
                     curStr = presenceTable.getValueAt(i, 6);
                     if ( curStr != null && !curStr.toString().isEmpty() ){
                         System.out.println("Bono de Asistencia " + employId + " con " + Double.parseDouble(curStr.toString()) + " " + curStr.toString());
-                        ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Constants.conceptPresenceBonus, c , "");
+                        ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Shared.getConfig("conceptPresenceBonus"), c , "");
                     }
 
                     curStr = presenceTable.getValueAt(i, 7);
                     if ( curStr != null && !curStr.toString().isEmpty() ){
                         System.out.println("Bono de Produccion " + employId + " con " + Double.parseDouble(curStr.toString()) + " " + curStr.toString());
-                        ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Constants.conceptProductionBonus, c , "");
+                        ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Shared.getConfig("conceptProductionBonus"), c , "");
                     }
                 }
 
@@ -507,21 +507,21 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                 }
                 if ( toDiscount > .0 ){
                     System.out.println("Descontar a " + employId + " " + toDiscount);
-                    ConnectionDrivers.addBonus(toDiscount, employId, isCestaticket?Constants.conceptNotPresenceTicket:Constants.conceptNotPresence, c , comment2discount);
+                    ConnectionDrivers.addBonus(toDiscount, employId, isCestaticket?Shared.getConfig("conceptNotPresenceTicket"):Shared.getConfig("conceptNotPresence"), c , comment2discount);
                 }
 
                 if ( !isCestaticket ){
                     if ( Double.parseDouble(Shared.getConfig("sundayWorked"))*sundaysWorked > .0 ){
                         System.out.println("Domingos trabajados " + employId + " " + sundaysWorked + " " + commentSundaysWorked);
-                        ConnectionDrivers.addBonus(sundaysWorked, employId, Constants.conceptSundaysWorked, c , commentSundaysWorked);
+                        ConnectionDrivers.addBonus(sundaysWorked, employId, Shared.getConfig("conceptSundaysWorked"), c , commentSundaysWorked);
                     }
 
                     if ( Double.parseDouble(Shared.getConfig("saturdayWorked"))*saturdatWorked > .0 ){
                         System.out.println("Sabados trabajados " + employId + " " + saturdatWorked);
-                        ConnectionDrivers.addBonus(saturdatWorked, employId, Constants.conceptSaturdayWorked, c , commentSaturdayWorked);
+                        ConnectionDrivers.addBonus(saturdatWorked, employId, Shared.getConfig("conceptSaturdayWorked"), c , commentSaturdayWorked);
                     }
                 }else{
-                    ConnectionDrivers.addBonus(saturdatWorked + sundaysWorked, employId, Constants.conceptAdditionalTicket, c , commentSaturdayWorked);
+                    ConnectionDrivers.addBonus(saturdatWorked + sundaysWorked, employId, Shared.getConfig("conceptAdditionalTicket"), c , commentSaturdayWorked);
                 }
 
             }
@@ -597,8 +597,10 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         Calendar c = Calendar.getInstance();
         c.setTime(t);
 
+        String[] dayName = Shared.getConfig("dayName").split(",");
+
         while(t.before(untilDate) || t.equals(untilDate)){
-            header.add(Constants.dayName[t.getDay()] + " " + Constants.df2int2p.format(t.getDate())+ "/" + Constants.df2int2p.format(t.getMonth()+1));
+            header.add(dayName[t.getDay()] + " " + Shared.df2int2p.format(t.getDate())+ "/" + Shared.df2int2p.format(t.getMonth()+1));
             c.setTime(t);
             c.add(Calendar.DATE, 1);
             t = c.getTime();
@@ -615,8 +617,10 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         Calendar c = Calendar.getInstance();
         c.setTime(t);
 
+        String[] dayName = Shared.getConfig("dayName").split(",");
+
         while(t.before(untilDate) || t.equals(untilDate)){
-            header.add(Constants.dayName[t.getDay()] + " " + Constants.df2int2p.format(t.getDate())+ "/" + Constants.df2int2p.format(t.getMonth()+1));
+            header.add(dayName[t.getDay()] + " " + Shared.df2int2p.format(t.getDate())+ "/" + Shared.df2int2p.format(t.getMonth()+1));
             c.setTime(t);
             c.add(Calendar.DATE, 1);
             t = c.getTime();

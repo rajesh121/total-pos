@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -46,7 +47,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         for (PayForm payForm : payForms) {
-            String[] s = {payForm.getFormWay(),Constants.df.format(payForm.getQuant()),payForm.getbPos(),payForm.getLot()};
+            String[] s = {payForm.getFormWay(),Shared.df.format(payForm.getQuant()),payForm.getbPos(),payForm.getLot()};
             model.addRow(s);
             sum += payForm.getQuant();
         }
@@ -54,8 +55,8 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
             table.setRowSelectionInterval(table.getRowCount()-1, table.getRowCount()-1);
         }
         change = sum-total;
-        moneyResult.setText(Constants.df.format(sum));
-        ChangeResult.setText(Constants.df.format(change));
+        moneyResult.setText(Shared.df.format(sum));
+        ChangeResult.setText(Shared.df.format(change));
         Shared.msgWithEffect("Tot. + IVA = " + Shared.format4Display(total), "Recibido = " + Shared.format4Display(sum));
     }
 
@@ -306,27 +307,27 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
             payForms.remove(table.getSelectedRow());
             updateAll();
         }else if ( evt.getKeyCode() == KeyEvent.VK_N ){
-            AddMoney2Pay am2p = new AddMoney2Pay(this, true, Constants.CNPaymentName,total);
+            AddMoney2Pay am2p = new AddMoney2Pay(this, true, Shared.getConfig("CNPaymentName"),total);
             Shared.centerFrame(am2p);
             am2p.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_E ){
-            AddMoney2Pay am2p = new AddMoney2Pay(this, true, Constants.cashPaymentName,total);
+            AddMoney2Pay am2p = new AddMoney2Pay(this, true, Shared.getConfig("cashPaymentName"),total);
             Shared.centerFrame(am2p);
             am2p.setVisible(true);
         } else if ( evt.getKeyCode() == KeyEvent.VK_C ){
-            AddCard2Pay ac2p = new AddCard2Pay(this, true, Constants.creditPaymentName,total);
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, Shared.getConfig("creditPaymentName"),total);
             if ( ac2p.isOk ){
                 Shared.centerFrame(ac2p);
                 ac2p.setVisible(true);
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_D ){
-            AddCard2Pay ac2p = new AddCard2Pay(this, true, Constants.debitPaymentName,total);
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, Shared.getConfig("debitPaymentName"),total);
             if ( ac2p.isOk ){
                 Shared.centerFrame(ac2p);
                 ac2p.setVisible(true);
             }
         } else if ( evt.getKeyCode() == KeyEvent.VK_A ){
-            AddCard2Pay ac2p = new AddCard2Pay(this, true, Constants.americanExpressPaymentName,total);
+            AddCard2Pay ac2p = new AddCard2Pay(this, true, Shared.getConfig("americanExpressPaymentName"),total);
             if ( ac2p.isOk ){
                 Shared.centerFrame(ac2p);
                 ac2p.setVisible(true);
@@ -369,7 +370,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
 
                 myParent.print(payForms);
                 ConnectionDrivers.updateLastReceipt(myParent.printer.lastReceipt);
-                payForms.add(new PayForm(receiptID, Constants.cashPaymentName, "" , "", -1*change));
+                payForms.add(new PayForm(receiptID, Shared.getConfig("cashPaymentName"), "" , "", -1*change));
                 ConnectionDrivers.savePayForm(payForms);
                 this.dispose();
             }

@@ -46,6 +46,17 @@ public class JMessageDialog extends javax.swing.JDialog {
         
         myMsg.jlblIcon.setIcon(inf.getSignalWordIcon());
         myMsg.jlblMessage.setText("<html>" + inf.getMessageMsg());
+        if ( inf.getCause() != null ){
+            String txt = ((Exception)inf.getCause()).getMessage();
+            if ( txt.length() < 15 ){
+                myMsg.mainMsgLabel.setFont(Constants.font24);
+            }else if ( txt.length() < 30 ){
+                myMsg.mainMsgLabel.setFont(Constants.font15);
+            }else{
+                myMsg.mainMsgLabel.setFont(Constants.font12);
+            }
+            myMsg.mainMsgLabel.setText("<html>" + txt + "</html>");
+        }
         
         // Capturamos el texto de la excepcion...
         if (inf.getCause() == null) {
@@ -106,6 +117,7 @@ public class JMessageDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel4 = new javax.swing.JPanel();
+        mainMsgLabel = new javax.swing.JLabel();
         jlblMessage = new javax.swing.JLabel();
         jscrException = new javax.swing.JScrollPane();
         jtxtException = new javax.swing.JTextArea();
@@ -131,7 +143,10 @@ public class JMessageDialog extends javax.swing.JDialog {
         });
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.Y_AXIS));
 
-        jlblMessage.setFont(new java.awt.Font("Courier New", 1, 14));
+        mainMsgLabel.setFont(new java.awt.Font("Courier New", 1, 24));
+        jPanel4.add(mainMsgLabel);
+
+        jlblMessage.setFont(new java.awt.Font("Courier New", 0, 14));
         jlblMessage.setText("jlblMessage");
         jlblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jlblMessage.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -175,7 +190,7 @@ public class JMessageDialog extends javax.swing.JDialog {
         getContentPane().add(jPanel3, java.awt.BorderLayout.SOUTH);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-442)/2, (screenSize.height-167)/2, 442, 167);
+        setBounds((screenSize.width-481)/2, (screenSize.height-163)/2, 481, 163);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jcmdMoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcmdMoreActionPerformed
@@ -218,6 +233,7 @@ public class JMessageDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jlblMessage;
     private javax.swing.JScrollPane jscrException;
     private javax.swing.JTextArea jtxtException;
+    private javax.swing.JLabel mainMsgLabel;
     // End of variables declaration//GEN-END:variables
     
 }

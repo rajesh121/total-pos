@@ -494,7 +494,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
             newUserId = loginText.getText();
             updateAll();
         } catch (SQLException ex) {
-            if ( ex.getMessage().matches(Constants.isDataRepeated) ){
+            if ( ex.getMessage().matches(Shared.getConfig("isDataRepeated")) ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Usuario ya existente. Intente otro.");
                 msb.show(this);
             }else{

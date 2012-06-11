@@ -41,7 +41,7 @@ public class Logon extends javax.swing.JFrame implements Doer{
         try {
             DefaultTableModel model = (DefaultTableModel) logonTable.getModel();
             model.setRowCount(0);
-            Scanner sc = new Scanner(new File(Constants.logonFile));
+            Scanner sc = new Scanner(new File(Shared.getConfig("logonFile")));
 
             while( sc.hasNextLine() ){
                 model.addRow(sc.nextLine().split("--"));
@@ -259,7 +259,7 @@ public class Logon extends javax.swing.JFrame implements Doer{
 
         PrintWriter pw = null;
         try {
-            File f = new File(Constants.logonFile);
+            File f = new File(Shared.getConfig("logonFile"));
             f.delete();
             pw = new PrintWriter(f);
 

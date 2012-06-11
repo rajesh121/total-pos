@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.GroupLayout;
@@ -78,8 +76,8 @@ public class MainWindows extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(mdiPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -235,10 +233,6 @@ public class MainWindows extends javax.swing.JFrame {
                 AddExpenses ae = new AddExpenses();
                 mdiPanel.add(ae);
                 ae.setVisible(true);
-            } else if ( ed.getFuncion().equals("manageDeposit") ) {
-                ManageDeposits md = new ManageDeposits();
-                mdiPanel.add(md);
-                md.setVisible(true);
             } else if ( ed.getFuncion().equals("closingDay") ) {
                 JTextField textField = new JTextField();
                 ChooseDate cal = new ChooseDate(Constants.appName,textField,1);
@@ -447,18 +441,18 @@ public class MainWindows extends javax.swing.JFrame {
             try {
                 System.out.println("Directorio elegido " + jfc.getSelectedFile().getAbsolutePath());
                 System.out.println("Crear Art_pda");
-                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Constants.art_pda));
+                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Shared.getConfig("art_pda")));
                 ConnectionDrivers.writeArtPda(ps);
                 System.out.println("Creado!");
                 System.out.println("Creando Movimiento");
                 ps.close();
-                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Constants.movimiento));
+                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Shared.getConfig("movimiento")));
                 ConnectionDrivers.writeMovimiento(ps);
                 System.out.println("Creado!");
                 ps.close();
 
                 System.out.println("Creando stock");
-                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Constants.st_almacpda));
+                ps = new PrintStream(new File(jfc.getSelectedFile() + File.separator + Shared.getConfig("st_almacpda")));
                 ConnectionDrivers.writeSt_almacpda(ps);
                 System.out.println("Creado!");
                 ps.close();

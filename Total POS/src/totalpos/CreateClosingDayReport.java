@@ -108,13 +108,13 @@ public class CreateClosingDayReport {
                     /*System.out.println(ConnectionDrivers.getTotalDeclared(myDay) * (Shared.getIva() + 100.0) / 100.0);
                     System.out.println(ConnectionDrivers.getTotalPrinters(myDay));*/
                     report.title(cmp.text(
-                            Shared.formatIt("Cuadre de Cajas (B-D):",Constants.df.format(Shared.round(total-income,2))) + "\n" +
-                            Shared.formatIt("Cuadre de Cajas del Día (A+B-C-D): ",Constants.df.format(total-income+amc)) + "\n"
+                            Shared.formatIt("Cuadre de Cajas (B-D):",Shared.df.format(Shared.round(total-income,2))) + "\n" +
+                            Shared.formatIt("Cuadre de Cajas del Día (A+B-C-D): ",Shared.df.format(total-income+amc)) + "\n"
 
-                            + Shared.formatIt("Diff entre Impresoras Fiscales y Sistema (B-E) ", Constants.df.format(total - ConnectionDrivers.getTotalPrinters(myDay)))+
+                            + Shared.formatIt("Diff entre Impresoras Fiscales y Sistema (B-E) ", Shared.df.format(total - ConnectionDrivers.getTotalPrinters(myDay)))+
                             "\n\nObservaciones: Cantidad de Notas de Créditos: " +
                             ConnectionDrivers.getQuantCN(myDay) + "      Monto: " +
-                            Constants.df.format((ConnectionDrivers.getTotalCN(myDay) *(Shared.getIva()+100.0)/100.0))
+                            Shared.df.format((ConnectionDrivers.getTotalCN(myDay) *(Shared.getIva()+100.0)/100.0))
                             + "\n" + note 
                             + "\nImpresoras Fiscales (E)").setStyle(Templates.bold12CenteredStyle));
                     TextColumnBuilder tcb = col.column("Monto", "2", type.bigDecimalType());

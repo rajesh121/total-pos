@@ -14,11 +14,16 @@ public class Main {
 
     protected static StartSplash splash;
     private static ServerSocket serverSkt;
+    private static boolean justUpdate = false;
 
     public static void main(String[] args) {        
 
-        if ( args.length > 0 ){
-            Shared.storeIp = args[0];
+        for( int i = 0 ; i < args.length ; i++ ){
+            if ( args[i].equals("-h")){
+                Shared.storeIp = args[++i];
+            }else if ( args[i].equals("-u") ){
+                justUpdate = true;
+            }
         }
         splash = new StartSplash();
         splash.changeStatus("Leyendo archivo de configuración...", 10);
@@ -51,10 +56,6 @@ public class Main {
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error al leer el archivo de configuración. No se puede continuar",ex);
             msb.show(splash);
             System.exit(0);
-        }
-        if ( Constants.isPos ){
-            splash.changeStatus("Inicializando display...", 20);
-            Shared.initializeDisplay();
         }
         splash.changeStatus("Verificando variables básicas...", 25);
         for (String var : Constants.var2check) {
@@ -99,7 +100,13 @@ public class Main {
         splash.changeStatus("Inicializando configuración general...", 45);
         Shared.initialize();
 
-        if ( !Shared.isOffline ){
+
+        if ( Constants.isPos ){
+            splash.changeStatus("Inicializando display...", 50);
+            Shared.initializeDisplay();
+        }
+        
+        if ( !Shared.isOffline && Constants.isPos ){
             try {
                 splash.changeStatus("Sincronizando inventario ...", 60);
                 ConnectionDrivers.updateStock();
@@ -122,13 +129,21 @@ public class Main {
         }catch(Exception ex){
             ex.printStackTrace();
         }*/
-        splash.changeStatus("Creando ventana de login...", 95);
-        Login login = new Login();
-        Shared.centerFrame(login);
-        login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        login.setVisible(true);
 
-        splash.setVisible(false);
+        if ( justUpdate ){
+            splash.changeStatus("Actualizando datos...", 75);
+            UpdateStockFromSAP usfs = new UpdateStockFromSAP("MMBackground");
+            usfs.updateStockFromSAP();
+        }else{
+
+            splash.changeStatus("Creando ventana de login...", 95);
+            Login login = new Login();
+            Shared.centerFrame(login);
+            login.setExtendedState(login.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+            login.setVisible(true);
+
+            splash.setVisible(false);
+        }
         
     }
 }

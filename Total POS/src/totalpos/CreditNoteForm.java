@@ -595,13 +595,18 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
                     int antiQuantComplement = Integer.parseInt((table.getValueAt(i, 1)+""));
                     int antiQuantComplementDone = Integer.parseInt((table.getValueAt(i, 2)+""));
                     int a = antiQuantComplement - antiQuantComplementDone;
+                    MessageBox msb = null;
                     if ( antiquant > a ){
-                        MessageBox msb = null;
                         if ( a != 0 ){
                             msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar máximo " + (a) +" artículo(s) en el item " + (i+1) + "!");
                         }else{
                             msb = new MessageBox(MessageBox.SGN_CAUTION, "Ese producto ya fue devuelto!");
                         }
+                        msb.show(this);
+                        return;
+                    }
+                    if ( antiquant < 0 ){
+                        msb = new MessageBox(MessageBox.SGN_CAUTION, "No pueden haber cantidades en negativo");
                         msb.show(this);
                         return;
                     }

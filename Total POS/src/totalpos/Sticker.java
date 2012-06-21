@@ -18,9 +18,9 @@ import javax.print.SimpleDoc;
 public class Sticker {
 
     private static int offset = 440;
-    private static int pixA[] = {160,170,215,160,180,20,20,240,235,30};
-    private static int pixB[] = {0,15,40,45,-1,100,115,140,160,130};
-    private static String header[] = {"A","A","A","A","A","A","A","A","A","B"};
+    private static int pixA[] = {160,170,215,160,180,20,20,240,235,235,30};
+    private static int pixB[] = {0,15,40,45,-1,100,115,140,160,160,130};
+    private static String header[] = {"A","A","A","A","A","A","A","A","A","A","B"};
     private static boolean inicialized = false;
     private static PrintService psZebra = null;
     private static String date;
@@ -109,7 +109,8 @@ public class Sticker {
                 "A" + pixA[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
                 "A" + pixA[7] + ",140,0,1,1,1,N,\""+date + "\"\n"+
                 "A" + pixA[8] + ",160,0,1,1,1,N,\""+barCode +"\"\n"+
-                "B" + pixA[9] + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
+                "A" + pixA[9] + ",180,0,1,1,1,N,\""+"AGENCIA " + Shared.getConfig("storeName") +"\"\n"+
+                "B" + pixA[10] + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
 
                 "A" + (offset+pixA[0]) +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + (offset+pixA[1]) + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
@@ -120,7 +121,8 @@ public class Sticker {
                 "A" + (offset+pixA[6]) + ",115,0,1,1,1,N,\""+description2+"\"\n"+
                 "A" + (offset+pixA[7]) + ",140,0,1,1,1,N,\""+date + "\"\n"+
                 "A" + (offset+pixA[8]) + ",160,0,1,1,1,N,\""+barCode +"\"\n"+
-                "B" + (offset+pixA[9]) + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
+                "A" + (offset+pixA[9]) + ",180,0,1,1,1,N,\"" +"AGENCIA "  + Shared.getConfig("storeName") +"\"\n"+
+                "B" + (offset+pixA[10]) + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
                 "P" + firstLot + "\n";
 
             DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
@@ -167,7 +169,8 @@ public class Sticker {
                 "A" + pixA[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
                 "A" + pixA[7] + ",140,0,1,1,1,N,\""+date + "\"\n"+
                 "A" + pixA[8] + ",160,0,1,1,1,N,\""+barCode +"\"\n"+
-                "B" + pixA[9] + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
+                "A" + pixA[9] + ",180,0,1,1,1,N,\"" +"AGENCIA "  + Shared.getConfig("storeName") +"\"\n"+
+                "B" + pixA[10] + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
                 "P1\n";
 
             DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
@@ -234,7 +237,8 @@ public class Sticker {
                 "A" + pixA[6] + ",115,0,1,1,1,N,\""+description2+"\"\n"+
                 "A" + pixA[7] + ",140,0,1,1,1,N,\""+date + "\"\n"+
                 "A" + pixA[8] + ",160,0,1,1,1,N,\""+barCode +"\"\n"+
-                "B" + pixA[9] + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
+                "A" + pixA[9] + ",180,0,1,1,1,N,\"" +"AGENCIA "  +Shared.getConfig("storeName")  +"\"\n"+
+                "B" + pixA[10] + ",130,0,1,1,2,100,N,\"" + barCode + "\"\n"+
 
                 "A" + (offset+pixA[0]) +",0,0,1,1,1,N,\"Grupo Total 99 C.A.\"\n"+
                 "A" + (offset+pixA[1]) + ",15,0,1,1,1,N,\"RIF: J-31150187-8\"\n"+
@@ -245,7 +249,8 @@ public class Sticker {
                 "A" + (offset+pixA[6]) + ",115,0,1,1,1,N,\""+description2B+"\"\n"+
                 "A" + (offset+pixA[7]) + ",140,0,1,1,1,N,\""+date + "\"\n"+
                 "A" + (offset+pixA[8]) + ",160,0,1,1,1,N,\""+barCodeB +"\"\n"+
-                "B" + (offset+pixA[9]) + ",130,0,1,1,2,100,N,\"" + barCodeB + "\"\n"+
+                "A" + (offset+pixA[9]) + ",180,0,1,1,1,N,\""+"AGENCIA " +Shared.getConfig("storeName")  +"\"\n"+
+                "B" + (offset+pixA[10]) + ",130,0,1,1,2,100,N,\"" + barCodeB + "\"\n"+
                 "P1\n";
 
             DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;

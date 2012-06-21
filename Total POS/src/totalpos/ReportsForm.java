@@ -6,6 +6,7 @@
 
 package totalpos;
 
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -78,13 +79,18 @@ public class ReportsForm extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         cancelButton = new javax.swing.JButton();
-        viewButton = new javax.swing.JButton();
         editButton = new javax.swing.JButton();
         addButton = new javax.swing.JButton();
+        viewButton = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
         setTitle("Reportes");
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                formKeyReleased(evt);
+            }
+        });
 
         reportTitle.setFont(new java.awt.Font("Courier New", 1, 18));
         reportTitle.setText("Reportes");
@@ -114,13 +120,17 @@ public class ReportsForm extends javax.swing.JInternalFrame {
         table.setName("table"); // NOI18N
         table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
         table.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tableFocusGained(evt);
             }
         });
         jScrollPane1.setViewportView(table);
-        table.getColumnModel().getColumn(0).setPreferredWidth(10);
 
         cancelButton.setText("Cerrar");
         cancelButton.setFocusable(false);
@@ -128,15 +138,6 @@ public class ReportsForm extends javax.swing.JInternalFrame {
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
-            }
-        });
-
-        viewButton.setText("Ver");
-        viewButton.setFocusable(false);
-        viewButton.setName("viewButton"); // NOI18N
-        viewButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewButtonActionPerformed(evt);
             }
         });
 
@@ -158,6 +159,14 @@ public class ReportsForm extends javax.swing.JInternalFrame {
             }
         });
 
+        viewButton.setText("Ver");
+        viewButton.setName("viewButton"); // NOI18N
+        viewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -165,16 +174,17 @@ public class ReportsForm extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
-                    .addComponent(reportTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+                    .addComponent(reportTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+                        .addGap(12, 12, 12)
+                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(viewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(viewButton, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -183,7 +193,7 @@ public class ReportsForm extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(reportTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
@@ -199,20 +209,6 @@ public class ReportsForm extends javax.swing.JInternalFrame {
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
-
-    private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
-        if ( table.getSelectedRow() != -1 ){
-            ParameteringReport pr = new ParameteringReport(reportsScanned.get(table.getSelectedRow()).getFile());
-            if ( !pr.empty ){
-                MdiPanel mrw = (MdiPanel) getParent();
-                mrw.add(pr);
-                pr.setVisible(true);
-            }
-        }else{
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el reporte primero.");
-            msg.show(this);
-        }
-    }//GEN-LAST:event_viewButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         if ( table.getSelectedRow() != -1 ){
@@ -257,6 +253,34 @@ public class ReportsForm extends javax.swing.JInternalFrame {
         scanReports();
         loadTable();
     }//GEN-LAST:event_tableFocusGained
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        if ( evt.getClickCount() == 2 ){
+            ParameteringReport pr = new ParameteringReport(reportsScanned.get(table.getSelectedRow()).getFile());
+            if ( !pr.empty ){
+                MdiPanel mrw = (MdiPanel) getParent();
+                mrw.add(pr);
+                pr.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_tableMouseClicked
+
+    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
+        if ( evt.getKeyCode() ==  KeyEvent.VK_END ){
+            this.dispose();
+        }
+    }//GEN-LAST:event_formKeyReleased
+
+    private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
+        if ( table.getSelectedRow() != -1 ){
+            ParameteringReport pr = new ParameteringReport(reportsScanned.get(table.getSelectedRow()).getFile());
+            if ( !pr.empty ){
+                MdiPanel mrw = (MdiPanel) getParent();
+                mrw.add(pr);
+                pr.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_viewButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;

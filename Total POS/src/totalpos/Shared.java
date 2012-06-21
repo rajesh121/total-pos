@@ -920,8 +920,8 @@ public class Shared {
         }
 
         String fileName = now4backup();
-        cmd = "\"C:\\Archivos de programa\\WinRAR\\Rar.exe\" a -m5 -ed " + Constants.tmpDir
-                + fileName + " " + Constants.tmpDir + "Backup.sql";
+        cmd = "\"C:\\Archivos de programa\\WinRAR\\Rar.exe\" a -m5 -ed \"" + Constants.tmpDir
+                + fileName + "\" " + Constants.tmpDir + "Backup.sql";
         process = Runtime.getRuntime().exec(cmd);
         is = process.getInputStream();
         isr = new InputStreamReader(is);
@@ -932,7 +932,7 @@ public class Shared {
         }
 
         FTPClient client = new FTPClient();
-        client.connect(Shared.getConfig("ftpBackupAddr"));
+        client.connect(Shared.getConfig("ftpBackupAddr"), Integer.parseInt(Shared.getConfig("ftpPort")));
         client.login(Shared.getConfig("ftpBackupUser"), Shared.getConfig("ftpBackupPassword"));
         client.changeDirectory("/" + Shared.getConfig("storeName"));
         File f = new File(Constants.tmpDir + fileName);

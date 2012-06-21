@@ -393,9 +393,28 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         creditNoteField.setText(Shared.df.format(totalCN = (ConnectionDrivers.getTotalCN(myDay)*(Shared.getIva()+100.0)/100.0)));
         totalTotalField.setText(Shared.df.format(totalInCard + totalInCash));
         expensesTodayField.setText( Shared.df.format(totalExpenses = expensesD) );
-        totalDeclaredField.setText(Shared.df.format(totalDeclared*(Shared.getIva()+100.0)/100.0));
-        expensesMinusDeclaredField.setText(Shared.df.format(receiptTotal*(Shared.getIva()+100.0)/100.0));
-        totalField.setText(Shared.df.format((receiptTotal*(Shared.getIva()+100.0)/100.0 - totalInCard - totalInCash-expensesD)));
+
+        double emdf = receiptTotal*(Shared.getIva()+100.0)/100.0;
+        double tdf = totalDeclared*(Shared.getIva()+100.0)/100.0;
+
+        if ( Math.abs(emdf - tdf) > Double.parseDouble(Shared.getConfig("moneyExilon")) ){
+            expensesMinusDeclaredField.setForeground(new Color(255, 51, 51));
+            totalDeclaredField.setForeground(new Color(255, 51, 51));
+        }
+
+        expensesMinusDeclaredField.setText(Shared.df.format(emdf));
+        totalDeclaredField.setText(Shared.df.format(tdf));
+
+        double n = (receiptTotal*(Shared.getIva()+100.0)/100.0 - totalInCard - totalInCash-expensesD);
+        if ( Math.abs(n) < Double.parseDouble(Shared.getConfig("moneyExilon") ) ){
+            totalField.setForeground(new Color(51, 255, 51));
+        }else if ( n > 0 ){
+            totalField.setForeground(new Color(255, 51, 51));
+        }else{
+            totalField.setForeground(new Color(51, 51, 255));
+        }
+
+        totalField.setText(Shared.df.format(n));
     }
 
     /** This method is called from within the constructor to
@@ -1751,6 +1770,9 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
             ConnectionDrivers.recalculateStock();
             System.out.println("Stock recalculado!");
+
+            Shared.createBackup();
+
             List<Item> l = ConnectionDrivers.getNegativeStock();
             if ( !l.isEmpty() ){
                 Shared.sendMail(Shared.getConfig("email2sendNegativeStock") , createNegativeStockEmail(l), createNegativeStockSubject());

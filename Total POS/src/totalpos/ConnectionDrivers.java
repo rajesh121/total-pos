@@ -1381,7 +1381,7 @@ public class ConnectionDrivers {
                 + "nc.iva, nc.impresora, nc.numero_fiscal, "
                 + "nc.numero_reporte_z, nc.codigo_de_usuario, nc.cantidad_de_articulos , nc.identificador_turno , nc.codigo_interno_alternativo "
                 + "from nota_de_credito nc , factura fac where nc.codigo_factura = fac.codigo_interno and nc.estado='Nota' "
-                + " and fac.identificador_pos = ? and fac.codigo_interno = ? ");
+                + " and fac.identificador_pos = ? and nc.codigo_interno = ? ");
 
         stmt.setString(1, Shared.getFileConfig("myId"));
         stmt.setString(2, internal_code);
@@ -1474,6 +1474,7 @@ public class ConnectionDrivers {
         List<PointOfSale> poses = listPointOfSales(true);
         for (PointOfSale pointOfSale : poses) {
             if ( pointOfSale.getId().equals(Shared.getFileConfig("myId")) ){
+                System.out.println("Corresponde la " + pointOfSale.getPrinter() );
                 return pointOfSale.getPrinter();
             }
         }
@@ -1912,11 +1913,11 @@ public class ConnectionDrivers {
     protected static void createCreditNote(String myId, String idReceipt, String user, Assign assign, List<Item2Receipt> items) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
         double subT = .0 , ivaT = .0 , total = .0 ;
-        for (Item2Receipt item2r : items) {
+        /*for (Item2Receipt item2r : items) {
             subT += Shared.round( new Price(null,item2r.getSellPrice()).withDiscount(item2r.getSellDiscount()).getQuant(), 2 )*item2r.getQuant();
         }
         ivaT = new Price(null, subT).getIva().getQuant();
-        total = subT + ivaT;
+        total = subT + ivaT;*/
 
         PreparedStatement stmt = c.prepareStatement("insert into nota_de_credito"
                 + " ( " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") +
@@ -1930,7 +1931,7 @@ public class ConnectionDrivers {
         stmt.setDouble(4, total);
         stmt.setDouble(5, ivaT);
         stmt.setString(6, user);
-        stmt.setInt(7, items.size());
+        stmt.setInt(7, 0);
         stmt.setString(8, assign.getTurn());
         stmt.setString(9, assign.getPos());
         stmt.executeUpdate();
@@ -2667,7 +2668,7 @@ public class ConnectionDrivers {
                 return;
             }
             String cmd = "mysqldump -u " + Shared.getFileConfig("dbUser") + " -p"+
-                    Shared.getFileConfig("dbPassword") + " -h " + Shared.getFileConfig("Server") + " "
+                    Shared.getFileConfig("dbPassword") + " -t -h " + Shared.getFileConfig("Server") + " "
                     + Shared.getFileConfig("dbName") + " " + tableName + " | mysql -u " + Shared.getFileConfig("mirrordbUser")
                     + " -p" + Shared.getFileConfig("mirrordbPassword") + " " + "-h " + Shared.getFileConfig("ServerMirror")
                     + " " + Shared.getFileConfig("mirrorDbName") ;
@@ -4071,12 +4072,15 @@ public class ConnectionDrivers {
         PreparedStatement stmtUpdate = c.prepareStatement("update articulo set descuento = ? where codigo = ? ");
         PreparedStatement stmtDelete = c.prepareStatement("delete from precio where codigo_de_articulo = ? and fecha = curdate() ");
         PreparedStatement stmtInsert = c.prepareStatement("insert into precio ( codigo_de_articulo , monto , fecha ) values ( ? , ? , curdate() ) ");
+        PreparedStatement stmtItem = c.prepareStatement("select codigo from articulo where codigo = ?");
+        
         XMLElement xmlI = null;
         Double dis = null;
         String disS = null;
         parser = null;
         reader = null;
         System.out.println("Comenzo a fijar los descuentos...");
+        ResultSet rs = null;
         for (Object x : xml.getChildren()) {
 
             xmlI = (XMLElement)x;
@@ -4089,11 +4093,16 @@ public class ConnectionDrivers {
                 stmtUpdate.setString(2, xmlI.getAttribute("VAKEY","").substring(4));
                 stmtUpdate.executeUpdate();
             }else{
-                stmtDelete.setString(1, xmlI.getAttribute("VAKEY","").substring(6));
-                stmtDelete.executeUpdate();
-                stmtInsert.setString(1, xmlI.getAttribute("VAKEY","").substring(6));
-                stmtInsert.setString(2, Double.parseDouble(xmlI.getAttribute("KBETR",""))+"");
-                stmtInsert.executeUpdate();
+                stmtItem.setString(1, xmlI.getAttribute("VAKEY","").substring(6));
+                rs = stmtItem.executeQuery();
+
+                if ( rs.next() ){
+                    stmtDelete.setString(1, xmlI.getAttribute("VAKEY","").substring(6));
+                    stmtDelete.executeUpdate();
+                    stmtInsert.setString(1, xmlI.getAttribute("VAKEY","").substring(6));
+                    stmtInsert.setString(2, Double.parseDouble(xmlI.getAttribute("KBETR",""))+"");
+                    stmtInsert.executeUpdate();
+                }
             }
 
             xmlI = null;
@@ -5254,6 +5263,40 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
         return ok;
+    }
+
+    static void updateItems(String descriptions, Connection c) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, SQLException {
+        IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
+        IXMLReader reader = StdXMLReader.stringReader(descriptions);
+        parser.setReader(reader);
+        System.out.println("Recibido " + descriptions);
+        IXMLElement xml = (IXMLElement) parser.parse();
+
+        parser = null;
+        reader = null;
+
+        System.out.println("Justo antes de actualizar los articulos...");
+        PreparedStatement stmtItem = c.prepareStatement("update articulo set descripcion = ? , "
+                    + "codigo_de_barras = ? , modelo = ? , unidad_venta = ? "
+                    + " where codigo = ?");
+        PreparedStatement stmtBarcode = c.prepareStatement("update codigo_de_barras set codigo_de_barras = ? where codigo_de_articulo = ?");
+
+        XMLElement xmlI = null;
+        for (Object x : xml.getChildren()) {
+            xmlI = (XMLElement)x;
+            stmtItem.setString(1, xmlI.getAttribute("MAKTG",""));
+            stmtItem.setString(2, xmlI.getAttribute("EAN11",""));
+            stmtItem.setString(3, xmlI.getAttribute("MATKL",""));
+            stmtItem.setString(4, xmlI.getAttribute("MSEH3",""));
+            stmtItem.setString(5, xmlI.getAttribute("MATNR",""));
+            stmtItem.executeUpdate();
+
+            stmtBarcode.setString(2, xmlI.getAttribute("MATNR",""));
+            stmtBarcode.setString(1, xmlI.getAttribute("EAN11",""));
+            stmtBarcode.executeUpdate();
+
+            xmlI = null;
+        }
     }
 
 }

@@ -60,23 +60,16 @@ public class UpdateStockFromSAP implements Doer{
             c = ConnectionDrivers.cpds.getConnection();
             c.setAutoCommit(false);
 
-            if ( mode.equals("MM") ){
-
-                String ansListMM = ws.listMM(ConnectionDrivers.getLastMM(), Shared.getConfig("storePrefix")+Shared.getConfig("storeName"));
+            if ( mode.equals("MM") || mode.equals("MMBackground") ){
+                
+                String ansListMM = ws.listMMwithPrices(Shared.getConfig("storePrefix")+Shared.getConfig("storeName"), Shared.getConfig("Z"), ConnectionDrivers.getLastMM());
                 //String ansListMM = ws.listMM("4900458128");
                 System.out.println(" ansListMM = " + ansListMM );
 
                 String itemsNeeded = ConnectionDrivers.createNewMovement(c, ansListMM);
                 ansListMM = null;
                 System.out.println("itemsNeeded = " + itemsNeeded);
-                ws.listDescriptionFromItems(itemsNeeded, Shared.getConfig("storePrefix")+Shared.getConfig("storeName"));
-
-                String ansPricesDiscounts = ws.listPriceFromItemList(itemsNeeded , Shared.getConfig("Z") , Shared.getConfig("storePrefix")+Shared.getConfig("storeName"));
-
-                System.out.println("ansPricesDiscounts = " + ansPricesDiscounts);
-
-                ConnectionDrivers.setPrices(c, ansPricesDiscounts);
-
+                
                 // Update prices too
                 updatePrices(c,ws);
 
@@ -109,8 +102,12 @@ public class UpdateStockFromSAP implements Doer{
             c.commit();
             System.out.println("Terminado commit Exitoso!");
 
-            MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Actualizado!");
-            msg.show(Shared.getMyMainWindows());
+            if ( !mode.equals("MMBackground") ){
+                MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Actualizado!");
+                msg.show(Shared.getMyMainWindows());
+            }else{
+                System.exit(0);
+            }
         } catch (Exception ex) {
             System.out.println("Comenzo la exception");
             try {
@@ -139,12 +136,12 @@ public class UpdateStockFromSAP implements Doer{
         workingFrame.setVisible(false);
     }
 
-    private void updateDescriptions(Connection c, TotalPosWebService ws) {
-        /*String myDay = ConnectionDrivers.getLastDescriptionUpdate();
+    private void updateDescriptions(Connection c, TotalPosWebService ws) throws ClassNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, SQLException {
+        String myDay = Shared.getConfig("lastPriceUpdate");
+        
+        String descriptions = ws.readDescriptions(myDay);
 
-        String daysFlagc = ws.getFlagC(Constants.storePrefix+Shared.getConfig("storeName"), myDay);
-
-        ConnectionDrivers.updateFlagc(daysFlagc, c);*/
+        ConnectionDrivers.updateItems(descriptions, c);
     }
 
 }

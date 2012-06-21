@@ -60,6 +60,7 @@ public class FiscalPrinter {
             int ans = printer.OpenPort(Byte.parseByte(Shared.getFileConfig("printerPort")), (byte)2);
             //printer.CancelTransaction();
 
+            System.out.println("Ams = " + ans);
             if ( ans != 0 ){
                 throw new Exception(Shared.ncrErrMapping.get(ans));
             }
@@ -129,6 +130,7 @@ public class FiscalPrinter {
         if ( !Constants.withFiscalPrinter ){
             return true;
         }
+        System.out.println("Tiene " + getSerial());
         return getSerial().equals(serial);
     }
 
@@ -269,6 +271,10 @@ public class FiscalPrinter {
             ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"===================================",2,(byte)0);
             ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"      CANTIDAD DE ARTICULOS " + itemsQuant,3,(byte)0);
             ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"===================================",4,(byte)0);
+            
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"CAMBIOS SOLO LUNES, MIERCOLES Y SABADO",5,(byte)1);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"HASTA 5PM. NO SE PUEDEN HACER CAMBIOS",6,(byte)1);
+            ans = printer.PrintTextNoFiscal(Integer.parseInt(Shared.getConfig("normalFont")),"CON MAS DE 15 DIAS DE ANTIGUEDAD =D.",7,(byte)1);
 
             System.out.println("Código de barras 69");
             subtotal = Math.round(subtotal * 100)/100.0;
@@ -320,6 +326,11 @@ public class FiscalPrinter {
 
             //ans = printer.ClosePort();
 
+            try{
+                updateValues("curdate()");
+            }catch(Exception exx){
+                // =(
+            }
             isOk = true;
         }else if ( Shared.getFileConfig("printerDriver").equals("tfhkaif") ){
             isOk = false;
@@ -345,6 +356,7 @@ public class FiscalPrinter {
                 }
                 buffer.add("i0" + ( line++ ) + "Correlativo: " + ticketId);
                 buffer.add("i0" + ( line++ ) + "Caja: " + Shared.getFileConfig("myId"));
+                buffer.add("i0" + ( line++ ) + "SIN DERECHO A CREDITO FISCAL");
 
                 for (String bu : buffer) {
                     printer.SendCmd(a, b, bu);
@@ -793,6 +805,11 @@ public class FiscalPrinter {
 
             //ans = printer.ClosePort();
 
+            try{
+                updateValues("curdate()");
+            }catch(Exception exx){
+                // =(
+            }
             isOk = true;
         }else if ( Shared.getFileConfig("printerDriver").equals("tfhkaif") ){
 

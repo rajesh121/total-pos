@@ -94,7 +94,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                 printer.printerSerial = null;
                 System.out.println("Check Fiscal Printer...");
                 if ( !printer.checkPrinter() ){
-                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema.");
+                    MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "La impresora no coincide con la registrada en el sistema o la caja ha sido bloqueada.");
                     msb.show(myParent);
                     this.dispose();
                     Shared.reload();
@@ -339,17 +339,17 @@ public final class MainRetailWindows extends javax.swing.JFrame {
         gridTable.setBackground(Constants.transparent); //THIS IS THE TRICK, ISN'T IT? xD
         gridTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Descripción", "Cantidad", "Descuento", "Precio", "Iva", "Total"
+                "Descripción", "Cantidad", "Descuento", "Precio", "P/Venta"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -889,6 +889,14 @@ public final class MainRetailWindows extends javax.swing.JFrame {
                     }
                 }
                 return;
+            }else if ( myBarcode.split(" ")[0].equals("getConfig") ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, Shared.getConfig(myBarcode.split(" ")[1]) );
+                msb.show(this);
+                return;
+            }else if ( myBarcode.split(" ")[0].equals("getFileConfig") ){
+                MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, Shared.getFileConfig(myBarcode.split(" ")[1]) );
+                msb.show(this);
+                return;
             }
             if ( myBarcode.isEmpty() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Debe introducir el producto!");
@@ -1285,8 +1293,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
             ConnectionDrivers.addItem2Receipt(actualId, get, quant);
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
 
-            String[] s = {get.getDescription(), quant+"", get.getDescuento()+"", get.getLastPrice().toString(),
-            get.getLastPrice().getIva().toString(), Shared.df.format(get.getLastPrice().plusIva().getQuant()*quant)};
+            String[] s = {get.getDescription(), quant+"", get.getDescuento()+"", Shared.df.format(get.getLastPrice().plusIva().getQuant()*quant), Shared.df.format(get.getLastPrice().plusIva().withDiscount(get.getDescuento()).getQuant()*quant)};
             model.addRow(s);
             gridTable.setRowSelectionInterval(model.getRowCount() - 1, model.getRowCount() - 1);
             gridTable.scrollRectToVisible(gridTable.getCellRect(model.getRowCount()-1, 0, true));

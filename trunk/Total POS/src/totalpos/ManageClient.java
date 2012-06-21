@@ -481,8 +481,8 @@ public class ManageClient extends javax.swing.JDialog {
             nameField.setText(nameField.getText().substring(0,35));
         }
         
-        if ( nameField.getText().isEmpty() || addressField.getText().isEmpty()
-                || phoneField.getText().isEmpty() ){
+        if ( nameField.getText().trim().isEmpty() || addressField.getText().trim().isEmpty()
+                || phoneField.getText().trim().isEmpty() ){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Todos los campos son obligatorios");
             msb.show(this);
             return;

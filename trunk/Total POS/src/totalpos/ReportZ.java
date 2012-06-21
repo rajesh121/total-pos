@@ -112,7 +112,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
 
     private void passwordFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            workingFrame = new Working((JFrame) Shared.getMyMainWindows());
+            workingFrame = new Working(this);
 
             WaitSplash ws = new WaitSplash(this);
 

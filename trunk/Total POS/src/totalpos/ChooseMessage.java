@@ -24,9 +24,11 @@ public class ChooseMessage extends javax.swing.JInternalFrame {
     /** Creates new form ChooseMessage */
     protected ChooseMessage() {
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
             initComponents();
             updateAll();
             isOk = true;
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Objecto creado satisfactoriamente");
         } catch (SQLException ex) {
             Logger.getLogger(ChooseMessage.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -158,20 +160,20 @@ public class ChooseMessage extends javax.swing.JInternalFrame {
         if ( n != -1){
             DefaultTableModel model = (DefaultTableModel) msgTable.getModel();
             model.removeRow(msgTable.getSelectedRow());
-        }else{
-            MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el mensaje a eliminar");
-            msg.show(this);
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Eliminado item " + n);
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         DefaultTableModel model = (DefaultTableModel) msgTable.getModel();
         model.setNumRows(model.getRowCount()+1);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Agregado Item");
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
 
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardar todo");
             boolean showed = false;
             for (int i = 0 ; i < msgTable.getRowCount() ; i++ ){
                 String s = (String) msgTable.getValueAt(i, 0);
@@ -193,6 +195,7 @@ public class ChooseMessage extends javax.swing.JInternalFrame {
 
             ConnectionDrivers.deleteAllMsgs();
             ConnectionDrivers.createMsgs(msgTable.getModel());
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardado satisfactoriamente");
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
             msg.show(this);
         } catch (SQLException ex) {
@@ -217,6 +220,7 @@ public class ChooseMessage extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() throws SQLException {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " creando lista con mensajes");
         DefaultTableModel dtm = (DefaultTableModel) msgTable.getModel();
         dtm.setRowCount(0);
 

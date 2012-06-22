@@ -33,7 +33,7 @@ public class Login extends JFrame implements Doer{
 
     /** Creates new form Login */
     public Login() {
-        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
         initComponents();
 
         wallpaper = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Fondo-Inicio.jpg"))).getImage());
@@ -119,7 +119,7 @@ public class Login extends JFrame implements Doer{
     }
 
     public void doItNow() throws SQLException, Exception{
-        System.out.println("ANTES DE VERIFICAR USUARIO...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " ANTES DE VERIFICAR USUARIO...");
         if ( !ConnectionDrivers.existsUser(loginText.getText().trim()) ){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
             msg.show(this);
@@ -127,20 +127,20 @@ public class Login extends JFrame implements Doer{
             return;
         }
 
-        System.out.println("El usuario existe...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " El usuario existe...");
         if ( ConnectionDrivers.isLocked(loginText.getText().trim()) ){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario bloqueado");
             msg.show(this);
             passwordText.setEnabled(true);
             return;
         }
-        System.out.println("El usuario no esta bloqueado...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " El usuario no esta bloqueado...");
         ConnectionDrivers.login(loginText.getText(), passwordText.getPassword());
 
-        System.out.println("El usuario se loggeao bien...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " El usuario se loggeao bien...");
         User u = Shared.giveUser(ConnectionDrivers.listUsers(), loginText.getText());
 
-        System.out.println("Ya tengo el objeto usuario...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Ya tengo el objeto usuario...");
         if ( u.getDebeCambiarPassword() ){
             //ws.close();
             ChangePassword cp = new ChangePassword(this, true, u);
@@ -154,10 +154,10 @@ public class Login extends JFrame implements Doer{
             }
         }
         Shared.userInsertedPasswordOk(loginText.getText());
-        System.out.println("Ya se resentearon los intentos malos...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Ya se resentearon los intentos malos...");
         UpdateClock uc = new UpdateClock();
         Shared.setScreenSaver(uc);
-        System.out.println("Ya se creo el protector de pantallas...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Ya se creo el protector de pantallas...");
 
         if ( Constants.isPos ){
 
@@ -188,17 +188,17 @@ public class Login extends JFrame implements Doer{
             uc.start(); //Start the screensaver xDD
             Shared.setUser(u);
             MainRetailWindows mrw = new MainRetailWindows(u, a, this);
-            System.out.println("Ya se creo la pantalla...");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Ya se creo la pantalla...");
             if ( mrw.isOk ){
-                System.out.println("Dinero actual de caja ... ");
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Dinero actual de caja ... ");
 
                 /*if ( currentMoney == -1.0 && Shared.isOffline ){
                     ConnectionDrivers.modifyMoney(currentMoney);
                     currentMoney = .0;
                 }*/
-                System.out.println("Ultimo Reporte Z = "  + Shared.printer.getZ());
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Ultimo Reporte Z = "  + Shared.printer.getZ());
                 String tDate = ConnectionDrivers.checkAllZReport(Shared.printer.printerSerial, Shared.printer.getZ());
-                System.out.println("tDate = " + tDate);
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " tDate = " + tDate);
                 if (tDate != null){
                     MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Esta caja no ha sido cerrada. Se cerrara ahora!");
                     msg.show(this);
@@ -261,7 +261,7 @@ public class Login extends JFrame implements Doer{
         
         passwordText.setEnabled(false);
 
-        System.out.println("ANTES DE COMENZAR TODO!!");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " ANTES DE COMENZAR TODO!!");
         ws.execute();
         
     }
@@ -272,7 +272,7 @@ public class Login extends JFrame implements Doer{
 
     public void doIt(){
         try {
-            System.out.println("Justo comenzando ... ");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Justo comenzando a operar... ");
             doItNow();
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);

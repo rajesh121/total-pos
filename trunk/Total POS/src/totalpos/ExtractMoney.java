@@ -23,6 +23,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
     /** Creates new form ExtractMoney */
     public ExtractMoney(java.awt.Frame parent, boolean modal, FiscalPrinter print) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
         initComponents();
         printer = print;
     }
@@ -271,6 +272,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
 
     @Override
     public void doIt() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
         if ( idField.getText().isEmpty() ){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");
             msg.show(this);
@@ -313,6 +315,7 @@ public class ExtractMoney extends javax.swing.JDialog implements Doer{
 
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Operación existosa!");
                 msg.show(this);
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Se ha sacado el dinero");
             }else{
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario no tiene permisos para extraer dinero de la caja.");
                 msg.show(this);

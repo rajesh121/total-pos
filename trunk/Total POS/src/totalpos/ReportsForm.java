@@ -31,11 +31,13 @@ public class ReportsForm extends javax.swing.JInternalFrame {
     /** Creates new form ReportsForm */
     public ReportsForm() {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando traductor");
         scanReports();
         loadTable();
     }
 
     private void loadTable(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Generando tabla");
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
         for (Report report : reportsScanned) {
@@ -45,6 +47,7 @@ public class ReportsForm extends javax.swing.JInternalFrame {
     }
 
     private void scanReports(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Leyendo reportes");
         reportsScanned.clear();
         File reportsFolder = new File(Shared.getConfig("reportFolder"));
         for (File file : reportsFolder.listFiles()) {
@@ -273,6 +276,7 @@ public class ReportsForm extends javax.swing.JInternalFrame {
 
     private void viewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewButtonActionPerformed
         if ( table.getSelectedRow() != -1 ){
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Viendo reporte " + table.getSelectedRow());
             ParameteringReport pr = new ParameteringReport(reportsScanned.get(table.getSelectedRow()).getFile());
             if ( !pr.empty ){
                 MdiPanel mrw = (MdiPanel) getParent();

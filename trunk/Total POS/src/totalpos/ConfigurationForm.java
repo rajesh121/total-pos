@@ -23,9 +23,11 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
     /** Creates new form ConfigurationForm */
     protected ConfigurationForm() {
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
             initComponents();
             updateAll();
             isOk = true;
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Objecto creado satisfactoriamente");
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);
             msg.show(this);
@@ -147,6 +149,7 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Se llamo a guardar cambios");
             for (int i = 0; i < dataTable.getRowCount(); i++) {
                 String a = (String) dataTable.getValueAt(i, 0);
                 String b = (String) dataTable.getValueAt(i, 1);
@@ -171,6 +174,7 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
 
     private void dataTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_dataTableKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Saliendo por pisar la tecla ESCAPE");
             this.dispose();
         }
     }//GEN-LAST:event_dataTableKeyPressed
@@ -185,6 +189,7 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() throws SQLException {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cargando configuracion");
         DefaultTableModel model = (DefaultTableModel) dataTable.getModel();
         model.setRowCount(0);
 
@@ -193,6 +198,7 @@ public class ConfigurationForm extends javax.swing.JInternalFrame {
             String[] s = {sc.getName() == null ? sc.getKey() : sc.getName() , sc.getValue()};
             model.addRow(s);
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Configuracion cargada satisfactoriamente");
     }
 
 }

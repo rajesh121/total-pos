@@ -25,6 +25,7 @@ public class CreateShop extends JInternalFrame {
     /** Creates new form CreateShop */
     public CreateShop() {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
 
         DefaultTableModel model = (DefaultTableModel) storeTable.getModel();
         model.setRowCount(0);
@@ -316,6 +317,7 @@ public class CreateShop extends JInternalFrame {
             created = true;
             ConnectionDrivers.initializeConfig();
             this.dispose();
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Terminado de guardar todo");
         } catch (SQLException ex) {
             MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Problemas con la base de datos.",ex);
             msb.show(this);

@@ -32,6 +32,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
     SpecifyPaymentForm(MainRetailWindows aThis, boolean b, double subtotal, String receipt) {
         super(aThis, b);
         initComponents();
+        System.out.println("[" + Shared.now() + "] SpecifyPaymentForm " + Shared.lineNumber() +  " Invocado constructor");
         total = Math.round((new Price(null, subtotal).plusIva()).getQuant())+.0;
         receiptID = receipt;
         myParent = aThis;
@@ -42,6 +43,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
     }
 
     private void updateAll(){
+        System.out.println("[" + Shared.now() + "] SpecifyPaymentForm " + Shared.lineNumber() +  " Actualizando todo");
         sum = .0;
         change = .0;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -301,6 +303,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableKeyPressed
+        System.out.println("[" + Shared.now() + "] SpecifyPaymentForm " + Shared.lineNumber() +  " Pisada la tecla" + evt.getKeyCode());
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE){
             this.dispose();
         }else if ( evt.getKeyCode() == KeyEvent.VK_F12 ){
@@ -354,6 +357,7 @@ public class SpecifyPaymentForm extends javax.swing.JDialog implements Doer{
     }
 
     public void doIt(){
+        System.out.println("[" + Shared.now() + "] SpecifyPaymentForm " + Shared.lineNumber() +  " Operando");
         try {
             if ( change < 0 ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto insuficiente.");

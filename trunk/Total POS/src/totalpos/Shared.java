@@ -256,9 +256,9 @@ public class Shared {
     }
 
     protected static void initializaUser32(){
-        System.out.println("Cargando libreria User32...");
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Cargando libreria User32...");
         user32 = (User32)Native.loadLibrary( "User32" , User32.class ) ;
-        System.out.println("Cargada libreria User32!");
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Cargada libreria User32!");
     }
 
     protected static void lockUser32(){ 
@@ -446,7 +446,7 @@ public class Shared {
     }
 
     protected static void loadFileConfig(String fileName, String pass) throws FileNotFoundException, IOException{
-        System.out.println("Cargando archivo de configuracion " + fileName);
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Cargando archivo de configuracion " + fileName);
         prepareFile(new File(Constants.rootDir + fileName), Constants.fileName4ConfigRar, pass, Constants.scriptConfig);
         File f = new File(Constants.tmpDir + Constants.fileName4Config);
         Scanner sc = new Scanner(f);
@@ -479,7 +479,7 @@ public class Shared {
 
     public static void loadPhoto(JLabel imageLabel , String addr, int x, int y){
         if ( addr != null ){
-            System.out.println("Cargando Imagen: " + addr);
+            System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Cargando Imagen: " + addr);
             ImageIcon image = new ImageIcon(addr);
             ImageIcon imageIcon = new ImageIcon(image.getImage().getScaledInstance( x, y, Image.SCALE_AREA_AVERAGING));
             imageLabel.setIcon(imageIcon);
@@ -742,13 +742,13 @@ public class Shared {
 
     public static void updateMovements() throws FileNotFoundException, SQLException, ParseException, IOException{
         hadMovements = false;
-        System.out.println("Parse Items");
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Parse Items");
 
         String addrForIncome = Shared.getConfig("addrForIncome");
         List<Item> items = parseItems(addrForIncome + "art.txt");
-        System.out.println("Listo\nActualizar Items");
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Listo\nActualizar Items");
         ConnectionDrivers.updateItems(items);
-        System.out.println("Actualizar Movimientos");
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Actualizar Movimientos");
         List<Movement> movements = parseMovements(addrForIncome + "ajuste.txt", addrForIncome + "reng_aju.txt");
         ConnectionDrivers.updateMovements(movements, newItemMapping);
         parseDiscounts(addrForIncome + "descuen.txt");
@@ -764,7 +764,9 @@ public class Shared {
         return msg1 + new String(spaces) + msg2;
     }
 
+    @Deprecated
     static void prepareMovements(File myRar) throws IOException {
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Preparando movimientos");
         String addrForIncome = Shared.getConfig("addrForIncome");
         String fileName4Income = Shared.getConfig("fileName4Income");
         String cmd = "copy \"" + myRar.getAbsolutePath() + "\" \"" + addrForIncome + fileName4Income + "\"\n"+
@@ -795,6 +797,7 @@ public class Shared {
 
     public static void createBackup(String table) throws IOException, SQLException{
 
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Creando respaldo");
         String backupDir = Shared.getConfig("backupDir");
         String cmd = "mysqldump -u " + Shared.getFileConfig("dbUser") + " -p" + Shared.getFileConfig("dbPassword") + " " + Shared.getFileConfig("dbName") + " " + table + " > " +
                 backupDir + Shared.sdfDay2DB.format(Calendar.getInstance().getTime()) + "-" +
@@ -820,7 +823,7 @@ public class Shared {
     }
 
     protected static void prepareFile(File myRar, String fileName, String configKey, String scriptFile) throws IOException {
-        System.out.println("Preparando archivo " + fileName);
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Preparando archivo " + fileName);
         String pass = Shared.getConfig(configKey);
         if ( configKey.equals("password4config") ){
             pass = Constants.configPassword;
@@ -865,6 +868,7 @@ public class Shared {
     }
 
     public static int calculateReason(String bwart, String shkzg){
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Calculando razon para " + bwart + " " + shkzg);
         int reason = 0;
         for (String ii : Shared.getConfig("incomingItems").split(",")) {
             if ( bwart.equals(ii) ){
@@ -907,6 +911,7 @@ public class Shared {
     }
 
     protected static void createBackup() throws IOException, IllegalStateException, FTPIllegalReplyException, FTPException, FileNotFoundException, FTPDataTransferException, FTPAbortedException{
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Creando respaldo");
         String cmd = "mysqldump -u " + Shared.getFileConfig("dbUser") + " -p" + Shared.getFileConfig("dbPassword") + " " + Shared.getFileConfig("dbName")  +
                 " > " + Constants.tmpDir + "Backup.sql";
 
@@ -1067,6 +1072,7 @@ public class Shared {
     }
 
     public static void sendMail(String to , String msg, String subject) throws MessagingException, UnsupportedEncodingException{
+        System.out.println("[" + Shared.now() + "] Shared " + Shared.lineNumber() +  " Enviando correo");
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.socketFactory.port", "465");

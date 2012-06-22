@@ -27,7 +27,7 @@ public class AddCard2Pay extends javax.swing.JDialog {
     /** Creates new form AddCard2Pay */
     protected AddCard2Pay(SpecifyPaymentForm parent, boolean modal, String reasonI, double total) {
         super(parent, modal);
-        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
         try {
             initComponents();
             reason = reasonI;
@@ -36,9 +36,9 @@ public class AddCard2Pay extends javax.swing.JDialog {
             titleLabel.setText(titleLabel.getText() + " " + reasonI);
             updateAll();
             isOk = true;
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Pago con tarjetas iniciado satisfactoriamente.");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Pago con tarjetas iniciado satisfactoriamente.");
         } catch (SQLException ex) {
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Error con la base de datos " + ex.getMessage());
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Error con la base de datos " + ex.getMessage());
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error en la base de datos.",ex);
             msb.show(this);
             return;
@@ -166,13 +166,13 @@ public class AddCard2Pay extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void updateAll() throws SQLException{
-        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Creando lista de bancos en forma de pago con tarjeta...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando lista de bancos en forma de pago con tarjeta...");
         bposCombo.removeAll();
         bpos = ConnectionDrivers.listBPos(reason);
         for (BankPOS bankPOS : bpos) {
             bposCombo.add(bankPOS.getId() + " - " + bankPOS.getDescripcion() + " - " + bankPOS.getLot() );
         }
-        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Lista de bancos cargada satisfactoriamente.");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Lista de bancos cargada satisfactoriamente.");
     }
 
     private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
@@ -184,9 +184,9 @@ public class AddCard2Pay extends javax.swing.JDialog {
 }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void modifyLotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyLotActionPerformed
-        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Modificando lote...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Modificando lote...");
         if ( bposCombo.getSelectedIndex() == -1 ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Debe seleccionar el punto de venta.");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Debe seleccionar el punto de venta.");
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el punto de venta!");
             msb.show(this);
             return;
@@ -198,14 +198,14 @@ public class AddCard2Pay extends javax.swing.JDialog {
                 ConnectionDrivers.changeLot(bp.getId(), id);
                 updateAll();
             } catch (SQLException ex) {
-                System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Problemas con la base de datos " + ex.getMessage());
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Problemas con la base de datos " + ex.getMessage());
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.",ex);
                 msb.show(this);
                 this.dispose();
                 Shared.reload();
             }
         }
-        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Saliendo de modificar lote.");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Saliendo de modificar lote.");
     }//GEN-LAST:event_modifyLotActionPerformed
 
     private void moneyFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moneyFieldKeyReleased
@@ -214,28 +214,28 @@ public class AddCard2Pay extends javax.swing.JDialog {
 
     private void bposComboKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_bposComboKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Cerrando por pisar Escape");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cerrando por pisar Escape");
             this.dispose();
         }
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Operando por pisar Enter");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando por pisar Enter");
             doIt();
         }
     }//GEN-LAST:event_bposComboKeyPressed
 
     private void moneyFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moneyFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Cerrando por pisar Escape");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cerrando por pisar Escape");
             this.dispose();
         }
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Operando por pisar Enter");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando por pisar Enter");
             doIt();
         }
     }//GEN-LAST:event_moneyFieldKeyPressed
 
     protected void doIt(){
-        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Operando pago con tarjeta");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando pago con tarjeta");
         Double d = .0;
         try{
             d = Double.parseDouble(moneyField.getText().replace(',', '.'));
@@ -248,26 +248,26 @@ public class AddCard2Pay extends javax.swing.JDialog {
         try{
             minimun = Double.parseDouble(Shared.getConfig(reason));
         }catch( NumberFormatException ex ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Pago minimo con tarjeta erroneo en la configuracion.");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Pago minimo con tarjeta erroneo en la configuracion.");
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error en la configuración del monto mínimo para tarjetas de tipo: "
                     + reason + ". Se asume mínimo 1 Bs");
             msb.show(this);
             minimun = 1.0;
         }
         if ( d < minimun ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Monto menor al minimo " + d);
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Monto menor al minimo " + d);
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser al menos " + minimun + " Bs.");
             msb.show(this);
             return;
         }
         if ( d > total ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Monto mayor al minimo " + d);
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Monto mayor al minimo " + d);
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser máximo " + total);
             msb.show(this);
             return;
         }
         if ( bposCombo.getSelectedIndex() == -1 ){
-            System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Debe seleccionar el punto de venta");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Debe seleccionar el punto de venta");
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Debe seleccionar el punto de venta!");
             msb.show(this);
             return;

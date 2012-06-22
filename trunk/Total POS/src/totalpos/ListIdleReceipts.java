@@ -24,6 +24,7 @@ public class ListIdleReceipts extends javax.swing.JDialog {
     /** Creates new form ListIdleReceipts */
     public ListIdleReceipts(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
         this.parent = (MainRetailWindows)parent;
         initComponents();
         updateAll();
@@ -114,6 +115,7 @@ public class ListIdleReceipts extends javax.swing.JDialog {
                     parent.loadThisReceipt(receipts.get(table.getSelectedRow()));
                     ConnectionDrivers.putToNormal(receipts.get(table.getSelectedRow()).getInternId());
                     this.dispose();
+                    System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cargando el recibo " + receipts.get(table.getSelectedRow()).getInternId());
                 } catch (SQLException ex) {
                     MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
                     msg.show(this);
@@ -136,6 +138,7 @@ public class ListIdleReceipts extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
         try {
             receipts = ConnectionDrivers.listIdleReceiptToday();
             DefaultTableModel model = (DefaultTableModel) table.getModel();

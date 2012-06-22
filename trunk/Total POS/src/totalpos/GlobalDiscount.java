@@ -26,6 +26,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
      */
     public GlobalDiscount(Frame parent, boolean modal, double subT) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
         initComponents();
         this.parent = (MainRetailWindows) parent;
         subtotal = subT;
@@ -314,6 +315,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
     }//GEN-LAST:event_finalMoneyKeyReleased
 
     private void calculate(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Calcular descuento ");
         try{
             if ( !percentField.getText().isEmpty() ){
                 double p = Double.parseDouble(percentField.getText().replace(',', '.'));
@@ -364,6 +366,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void doIt() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
         if ( userField.getText().isEmpty() ){
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");
             msg.show(this);
@@ -405,6 +408,7 @@ public class GlobalDiscount extends javax.swing.JDialog {
             }
             this.dispose();
 
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Terminado satisfactoriamente");
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Problemas con la base de datos",ex);
             msg.show(this);

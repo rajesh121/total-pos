@@ -26,6 +26,7 @@ public class ListTurnsAssigned extends JInternalFrame {
     /** Creates new form ListTurnsAssigned */
     public ListTurnsAssigned() {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Constructor invocado");
         updateAll();
         isOk = true;
     }
@@ -186,6 +187,7 @@ public class ListTurnsAssigned extends JInternalFrame {
     }//GEN-LAST:event_tableKeyPressed
 
     private void closeAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeAssignButtonActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cerrando asignacion de turno");
         if ( table.getSelectedRow() != -1 ){
             try {
                 Object[] options = {"Si","No"};
@@ -218,6 +220,7 @@ public class ListTurnsAssigned extends JInternalFrame {
     }//GEN-LAST:event_closeAssignButtonActionPerformed
 
     private void reopenAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reopenAssignButtonActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Reabriendo asignacion de turno");
         if ( table.getSelectedRow() != -1 ){
             try {
                 Object[] options = {"Si","No"};
@@ -250,6 +253,7 @@ public class ListTurnsAssigned extends JInternalFrame {
     }//GEN-LAST:event_reopenAssignButtonActionPerformed
 
     private void cancelAssignButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelAssignButtonActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cancelando asignacion de turno");
         if ( table.getSelectedRow() != -1 ){
             try {
                 boolean ans = ConnectionDrivers.wasAssignUsedToday(assigns.get(table.getSelectedRow()));
@@ -295,6 +299,7 @@ public class ListTurnsAssigned extends JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
         try {
             assigns = ConnectionDrivers.listAssignsTurnPosToday();
             DefaultTableModel model = (DefaultTableModel) table.getModel();

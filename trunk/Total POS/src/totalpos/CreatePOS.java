@@ -23,6 +23,7 @@ public class CreatePOS extends javax.swing.JInternalFrame {
     }
 
     public CreatePOS(PointOfSale pos) {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
         initComponents();
         modify = true;
         titleLabel.setText("Modificar Caja");
@@ -227,6 +228,7 @@ public class CreatePOS extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void doIt() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
         try {
             if ( numberField.getText().isEmpty() ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "El número no puede ser vacío");

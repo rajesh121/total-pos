@@ -31,6 +31,7 @@ public class ManageBank extends JInternalFrame {
     public ManageBank() {
         try {
             initComponents();
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Constructor invocado");
             updateAll();
             isOk = true;
         } catch (SQLException ex) {
@@ -42,6 +43,7 @@ public class ManageBank extends JInternalFrame {
     }
 
     private void updateAll() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
         DefaultTableModel model = (DefaultTableModel) bposTable.getModel();
         model.setRowCount(0);
         bpos = ConnectionDrivers.listBPos();
@@ -206,6 +208,7 @@ public class ManageBank extends JInternalFrame {
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardando");
         DefaultTableModel model = (DefaultTableModel) bposTable.getModel();
         Set<String> s = new TreeSet<String>();
         for (int i = 0; i < model.getRowCount(); i++) {

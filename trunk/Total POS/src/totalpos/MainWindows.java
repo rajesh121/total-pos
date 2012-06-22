@@ -229,10 +229,6 @@ public class MainWindows extends javax.swing.JFrame {
                 ReportsForm rf = new ReportsForm();
                 mdiPanel.add(rf);
                 rf.setVisible(true);
-            } else if ( ed.getFuncion().equals("expenses") ) {
-                AddExpenses ae = new AddExpenses();
-                mdiPanel.add(ae);
-                ae.setVisible(true);
             } else if ( ed.getFuncion().equals("closingDay") ) {
                 JTextField textField = new JTextField();
                 ChooseDate cal = new ChooseDate(Constants.appName,textField,1);

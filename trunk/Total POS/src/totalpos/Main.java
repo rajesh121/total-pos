@@ -38,14 +38,14 @@ public class Main {
             PrintStream err = new PrintStream(new FileOutputStream("err.log", true));
             tee = new TeeStream(System.err, err);
 
-            System.out.println("Iniciando Total Pos");
+            System.out.println("[" + Shared.now() + "] Main " + Shared.lineNumber() +  " Iniciando Total Pos");
 
             splash = new StartSplash();
             splash.changeStatus("Leyendo archivo de configuración...", 10);
-            Shared.initializaUser32();
+            //Shared.initializaUser32();
             
             if ( Constants.isPos ){
-                System.out.println("Iniciando como punto de venta.");
+                System.out.println("[" + Shared.now() + "] Main " + Shared.lineNumber() +  " Iniciando como punto de venta.");
                 serverSkt = new ServerSocket(Constants.lockingPort);
                 System.out.println("Puerto abierto = " + Constants.lockingPort);
             }
@@ -96,7 +96,7 @@ public class Main {
         splash.changeStatus("Inicializando configuración de base de datos...", 45);
         try {
             ConnectionDrivers.initializeConfig();
-            System.out.println("Leidas variables basicas..");
+            System.out.println("[" + Shared.now() + "] Main " + Shared.lineNumber() +  " Leidas variables basicas..");
         } catch (SQLException ex) {
             ConnectionDrivers.reinitializeOffline();
             try {

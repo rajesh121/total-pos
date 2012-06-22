@@ -21,10 +21,13 @@ public class ChangePassword extends javax.swing.JDialog {
     /** Creates new form ChangePassword */
     protected ChangePassword(Login parent, boolean modal , User u) {
         super(parent, modal);
+
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
         initComponents();
 
         this.user = u;
         this.parent = parent;
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Objecto construido satisfactoriamente");
     }
 
     /** This method is called from within the constructor to
@@ -139,6 +142,7 @@ public class ChangePassword extends javax.swing.JDialog {
 
     private void changePasswordNow() {
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cambiando password");
             if (!newPasswordText.getText().trim().equals(newPasswordText2.getText().trim())) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_WARNING, "Las contraseñas no son iguales.");
                 msb.show(this);
@@ -151,6 +155,7 @@ public class ChangePassword extends javax.swing.JDialog {
             msg.show(this);
             this.setVisible(false);
             dispose();
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Password cambiado satisfactoriamente");
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);

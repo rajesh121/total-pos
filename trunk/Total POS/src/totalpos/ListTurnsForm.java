@@ -23,6 +23,7 @@ public class ListTurnsForm extends JInternalFrame {
     /** Creates new form ListTurnsForm */
     public ListTurnsForm() {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Constructor invocado");
         updateAll();
         isOk = true;
     }
@@ -154,6 +155,7 @@ public class ListTurnsForm extends JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newTurnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTurnActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando nuevo turno");
         CreateTurn ct = new CreateTurn();
         getParent().add(ct);
         ct.setVisible(true);
@@ -191,6 +193,7 @@ public class ListTurnsForm extends JInternalFrame {
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             setVisible(false);
             dispose();
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Salir");
         }
     }//GEN-LAST:event_tableKeyPressed
 
@@ -202,6 +205,7 @@ public class ListTurnsForm extends JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
         try {
             turns = ConnectionDrivers.listTurns();
             DefaultTableModel model = (DefaultTableModel) table.getModel();

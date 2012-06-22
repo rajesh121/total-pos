@@ -22,6 +22,7 @@ public class ListPOS extends javax.swing.JInternalFrame {
     /** Creates new form ListPOS */
     public ListPOS() {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Constructor invocado");
         updateAll();
         isOk = true;
     }
@@ -212,6 +213,7 @@ public class ListPOS extends javax.swing.JInternalFrame {
 
     private void flipEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipEnableActionPerformed
         Shared.getScreenSaver().actioned();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Flip enabled");
         if ( table.getSelectedRow() != -1 ){
             try {
                 PointOfSale p = poses.get(table.getSelectedRow());
@@ -240,6 +242,7 @@ public class ListPOS extends javax.swing.JInternalFrame {
 
     public void updateAll() {
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
             poses = ConnectionDrivers.listPOS();
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.setRowCount(0);

@@ -57,6 +57,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     public MainRetailWindows(User u, Assign assign, Login parent) {
         try {
             initComponents();
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Constructor invocado");
             myParent = parent;
             offlineLabel.setVisible(Shared.isOffline);
             Shared.setMyMainWindows(this);
@@ -187,6 +188,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
     protected void updateAll() throws SQLException{
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
         clearForm();
 
         ConnectionDrivers.fixWrongReceipts();
@@ -822,6 +824,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
 
     protected void loadItem(String myBarcode){
         try{
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Se introdujo el texto " + myBarcode);
             if ( myBarcode.equals("about") ){
                 About ab = new About(this, true);
                 Shared.centerFrame(ab);
@@ -955,6 +958,8 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     private void barcodeFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_barcodeFieldKeyPressed
+
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Se ha pisado la tecla " + evt.getKeyCode());
         Shared.getScreenSaver().actioned();
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
             logout();
@@ -1160,6 +1165,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_barcodeFieldKeyPressed
 
     public void print(List<PayForm> l) throws SQLException, FileNotFoundException, Exception{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Imprimir");
         printer.printTicket(items, client, globalDiscount, actualId, user , l);
         ConnectionDrivers.setAllFiscalData(actualId, printer.getSerial() , printer.getZ() , printer.getLastFiscalNumber(), client);
         updateAll();
@@ -1206,6 +1212,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }//GEN-LAST:event_barcodeFieldKeyReleased
 
     private void updateCurrentItem(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar item actual");
         if ( gridTable.getSelectedRow() != -1 ){
             Item i = items.get(gridTable.getSelectedRow()).getItem();
             descriptionLabel.setText(i.getDescription());
@@ -1260,6 +1267,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void logout(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Salir");
         String msg = "Se procederá a cerrar sesión";
         if ( !items.isEmpty() ){
             msg = " El pedido que está cargado será ANULADO!";
@@ -1289,6 +1297,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     private void addItem(Item get) {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Agregar articulo " + get.getCode());
         try {
             ConnectionDrivers.addItem2Receipt(actualId, get, quant);
             DefaultTableModel model = (DefaultTableModel) gridTable.getModel();
@@ -1318,6 +1327,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     public void updateSubTotal() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar subtotal");
         double subT = .0 , ivaT = .0 , total = .0 , subTwithoutD = .0;
         for (Item2Receipt item2r : items) {
             Item item = item2r.getItem();
@@ -1353,6 +1363,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     private void deleteItem() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Eliminar articulo");
         if ( gridTable.getSelectedRow() != -1){
             try {
                 ConnectionDrivers.deleteItem2Receipt(actualId, items.get(gridTable.getSelectedRow()).getItem(), items.get(gridTable.getSelectedRow()).getQuant());
@@ -1396,6 +1407,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     public void toWait() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Pedido puesto en espera");
         try {
             if ( !items.isEmpty() ){
                 ConnectionDrivers.putToIdle(actualId);
@@ -1411,6 +1423,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     public void loadThisReceipt(Receipt r) throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cargar el recibo " + r.getInternId());
         if ( !r.getItems().isEmpty() ){
             if ( r.getInternId().isEmpty() ){
                 actualId = r.getAlternativeID();
@@ -1433,6 +1446,7 @@ public final class MainRetailWindows extends javax.swing.JFrame {
     }
 
     public void deleteCurrent(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Eliminar recibo actual");
         try {
             ConnectionDrivers.cancelReceipt(actualId);
             if ( items != null ){

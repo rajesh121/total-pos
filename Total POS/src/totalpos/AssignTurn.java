@@ -21,8 +21,11 @@ public class AssignTurn extends javax.swing.JInternalFrame {
     /** Creates new form AssignTurn */
     protected AssignTurn() {
         initComponents();
+
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
         updateAll();
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Objeto construido satisfactoriamente");
     }
 
     /** This method is called from within the constructor to
@@ -148,18 +151,21 @@ public class AssignTurn extends javax.swing.JInternalFrame {
 
     private void doIt() {
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando - Creando asignacion");
             Assign a = new Assign(turns.get(turnCombo.getSelectedIndex()).getIdentificador(), poses.get(posCombo.getSelectedIndex()).getId(), null, true);
             ConnectionDrivers.createAssign(a);
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado satisfactoriamente");
             msb.show(this);
 
             setVisible(false);
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creada asignacion satisfactoriamente");
             this.dispose();
         } catch (NumberFormatException ex){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Error en el monto de la caja.");
             msb.show(this);
         } catch (SQLException ex) {
             if ( ex.getMessage().matches(Shared.getConfig("isDataRepeated") )){
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Asignacion solapada");
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Asignación ya existente, algún turno está solapado o intenta abrir un turno ya finalizado el día de hoy. Intente otro.");
                 msb.show(this);
             }else{
@@ -173,6 +179,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
 
     private void updateAll() {
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cargando turnos y puntos de ventas");
             turns = ConnectionDrivers.listTurns();
             poses = ConnectionDrivers.listPointOfSales4Assignments(true);
 
@@ -187,6 +194,7 @@ public class AssignTurn extends javax.swing.JInternalFrame {
                 }
             }
 
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Turnos y puntos de ventas cargados satisfactoriamente");
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Problemas con la base de datos.", ex);
             msg.show(this);

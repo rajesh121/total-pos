@@ -21,6 +21,7 @@ public class UpdateStockFromSAP implements Doer{
     }
 
     public void updateStockFromSAP() {
+        System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Update from SAP");
         workingFrame = new Working((JFrame) Shared.getMyMainWindows());
         WaitSplash ws = new WaitSplash(this);
 
@@ -32,6 +33,7 @@ public class UpdateStockFromSAP implements Doer{
     }
 
     private void updatePrices(Connection c, TotalPosWebService ws) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException{
+        System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Actualizar precios");
         String myDay = Shared.getConfig("lastPriceUpdate");
         String newPrices = ws.listNewPriceFromDate(myDay, Shared.getConfig("storePrefix")+Shared.getConfig("storeName"), Shared.getConfig("Z"));
         System.out.println("newPrices = " + newPrices);
@@ -41,6 +43,7 @@ public class UpdateStockFromSAP implements Doer{
     }
 
     private void updateFlagC(Connection c, TotalPosWebService ws) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException{
+        System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Update flagc");
         String myDay = ConnectionDrivers.getLastFlagc();
 
         String daysFlagc = ws.getFlagC(Shared.getConfig("storePrefix")+Shared.getConfig("storeName"), myDay);
@@ -51,6 +54,7 @@ public class UpdateStockFromSAP implements Doer{
     @Override
     public void doIt() {
 
+        System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Operando");
         Connection c = null;
         try {
             Shared.createBackup("articulo precio codigo_de_barras costo movimiento_inventario detalles_movimientos");
@@ -64,11 +68,11 @@ public class UpdateStockFromSAP implements Doer{
                 
                 String ansListMM = ws.listMMwithPrices(Shared.getConfig("storePrefix")+Shared.getConfig("storeName"), Shared.getConfig("Z"), ConnectionDrivers.getLastMM());
                 //String ansListMM = ws.listMM("4900458128");
-                System.out.println(" ansListMM = " + ansListMM );
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " ansListMM = " + ansListMM );
 
                 String itemsNeeded = ConnectionDrivers.createNewMovement(c, ansListMM);
                 ansListMM = null;
-                System.out.println("itemsNeeded = " + itemsNeeded);
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " itemsNeeded = " + itemsNeeded);
                 
                 // Update prices too
                 updatePrices(c,ws);
@@ -79,28 +83,28 @@ public class UpdateStockFromSAP implements Doer{
                 // Descriptions
                 updateDescriptions(c, ws);
 
-                System.out.println("Listo!");
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Listo!");
             }else if ( mode.equals("Prices")){
                 updatePrices(c,ws);
             }else if ( mode.equals("initialStock") ){
                 
                 String ansListMM = ws.getInitialStockWithPrices(Shared.getConfig("storePrefix")+Shared.getConfig("storeName"), Shared.getConfig("Z"));
-                System.out.println(" ansListMM = " + ansListMM );
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  "  ansListMM = " + ansListMM );
                 ConnectionDrivers.getInitialStock(c, ansListMM);
 
                 ConnectionDrivers.disableInitialStock(c);
 
-                System.out.println("Listo!");
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Listo!");
             }else if ( mode.equals("profitWorkers")){
-                System.out.println("Profit DB Name " + Shared.getConfig("profitDatabase"));
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Profit DB Name " + Shared.getConfig("profitDatabase"));
                 String ans = ws.listEmployCode(Shared.getConfig("storeNameProfit"), Shared.getConfig("profitDatabase"));
-                System.out.println("Ans = " + ans);
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Ans = " + ans);
                 ConnectionDrivers.updateEmployees(ans);
             }
 
-            System.out.println("Haciendo el commit...");
+            System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Haciendo el commit...");
             c.commit();
-            System.out.println("Terminado commit Exitoso!");
+            System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Terminado commit Exitoso!");
 
             if ( !mode.equals("MMBackground") ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Actualizado!");
@@ -109,24 +113,24 @@ public class UpdateStockFromSAP implements Doer{
                 System.exit(0);
             }
         } catch (Exception ex) {
-            System.out.println("Comenzo la exception");
+            System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Comenzo la exception");
             try {
-                System.out.println("Haciendo Rollback");
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Haciendo Rollback");
                 c.rollback();
-                System.out.println("Reversado!");
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Reversado!");
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Ha ocurrido un error. No se ha guardado ningun cambio.", ex);
                 msg.show(Shared.getMyMainWindows());
             } catch (Exception ex1) {
                 // We are in problems :(
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Ha ocurrido un error. No se ha guardado ningun cambio.", ex);
                 msg.show(Shared.getMyMainWindows());
-                System.out.println("Ha ocurrido un error. Haciendo Roll back..." + ex1.getMessage());
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  "  Ha ocurrido un error. Haciendo Roll back..." + ex1.getMessage());
             }
         }finally{
             try {
                 c.close();
             } catch (SQLException ex) {
-                System.out.println("Ha ocurrido un error cerrando la conexion. " + ex.getMessage());
+                System.out.println("[" + Shared.now() + "] UpdateStockFromSAP " + Shared.lineNumber() +  " Ha ocurrido un error cerrando la conexion. " + ex.getMessage());
             }
         }
     }

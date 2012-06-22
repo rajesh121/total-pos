@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -45,6 +44,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
     /** Creates new form AnalizePresence */
     public AnalizePresence(String fd, String ud, boolean isCestaticketA) {
+        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  "Invocado constructor");
         try {
             initComponents();
             fromDate = Shared.sdfDay2DB.parse(fd);
@@ -54,8 +54,10 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
             this.isCestaticket = isCestaticketA;
 
             if ( isCestaticket ){
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Evaluando cestatickets");
                 createHeaderWithCestatickets();
             }else{
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Evaluando asistencia");
                 createHeaderWithoutCestatickets();
             }
             createMap4Employees();
@@ -77,8 +79,9 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
             t = ud.split("-");
             untilLabelDate.setText(t[2] + "/" + t[1] + "/" + t[0]);
 
-            System.out.println("Termino");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Termino");
             isOk = true;
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Construido satisfactoriamente");
         } catch (SQLException ex) {
             Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
@@ -93,10 +96,12 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
     @Override
     public void doIt() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando!");
         if ( isSend2Profit ){
             send2Profit();
         }else{
             try {
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardando tabla...");
                 ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, offset, isCestaticket);
                 String[] t = new String[header.size()];
                 int i = 0;
@@ -104,17 +109,15 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                     t[i++] = tt;
                 }
                 new CreateReportFromTable(presenceTable, "Control de Asistencias - Agencia " + Shared.getConfig("storeName"));
-            } catch (SQLException ex) {
-                Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ParseException ex) {
-                Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
             } catch (Exception ex) {
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " ERROR = " + ex.getMessage());
                 Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
     private void setSizes2Table(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Calculando tamano para la tabla");
         for ( int i = offset ; i < presenceTable.getColumnModel().getColumnCount() ; i++ ){
             presenceTable.getColumnModel().getColumn(i).setPreferredWidth(50);
         }
@@ -123,10 +126,11 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
     }
 
     private void createMap4Employees() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando mapa de empleados con sus respectivos codigos");
         Map<String, Integer> map = new TreeMap<String, Integer>();
         List<Employ> employs = ConnectionDrivers.getAllEmployBetween(fromDateString, untilDateString);
         String[][] tableModel = new String[employs.size()][3];
-        System.out.println("Consegui " + employs.size() + " Empleados");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Consegui " + employs.size() + " Empleados");
         for (int i = 0 ; i < employs.size() ; ++i ) {
             tableModel[i][0] = employs.get(i).getCode();
             tableModel[i][1] = employs.get(i).getName();
@@ -145,6 +149,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         });
 
         map4Employs = map;
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creado el mapa");
     }
 
     /** This method is called from within the constructor to
@@ -341,20 +346,25 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocada funcion guardar");
             ConnectionDrivers.saveTable((DefaultTableModel) presenceTable.getModel(), fromDateString, untilDateString, offset, isCestaticket);
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado Satisfactoriamente.");
             msb.show(null);
         } catch (Exception ex) {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " ERROR " +ex.getMessage());
             Logger.getLogger(AnalizePresence.class.getName()).log(Level.SEVERE, null, ex);
         } 
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void recalcularAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recalcularAllButtonActionPerformed
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado recalcular todo ");
             clearHourTable();
             ConnectionDrivers.calculateExtraHours((DefaultTableModel) presenceTable.getModel(),
                         fromDateString, untilDateString, map4Employs, offset, presenceTable);
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Recalculado todo satisfactoriamente");
         } catch (SQLException ex) {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " ERROR " + ex.getMessage());
             MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se ha cargado la información correctamente.",ex);
             msb.show(null);
         }
@@ -385,14 +395,18 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
     private void send2Profit(){
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Enviando a Profit ");
         Connection c = null;
         try{
             if ( !ConnectionDrivers.isConnected2Profit() ){
-                System.out.println("Conectando con Profit nómina...");
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Conectando con Profit nómina...");
                 ConnectionDrivers.initializeProfit();
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Conectado satisfactoriamente");
+            }else{
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Utilizando conexion existente con Profit Nomina");
             }
 
-            System.out.println("Iniciando con Horas extras...");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Iniciando con Horas extras...");
 
             c = ConnectionDrivers.cpdsProfit.getConnection();
             c.setAutoCommit(false);
@@ -424,41 +438,42 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                         hours = 4.0;
                     }
                     if ( presenceTable.getValueAt(i, 2) != null ){
-                        System.out.println("Horas Extras Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 2).toString());
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Horas Extras Empleado " + employId + " con " + hours + " " + presenceTable.getValueAt(i, 2).toString());
                     }else{
-                        System.out.println("Horas Extras Empleado " + employId + " con " + hours + " null");
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Horas Extras Empleado " + employId + " con " + hours + " null");
                     }
-                    
+
+                    System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " agregando horas extras a empleado ");
                     ConnectionDrivers.addBonus(hours, employId, Shared.getConfig("conceptExtraHour"), c, "");
 
                     curStr =  presenceTable.getValueAt(i, 3);
                     
                     if ( specialBonus > .0 ){
-                        System.out.println("Bono especial 2 Empleado " + employId + " con " + hours + " " + curStr.toString());
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Bono especial 2 Empleado " + employId + " con " + hours + " " + curStr.toString());
                         ConnectionDrivers.addBonus(specialBonus, employId, Shared.getConfig("conceptSpecialBonus"), c, "");
                     }
 
                     curStr = presenceTable.getValueAt(i, 5);
                     if ( curStr != null && !curStr.toString().isEmpty() ){
-                        System.out.println("Bono nocturno Empleado " + employId + " con " + hours + " " + curStr.toString());
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Bono nocturno Empleado " + employId + " con " + hours + " " + curStr.toString());
                         ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()) * Double.parseDouble(Shared.getConfig("nightBonus")), employId, Shared.getConfig("conceptNightBonus"), c, "");
                     }
 
                     curStr = presenceTable.getValueAt(i, 10);
                     if ( curStr != null && !curStr.toString().isEmpty() ){
-                        System.out.println("Descuento " + employId + " con " + hours + " " + curStr.toString());
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Descuento " + employId + " con " + hours + " " + curStr.toString());
                         ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Shared.getConfig("conceptFingerPrintDiscount"), c ,"");
                     }
 
                     curStr = presenceTable.getValueAt(i, 6);
                     if ( curStr != null && !curStr.toString().isEmpty() ){
-                        System.out.println("Bono de Asistencia " + employId + " con " + Double.parseDouble(curStr.toString()) + " " + curStr.toString());
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Bono de Asistencia " + employId + " con " + Double.parseDouble(curStr.toString()) + " " + curStr.toString());
                         ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Shared.getConfig("conceptPresenceBonus"), c , "");
                     }
 
                     curStr = presenceTable.getValueAt(i, 7);
                     if ( curStr != null && !curStr.toString().isEmpty() ){
-                        System.out.println("Bono de Produccion " + employId + " con " + Double.parseDouble(curStr.toString()) + " " + curStr.toString());
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Bono de Produccion " + employId + " con " + Double.parseDouble(curStr.toString()) + " " + curStr.toString());
                         ConnectionDrivers.addBonus(Double.parseDouble(curStr.toString()), employId, Shared.getConfig("conceptProductionBonus"), c , "");
                     }
                 }
@@ -494,7 +509,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                         }else if ( presenceTable.getValueAt(i, j).equals("M") || presenceTable.getValueAt(i, j).equals("ML") ){
                             toDiscount += .5;
                             comment2discount += "Medio dia " + presenceTable.getModel().getColumnName(j).split(" ")[1] + "; ";
-                            System.out.println("Descontado Medio Dia " + presenceTable.getValueAt(i, j));
+                            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Descontado Medio Dia " + presenceTable.getValueAt(i, j));
                         }
                     }else if ( Shared.isHoliday(presenceTable.getModel().getColumnName(j).split(" ")[1]) ||
                              Shared.isSunday(presenceTable, j)){
@@ -506,18 +521,18 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
                     }
                 }
                 if ( toDiscount > .0 ){
-                    System.out.println("Descontar a " + employId + " " + toDiscount);
+                    System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Descontar a " + employId + " " + toDiscount);
                     ConnectionDrivers.addBonus(toDiscount, employId, isCestaticket?Shared.getConfig("conceptNotPresenceTicket"):Shared.getConfig("conceptNotPresence"), c , comment2discount);
                 }
 
                 if ( !isCestaticket ){
                     if ( Double.parseDouble(Shared.getConfig("sundayWorked"))*sundaysWorked > .0 ){
-                        System.out.println("Domingos trabajados " + employId + " " + sundaysWorked + " " + commentSundaysWorked);
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Domingos trabajados " + employId + " " + sundaysWorked + " " + commentSundaysWorked);
                         ConnectionDrivers.addBonus(sundaysWorked, employId, Shared.getConfig("conceptSundaysWorked"), c , commentSundaysWorked);
                     }
 
                     if ( Double.parseDouble(Shared.getConfig("saturdayWorked"))*saturdatWorked > .0 ){
-                        System.out.println("Sabados trabajados " + employId + " " + saturdatWorked);
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Sabados trabajados " + employId + " " + saturdatWorked);
                         ConnectionDrivers.addBonus(saturdatWorked, employId, Shared.getConfig("conceptSaturdayWorked"), c , commentSaturdayWorked);
                     }
                 }else{
@@ -526,7 +541,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
 
             }
 
-            System.out.println("Justo antes del commit...");
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Justo antes del commit...");
             c.commit();
             c.setAutoCommit(true);
             MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Enviado satisfactoriamente");
@@ -534,7 +549,7 @@ public class AnalizePresence extends javax.swing.JInternalFrame implements Doer{
         }catch(Exception ex){
             try {
                 c.rollback();
-                System.out.println("Rolled back =(");
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Rolled back =(");
                 MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "No se han enviado los datos.", ex);
                 msb.show(null);
             } catch (SQLException ex1) {

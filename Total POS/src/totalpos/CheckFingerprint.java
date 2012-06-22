@@ -25,13 +25,15 @@ public class CheckFingerprint extends fingerPrintReader{
     public CheckFingerprint() {
         super();
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
             allMyFingerprints = ConnectionDrivers.getAllFingerPrints();
             super.setNameLabel("");
             super.setTitleLabel("");
             super.setState("");
             isOk = true;
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Objeto creado satisfactoriamente");
         } catch (SQLException ex) {
-            
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " ERROR = " + ex.getMessage());
         }
     }
 
@@ -39,6 +41,7 @@ public class CheckFingerprint extends fingerPrintReader{
     protected void process(DPFPSample sample) {
         super.process(sample);
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Comparando huella");
         DPFPFeatureSet features = extractFeatures(sample, DPFPDataPurpose.DATA_PURPOSE_VERIFICATION);
 
         if (features != null) {
@@ -57,6 +60,7 @@ public class CheckFingerprint extends fingerPrintReader{
                             super.setTitleLabel("");
                             super.setNameLabel("");
                         }else{
+                            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Huella conseguida " + e.getCode());
                             String[] names = e.getName().split(",");
                             String state = ConnectionDrivers.saveFingerPrint(e) + " " + ConnectionDrivers.currentHour();
                             super.setState(state);
@@ -71,6 +75,7 @@ public class CheckFingerprint extends fingerPrintReader{
                         }
                         break;
                     } catch (SQLException ex) {
+                        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " ERROR " + ex.getMessage());
                         MessageBox msb = new MessageBox(MessageBox.SGN_DANGER, "Error desconocido", ex);
                         msb.show(Shared.getMyMainWindows());
                     } catch (Exception ex) {

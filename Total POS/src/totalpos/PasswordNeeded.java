@@ -27,7 +27,7 @@ public class PasswordNeeded extends JDialog {
 
         this.user = u;
         this.parent = parent;
-        descriptionLabel.setText(("Introduzca la contraseña " + (user.getNombre()!=null && !user.getNombre().isEmpty()?" para " + user.getNombre():"")));
+        descriptionLabel.setText(("Introduzca la contraseña " + (user.getNombre()!=null && !user.getNombre().isEmpty()?" para " + user.getNombre():" para " + user.getLogin())));
     }
 
     /** This method is called from within the constructor to

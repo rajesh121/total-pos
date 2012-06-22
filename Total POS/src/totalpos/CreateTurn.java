@@ -22,6 +22,7 @@ public class CreateTurn extends JInternalFrame {
      */
     public CreateTurn() {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
         fillForms();
     }
 
@@ -376,6 +377,7 @@ public class CreateTurn extends JInternalFrame {
 
     private void doIt() {
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
             if (idField.getText().isEmpty()) {
                 MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "El Identificador no puede ser vacío.");
                 msb.show(this);
@@ -399,6 +401,7 @@ public class CreateTurn extends JInternalFrame {
             msb.show(this);
             setVisible(false);
             dispose();
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardado satisfactoriamente");
         } catch (SQLException ex) {
             if ( ex.getMessage().matches(Shared.getConfig("isDataRepeated")) ){
                 MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Turno ya existente. Intente otro.");

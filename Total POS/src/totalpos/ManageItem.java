@@ -31,11 +31,13 @@ public class ManageItem extends JInternalFrame implements Doer {
     /** Creates new form ManageItem */
     public ManageItem() {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Constructor invocado");
         updateAll();
     }
 
     private void updateItems(){
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar articulos");
             items = ConnectionDrivers.listItems(barCodeField.getText(),
                     codigoField.getText() , descriptionField.getText() , modeloField.getText() );
         } catch (SQLException ex) {
@@ -53,6 +55,7 @@ public class ManageItem extends JInternalFrame implements Doer {
     }
 
     private void updateTable(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar tabla");
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
 
         model.setRowCount(0);
@@ -682,6 +685,7 @@ public class ManageItem extends JInternalFrame implements Doer {
     }//GEN-LAST:event_addStickerActionPerformed
 
     private void addSeveralTickets(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Agregar varias etiquetas");
         if ( itemTable.getSelectedRow() != -1 ){
 
             Item item = items.get(itemTable.getSelectedRow());
@@ -810,6 +814,7 @@ public class ManageItem extends JInternalFrame implements Doer {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
         updateItems();
         updateTable();
         updateToPrint();
@@ -830,7 +835,7 @@ public class ManageItem extends JInternalFrame implements Doer {
         model.setRowCount(0);
 
         for ( int i = 0 ; i < toPrint.size() && i < quantToPrint.size() ; i++ ){
-            String s[] = {toPrint.get(i).getCode(),toPrint.get(i).getModel(),toPrint.get(i).getLastPrice().plusIva().withDiscount(toPrint.get(i).getDescuento()).getQuant().toString(), quantToPrint.get(i).toString() };
+            String s[] = {toPrint.get(i).getCode(),toPrint.get(i).getModel(),Shared.df.format(Math.round(toPrint.get(i).getLastPrice().plusIva().withDiscount(toPrint.get(i).getDescuento()).getQuant())),toPrint.get(i).getDescuento()+"", quantToPrint.get(i).toString() };
             model.addRow(s);
         }
     }
@@ -838,6 +843,7 @@ public class ManageItem extends JInternalFrame implements Doer {
     @Override
     public void doIt() {
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operar");
         for ( int i = 0 ; i < stickerTable.getRowCount() ; i++ ){
             int n = Integer.parseInt(stickerTable.getValueAt(i, 3)+"");
             if ( n <= 0 || n > 500 ){
@@ -885,6 +891,7 @@ public class ManageItem extends JInternalFrame implements Doer {
     }
 
     private void add1Quant() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Agregar 1 etiqueta");
         if ( itemTable.getSelectedRow() != -1 ){
 
             Item item = items.get(itemTable.getSelectedRow());
@@ -909,6 +916,7 @@ public class ManageItem extends JInternalFrame implements Doer {
     }
 
     private void clearFields(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Limpiar campos");
         barCodeField.setText("");
         descriptionField.setText("");
         modeloField.setText("");

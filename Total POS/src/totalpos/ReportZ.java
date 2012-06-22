@@ -8,7 +8,6 @@ package totalpos;
 
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import javax.swing.JFrame;
 
 /**
  *
@@ -24,6 +23,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
     /** Creates new form ReportZ */
     public ReportZ(java.awt.Frame parent, boolean modal, String kind, String mDay) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando reporte Z");
         initComponents();
         kindOfReport = kind;
         myParent = (MainRetailWindows) parent;
@@ -132,6 +132,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
     }//GEN-LAST:event_userFieldKeyPressed
 
     public void printTheZ() throws Exception{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Imprimir reporte");
         myParent.printer.updateValues(day);
         myParent.printer.printResumeZ(day, kindOfReport);
         myParent.printer.report(kindOfReport);
@@ -147,6 +148,7 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
     @Override
     public void doIt(){
         try{
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
             if ( userField.getText().isEmpty() ){
                 workingFrame.setVisible(false);
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "El usuario es obligatorio");

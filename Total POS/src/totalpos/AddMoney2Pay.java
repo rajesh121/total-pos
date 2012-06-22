@@ -21,11 +21,13 @@ public class AddMoney2Pay extends javax.swing.JDialog {
     /** Creates new form AddMoney2Pay */
     public AddMoney2Pay(SpecifyPaymentForm parent, boolean modal , String reasonI , double price) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor de dinero a pagar");
         initComponents();
         reason = reasonI;
         titleLabel.setText(reason);
         myParent = parent;
         this.price = price;
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Finalizado constructor de dinero a pagar");
     }
 
     /** This method is called from within the constructor to
@@ -124,14 +126,17 @@ public class AddMoney2Pay extends javax.swing.JDialog {
 
     private void moneyFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moneyFieldKeyPressed
         if ( evt.getKeyCode() == KeyEvent.VK_ESCAPE ){
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cerrando por pisar Escape");
             this.dispose();
         }
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando por pisar Enter");
             doIt();
         }
     }//GEN-LAST:event_moneyFieldKeyPressed
 
     protected void doIt(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando con monto");
         Double d = .0;
         try{
             d = Double.parseDouble(moneyField.getText().replace(',', '.'));
@@ -140,6 +145,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
             msb.show(this);
             return;
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Validando monto colocado " + d);
         if ( d < 0 ){
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Monto incorrecto. Debe ser positivo.");
             msb.show(this);
@@ -152,6 +158,7 @@ public class AddMoney2Pay extends javax.swing.JDialog {
         }
         myParent.add(reason,d);
         this.dispose();
+        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  "Se ha operado satisfactoriamente");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

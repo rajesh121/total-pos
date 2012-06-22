@@ -22,6 +22,7 @@ public class SellWithoutStock extends javax.swing.JDialog {
     /** Creates new form SellWithoutStock */
     public SellWithoutStock(java.awt.Frame parent, boolean modal, String title , String operationName) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
         initComponents();
         this.operationName = operationName;
         titleLabel.setText(title);
@@ -134,6 +135,7 @@ public class SellWithoutStock extends javax.swing.JDialog {
     }//GEN-LAST:event_idFieldKeyPressed
 
     private void doIt(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
         try{
             if ( !ConnectionDrivers.existsUser(idField.getText().trim()) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Usuario no existe");
@@ -151,6 +153,7 @@ public class SellWithoutStock extends javax.swing.JDialog {
 
             ConnectionDrivers.login(idField.getText(), passwordField.getPassword());
 
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Autorizado por " + idField.getText());
             User u = Shared.giveUser(ConnectionDrivers.listUsers(), idField.getText());
             if ( ConnectionDrivers.isAllowed(u.getPerfil(), operationName) ){
                 Shared.userInsertedPasswordOk(idField.getText());

@@ -4,7 +4,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -45,7 +44,6 @@ import net.n3.nanoxml.StdXMLReader;
 import net.n3.nanoxml.XMLElement;
 import net.n3.nanoxml.XMLException;
 import net.n3.nanoxml.XMLParserFactory;
-import net.n3.nanoxml.XMLWriter;
 import net.sf.jasperreports.engine.JRDataSource;
 import srvSap.ZFISDATAFISCAL;
 
@@ -144,6 +142,7 @@ public class ConnectionDrivers {
      * @throws Exception Para contraseña incorrecta.
      */
     protected static void login(String user, char[] password) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Login para usuario " + user);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and password = ? ");
         pstmt.setString(1, user.toLowerCase());
@@ -153,10 +152,12 @@ public class ConnectionDrivers {
         if ( ! rs.next() ){
             c.close();
             rs.close();
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Constrasena erronea");
             throw new Exception(Shared.getConfig("wrongPasswordMsg"));
         }
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Login satisfactorio");
     }
 
     /** Genera la lista de usuarios.
@@ -166,6 +167,7 @@ public class ConnectionDrivers {
      * @throws Exception
      */
     protected static List<User> listUsers() throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listando a todos los usuarios");
         List<User> ans = new LinkedList<User>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -185,6 +187,7 @@ public class ConnectionDrivers {
 
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Retornando lista de usuarios");
         return ans;
     }
 
@@ -196,6 +199,7 @@ public class ConnectionDrivers {
      */
     protected static Edge getPredecesor(String e) throws SQLException, Exception{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obteniendo predecesor de " + e);
         if ( e == null ) {
             return null;
         }
@@ -221,6 +225,8 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Retornando predecesor");
+
         return ee;
     }
 
@@ -232,12 +238,14 @@ public class ConnectionDrivers {
      * @throws Exception 
      */
     protected static void createProfile(String id, String description) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando perfil " + id);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario( id, descripcion ) values ( ? , ? )");
         stmt.setString(1, id);
         stmt.setString(2, description);
         stmt.executeUpdate();
         c.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Perfil creado");
     }
 
     /**
@@ -247,6 +255,7 @@ public class ConnectionDrivers {
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
     protected static List<Profile> listProfile(String id) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Buscando perfiles con el nombre " + id);
         List<Profile> ans = new LinkedList<Profile>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -261,6 +270,8 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " completada la busqueda");
+
         return ans;
     }
 
@@ -273,6 +284,7 @@ public class ConnectionDrivers {
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
     protected static List<Edge> listEdgesAllowed(String parent, String profile) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listame los nodos permitidos de " + parent);
         List<Edge> ans = new LinkedList<Edge>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -293,6 +305,7 @@ public class ConnectionDrivers {
 
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listados los nodos permitidos");
         return ans;
     }
 
@@ -303,6 +316,7 @@ public class ConnectionDrivers {
      * @throws SQLException Para problemas de conexión con la base de datos.
      */
     protected static List<Edge> listEdges(String parent) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar los nodos de " + parent);
         List<Edge> ans = new LinkedList<Edge>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -323,11 +337,13 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listados los nodos");
         return ans;
     }
 
     protected static boolean isAllowed(String profile, String id) throws SQLException{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Usuario " + profile + " puede " + id);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select n.id "
                 + "from nodo n, tipo_de_usuario_puede t "
@@ -340,47 +356,55 @@ public class ConnectionDrivers {
         
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         
         return ans;
     }
 
     protected static void disableMenuProfile(String profile, String id) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Deshabilitando menu " + id + " para usuario " + profile);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario_puede where id_tipo_usuario = ? and id_nodo = ?");
         stmt.setString(1, profile);
         stmt.setString(2, id);
         stmt.executeUpdate();
-        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Deshabilitado");
         c.close();
     }
 
     protected static void disableInitialStock(Connection c) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Deshabilitando stock inicial");
         PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario_puede where id_nodo = ?");
         stmt.setString(1, "initialStock");
         stmt.executeUpdate();
     }
 
     protected static void enableMenuProfile(String profile, String id) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Habiliando menu " + id + " para " + profile);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into tipo_de_usuario_puede(id_tipo_usuario , id_nodo) values ( ? , ? )");
         stmt.setString(1, profile);
         stmt.setString(2, id);
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Habilitado");
         c.close();
     }
 
     protected static void setPassword(String user, String password) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Fijar password para usuario " + user);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set password = ? where login = ? ");
         stmt.setString(1, password);
         stmt.setString(2, user);
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Password fijado");
         c.close();
     }
 
     protected static void createUser(String username, String role, String password) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando usuario " + username);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into usuario"
                 + " ( login , password , tipo_de_usuario_id , bloqueado , nombre ) values ( ? , ? , ? , ? , ?)");
@@ -391,13 +415,15 @@ public class ConnectionDrivers {
         stmt.setString(5, username);
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Usuario creado");
         c.close();
     }
 
     protected static void changeProperties(String loginT, String nombreT,
             String apellidoT, String roleT,
             boolean bloqueado, boolean puede , boolean debe) throws SQLException, Exception {
-        
+
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Cambiando perfil");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set nombre = ? ,"
                 + " apellido = ? , tipo_de_usuario_id = ? , bloqueado = ? , debeCambiarPassword = ? ,"
@@ -412,10 +438,12 @@ public class ConnectionDrivers {
         stmt.setString(7, loginT);
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Cambiado perfil de usuario");
         c.close();
     }
 
     protected static boolean existsUser(String username) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " existe el usuario " + username);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? ");
         pstmt.setString(1, username);
@@ -424,16 +452,19 @@ public class ConnectionDrivers {
         if ( ! rs.next() ){
             rs.close();
             c.close();
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " No =(");
             return false;
         }
 
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Si =D");
         return true;
     }
 
     protected static boolean isLocked(String username) throws SQLException, Exception{
         Connection c = ConnectionDrivers.cpds.getConnection();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " El usuario esta bloqueado?");
         PreparedStatement pstmt = c.prepareStatement("select * from usuario where login = ? and bloqueado = 1 ");
         pstmt.setString(1, username.toLowerCase());
         ResultSet rs = pstmt.executeQuery();
@@ -441,15 +472,18 @@ public class ConnectionDrivers {
         if ( ! rs.next() ){
             c.close();
             rs.close();
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " No =D");
             return false;
         }
 
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Si :(.");
         return true;
     }
 
     protected static void lockUser(String username) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Bloqueando usuario " + username);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set bloqueado = 1 where login = ? ");
         stmt.setString(1, username.toLowerCase());
@@ -458,6 +492,7 @@ public class ConnectionDrivers {
     }
 
     static void changeProfileDetails(String prevId, String id, String description) throws SQLException, Exception {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Cambiando descripcion de perfil");
         if ( prevId.equals(id) ){ //Caso trivial xD;
             Connection c = ConnectionDrivers.cpds.getConnection();
             PreparedStatement stmt = c.prepareStatement("update tipo_de_usuario set descripcion = ? where id = ? ");
@@ -487,6 +522,7 @@ public class ConnectionDrivers {
     }
 
     private static void deleteProfile(String id) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminando perfil " + id);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from tipo_de_usuario where id = ? ");
         stmt.setString(1, id);
@@ -495,6 +531,7 @@ public class ConnectionDrivers {
     }
 
     protected static void mustntChangePassword(String username) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Puede cambiar su password");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update usuario set debeCambiarPassword = 0 where login = ? ");
         stmt.setString(1, username.toLowerCase());
@@ -504,6 +541,7 @@ public class ConnectionDrivers {
     }
 
     protected static void initializeConfig() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando mapa de configuraciones");
         Shared.getConfig().clear();
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
@@ -522,9 +560,12 @@ public class ConnectionDrivers {
         if ( Shared.getConfig("holidays") != null ){
             Shared.holidays.addAll(Arrays.asList(Shared.getConfig("holidays").split(",")));
         }
+
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creado mapa satisfactoriamente");
     }
 
     protected static void saveConfig(String k, String v) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Guardar configuracion " + k);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from configuracion where `key` = ? ");
         stmt.setString(1, k);
@@ -538,6 +579,7 @@ public class ConnectionDrivers {
     }
 
     private static List<Price> listPrices(String code) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " lista precios de  " + code);
         List<Price> ans = new LinkedList<Price>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -552,10 +594,13 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listados los precios");
+
         return ans;
     }
 
     private static List<String> listBarcodes(String code) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar codigos de barras de " + code);
         List<String> ans = new LinkedList<String>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -569,10 +614,12 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listados los codigos de barras");
         return ans;
     }
 
     protected static List<Item> listItems(String barCode, String code, String description, String model) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar articulos " );
         List<Item> ans = new LinkedList<Item>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -615,10 +662,12 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Articulos listados");
         return ans;
     }
 
     protected static List<Item> listItemsByModel(String model) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar articulos por modelos");
         List<Item> ans = new LinkedList<Item>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -654,12 +703,14 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listados articulos por modelo");
         return ans;
     }
 
     protected static List<Item> listFastItems(String barCode) throws SQLException{
         List<Item> ans = new LinkedList<Item>();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listados rapido de articulo " + barCode);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
                 + " a.codigo_sublinea , a.codigo_de_barras , a.modelo , a.unidad_venta , a.unidad_compra , a.existencia_actual , a.bloqueado , a.imagen , a.descuento "
@@ -697,11 +748,13 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listado rapido concluido");
         return ans;
     }
 
     protected static String getIdProfile(String name) throws SQLException, Exception{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Identificador de " + name);
         if ( name.equals("/") ) {
             return "root";
         }
@@ -716,10 +769,12 @@ public class ConnectionDrivers {
         String ans = rs.getString("id");
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         return ans;
     }
 
     protected static List<User> listRetailUsers() throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar usuarios retail");
         List<User> u = listUsers();
         List<User> ans = new ArrayList<User>();
 
@@ -733,6 +788,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<PointOfSale> listPOS() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener punto de ventas");
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
@@ -749,17 +805,20 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtenidos satisfactoriamente");
         return ans;
     }
 
     /**
-     * Deprecated
-     * Now turns are associated to pos.
+     * Now, turns are associated to pos.
      * @param username
      * @return
      * @throws SQLException
      */
+
+    @Deprecated
     private static boolean existTurnOpenFor(String username) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " El usuario " + username + " tiene turno disponible");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement(" select * from turno "
                 + "where datediff(now(),fecha) = 0 and codigo_de_usuario = ? and estado = 'Abierto'");
@@ -771,10 +830,12 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         return ans;
     }
 
     protected static void createTurn(String id, String description, Time a, Time b) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando turno " + id);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into turno"
                 + " ( identificador , nombre , inicio, fin ) "
@@ -785,10 +846,12 @@ public class ConnectionDrivers {
         stmt.setTime(4, b);
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " turno creado");
         c.close();
     }
 
     protected static void modifyTurn(String id, String description, Time a, Time b) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Modificando turno " + id);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update turno set "
                 + " nombre = ? , inicio = ? , fin = ? where Identificador = ?");
@@ -798,10 +861,12 @@ public class ConnectionDrivers {
         stmt.setString(4, id);
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " turno modificado");
         c.close();
     }
 
     protected static List<Turn> listTurns() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar turnos");
         List<Turn> ans = new ArrayList<Turn>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -820,18 +885,23 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Turnos listados");
         return ans;
     }
 
+    @Deprecated
     private static void changeItemStock( String id, int quant ) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Cambiar stock de articulo " + id);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update articulo set existencia_actual = existencia_actual +" + quant + " where codigo = ? ");
         stmt.setString(1, id);
         stmt.executeUpdate();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Stock cambiado");
         c.close();
     }
 
     protected static void createReceipt(String id, String user , Assign assign) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando recibo " + id);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura"
                 + " ( " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") +
@@ -844,9 +914,11 @@ public class ConnectionDrivers {
         stmt.setString(4, assign.getPos());
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Recibo creado =D");
         c.close();
     }
 
+    @Deprecated
     protected static double accumulatedInReceipt(String receiptId) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
@@ -867,6 +939,7 @@ public class ConnectionDrivers {
 
     protected static void addItem2Receipt(String receiptId, Item item, int quant) throws SQLException, Exception{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Agregar articulo "+ item.getCode() + " a recibo " + receiptId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into factura_contiene"
                 + " ( codigo_interno_factura, codigo_de_articulo, cantidad, precio_venta, descuento) "
@@ -877,13 +950,15 @@ public class ConnectionDrivers {
         stmt.setDouble(4, item.getLastPrice().getQuant());
         stmt.setDouble(5, item.getDescuento());
         stmt.executeUpdate();
-        
+
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Agregado satisfactoriamente.");
         c.close();
 
     }
 
     protected static void deleteAllBufferBank(String day) throws SQLException, Exception{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminando buffer de bancos");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from pagos_punto_de_venta_banco where datediff(? , fecha)=0");
         stmt.setString(1, day);
@@ -893,6 +968,7 @@ public class ConnectionDrivers {
 
     protected static void deleteItem2Receipt(String receiptId, Item item, int quant) throws SQLException, Exception{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminar item "  + item.getCode() + " de recibo " + receiptId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from factura_contiene where"
                 + " codigo_interno_factura = ? and codigo_de_articulo = ? and cantidad = ? limit 1");
@@ -906,6 +982,7 @@ public class ConnectionDrivers {
     }
 
     protected static int lastReceiptToday() throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el ultimo recibo de hoy");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select count(*) from factura "
                 + "where datediff(now(),fecha_creacion) = 0 and identificador_pos = ? ");
@@ -918,10 +995,12 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Ultimo recibo es " + ans);
         return ans;
     }
 
     protected static int lastReceipt() throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " ultimo recibo es? ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select count(*) from factura where identificador_pos= ? ");
         stmt.setString(1, Shared.getFileConfig("myId"));
@@ -933,6 +1012,7 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         return ans;
     }
 
@@ -952,6 +1032,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createPos(String number, String local, String printer) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando punto de venta " + number);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into punto_de_venta"
                 + " ( identificador, descripcion, impresora , habilitada) "
@@ -961,10 +1042,12 @@ public class ConnectionDrivers {
         stmt.setString(3, printer);
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creado punto de venta");
         c.close();
     }
 
     protected static void modifyPos(String number, String local, String printer) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Modificando punto de venta " + number);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set "
                 + " descripcion = ? , impresora = ? where identificador = ? ");
@@ -973,10 +1056,12 @@ public class ConnectionDrivers {
         stmt.setString(3, number);
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Punto de venta modificado");
         c.close();
     }
 
     protected static List<Assign> listAssignsTurnPosToday() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Lista turnos para hoy");
         List<Assign> ans = new ArrayList<Assign>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1002,10 +1087,12 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listados los turnos abiertos de hoy");
         return ans;
     }
 
     protected static List<PointOfSale> listPointOfSales(boolean enabled) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar punto de ventas");
         List<PointOfSale> ans = new ArrayList<PointOfSale>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1027,10 +1114,12 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Punto de ventas listados");
         return ans;
     }
 
     protected static List<PointOfSale> listPointOfSales4Assignments(boolean enabled) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar puntos de ventas para asignar");
         List<PointOfSale> ans = new ArrayList<PointOfSale>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1052,11 +1141,13 @@ public class ConnectionDrivers {
         c.close();
         rs.close();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listados");
         return ans;
     }
 
     protected static void createAssign(Assign a) throws SQLException{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear asignacion para caja " + a.getPos());
         if ( ! assignIsOk(a) ){
             throw new SQLException(Shared.getConfig("duplicatedMsg"));
         }
@@ -1070,6 +1161,7 @@ public class ConnectionDrivers {
         stmt.setBoolean(3, a.isOpen());
         stmt.executeUpdate();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creada asignacion");
         c.close();
     }
 
@@ -1108,6 +1200,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Assign> listAssignsTurnPosRightNow() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Lista de turnos abiertos!");
         List<Assign> ans = new ArrayList<Assign>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1135,6 +1228,7 @@ public class ConnectionDrivers {
     }
 
     protected static void putToIdle(String receiptId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Poner factura " + receiptId + " en espera");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Espera' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1145,6 +1239,7 @@ public class ConnectionDrivers {
     }
 
     protected static void putToNormal(String receiptId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Poner factura " + receiptId + " a modo normal ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Pedido' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1156,6 +1251,7 @@ public class ConnectionDrivers {
 
 
     protected static void cancelReceipt(String receiptId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Cancelando factura " + receiptId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Anulada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? and estado != 'Facturada'");
@@ -1167,6 +1263,7 @@ public class ConnectionDrivers {
 
     protected static List<Item> listItems(String receiptID) throws SQLException{
         List<Item> ans = new ArrayList<Item>();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener articulos de " + receiptID);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select a.codigo, a.descripcion, a.fecha_registro, a.marca, a.sector,"
@@ -1204,6 +1301,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Item2Receipt> listItems2CN(String CNId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener articulos de nota de credito " + CNId);
         List<Item2Receipt> ans = new ArrayList<Item2Receipt>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1246,6 +1344,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Item2Receipt> listItems2Receipt(String receiptID) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar articulos para recibo " + receiptID);
         List<Item2Receipt> ans = new ArrayList<Item2Receipt>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1288,6 +1387,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Receipt> listIdleReceiptToday() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar pedidos en espera");
         List<Receipt> ans = new ArrayList<Receipt>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1330,6 +1430,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Receipt> listThisReceipt(String internal_code) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar el recibo " + internal_code);
         List<Receipt> ans = new ArrayList<Receipt>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1373,6 +1474,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Receipt> listThisCreditNote(String internal_code) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar esta nota de credito " + internal_code);
         List<Receipt> ans = new ArrayList<Receipt>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1418,6 +1520,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Receipt> listUncompletedReceiptToday() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar recibos incompletos");
         List<Receipt> ans = new ArrayList<Receipt>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1462,6 +1565,7 @@ public class ConnectionDrivers {
 
     protected static void cancelAllReceipts() throws SQLException{
         // for performace;
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Cancelando pedidos triviales");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement(
                 "update factura set estado = 'Anulada' where estado = 'Pedido' and identificador_pos = ? ");
@@ -1482,6 +1586,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Client> listClients(String id) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar todos los clientes");
         List<Client> ans = new ArrayList<Client>();
         
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1535,6 +1640,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateClient(Client myClient) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar cliente " + myClient);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update cliente set nombre = ? , direccion = ? , telefono = ? where codigo = ?");
         stmt.setString(1, myClient.getName());
@@ -1557,6 +1663,7 @@ public class ConnectionDrivers {
     }
 
     protected static boolean wasAssignUsedToday(Assign t) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Fue usada la asignacion ");
         boolean ans = false;
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1575,6 +1682,7 @@ public class ConnectionDrivers {
     }
 
     protected static void deleteAssignToday(Assign t) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminada asignacion ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from asigna where datediff(now(),fecha) = 0 and identificador_turno = ? and identificador_pos = ?");
         stmt.setString(1, t.getTurn() );
@@ -1588,6 +1696,7 @@ public class ConnectionDrivers {
         if ( isExpired(a) ){
             throw new Exception("No se puede modificar una asignación expirada");
         }
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Reabrir asignacion a caja " + a.getPos());
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update asigna set abierto = ? where identificador_turno = ? and identificador_pos = ? and datediff( fecha, ? ) = 0");
         stmt.setInt(1, isOpen?1:0);
@@ -1600,6 +1709,7 @@ public class ConnectionDrivers {
     }
 
     protected static void deleteAllStores() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminando todos los almacenes existentes");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from almacen");
         stmt.executeUpdate();
@@ -1607,6 +1717,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createStore(DefaultTableModel model) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando almacenes");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -1623,6 +1734,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Store> listStores() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar almacenes");
         List<Store> ans = new ArrayList<Store>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1646,6 +1758,7 @@ public class ConnectionDrivers {
     }
 
     protected static void flipEnabledPointOfSale(PointOfSale p) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Flip habilitar punto de venta " + p.getId());
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set habilitada = ? where identificador = ? ");
         stmt.setInt(1, !p.isEnabled()?1:0);
@@ -1656,6 +1769,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateReportZ(String z) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar reporte Z " + z);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set reporte_z = ? where identificador = ? ");
         stmt.setString(1, z);
@@ -1666,6 +1780,7 @@ public class ConnectionDrivers {
     }
 
     protected static void setFiscalData(Connection c, String actualId, String serial, String z, String fiscalNumber) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Colocar informacion fiscal a "  + actualId + " " + fiscalNumber);
         PreparedStatement stmt = c.prepareStatement("update factura set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
                 + "where " + (Shared.isOffline?"codigo_interno_alternativo ":"codigo_interno ") + " = ? ");
         stmt.setString(1, serial);
@@ -1676,6 +1791,7 @@ public class ConnectionDrivers {
     }
 
     protected static void setFiscalDataCN(Connection c, String actualId, String serial, String z, String fiscalNumber) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Colocar informacion fiscal a nota de credito " + actualId + " " + fiscalNumber);
         PreparedStatement stmt = c.prepareStatement("update nota_de_credito set impresora = ? , numero_fiscal = ? , numero_reporte_z = ? "
                 + "where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, serial);
@@ -1686,6 +1802,7 @@ public class ConnectionDrivers {
     }
 
     protected static void finishReceipt(Connection c, String receiptId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Marcar facturada " + receiptId);
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  estado = 'Facturada' where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, receiptId);
@@ -1693,6 +1810,7 @@ public class ConnectionDrivers {
     }
 
     protected static void setGlobalDiscount(String receiptId , Double d) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Colocar descuento global " + d + " recibo " + receiptId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  descuento_global = ? where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
@@ -1704,6 +1822,7 @@ public class ConnectionDrivers {
     }
 
     protected static void setClient(Connection c, Client cu, String actualId) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Fijar cliente a factura " + cu + " " + actualId);
         PreparedStatement stmt = c.prepareStatement("update factura set "
                 + "  codigo_de_cliente = ? where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, cu.getId());
@@ -1712,6 +1831,7 @@ public class ConnectionDrivers {
     }
 
     protected static void setPritingHour(Connection c, String actualId, String table) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Colocar hora de impresion justo AHORA");
         PreparedStatement stmt = c.prepareStatement("update " + table + " set "
                 + "  fecha_impresion = now() where " + (Shared.isOffline?"codigo_interno_alternativo":"codigo_interno") + " = ? ");
         stmt.setString(1, actualId);
@@ -1719,16 +1839,19 @@ public class ConnectionDrivers {
     }
 
     protected static boolean hasMovements() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Tengo movimientos?");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select * from factura");
         ResultSet rs = stmt.executeQuery();
         boolean ans = rs.next();
 
         c.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         return ans;
     }
 
     protected static void deleteAllBPos() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminar todos los puntos de venta de bancos");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from punto_de_venta_de_banco");
         stmt.executeUpdate();
@@ -1736,6 +1859,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createBPOS(DefaultTableModel model) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando puntos de venta de banco");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -1758,6 +1882,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<BankPOS> listBPos() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar los puntos de venta de banco");
         List<BankPOS> ans = new ArrayList<BankPOS>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1783,6 +1908,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<BankPOS> listBPos(String kindbpos) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar punto de venta de banco del tipo " + kindbpos);
         List<BankPOS> ans = new ArrayList<BankPOS>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -1812,6 +1938,7 @@ public class ConnectionDrivers {
     }
 
     protected static void savePayForm(List<PayForm> lpf) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Guardando forma de pago");
         Connection c = ConnectionDrivers.cpds.getConnection();
         for (PayForm payForm : lpf) {
             PreparedStatement stmt = c.prepareStatement(
@@ -1819,12 +1946,12 @@ public class ConnectionDrivers {
                 + "values ( now(), ? , ? , ? , ? , ? , ?)");
             stmt.setString(1, payForm.getReceiptId());
             stmt.setString(2, payForm.getFormWay());
-            System.out.println("Agregando <" + payForm.getbPos() + ">");
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Agregando <" + payForm.getbPos() + ">");
             stmt.setString(3, payForm.getbPos());
             stmt.setString(4, payForm.getLot());
             stmt.setDouble(5, payForm.getQuant());
             stmt.setString(6, Shared.getFileConfig("myId"));
-            System.out.println("pos = " + Shared.getFileConfig("myId") );
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " pos = " + Shared.getFileConfig("myId") );
             stmt.executeUpdate();
             if ( payForm.getFormWay().equals(Shared.getConfig("cashPaymentName")) ){
                 addCash(payForm.getQuant(), Shared.getFileConfig("myId"));
@@ -1848,6 +1975,7 @@ public class ConnectionDrivers {
     }
 
     protected static void renameReceipts() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Renombrar recibo.");
         List<String> tmpCode = new LinkedList<String>();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo_interno_alternativo , identificador_pos from factura "
@@ -1881,6 +2009,7 @@ public class ConnectionDrivers {
     }
 
     protected static void renameCN() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Renombrar notas de credito");
         List<String> tmpCode = new LinkedList<String>();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo_interno_alternativo , identificador_pos from nota_de_credito "
@@ -1911,6 +2040,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createCreditNote(String myId, String idReceipt, String user, Assign assign, List<Item2Receipt> items) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear nota de credito " + myId + " " + idReceipt);
         Connection c = ConnectionDrivers.cpds.getConnection();
         double subT = .0 , ivaT = .0 , total = .0 ;
         /*for (Item2Receipt item2r : items) {
@@ -1945,6 +2075,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getPrice(String itemId , String receiptId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener precio del articulo " + itemId + " en recibo " + receiptId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select precio_venta from factura_contiene where"
                 + " codigo_interno_factura=? and codigo_de_articulo=?");
@@ -1962,6 +2093,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getDiscount(String itemId , String receiptId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener descuento de articulo " + itemId + " en recibo " + receiptId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select descuento from factura_contiene where"
                 + " codigo_interno_factura=? and codigo_de_articulo=?");
@@ -1979,6 +2111,7 @@ public class ConnectionDrivers {
     }
 
     protected static int lastCreditNoteToday() throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Ultima nota de credito de hoy");
         Connection c = ConnectionDrivers.cpds.getConnection();
         Statement stmt = c.createStatement();
         ResultSet rs = stmt.executeQuery(
@@ -1995,6 +2128,7 @@ public class ConnectionDrivers {
     }
 
     protected static int lastCreditNote() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Ultima nota de credito");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select count(*) from nota_de_credito where identificador_pos = ? ");
         stmt.setString(1, Shared.getFileConfig("myId"));
@@ -2010,6 +2144,7 @@ public class ConnectionDrivers {
     }
 
     protected static Receipt getReceiptToDev(String id) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener recibo para devolver");
         String campoId = "codigo_interno";
         String campoIdW = "codigo_interno";
         if ( id.charAt(6) == '9' ){
@@ -2041,6 +2176,7 @@ public class ConnectionDrivers {
 
     protected static void addItem2CreditNote(String receiptId, Item2Receipt item, Double sellPrice, Double discount) throws SQLException, Exception{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Agregar nota de credito a articulo");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into nota_de_credito_contiene"
                 + " ( codigo_interno_nota_de_credito, codigo_de_articulo , cantidad, devuelto , precio_venta , descuento) "
@@ -2057,6 +2193,7 @@ public class ConnectionDrivers {
     }
 
     protected static void changeLot( String idBpos , String newLot) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Cambiar lote a punto de venta de banco " + idBpos);
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta_de_banco "
@@ -2070,6 +2207,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getAllCash(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener todo el efectivo");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from forma_de_pago "
                 + "where tipo = 'Efectivo' and datediff(fecha,?)=0");
@@ -2093,6 +2231,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getCashToday(String pos) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener todo el efectivo de hoy");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select dinero_efectivo "
                 + "from dia_operativo where datediff(now(),fecha) = 0 and codigo_punto_de_venta = ? ");
@@ -2116,6 +2255,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double maximunMoney2Extract(String pos) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener la maxima cantidad de dinero a extraer");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) from "
                 + "(select sum(monto) as monto from movimiento_efectivo where "
@@ -2133,6 +2273,7 @@ public class ConnectionDrivers {
     }
 
     protected static void setCash(Double money, String pos) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Fijar cantidad de efectivo a estadisticas de dia_operativo");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -2146,6 +2287,7 @@ public class ConnectionDrivers {
     }
 
     protected static void addCash(Double money, String pos) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Agregar efectivo a estadisticas de dia_operativo");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -2159,6 +2301,7 @@ public class ConnectionDrivers {
     }
 
     protected static void addCredit(Double money, String pos) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Agregar credito a estadisticas de dia_operativo");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -2172,6 +2315,7 @@ public class ConnectionDrivers {
     }
 
     protected static void addCreditNote(Double money, String pos) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Agregar nota de credito a estadisticas de dia_operativo");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -2185,6 +2329,7 @@ public class ConnectionDrivers {
     }
 
     protected static void addDebit(Double money, String pos) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Agregar debito a estadisticas de dia_operativo");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -2198,6 +2343,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createOperativeDay() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear dia_operativo");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("insert into dia_operativo ( fecha , codigo_punto_de_venta , dinero_tarjeta_credito "
@@ -2228,6 +2374,7 @@ public class ConnectionDrivers {
     }
 
     private static void deleteItemFromReceipt(Item2Receipt item2r, String receiptId) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminar articulo " + item2r.getItem().getCode() + " de recibo " + receiptId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update factura_contiene set devuelto = devuelto + ? "
                 + "where codigo_interno_factura = ? and cantidad >= devuelto + ? and  codigo_de_articulo = ? limit 1");
@@ -2240,6 +2387,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Expense> listExpenses(String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar gastos");
         List<Expense> ans = new ArrayList<Expense>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2265,6 +2413,7 @@ public class ConnectionDrivers {
     }
 
     protected static void deleteAllExpenses(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminar todos los gastos");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from gasto where datediff(?,fecha) = 0 ");
         stmt.setString(1, day);
@@ -2273,6 +2422,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createExpenses(DefaultTableModel model, String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear gasto");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -2291,6 +2441,7 @@ public class ConnectionDrivers {
     }
 
     protected static JRDataSource createDataSource(List<Parameter> parameters, String sql, List<Column> columns) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando datasource");
         String[] columnsArray = new String[columns.size()];
         for (int i = 0; i < columns.size(); i++) {
             columnsArray[i] = columns.get(i).getName();
@@ -2336,6 +2487,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Deposit> listDeposits(String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar todos los depositos");
         List<Deposit> ans = new ArrayList<Deposit>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2361,6 +2513,7 @@ public class ConnectionDrivers {
     }
 
     protected static void deleteAllDeposits(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminar todos los depositos");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from deposito where datediff(?,fecha) = 0 ");
         stmt.setString(1, day);
@@ -2369,6 +2522,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createDeposits(DefaultTableModel model, String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear deposito");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -2387,6 +2541,7 @@ public class ConnectionDrivers {
     }
 
     protected static void listFormWayXPos(DefaultTableModel ans, String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar forma de pago por punto de venta para estadisticas");
         ans.setRowCount(0);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2412,6 +2567,7 @@ public class ConnectionDrivers {
     }
 
     protected static void listFiscalZ(DefaultTableModel ans, String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar reportes Z");
         ans.setRowCount(0);
 
         System.out.println("Day = " + day);
@@ -2441,6 +2597,7 @@ public class ConnectionDrivers {
     }
 
     protected static void listFormWayXPosesDetail(DefaultTableModel ans, String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar detalles de formas de pagos por punto de venta");
         ans.setRowCount(0);
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -2460,6 +2617,7 @@ public class ConnectionDrivers {
     }
 
     protected static boolean wereCalculatedBanks(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Fue calculada la forma de pago por banco?");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select * from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
         stmt.setString(1, day);
@@ -2469,17 +2627,19 @@ public class ConnectionDrivers {
 
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         return ans;
     }
 
     protected static void listBankTable(DefaultTableModel ans, String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar la tabla de bancos");
         Connection c = ConnectionDrivers.cpds.getConnection();
         
         if ( wereCalculatedBanks(day) ){
-            System.out.println("Ya fue calculado!");
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Ya fue calculada!");
             ;// Just load it!! It was calculated
         }else{
-            System.out.println("Calculando...");
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Calculando...");
             PreparedStatement stmt = c.prepareStatement("select concat(concat(a.codigo_punto_de_venta_de_banco,' - ') , b.descripcion) as codigo_punto_de_venta_de_banco , a.lote,"
                 + "a.tipo , sum(monto) as monto from forma_de_pago a,"
                 + "punto_de_venta_de_banco b where a.codigo_punto_de_venta_de_banco = b.id and "
@@ -2489,7 +2649,7 @@ public class ConnectionDrivers {
             ResultSet rs = stmt.executeQuery();
 
             while ( rs.next() ){
-                System.out.println("Detalle");
+                System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Creando detalle para " + rs.getString("codigo_punto_de_venta_de_banco"));
                 PreparedStatement stmt2 =  c.prepareStatement(
                         "insert into pagos_punto_de_venta_banco(fecha," +
                         "punto_de_venta_de_banco,lote,medio,declarado," +
@@ -2523,6 +2683,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalCards(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total de pago por tarjetas");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select declarado, monto_real from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
         stmt.setString(1, day);
@@ -2539,6 +2700,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalPCN(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total de pago por nota de credito");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from forma_de_pago where tipo='Nota de Credito' "
                 + "and datediff(?,fecha)=0");
@@ -2555,6 +2717,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalCashfromPrinter(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener total de efectivo por impresora");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(dinero_efectivo_impresora) as monto from dia_operativo "
                 + "where datediff(?,fecha)=0");
@@ -2571,6 +2734,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalCash(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener total en efectivo");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from deposito "
                 + "where datediff(?,fecha) = 0");
@@ -2587,6 +2751,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalCN(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total de nota de credito");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_sin_iva) as monto from nota_de_credito "
                 + "where datediff(fecha_creacion,?) = 0");
@@ -2603,6 +2768,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getExpenses(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total de gastos");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from gasto where datediff(?,fecha)=0");
         stmt.setString(1, day);
@@ -2620,6 +2786,7 @@ public class ConnectionDrivers {
     }
 
     protected static void markToUpdateFiscalNumbersToday() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Marcar como needing update");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores=1 "
                 + "where reporteZ = 0 and datediff(curdate(),fecha)=0");
@@ -2628,6 +2795,7 @@ public class ConnectionDrivers {
     }
 
     protected static boolean isNeededtoUpdate() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Necesito actualizar?");
         boolean ans ;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select actualizar_valores from dia_operativo where datediff(curdate(),fecha)=0 and codigo_punto_de_venta= ? ");
@@ -2648,6 +2816,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateFiscalNumbers(Double cash, Double cn, Double debit, Double credit) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar estadistica de informacion fiscal");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores = 0 , dinero_efectivo_impresora = ? , "
                 + "dinero_tarjeta_credito_impresora = ? , dinero_tarjeta_debito_impresora = ? , nota_de_credito_impresora = ? where "
@@ -2667,6 +2836,7 @@ public class ConnectionDrivers {
                 // Admin has no mirror
                 return;
             }
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Copia veloz de tabla " + tableName);
             String cmd = "mysqldump -u " + Shared.getFileConfig("dbUser") + " -p"+
                     Shared.getFileConfig("dbPassword") + " -t -h " + Shared.getFileConfig("Server") + " "
                     + Shared.getFileConfig("dbName") + " " + tableName + " | mysql -u " + Shared.getFileConfig("mirrordbUser")
@@ -2701,6 +2871,8 @@ public class ConnectionDrivers {
             // Admin has no mirror
             return;
         }
+
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Replica normal de tabla");
 
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
@@ -2751,6 +2923,8 @@ public class ConnectionDrivers {
             return;
         }
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " sincronizar montos en dinero");
+
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
@@ -2792,12 +2966,14 @@ public class ConnectionDrivers {
         b.close();
     }
 
+    @Deprecated
     protected static void updateStock() throws PropertyVetoException, SQLException{
         if ( !Constants.isPos ){
             // Admin has no mirror
             return;
         }
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar stock desde espejo");
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
             cpdsMirror.setDriverClass("com.mysql.jdbc.Driver");
@@ -2836,6 +3012,8 @@ public class ConnectionDrivers {
             // Admin has no mirror
             return;
         }
+
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Borrando espejo");
 
         if ( !mirrorConnected ){ // just once =D
             cpdsMirror = new ComboPooledDataSource();
@@ -2887,6 +3065,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateConfig(String k, String v) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar configuracion " + k);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = ? where `Key` = ?");
         stmt.setString(1, v);
@@ -2896,6 +3075,7 @@ public class ConnectionDrivers {
     }
 
     protected static void setEnableSellWithoutStock(String i) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Habilitar vender sin stock");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = ? where `Key` = 'sellWithoutStock'");
         stmt.setString(1, i);
@@ -2905,6 +3085,7 @@ public class ConnectionDrivers {
 
     protected static boolean getEnableSellWithoutStock() throws SQLException {
         boolean ans = false;
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Puedo vender sin stock?");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select `Value` from configuracion where `Key` = 'sellWithoutStock'");
         ResultSet rs = stmt.executeQuery();
@@ -2916,10 +3097,12 @@ public class ConnectionDrivers {
 
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         return ans;
     }
 
     protected static List<String> getListMsg2Pos() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener mensajes para punto de venta");
         List<String> ans = new ArrayList<String>();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select `mensaje` from mensaje");
@@ -2934,6 +3117,7 @@ public class ConnectionDrivers {
     }
 
     protected static void deleteAllMsgs() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminar todos los mensajes para punto de venta");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from mensaje");
         stmt.executeUpdate();
@@ -2941,6 +3125,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createMsgs(TableModel model) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear mensajes para punto de venta");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -2954,6 +3139,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<SimpleConfig> listConfig() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar toda la configuracion");
         List<SimpleConfig> ans = new ArrayList<SimpleConfig>();
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select `Key` , `Value`, nombre from configuracion");
@@ -2969,13 +3155,15 @@ public class ConnectionDrivers {
     }
 
     protected static void deleteAllFrom(String table) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " truncate " + table);
         Connection c = ConnectionDrivers.cpds.getConnection();
-        PreparedStatement stmt = c.prepareStatement("delete from " + table);
+        PreparedStatement stmt = c.prepareStatement("truncate " + table);
         stmt.executeUpdate();
         c.close();
     }
 
     protected static void createConfig(TableModel model) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear configuracion ");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -2992,7 +3180,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateTotalFromPrinter(Double total, String z, String lReceipt, int quantReceiptsToday, String lastCN, int nNC, String day) throws SQLException {
-        System.out.println("Dia Recibido = " + day);
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar datos estadisticos de Impresora " +  day);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set actualizar_valores = 0 , total_ventas = ? , "
                 + "numero_reporte_z = ? , impresora = ? , codigo_ultima_factura = ? , ultima_actualizacion = now() , num_facturas = ? , "
@@ -3019,6 +3207,7 @@ public class ConnectionDrivers {
 
     protected static JRDataSource getExpensesReport(String day) throws SQLException {
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear reporte de gastos");
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3 ; i++) {
             columnsArray[i] = i + "";
@@ -3045,6 +3234,7 @@ public class ConnectionDrivers {
     }
 
     protected static JRDataSource getIncommingReport(String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear reporte de dinero entrante");
         String[] columnsArray = new String[4];
         for (int i = 0; i < 4; i++) {
             columnsArray[i] = i + "";
@@ -3077,6 +3267,7 @@ public class ConnectionDrivers {
     }
 
     protected static JRDataSource getTotal(String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total de " + day);
         String[] columnsArray = new String[1];
         for (int i = 0; i < 1; i++) {
             columnsArray[i] = i + "";
@@ -3091,6 +3282,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalPrinters(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total de impresoras " + day);
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_ventas)* ? as total from dia_operativo where datediff(?,fecha)=0");
@@ -3109,6 +3301,7 @@ public class ConnectionDrivers {
     }
 
     protected static JRDataSource getInitialFounds(String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener fondos de caja");
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3; i++) {
             columnsArray[i] = i + "";
@@ -3136,6 +3329,7 @@ public class ConnectionDrivers {
     }
 
     protected static JRDataSource getFiscalInfo(String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener informacion fiscal");
         String[] columnsArray = new String[3];
         for (int i = 0; i < 3 ; i++) {
             columnsArray[i] = i + "";
@@ -3163,6 +3357,7 @@ public class ConnectionDrivers {
     }
 
     protected static String getThisPrinterId(String posId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener id de la impresora " + posId);
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         String ans = null;
@@ -3182,6 +3377,7 @@ public class ConnectionDrivers {
     }
 
     protected static String getOperativeDaysHtml(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear html sobre el dia_operativo");
         String ans = "";
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select total_ventas , impresora , numero_reporte_z ,"
@@ -3251,6 +3447,7 @@ public class ConnectionDrivers {
         return ans;
     }
 
+    @Deprecated
     protected static List<ZFISDATAFISCAL> getOperativeDays(String day) throws SQLException {
         List<ZFISDATAFISCAL> ans = new ArrayList<ZFISDATAFISCAL>();
 
@@ -3314,6 +3511,7 @@ public class ConnectionDrivers {
 
     protected static IXMLElement createFiscalData(String day) throws SQLException{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear XML con la informacion fiscal");
         XMLElement xml = new XMLElement("FiscalData");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select total_ventas , impresora , numero_reporte_z ,"
@@ -3353,6 +3551,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Receipt> listOkReceipts(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar todos los recibos impresos el dia de hoy");
         List<Receipt> ans = new ArrayList<Receipt>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -3396,6 +3595,7 @@ public class ConnectionDrivers {
     }
 
     protected static List<Receipt> listOkCN(String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Imprimir todas las notas de credito de hoy");
         List<Receipt> ans = new ArrayList<Receipt>();
 
         Connection c = ConnectionDrivers.cpds.getConnection();
@@ -3440,6 +3640,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateDiscount(String itemId, String discount) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar descuento a articulo " + itemId + " " + discount);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update articulo set descuento = ? where codigo = ?");
         stmt.setString(1, discount);
@@ -3449,6 +3650,7 @@ public class ConnectionDrivers {
     }
 
     protected static void setZDone(String day) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Se ha sacado el reporte Z");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo "
@@ -3463,6 +3665,7 @@ public class ConnectionDrivers {
 
     //WARNING. NON ESCAPED STRINGS
     protected static Double getSumTotalWithIva(String myDay, String table, String status, boolean withDiscount, String pos) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el Total con iva");
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_sin_iva " + (withDiscount?"-total_sin_iva*descuento_global":"") + ")"
@@ -3487,6 +3690,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalDeclared(String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total declarado");
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(total_ventas) as total from dia_operativo where fecha=?");
@@ -3504,6 +3708,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateLastReceipt(String lastReceipt) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar el ultimo recibo en las estadisticas");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_factura = ? where identificador = ? ");
         stmt.setString(1, lastReceipt);
@@ -3514,6 +3719,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateLastCN(Connection c, String lastCN) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar nota de credito en estadisticas");
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_nota_de_credito = ? where identificador = ? ");
         stmt.setString(1, lastCN);
         stmt.setString(2, Shared.getFileConfig("myId"));
@@ -3521,6 +3727,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateLastCN(String lastCN) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar nota de credito en estadisticas");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update punto_de_venta set ultima_nota_de_credito = ? where identificador = ? ");
         stmt.setString(1, lastCN);
@@ -3530,6 +3737,7 @@ public class ConnectionDrivers {
     }
 
     protected static String getLastReceipt() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener la ultima factura");
         String ans = "";
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select ultima_factura from punto_de_venta where identificador = ? ");
@@ -3547,6 +3755,7 @@ public class ConnectionDrivers {
     }
 
     protected static String getLastCN() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener la ultima nota de credito");
         String ans = "";
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select ultima_nota_de_credito from punto_de_venta where identificador = ? ");
@@ -3564,6 +3773,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateItemsDetails(Item item, Connection c) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizando codigo de barras y precios " + item.getCode());
         PreparedStatement stmt = c.prepareStatement("insert IGNORE into codigo_de_barras( codigo_de_articulo , codigo_de_barras ) values ( ? , ? )");
         stmt.setString(1, item.getCode());
         stmt.setString(2, item.getMainBarcode());
@@ -3575,6 +3785,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateItems(List<Item> items) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar codigo de barras en el maestro de articulos");
         Connection c = ConnectionDrivers.cpds.getConnection();
         Connection c2 = ConnectionDrivers.cpds.getConnection();
         for (Item item : items) {
@@ -3594,6 +3805,7 @@ public class ConnectionDrivers {
     }
 
     protected static void updateMovements(List<Movement> movements, TreeMap<String, Item> newItemMapping) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar movimientos");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (Movement movement : movements) {
@@ -3644,6 +3856,7 @@ public class ConnectionDrivers {
     }
 
     private static void insertItem(Item item) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear articulo " + item.getCode());
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into articulo ( codigo , descripcion , fecha_registro , "
                 + "marca , sector, codigo_sublinea , codigo_de_barras , modelo , unidad_venta, unidad_compra, "
@@ -3667,6 +3880,7 @@ public class ConnectionDrivers {
     }
 
     protected static void modifyMoney(Double diffMoney) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar movimiento de efectivo");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("insert into movimiento_efectivo ( identificador_punto_de_venta , fecha , monto )"
                 + " values (?,now(),?)");
@@ -3677,6 +3891,7 @@ public class ConnectionDrivers {
     }
 
     protected static boolean allZready(String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Todos los Z estan listos ? ");
         boolean ans = false;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select count(*) as c from dia_operativo where datediff( ? , fecha ) = 0 and reporteZ = 0");
@@ -3690,10 +3905,14 @@ public class ConnectionDrivers {
 
         c.close();
         rs.close();
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         return ans;
     }
 
     protected static Integer getQuantCN(String myDay) throws SQLException {
+
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " fijar la cantidad de notas de credito el dia " + myDay );
+
         Integer ans = 0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(numero_notas_credito) as ans from dia_operativo where datediff( ? , fecha ) = 0");
@@ -3711,6 +3930,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalIncomming(String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total entrante " + myDay);
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto"
@@ -3732,6 +3952,7 @@ public class ConnectionDrivers {
     }
 
     protected static Double getTotalAMinusC(String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total mas los gastos");
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select sum(monto) as monto from "
@@ -3753,6 +3974,7 @@ public class ConnectionDrivers {
     }
 
     protected static void deleteAllPayments(String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminar pagos de punto de venta de banco para el dia " + myDay);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from pagos_punto_de_venta_banco where datediff(?,fecha)=0");
         stmt.setString(1, myDay);
@@ -3761,6 +3983,7 @@ public class ConnectionDrivers {
     }
 
     protected static void createPayments(DefaultTableModel model, String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear formas de pago " + myDay );
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -3780,6 +4003,7 @@ public class ConnectionDrivers {
     }
 
     protected static boolean wasClosed(String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Verificacion si fue cerrado");
         boolean ans = false;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select cerrado from dia_operativo where datediff(fecha,?)=0");
@@ -3793,10 +4017,13 @@ public class ConnectionDrivers {
 
         c.close();
         rs.close();
+
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " " + ans);
         return ans;
     }
 
     protected static void closeThisDay(String myDay) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Cerrar este dia " + myDay);
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update dia_operativo set cerrado = 1 where datediff(fecha,?)=0");
@@ -3807,6 +4034,7 @@ public class ConnectionDrivers {
     }
 
     protected static boolean previousClosed(String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Estan los dias previos cerrados?");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select * from dia_operativo where datediff( ? , fecha ) > 0 and cerrado = 0");
         stmt.setString(1, myDay);
@@ -3855,6 +4083,7 @@ public class ConnectionDrivers {
     }
 
     static Double getTotalDeclaredPos( String pos, String day) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total declarado del dia " + day);
         Double ans = .0;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select total_ventas as ans from dia_operativo "
@@ -3874,6 +4103,7 @@ public class ConnectionDrivers {
     }
 
     protected static String getLastMM() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el ultimo movimiento de inventario");
         String ans = null;
         Connection c = ConnectionDrivers.cpds.getConnection();
 
@@ -3892,6 +4122,7 @@ public class ConnectionDrivers {
 
     protected static String createNewMovement(Connection c , String xmlMovement) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, IOException{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear movimiento");
         Shared.itemsNeeded = new LinkedList<XMLElement>();
 
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
@@ -3996,6 +4227,7 @@ public class ConnectionDrivers {
 
     static void createItems(Connection c, String ansDescriptions, boolean checkReason) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear articulos");
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
         IXMLReader reader = StdXMLReader.stringReader(ansDescriptions);
         parser.setReader(reader);
@@ -4064,6 +4296,7 @@ public class ConnectionDrivers {
     }
 
     static void setPrices(Connection c, String ansPricesDiscounts) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Fijar precios");
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
         IXMLReader reader = StdXMLReader.stringReader(ansPricesDiscounts);
         parser.setReader(reader);
@@ -4112,6 +4345,7 @@ public class ConnectionDrivers {
     }
 
     static void setLastUpdateNow() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Acaba de actualizar =D");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update configuracion set `Value` = replace(curdate(),'-','') where `Key` = 'lastPriceUpdate'");
         stmt.executeUpdate();
@@ -4119,6 +4353,7 @@ public class ConnectionDrivers {
         c.close();
     }
 
+    @Deprecated
     static void ensureTotalReceipt(Connection c, String actualId) throws SQLException {
         PreparedStatement stmt = c.prepareStatement("select sum((precio_venta - precio_venta*descuento/100)*cantidad) as total from factura_contiene where codigo_interno_factura = ? ");
         stmt.setString(1, actualId);
@@ -4138,6 +4373,7 @@ public class ConnectionDrivers {
     }
 
     static void setAllFiscalData(String actualId, String serial, String z, String lastFiscalNumber, Client client) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() + " Terminar factura");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         ConnectionDrivers.setFiscalData(c, actualId, serial , z , lastFiscalNumber);
@@ -4145,13 +4381,13 @@ public class ConnectionDrivers {
             ConnectionDrivers.setClient(c,client,actualId);
         }
         ConnectionDrivers.setPritingHour(c,actualId, "factura");
-        ConnectionDrivers.ensureTotalReceipt(c, actualId);
         ConnectionDrivers.finishReceipt(c, actualId);
 
         c.close();
     }
 
     static void setAllFiscalDataCN(String actualId, String serial, String z, String lastFiscalNumber) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Terminar nota de credito");
         Connection c = ConnectionDrivers.cpds.getConnection();
         ConnectionDrivers.setFiscalDataCN(c, actualId, serial, z , lastFiscalNumber);
         ConnectionDrivers.setPritingHour(c, actualId, "nota_de_credito");
@@ -4160,6 +4396,7 @@ public class ConnectionDrivers {
     }
 
     static void fixWrongReceipts() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Arreglar recibos corruptos");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("update factura set estado=\'Facturada\' where numero_fiscal is not null and estado=\'Pedido\'");
@@ -4169,6 +4406,7 @@ public class ConnectionDrivers {
     }
 
     static String getDate4NCR() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener fecha para NCR");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         String ans = null;
@@ -4186,6 +4424,7 @@ public class ConnectionDrivers {
     }
 
     static String getInitialStock(Connection c, String xmlMovement) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, IOException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener stock inicial");
         Shared.itemsNeeded = new LinkedList<XMLElement>();
 
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
@@ -4288,6 +4527,7 @@ public class ConnectionDrivers {
     }
 
     static String checkAllZReport(String printerId , String zReportId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Todo tiene su reporte Z");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         String ans = null;
@@ -4313,6 +4553,7 @@ public class ConnectionDrivers {
     }
 
     static double getTotalPrinter(String day , String pos) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener el total de ventas " + day + " pos = " + pos);
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         double ans = .0;
@@ -4335,6 +4576,7 @@ public class ConnectionDrivers {
     static void updateEmployees(String xmlEmployees) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException {
         Connection c = ConnectionDrivers.cpds.getConnection();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Actualizar lista de empleados");
         c.setAutoCommit(false);
 
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
@@ -4348,16 +4590,16 @@ public class ConnectionDrivers {
             XMLElement xmlI = (XMLElement)x;
 
             stmt = c.prepareStatement("insert into empleado (codigo,nombre_completo, departamento) values(?,?,?)");
-            stmt.setString(1, xmlI.getAttribute("c"));
-            stmt.setString(2, xmlI.getAttribute("n"));
-            stmt.setString(3, xmlI.getAttribute("d"));
+            stmt.setString(1, xmlI.getAttribute("c",""));
+            stmt.setString(2, xmlI.getAttribute("n",""));
+            stmt.setString(3, xmlI.getAttribute("d",""));
             stmt.executeUpdate();
         }
 
         try{
             c.commit();
         }catch(SQLException ex){
-            System.out.println("Rolling back... ha ocurrido un error.");
+            System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Rolling back... ha ocurrido un error.");
             try{
                 c.rollback();
             }catch(Exception ex2){
@@ -4372,6 +4614,7 @@ public class ConnectionDrivers {
     }
 
     static boolean existsEmployCode(String employId) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Existe el empleado " + employId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select * from empleado where codigo = ? ");
         pstmt.setString(1, employId);
@@ -4389,6 +4632,7 @@ public class ConnectionDrivers {
     }
 
     static Employ getEmploy(String employId) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear empleado " + employId);
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select codigo, nombre_completo, departamento from empleado where codigo = ? ");
         pstmt.setString(1, employId);
@@ -4407,6 +4651,7 @@ public class ConnectionDrivers {
     }
 
     static List<Employ> getAllEmployees() throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener a todos los empleados");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement pstmt = c.prepareStatement("select codigo, nombre_completo, departamento from empleado");
         ResultSet rs = pstmt.executeQuery();
@@ -4423,6 +4668,7 @@ public class ConnectionDrivers {
     }
 
     static void saveTemplate(String code, byte[] template) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Guardar plantilla");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("delete from huella where codigo_empleado = ? ");
@@ -4437,6 +4683,7 @@ public class ConnectionDrivers {
     }
 
     static List<FingerPrint> getAllFingerPrints() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener todas las planillas");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("select codigo_empleado , imagen from huella");
@@ -4453,6 +4700,7 @@ public class ConnectionDrivers {
     }
 
     static void deleteAllFreeDay(String myDay) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Borrar todos los dias libres");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from inasistencia where datediff(? , fecha)=0");
         stmt.setString(1, myDay);
@@ -4461,6 +4709,7 @@ public class ConnectionDrivers {
     }
 
     static void deleteAllOverTime(String myDay) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Eliminar todo el sobre tiempo");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("delete from horas_extra where datediff(? , fecha)=0");
         stmt.setString(1, myDay);
@@ -4471,6 +4720,7 @@ public class ConnectionDrivers {
     static void createFreeDay(DefaultTableModel model, String day) throws SQLException{
         Connection c = ConnectionDrivers.cpds.getConnection();
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Crear dia Libre " + day);
         for (int i = 0; i < model.getRowCount(); i++) {
             /*String employCode = ((String) model.getValueAt(i, 0)).split("-")[0].trim() ;
             String concept = (String) model.getValueAt(i, 1) ;
@@ -4529,6 +4779,7 @@ public class ConnectionDrivers {
     }*/
 
     static List<FreeDay> listAllFreeDays(String myDay) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Obtener todos los dias libres");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("select horas_extra.codigo_empleado , concepto, horas_extra.cantidad_horas from inasistencia, horas_extra where datediff(horas_extra.fecha,?)=0 and horas_extra.codigo_empleado = inasistencia.codigo_empleado and horas_extra.fecha=inasistencia.fecha");
@@ -4546,6 +4797,7 @@ public class ConnectionDrivers {
     }
 
     static List<OverTime> listAllOverTime(String myDay) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Listar todo el sobretiempo");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("select codigo_empleado , cantidad_horas from horas_extra , empleado where datediff(fecha,?)=0 and empleado.codigo = horas.codigo_empleado and empleado.departamento like ? ");
@@ -4564,6 +4816,7 @@ public class ConnectionDrivers {
     }
 
     static String saveFingerPrint(Employ e) throws SQLException, Exception{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Guardar fingerPrint");
         Presence p = listAllFingerPrintMarks("curdate()", e);
 
         String t = ConnectionDrivers.getLastMark(e);
@@ -4706,6 +4959,7 @@ public class ConnectionDrivers {
     }
 
     static String getLastMark(Employ e) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " getLastMark ");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         PreparedStatement stmt = c.prepareStatement("select hora from marcacion where hora=(select max(hora) from marcacion where codigo_empleado=?) and datediff(hora, curdate())=0");
@@ -4736,6 +4990,7 @@ public class ConnectionDrivers {
     }
 
     public static void recalculateStock() throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " recalculateStock ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("update articulo , existencia_desde_movimientos set articulo.existencia_actual = existencia_desde_movimientos.cantidad where articulo.codigo=existencia_desde_movimientos.codigo_de_articulo");
         stmt.executeUpdate();
@@ -4743,6 +4998,7 @@ public class ConnectionDrivers {
     }
 
     public static List<Employ> getAllEmployBetween(String from, String until) throws SQLException{
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " getAllEmployBetween ");
         Connection c = ConnectionDrivers.cpds.getConnection();
 
         List<Employ> ans = new LinkedList<Employ>();
@@ -4764,7 +5020,7 @@ public class ConnectionDrivers {
     }
 
     static void calculatePresence(DefaultTableModel model, String from , String until, Map<String, Integer> employRow, int offset) throws SQLException{
-        System.out.println("Calculando presencia...");
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " calculatePresence ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo_empleado , datediff(fecha,?) as diff from asistencia, empleado where datediff(fecha, ?) >= 0 and datediff(fecha, ?)<=0 and empleado.codigo=asistencia.codigo_empleado ");
         stmt.setString(1, from);
@@ -4796,6 +5052,7 @@ public class ConnectionDrivers {
     }
 
     static void calculateExtraHours(DefaultTableModel model, String from , String until, Map<String, Integer> employRow, int offset, JTable presenceTable) throws SQLException {
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " calculateExtraHours ");
         for ( int i = 0 ; i < model.getRowCount() ; i++ ){
             model.setValueAt("0", i, 3);
         }
@@ -4899,6 +5156,7 @@ public class ConnectionDrivers {
 
     static void saveTable(DefaultTableModel model, String fromDate, String untilDate, int offset, boolean isCestatickets) throws SQLException, ParseException, Exception {
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " saveTable ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         try{
 
@@ -4981,6 +5239,9 @@ public class ConnectionDrivers {
     }
 
     static boolean loadHours( JTable presenceTable ,String fromDateString, String untilDateString, java.util.Date fromDate, java.util.Date untilDate , AnalizePresence ap) throws SQLException {
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " loadHours ");
+
         Connection c = ConnectionDrivers.cpds.getConnection();
         boolean ans = false;
 
@@ -5004,6 +5265,8 @@ public class ConnectionDrivers {
     }
 
     protected static boolean loadPresence( JTable presenceTable ,String fromDateString, String untilDateString, java.util.Date fromDate, java.util.Date untilDate , AnalizePresence ap, Map<String, Integer> map4employes, int offset) throws SQLException{
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " loadPresence ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         boolean ans = false;
 
@@ -5049,6 +5312,8 @@ public class ConnectionDrivers {
     }
 
     protected static void clearBonuses(Connection c) throws SQLException{
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " clearBonuses ");
         PreparedStatement stmt = c.prepareStatement("update snem_va set val_n= 0 , comentario = NULL ");
         stmt.executeUpdate();
     }
@@ -5056,6 +5321,7 @@ public class ConnectionDrivers {
     @Deprecated
     protected static void addExtraHour(double hours, String employId, Connection c) throws SQLException{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " addExtraHour ");
         PreparedStatement stmt = c.prepareStatement("update snem_va set val_n= ? , co_us_mo = ? , fe_us_mo = getdate() WHERE (cod_emp = ?) AND (co_var = ?)");
         stmt.setDouble(1, hours);
         stmt.setString(2, "TPOS");
@@ -5082,6 +5348,7 @@ public class ConnectionDrivers {
     @Deprecated
     protected static void addSpecialBonus(double hours, String employId, Connection c) throws SQLException{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " addSpecialBonus ");
         PreparedStatement stmt = c.prepareStatement("update snem_va set val_n= ? , co_us_mo = ? , fe_us_mo = getdate() WHERE (cod_emp = ?) AND (co_var = ?)");
         stmt.setDouble(1, hours);
         stmt.setString(2, "TPOS");
@@ -5105,6 +5372,7 @@ public class ConnectionDrivers {
     @Deprecated
     protected static void addNightBonus(double hours, String employId, Connection c) throws SQLException{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " addNightBonus ");
         PreparedStatement stmt = c.prepareStatement("update snem_va set val_n= ? , co_us_mo = ? , fe_us_mo = getdate() WHERE (cod_emp = ?) AND (co_var = ?)");
         stmt.setDouble(1, hours);
         stmt.setString(2, "TPOS");
@@ -5127,6 +5395,7 @@ public class ConnectionDrivers {
 
     protected static void addBonus(double hours, String employId, String concept, Connection c, String comment) throws SQLException{
 
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " addBonus ");
         PreparedStatement stmt = c.prepareStatement("update snem_va set val_n= ? , co_us_mo = ? , fe_us_mo = getdate(), comentario = ? WHERE (cod_emp = ?) AND (co_var = ?)");
         stmt.setDouble(1, hours);
         stmt.setString(2, "TPOS");
@@ -5137,16 +5406,22 @@ public class ConnectionDrivers {
     }
 
     protected static void lockClosingDay(Connection c) throws SQLException{
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " lockClosingDay");
         PreparedStatement stmt = c.prepareStatement("lock table dia_operativo write");
         stmt.executeUpdate();
     }
 
     protected static void unlock(Connection c) throws SQLException{
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " unlock");
         PreparedStatement stmt = c.prepareStatement("unlock tables");
         stmt.executeUpdate();
     }
 
     protected static void writeArtPda(PrintStream ps) throws SQLException{
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " writeArtPda ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select distinct codigo, descripcion, date_format(fecha_registro,'%m/%e/%X') as fecha,"
                 + " codigo_de_barras, modelo, unidad_venta , monto, round(monto*1.12) as monto_con_iva from articulo"
@@ -5173,6 +5448,8 @@ public class ConnectionDrivers {
     }
 
     protected static void writeMovimiento(PrintStream ps) throws SQLException{
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " writeMovimiento ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select distinct codigo_articulo from detalles_movimientos");
 
@@ -5188,6 +5465,8 @@ public class ConnectionDrivers {
     }
 
     protected static void writeSt_almacpda(PrintStream ps) throws SQLException{
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " writeSt_almacpda ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select `Value` as agencia, codigo_de_articulo as articulo, cantidad as stock from configuracion, existencia_desde_movimientos where `Key` = 'storeName'");
 
@@ -5205,6 +5484,8 @@ public class ConnectionDrivers {
     }
 
     protected static List<Item> getNegativeStock() throws SQLException{
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " getNegativeStock");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select codigo, descripcion, existencia_actual from articulo where existencia_actual < 0");
 
@@ -5224,6 +5505,8 @@ public class ConnectionDrivers {
     }
 
     static String getLastFlagc() throws SQLException {
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " getLastFlagc ");
         String ans = null;
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select DATE_FORMAT(min(fecha),'%Y%m%d') as d from dia_operativo where compensado=false");
@@ -5240,6 +5523,8 @@ public class ConnectionDrivers {
     }
 
     static void updateFlagc(String daysFlagc, Connection c) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, SQLException {
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " updateFlagc ");
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
         IXMLReader reader = StdXMLReader.stringReader(daysFlagc);
         parser.setReader(reader);
@@ -5253,6 +5538,8 @@ public class ConnectionDrivers {
     }
 
     static boolean wasFlagC(String day) throws SQLException {
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " wasFlagC ");
         Connection c = ConnectionDrivers.cpds.getConnection();
         PreparedStatement stmt = c.prepareStatement("select * from dia_operativo where fecha = ? and compensado=1");
         stmt.setString(1, day);
@@ -5266,6 +5553,8 @@ public class ConnectionDrivers {
     }
 
     static void updateItems(String descriptions, Connection c) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLException, SQLException {
+        
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " updateItems");
         IXMLParser parser = XMLParserFactory.createDefaultXMLParser();
         IXMLReader reader = StdXMLReader.stringReader(descriptions);
         parser.setReader(reader);
@@ -5275,7 +5564,7 @@ public class ConnectionDrivers {
         parser = null;
         reader = null;
 
-        System.out.println("Justo antes de actualizar los articulos...");
+        System.out.println("[" + Shared.now() + "] Driver de conexiones " + Shared.lineNumber() +  " Justo antes de actualizar los articulos...");
         PreparedStatement stmtItem = c.prepareStatement("update articulo set descripcion = ? , "
                     + "codigo_de_barras = ? , modelo = ? , unidad_venta = ? "
                     + " where codigo = ?");

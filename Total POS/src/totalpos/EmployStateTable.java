@@ -27,6 +27,7 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
     public boolean isOk = false;
 
     private void updateFreeDay() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar free day");
         List<FreeDay> freedDays = ConnectionDrivers.listAllFreeDays(myDay);
 
         DefaultTableModel model = (DefaultTableModel) freeDayTable.getModel();
@@ -102,6 +103,7 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
     }
 
     private void updateFingerPrints() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar marcaciones");
         List<Presence4Print> fp = ConnectionDrivers.listAllPresence4Print(myDay);
         DefaultTableModel model = (DefaultTableModel) fingerPrintTable.getModel();
         model.setRowCount(0);
@@ -119,6 +121,7 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
     /** Creates new form EmployStateTable */
     public EmployStateTable(String day) {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando a constructor");
         myDay = day;
         updateAll();
         String[] days = day.split("-");
@@ -298,6 +301,7 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveFreeDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFreeDayActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardar todo");
         DefaultTableModel model = (DefaultTableModel) freeDayTable.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             for (int j = 0; j < 2; j++) {
@@ -348,6 +352,7 @@ public class EmployStateTable extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void updateAll() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
         try {
             updateFreeDay();
             updateOverTime();

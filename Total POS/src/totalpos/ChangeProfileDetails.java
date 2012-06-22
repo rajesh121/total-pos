@@ -20,6 +20,7 @@ public class ChangeProfileDetails extends JInternalFrame {
     /** Creates new form ChangeProfileDetails */
     protected ChangeProfileDetails( String prevId, String description) {
         super("Cambiar detalles");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cambiar detalles de un perfil");
         initComponents();
 
         changeId.setText(prevId);
@@ -129,6 +130,7 @@ public class ChangeProfileDetails extends JInternalFrame {
 
     private void changeDescriptionKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_changeDescriptionKeyReleased
         if ( evt.getKeyCode() == KeyEvent.VK_ENTER ){
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado cambio de descripcion");
             try {
                 if (changeDescription.getText().isEmpty()) {
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "No puede ser vacío el ID del perfil.");
@@ -139,7 +141,9 @@ public class ChangeProfileDetails extends JInternalFrame {
                 MessageBox msb = new MessageBox(MessageBox.SGN_SUCCESS, "Cambiado satisfactoriamente");
                 msb.show(this);
                 closeWindows();
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Cambiado detalles satisfactoriamente");
             } catch (SQLException ex) {
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " ERROR " + ex.getMessage());
                 if ( ex.getMessage().matches(Shared.getConfig("isDataRepeated")) ){
                     MessageBox msb = new MessageBox(MessageBox.SGN_IMPORTANT, "Perfil ya existente. Intente otro.");
                     msb.show(this);

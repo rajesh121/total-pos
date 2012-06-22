@@ -26,6 +26,7 @@ public class ManageClient extends javax.swing.JDialog {
     /** Creates new form ManageClient */
     public ManageClient(Frame parent, boolean modal, Client c) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
         //System.out.println(Shared.getConfig("orderClientCategory").split);
         initComponents();
         idField.setFocusTraversalKeysEnabled(false);
@@ -46,6 +47,7 @@ public class ManageClient extends javax.swing.JDialog {
 
     public ManageClient(JDialog parent, boolean modal, Client c) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocado constructor");
         initComponents();
         idField.setFocusTraversalKeysEnabled(false);
         this.parent = parent;
@@ -302,6 +304,7 @@ public class ManageClient extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void searchIt(String clientId) throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Buscando " + clientId);
         List<Client> clients = ConnectionDrivers.listClients(clientId);
         if ( clients.isEmpty() ){
             nameField.requestFocus();
@@ -451,6 +454,7 @@ public class ManageClient extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private boolean validateRif(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Validando RIF " );
         idField.setText(idField.getText().toUpperCase());
         String text = idField.getText();
         if ( !text.matches("([0-9]+)") || text.length() > 9 ){
@@ -463,6 +467,7 @@ public class ManageClient extends javax.swing.JDialog {
     }
 
     private void doIt() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
         Shared.getScreenSaver().actioned();
 
         if ( ! validateRif() ){

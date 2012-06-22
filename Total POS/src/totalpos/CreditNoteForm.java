@@ -35,6 +35,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
      */
     public CreditNoteForm(MainRetailWindows parent, boolean modal, Receipt r) {
         super(parent, modal);
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando a constructor");
         initComponents();
         try {
             receipt = r;
@@ -76,6 +77,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
     }
 
     public void updateAll(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizando todo");
         //TODO Set status in a Constant File
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
@@ -508,7 +510,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
 
     private void letsDoIt(){
 
-        System.out.println("Entrando...");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Entrando...");
         if ( client != null && client.getId().equals("Contado") ){
             client = null;
         }
@@ -585,6 +587,7 @@ public class CreditNoteForm extends javax.swing.JDialog implements Doer{
     @Override
     public void doIt() {
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
         try {
             List<Item2Receipt> items = new ArrayList<Item2Receipt>();
             for (int i = 0; i < table.getRowCount(); ++i) {

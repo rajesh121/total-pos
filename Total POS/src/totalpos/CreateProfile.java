@@ -19,6 +19,7 @@ public class CreateProfile extends JInternalFrame {
     /** Creates new form CreateProfile */
     public CreateProfile() {
         initComponents();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando a constructor");
     }
 
     /** This method is called from within the constructor to
@@ -198,6 +199,7 @@ public class CreateProfile extends JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void doIt() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando");
         try {
             if ( !idTextField.getText().matches("\\A[a-zA-Z0-9 ]+$") ){
                 throw new Exception("El ID es inválido. No se pueden utilizar caracteres especiales.");

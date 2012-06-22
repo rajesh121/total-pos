@@ -28,7 +28,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
      */
     public ManageUser() {
         initComponents();
-        
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Constructor invocado");
         updateAll();
     }
 
@@ -463,6 +463,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         try {
 
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardando");
             if ( !newPassword.getText().equals(newPassword2.getText()) ){
                 MessageBox msg = new MessageBox(MessageBox.SGN_DANGER, "Las contraseñas deben ser iguales.");
                 msg.show(this);
@@ -510,6 +511,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void updateFields(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar campos");
         selectedUser = userList.getSelectedIndex();
 
         if ( selectedUser == -1 ){
@@ -531,6 +533,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
 
     private void newUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUserButtonActionPerformed
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando nuevo usuario");
         if ( creatingNewUser ){
             updateAll();
             updateFields();
@@ -678,6 +681,7 @@ public class ManageUser extends javax.swing.JInternalFrame {
     }
 
     private void updateAll() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizar todo");
         try {
             updateProfiles();
             updateUsers();

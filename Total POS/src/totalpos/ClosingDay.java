@@ -9,11 +9,9 @@ package totalpos;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
-import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,18 +28,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import net.n3.nanoxml.IXMLElement;
-import net.n3.nanoxml.IXMLElement;
 import net.n3.nanoxml.XMLElement;
 import net.n3.nanoxml.XMLWriter;
-import srvSap.ArrayOfZFISCOBRANZA;
-import srvSap.ArrayOfZFISDATAFISCAL;
-import srvSap.IsrvSap;
 import srvSap.ObjectFactory;
-import srvSap.Resultado;
-import srvSap.SrvSap;
 import srvSap.ZFISCOBRANZA;
-import srvSap.ZFISDATAFISCAL;
-import srvSap.ZFISHISTENVIOS;
 import webservice.TotalPosWebService;
 import webservice.TotalPosWebServiceService;
 
@@ -60,14 +50,13 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     private ObjectFactory of = Constants.of;
     protected Working workingFrame;
     private String myDay = "";
-    private boolean showReport;
     protected boolean isOk = false;
-    private Double totalpcn;
     private String date4sap = "";
     private Double receiptTotal;
     List<String> clients = new LinkedList<String>();
 
     private String getExpensesTable() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando tabla de gastos para email");
         String ans = "";
         for( int i = 0 ; i < expenseTable.getRowCount() ; i++ ){
             ans += "<tr>";
@@ -93,10 +82,12 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ans += "</td>";
             ans += "</tr>";
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Tabla creada satisfactoriamente");
         return ans;
     }
 
     private String getNegativeStock(List<Item> l) throws SQLException {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando tabla para articulos en negativo en email");
         String ans = "";
         for( int i = 0 ; i < l.size() ; i++ ){
             Item item = l.get(i);
@@ -123,10 +114,12 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ans += "</td>";
             ans += "</tr>";
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Tabla creada satisfactoriamente");
         return ans;
     }
 
     private String getPaymentsTable() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando tabla de formas de pago para email");
         String ans = "";
         for( int i = 0 ; i < bankTable.getRowCount() ; i++ ){
             ans += "<tr>";
@@ -194,6 +187,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ans += "</td>";
             ans += "</tr>";
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Tabla creada satisfactoriamente");
         return ans;
     }
 
@@ -235,14 +229,16 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 return;
             }*/
 
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor de cierre administrativo");
             initComponents();
-            showReport = sr;
             myDay = day;
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Dia Elegido " + myDay);
             date4sap = myDay.replace("-", "");
             String[] dayA = myDay.split("-");
             this.setTitle("Cierre Administrativo - Fecha " + dayA[2] + "/" + dayA[1] + "/" + dayA[0]);
 
             if ( sr && !ConnectionDrivers.previousClosed(myDay) ){
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " No se han realizado cierres anteriores");
                 MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "No se le ha realizado el cierre administrativo a días anteriores. No se puede continuar");
                 msg.show(Shared.getMyMainWindows());
                 return;
@@ -274,6 +270,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             updateAll();
 
             if ( ConnectionDrivers.wasFlagC(day) ){
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Detectado que este dia fue compensado. Deshabilitando opciones para guardar");
                 saveDeposit.setEnabled(false);
                 saveExpense.setEnabled(false);
                 saveNewBanks.setEnabled(false);
@@ -288,6 +285,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Este día ha sido compensado!");
                 msg.show(this);
             }else if ( sr &&  ConnectionDrivers.wasClosed(day) ){
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Dia cerrado anteriormente");
                 MessageBox msg = new MessageBox(MessageBox.SGN_IMPORTANT, "Este día ha sido cerrado anteriormente!");
                 msg.show(this);
             }
@@ -304,6 +302,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }
 
     private void updateDeposits() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizando depositos");
         deposits = ConnectionDrivers.listDeposits(myDay);
         DefaultTableModel model = (DefaultTableModel) depositTable.getModel();
         model.setRowCount(0);
@@ -329,10 +328,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             String[] s = {e.getBank(),e.getFormId(),Shared.df.format(e.getQuant())};
             model.addRow(s);
         }
-        
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Depositos actualizados");
     }
 
     private void updateExpense() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizando gastos");
         expenses = ConnectionDrivers.listExpenses(myDay);
         DefaultTableModel model = (DefaultTableModel) expenseTable.getModel();
         model.setRowCount(0);
@@ -358,6 +358,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             String[] s = {e.getConcept(),Shared.df.format(e.getQuant()),e.getDescription()};
             model.addRow(s);
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Gastos actualizados satisfactoriamente");
     }
 
     protected void updatePayFormWaysxPoses() throws SQLException{
@@ -377,6 +378,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }
 
     private void updateAll() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizando todo...");
         Shared.getScreenSaver().actioned();
         updateBankTable();
         receiptTotal = ConnectionDrivers.getSumTotalWithIva(myDay,"factura","Facturada", true, null) - ConnectionDrivers.getSumTotalWithIva(myDay,"nota_de_credito","Nota",false,null);
@@ -387,9 +389,11 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         updateFiscalZ();
         updatePayWayxPosesDetails();
         Double expensesD = ConnectionDrivers.getExpenses(myDay);
+
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Calculando Totales");
         totalCardsField.setText(Shared.df.format(totalInCard = ConnectionDrivers.getTotalCards(myDay)));
         totalCashField.setText(Shared.df.format(totalInCash = ConnectionDrivers.getTotalCash(myDay)));
-        payWithCreditNoteField.setText( Shared.df.format( totalpcn = ConnectionDrivers.getTotalPCN(myDay) ));
+        payWithCreditNoteField.setText( Shared.df.format( ConnectionDrivers.getTotalPCN(myDay) ));
         creditNoteField.setText(Shared.df.format(totalCN = (ConnectionDrivers.getTotalCN(myDay)*(Shared.getIva()+100.0)/100.0)));
         totalTotalField.setText(Shared.df.format(totalInCard + totalInCash));
         expensesTodayField.setText( Shared.df.format(totalExpenses = expensesD) );
@@ -415,6 +419,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         }
 
         totalField.setText(Shared.df.format(n));
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Actualizado todo satisfactoriamente");
     }
 
     /** This method is called from within the constructor to
@@ -1276,6 +1281,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_formWayxPosesFocusGained
 
     private void saveDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDepositActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardando depositos");
         DefaultTableModel model = (DefaultTableModel) depositTable.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             try{
@@ -1304,10 +1310,12 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             this.dispose();
             Shared.reload();
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardados satisfactoriamente");
     }//GEN-LAST:event_saveDepositActionPerformed
 
     private void deleteDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteDepositActionPerformed
         int n = depositTable.getSelectedRow();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Eliminado deposito " + n);
         if ( n != -1 ){
             DefaultTableModel model = (DefaultTableModel) depositTable.getModel();
             model.removeRow(n);
@@ -1329,6 +1337,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
     private void deleteExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteExpenseActionPerformed
         int n = expenseTable.getSelectedRow();
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Eliminando gasto " + n);
         if ( n != -1 ){
             DefaultTableModel model = (DefaultTableModel) expenseTable.getModel();
             model.removeRow(n);
@@ -1339,6 +1348,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_deleteExpenseActionPerformed
 
     private void saveExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveExpenseActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardando gastos");
         DefaultTableModel model = (DefaultTableModel) expenseTable.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             try{
@@ -1374,6 +1384,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ConnectionDrivers.deleteAllExpenses(myDay);
             ConnectionDrivers.createExpenses(model,myDay);
             updateAll();
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardado satisfactoriamente");
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
         } catch (SQLException ex) {
@@ -1386,6 +1397,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
 
     private void printAndSendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printAndSendButtonActionPerformed
         try {
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Enviando cierre administrativo..");
             if (!ConnectionDrivers.allZready(myDay)) {
                 SellWithoutStock sws = new SellWithoutStock((Frame) Shared.getMyMainWindows(), true, "Hay cajas sin cerrar.", "sendODWithoutZ");
                 Shared.centerFrame(sws);
@@ -1454,6 +1466,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_deleteNewBanksActionPerformed
 
     private void saveNewBanksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveNewBanksActionPerformed
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Guardando bancos");
         DefaultTableModel model = (DefaultTableModel) bankTable.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             try{
@@ -1478,6 +1491,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             ConnectionDrivers.deleteAllPayments(myDay);
             ConnectionDrivers.createPayments(model,myDay);
             updateAll();
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Bancos guardados");
             MessageBox msg = new MessageBox(MessageBox.SGN_SUCCESS, "Guardado correctamente");
             msg.show(this);
         } catch (SQLException ex) {
@@ -1524,7 +1538,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }//GEN-LAST:event_formInternalFrameClosing
 
     private IXMLElement createXml4CN() throws SQLException, IOException{
-        System.out.println("Agrupando Notas de Credito.");
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Agrupando Notas de Credito.");
         List< ReceiptSap > CreditNoteGroup = new LinkedList<ReceiptSap>();
         List<Receipt> receipts = ConnectionDrivers.listOkCN(myDay);
 
@@ -1534,7 +1548,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
         for (Receipt receipt : receipts) {
             
             if ( receipt.getFiscalNumber().isEmpty() ){
-                System.out.println("Error con la factura " + receipt.getInternId());
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Error con la factura " + receipt.getInternId());
                 continue;
             }
             if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() )
@@ -1578,13 +1592,15 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 }
 
             }
-            System.out.println("Creando Grupo = " + receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando Grupo = " + receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
         }
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " XML creado para notas de credito");
         return xmlCN;
     }
 
     private IXMLElement createXml4Receipt() throws SQLException, IOException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando XMl para facturas");
         List< ReceiptSap > receiptGroup = new LinkedList<ReceiptSap>();
         List<Receipt> receipts = ConnectionDrivers.listOkReceipts(myDay);
 
@@ -1605,7 +1621,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             }
 
             if ( receipt.getFiscalNumber().isEmpty() ){
-                System.out.println("Error con la factura " + receipt.getInternId());
+                System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Error con la factura " + receipt.getInternId());
                 continue;
             }
             if ( (previousId == -1 || previousId +1 == Integer.parseInt(receipt.getFiscalNumber() ) &&
@@ -1654,14 +1670,16 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 }
 
             }
-            System.out.println("child = " +receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " child = " +receiptSap.getMinFiscalId() + "-" + receiptSap.getMaxFiscalId());
         }
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creado xml para facturas satisfactoriamente");
         return xmlRe;
 
     }
 
     private IXMLElement createClients() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando xml para clientes");
         XMLElement clienXML = new XMLElement("Clientes");
 
         TreeSet<String> clientsAdded = new TreeSet<String>();
@@ -1678,6 +1696,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 clientsAdded.add(cc.getId());
             }
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creado XML para clientes");
 
         return clienXML;
     }
@@ -1692,6 +1711,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }
     
     private String createCloseEmail() throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando correo para cierre administrativo");
         String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
         return "<html>\n"
                     + "<b><u>RESUMEN DIARIO DE VENTAS</u><br><br></b>\n"
@@ -1728,16 +1748,19 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     }
 
     private String createCloseEmailSubject(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando asunto para stock negativo");
         String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
         return "Cierre del dia " + formatDay + " Agencia " + Shared.getConfig("storeName");
     }
 
     private String createNegativeStockSubject(){
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando asunto para stock negativo");
         String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
         return "Stock Negativo " + formatDay + " Agencia " + Shared.getConfig("storeName");
     }
 
     private String createNegativeStockEmail(List<Item> l) throws SQLException{
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando email para stock negativo");
         String formatDay= myDay.split("-")[2] + "/" + myDay.split("-")[1] + "/" + myDay.split("-")[0];
         return "<html>\n"
                     + "<b><u>Stock en Negativo</u><br><br></b>\n"
@@ -1757,6 +1780,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     @Override
     public void doIt(){
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Operando envio");
         try {
             Double diffe = Math.abs(totalInCard + totalInCash + totalExpenses - (new Price(null,receiptTotal).plusIva().getQuant()));
             if ( diffe > Double.parseDouble(Shared.getConfig("moneyExilon"))){
@@ -1767,9 +1791,6 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
                 msg.show(this);
                 return;
             }
-
-            ConnectionDrivers.recalculateStock();
-            System.out.println("Stock recalculado!");
 
             Shared.createBackup();
 
@@ -1855,6 +1876,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             //Shared.sendSells(myDay,this,ansMoney);
 
             ConnectionDrivers.closeThisDay(myDay);
+            System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Enviado satisfactoriamente. Creando comprobante");
             new CreateClosingDayReport(myDay,noteField.getText(), Shared.round((receiptTotal*(Shared.getIva()+100.0)/100.0),2));
         } catch (SQLException ex) {
             MessageBox msg = new MessageBox(MessageBox.SGN_CAUTION, "Error con la base de datos.",ex);
@@ -1932,6 +1954,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
     // End of variables declaration//GEN-END:variables
 
     private IXMLElement createCobranzas() {
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando XMl para cobranzas");
         IXMLElement xml = new XMLElement("Cobranza");
 
         // BANKS
@@ -1958,6 +1981,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             child.setAttribute("text", "");
         }
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando XML para gastos");
+
         // EXPENSES
         for ( int i = 0 ; i < expenseTable.getRowCount() ; i++ ){
             IXMLElement child = xml.createElement("I");
@@ -1975,6 +2000,8 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             
         }
 
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " Creando XML para efectivo");
+
         // CASH
         for ( int i = 0 ; i < depositTable.getRowCount() ; i++ ){
             IXMLElement child = xml.createElement("I");
@@ -1990,6 +2017,7 @@ public class ClosingDay extends javax.swing.JInternalFrame implements Doer{
             child.setAttribute("text", "");
 
         }
+        System.out.println("[" + Shared.now() + "] " + this.getClass().getName() + " " + Shared.lineNumber() +  " XML Creados satisfactoriamente");
         return xml;
     }
 

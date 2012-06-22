@@ -256,7 +256,9 @@ public class Shared {
     }
 
     protected static void initializaUser32(){
+        System.out.println("Cargando libreria User32...");
         user32 = (User32)Native.loadLibrary( "User32" , User32.class ) ;
+        System.out.println("Cargada libreria User32!");
     }
 
     protected static void lockUser32(){ 
@@ -270,6 +272,10 @@ public class Shared {
         //user32.EnableWindow((int)Native.getWindowID((Window)Shared.getMyMainWindows()), true);
     }
 
+    public static int lineNumber() {
+        return Thread.currentThread().getStackTrace()[2].getLineNumber();
+    }
+    
     protected static boolean initializeDisplay(){
         if( !fileConfig.containsKey("displayPort") ){
             System.out.println("No contiene configuracion para display");
@@ -440,6 +446,7 @@ public class Shared {
     }
 
     protected static void loadFileConfig(String fileName, String pass) throws FileNotFoundException, IOException{
+        System.out.println("Cargando archivo de configuracion " + fileName);
         prepareFile(new File(Constants.rootDir + fileName), Constants.fileName4ConfigRar, pass, Constants.scriptConfig);
         File f = new File(Constants.tmpDir + Constants.fileName4Config);
         Scanner sc = new Scanner(f);
@@ -813,6 +820,7 @@ public class Shared {
     }
 
     protected static void prepareFile(File myRar, String fileName, String configKey, String scriptFile) throws IOException {
+        System.out.println("Preparando archivo " + fileName);
         String pass = Shared.getConfig(configKey);
         if ( configKey.equals("password4config") ){
             pass = Constants.configPassword;

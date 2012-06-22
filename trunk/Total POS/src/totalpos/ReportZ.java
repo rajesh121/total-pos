@@ -139,8 +139,6 @@ public class ReportZ extends javax.swing.JDialog implements Doer{
             ConnectionDrivers.setZDone(day);
             if ( day.equals("curdate()") ){
                 ConnectionDrivers.setAssignOpen(((MainRetailWindows)Shared.getMyMainWindows()).getAssign(), false);
-                MessageBox msg = new MessageBox(MessageBox.SGN_NOTICE, "Se ha culminado satisfactoriamente el día operativo de esta caja.");
-                msg.show(this);
                 Shared.reload();
             }
         }

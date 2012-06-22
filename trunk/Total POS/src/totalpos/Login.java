@@ -33,6 +33,7 @@ public class Login extends JFrame implements Doer{
 
     /** Creates new form Login */
     public Login() {
+        System.out.println(this.getClass().getName() + " " + Shared.lineNumber() +  " Invocando constructor");
         initComponents();
 
         wallpaper = new Bottom((new ImageIcon(getClass().getResource("/totalpos/resources/Fondo-Inicio.jpg"))).getImage());

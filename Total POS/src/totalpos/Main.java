@@ -1,6 +1,8 @@
 package totalpos;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.sql.SQLException;
 import javax.swing.JFrame;
@@ -25,15 +27,30 @@ public class Main {
                 justUpdate = true;
             }
         }
-        splash = new StartSplash();
-        splash.changeStatus("Leyendo archivo de configuración...", 10);
-        Shared.initializaUser32();
         try {
+
+            PrintStream out = new PrintStream(new FileOutputStream("out.log", true));
+            PrintStream tee = new TeeStream(System.out, out);
+
+            System.setOut(tee);
+
+            // Tee standard error
+            PrintStream err = new PrintStream(new FileOutputStream("err.log", true));
+            tee = new TeeStream(System.err, err);
+
+            System.out.println("Iniciando Total Pos");
+
+            splash = new StartSplash();
+            splash.changeStatus("Leyendo archivo de configuración...", 10);
+            Shared.initializaUser32();
+            
             if ( Constants.isPos ){
+                System.out.println("Iniciando como punto de venta.");
                 serverSkt = new ServerSocket(Constants.lockingPort);
                 System.out.println("Puerto abierto = " + Constants.lockingPort);
             }
         } catch (IOException ex) {
+            System.out.println("Hay otra instancia de Total Pos iniciada!");
             MessageBox msb = new MessageBox(MessageBox.SGN_CAUTION, "Ya existe otra instancia de Total Pos en esta computadora! No se puede continuar");
             msb.show(splash);
             System.exit(0);
@@ -44,6 +61,7 @@ public class Main {
         UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 
         if ( Shared.isLockFile() ){
+            System.out.println("Detectado archivo de .lock! Total Pos se ha cerrado repentinamente!");
             MessageBox msb = new MessageBox(MessageBox.SGN_NOTICE, "Total Pos ha sido cerrado repentinamente mientras trabajaba. Se pudo haber perdido información.");
             msb.show(splash);
             Shared.removeLockFile();
@@ -78,6 +96,7 @@ public class Main {
         splash.changeStatus("Inicializando configuración de base de datos...", 45);
         try {
             ConnectionDrivers.initializeConfig();
+            System.out.println("Leidas variables basicas..");
         } catch (SQLException ex) {
             ConnectionDrivers.reinitializeOffline();
             try {
